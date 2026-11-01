@@ -82,6 +82,25 @@ def test_juan_1_team_is_exact(db):
     assert rows == [("luvdisc", 41), ("whiscash", 41), ("sealeo", 43), ("crawdaunt", 43), ("kingdra", 46)]
 
 
+def test_electrode_statics_only_in_aqua_hideout(db):
+    rows = db.execute(
+        """
+        SELECT e.location, count(*) FROM encounters e JOIN species s USING (species_id)
+        WHERE s.identifier = 'electrode' AND e.method = 'static' GROUP BY 1
+        """
+    ).fetchall()
+    assert rows == [("team-aqua-hideout", 1)]  # two identical item-disguised Electrode, deduplicated
+    voltorb_only = db.execute(
+        "SELECT DISTINCT s.identifier FROM encounters e JOIN species s USING (species_id) "
+        "WHERE e.location = 'new-mauville' AND e.method = 'static'"
+    ).fetchall()
+    assert voltorb_only == [("voltorb",)]
+
+
+def test_aqua_hideout_section_maps_to_pokeapi(db):
+    assert one(db, "SELECT location FROM map_sections WHERE mapsec = 'MAPSEC_AQUA_HIDEOUT'") == ("team-aqua-hideout",)
+
+
 # --- Types and the type chart ---------------------------------------------------------
 
 

@@ -9,6 +9,7 @@ applied in. So for Gen 3 we take, per key, the row with the smallest
 generation_id >= 3, and fall back to the current value when there isn't one.
 """
 
+import re
 from pathlib import Path
 
 import duckdb
@@ -419,4 +420,44 @@ def reconcile_moves_with_rom(con, decomp_dir: Path) -> None:
     con.execute(
         "UPDATE moves SET damage_class = t.damage_class FROM types t "
         "WHERE moves.type = t.identifier AND moves.damage_class <> 'status' AND moves.damage_class <> t.damage_class"
+    )
+
+
+def reconcile_statics_with_rom(con, decomp_dir: Path) -> None:
+    """Fix PokeAPI's Emerald static encounters against the ROM's `setwildbattle` scripts.
+
+    PokeAPI lists New Mauville's three Voltorb twice, and puts the Aqua Hideout's two
+    Electrode in New Mauville and team-magma-hideout as well. For every species the ROM
+    sets up with `setwildbattle`, keep a static row only where the ROM has one, and drop
+    exact duplicates. Legendaries placed some other way (event islands) are untouched.
+    Needs `map_sections`.
+    """
+    dex = decomp.national_dex(decomp_dir)
+    mapsec_location = dict(con.execute("SELECT mapsec, location FROM map_sections").fetchall())
+    rom = set()
+    for map_id, m in decomp.maps(decomp_dir).items():
+        path = Path(decomp_dir) / "data" / "maps" / m["folder"] / "scripts.inc"
+        if not path.exists():
+            continue
+        for species in re.findall(r"setwildbattle\s+(SPECIES_\w+)", path.read_text(encoding="utf-8")):
+            location = mapsec_location.get(m["region_map_section"])
+            if location and species in dex:
+                rom.add((location, dex[species]))
+    rom_species = {sid for _, sid in rom}
+    con.execute("CREATE TEMP TABLE rom_statics (location VARCHAR, species_id INTEGER)")
+    con.executemany("INSERT INTO rom_statics VALUES (?, ?)", sorted(rom))
+    con.execute(
+        f"""
+        DELETE FROM encounters e
+        WHERE e.method = 'static' AND e.species_id IN {tuple(sorted(rom_species))}
+          AND NOT EXISTS (SELECT 1 FROM rom_statics r WHERE r.location = e.location AND r.species_id = e.species_id)
+        """
+    )
+    con.execute(
+        """
+        DELETE FROM encounters WHERE method = 'static' AND encounter_id NOT IN (
+            SELECT min(encounter_id) FROM encounters WHERE method = 'static'
+            GROUP BY location, area, species_id, min_level, max_level
+        )
+        """
     )

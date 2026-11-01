@@ -26,8 +26,13 @@ OUT = ROOT / "data" / "emerald.duckdb"
 POKEAPI_DIR = CACHE / "pokeapi"
 DECOMP_DIR = CACHE / "pokeemerald"
 
-# Underwater sections have no PokeAPI location of their own; PokeAPI files them as areas of the route above.
-UNDERWATER = {"MAPSEC_UNDERWATER_124": ("hoenn-route-124", "underwater"), "MAPSEC_UNDERWATER_126": ("hoenn-route-126", "underwater")}
+# Sections PokeAPI's Gen 3 location indices don't cover. Underwater areas are filed under the route
+# above them; Emerald's Aqua Hideout uses a new section (the old index points at Ruby's Magma Hideout).
+MAPSEC_OVERRIDES = {
+    "MAPSEC_UNDERWATER_124": ("hoenn-route-124", "underwater"),
+    "MAPSEC_UNDERWATER_126": ("hoenn-route-126", "underwater"),
+    "MAPSEC_AQUA_HIDEOUT": ("team-aqua-hideout", None),
+}
 
 
 def load_raw(con: duckdb.DuckDBPyConnection) -> None:
@@ -47,7 +52,7 @@ def build_map_sections(con: duckdb.DuckDBPyConnection) -> None:
     )
     rows = []
     for sec in decomp.map_sections(DECOMP_DIR):
-        location, area = UNDERWATER.get(sec["id"], (gen3.get(sec["index"]), None))
+        location, area = MAPSEC_OVERRIDES.get(sec["id"], (gen3.get(sec["index"]), None))
         rows.append((sec["id"], sec["index"], sec["name"], location, area))
     con.execute(
         "CREATE TABLE map_sections (mapsec VARCHAR PRIMARY KEY, mapsec_index INTEGER, name VARCHAR, location VARCHAR, area VARCHAR)"
@@ -78,6 +83,7 @@ def main() -> None:
     gen3_corrections.apply(con)
     gen3_corrections.reconcile_moves_with_rom(con, DECOMP_DIR)
     build_map_sections(con)
+    gen3_corrections.reconcile_statics_with_rom(con, DECOMP_DIR)
     parse_decomp_trainers.build(con, DECOMP_DIR)
     tm_locations.build(con, DECOMP_DIR)
     build_meta(con)
