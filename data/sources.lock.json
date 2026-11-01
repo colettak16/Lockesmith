@@ -1,0 +1,12 @@
+{
+  "pokeapi": {
+    "repo": "PokeAPI/pokeapi",
+    "sha": "6b8db7f3cb31cfaa37cb74e5c3edff124bcba5ce",
+    "path": "data/v2/csv"
+  },
+  "pokeemerald": {
+    "repo": "pret/pokeemerald",
+    "sha": "731ad5bfd6e6f265508d0efcca0ba42f9dcf5881"
+  },
+  "resolved_on": "2026-11-01"
+}
