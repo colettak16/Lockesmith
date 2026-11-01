@@ -1,28 +1,28 @@
 # Deploying Lockesmith to Cloud Run (continuous deploy from GitHub)
 
-The repo builds from the root `Dockerfile` (Python 3.12 + uv, dependencies locked by `uv.lock`). Cloud Run injects `PORT`; the container listens on it. Nothing here needs a local Docker or `gcloud` install: Cloud Build does the build.
+This follows the course guide, [Deploying to Cloud Run from GitHub](https://docs.google.com/document/d/1GZHWyRmOGXGJqsiIPMypKUZFRVTReCDJgC_8AdekaXk/edit), which assumes [Setting up GCP and Gemini](https://docs.google.com/document/d/1DSdDGTEt_TAGqL3HLwRB5bkCmul_cgIf0z9xweDvUkg/edit) is done. Where the two differ, the course guide wins; the notes below only add what's specific to this repo.
+
+The repo builds from the root `Dockerfile` (Python 3.12 + uv, dependencies locked by `uv.lock`). Cloud Run injects `PORT`; the container listens on it. Nothing here needs a local Docker install: Cloud Build does the build.
 
 Console labels shift a little between GCP releases. If a label below doesn't match exactly, the step order still applies.
 
 ## One-time setup
 
-1. **Project and billing.** In the GCP console, pick (or create) the project you'll use for the course and confirm billing is attached (course credits count).
-2. **Enable APIs.** APIs & Services → Enable APIs: **Cloud Run Admin API**, **Cloud Build API**, **Artifact Registry API**. If we go with Vertex AI for models (see `docs/decisions.md`, D3), also enable **Vertex AI API** now. After enabling, the console may offer **Create credentials**: cancel it. Nothing here uses API keys, OAuth clients or service account key files; Cloud Build and Cloud Run run as service accounts GCP creates for the project.
+1. **Project and billing.** Use the project from "Setting up GCP and Gemini": created under your Columbia account, linked to "Billing Account for Education".
+2. **Enable APIs.** **Agent Platform API** (`aiplatform.googleapis.com`, formerly Vertex AI; Phase 2 calls Gemini through it) and **Secret Manager API** (Developer Connect keeps its GitHub credentials there). The console enables Cloud Run, Cloud Build and Artifact Registry itself when you create the service. If the console offers **Create credentials** after enabling an API, cancel it: nothing here uses API keys, OAuth clients or service account key files.
 3. **Push the repo to GitHub.** `main` is the deploy branch.
 
 ## Create the service
 
-1. Cloud Run → **Deploy container** → **Service**.
-2. Choose **Continuously deploy from a repository (source or function)** → **Set up with Cloud Build**.
-3. **Repository provider:** GitHub. Authenticate, install the Cloud Build GitHub app on your account, and grant it access to the `Lockesmith` repo only. Select the repo.
-4. **Build configuration:**
+1. Cloud Run → **Connect repository** → **Continuous deploy from a repository** → **Developer Connect** → **Set up with Developer Connect**.
+2. **Repository:** drop-down → **Link new repository** → GitHub → Continue → "I understand and continue". Install the Developer Connect GitHub app on your account with access to the `Lockesmith` repo only, then pick the repo from the drop-down.
+3. **Build configuration:**
    - Branch: `^main$`
-   - Build type: **Dockerfile**
-   - Source location: `/Dockerfile`
+   - Build type: **Dockerfile**, source location `/Dockerfile`. (The course guide uses a buildpack with entrypoint `uvicorn app:app --host 0.0.0.0 --port $PORT`; that also works for this repo and is the fallback if the Dockerfile build fails.)
+4. **Authentication:** **Require authentication**, keep **IAM** checked, and check **Identity-Aware Proxy (IAP)**. Click **Edit policy** and set Principal 1 to `columbia.edu` (it won't autocomplete). Columbia's org policy blocks **Allow public access**, so this is the only option; graders sign in with their Columbia accounts.
 5. **Service settings:**
    - Service name: `lockesmith`
    - Region: `us-east1` (closest low-cost region to NYC; `us-east4` also fine)
-   - Authentication: **Allow unauthenticated invocations** (graders hit it from a browser)
    - Billing: **Request-based**
    - Minimum instances: `0` for now. Bump to `1` during the grading window to avoid cold starts.
    - Maximum instances: `3` (caps spend if something loops)
@@ -32,10 +32,12 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
    - **Request timeout: `600` seconds** (graders wait up to 5 min; our request budget is ~120 s)
    - Concurrency: `20`
    - Variables & Secrets: none needed for hello-world. Phase 2 adds model env vars (see below).
-7. **Create.** The first build takes a few minutes. When it's green, open the service URL and check:
-   - `GET /` shows the Lockesmith page
-   - `GET /healthz` returns `{"status": "ok", "revision": "lockesmith-000xx-..."}`
-   - `curl -X POST <url>/chat -H 'content-type: application/json' -d '{"message":"hi"}'` returns the `{response, session_id, tool_calls, ...}` shape
+7. **Create.** The first build takes a few minutes. When it's green, click the service name for its URL and check in a browser signed in to your Columbia account (IAP turns away `curl` without a token):
+   - `/` shows the Lockesmith page
+   - `/healthz` returns `{"status": "ok", "revision": "lockesmith-000xx-..."}`
+   - `/chat`: on the `/` page, open the browser console and run
+     `fetch('/chat', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({message: 'hi'})}).then(r => r.json()).then(console.log)`
+     and check you get the `{response, session_id, tool_calls, ...}` shape
 
 From then on, every push to `main` builds and rolls out a new revision.
 
@@ -43,13 +45,14 @@ From then on, every push to `main` builds and rolls out a new revision.
 
 - Put the URL in `submission.json` (`deploy_url`).
 - Phase 2 env vars (Service → Edit & deploy new revision → Variables & Secrets). Names are placeholders until the runtime lands:
-  - `LOCKESMITH_LEAD_MODEL`, `LOCKESMITH_RESEARCHER_MODEL` (LiteLLM model strings)
-  - Vertex route: `VERTEXAI_PROJECT=<project id>`, `VERTEXAI_LOCATION=us-east1` (or `global`), and grant the service's runtime service account the **Vertex AI User** role (IAM → the `...-compute@developer.gserviceaccount.com` account, unless you set a dedicated one). No API key needed.
-  - Anthropic route instead: store the key in **Secret Manager** and expose it as `ANTHROPIC_API_KEY` (Variables & Secrets → Reference a secret). Never put it in the repo.
+  - `LOCKESMITH_LEAD_MODEL`, `LOCKESMITH_RESEARCHER_MODEL` (model strings)
+  - `VERTEXAI_PROJECT=<project id>`, `VERTEXAI_LOCATION=us-east1` (or `global`), and grant the service's runtime service account the **Vertex AI User** role (`roles/aiplatform.user`; IAM → the `...-compute@developer.gserviceaccount.com` account, unless you set a dedicated one). No API key needed. Locally, `gcloud auth application-default login` covers the same calls.
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` as secrets in Phase 4.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 
 ## Checking a failed deploy
 
+- First build fails with `Permission 'developerconnect.gitRepositoryLinks.fetchReadToken' denied`: the new Developer Connect link was still being provisioned. Wait a minute, then Cloud Build → History → the failed build → **Rebuild**.
+- Build missing from Cloud Build → History: check the region selector at the top. Builds run in the Developer Connect connection's region, which may not be the service's region.
 - Cloud Build → History shows the build log (dependency or Dockerfile errors).
 - Cloud Run → service → Logs shows startup errors. The usual one is the app not listening on `$PORT`; the Dockerfile's `CMD` handles that.
