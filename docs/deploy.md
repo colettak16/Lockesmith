@@ -40,7 +40,7 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
    - Variables & Secrets: none needed for hello-world. Phase 2 adds model env vars (see below).
 7. **Create.** The first build takes a few minutes. When it's green, click the service name for its URL and check in a browser signed in to your Columbia account (IAP turns away `curl` without a token):
    - `/` shows the Lockesmith page
-   - `/healthz` returns `{"status": "ok", "revision": "lockesmith-000xx-..."}`
+   - `/health` returns `{"status": "ok", "revision": "lockesmith-000xx-..."}` (Cloud Run reserves paths ending in `z`, so `/healthz` gets Google's own 404)
    - `/chat`: on the `/` page, open the browser console and run
      `fetch('/chat', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({message: 'hi'})}).then(r => r.json()).then(console.log)`
      and check you get the `{response, session_id, tool_calls, ...}` shape

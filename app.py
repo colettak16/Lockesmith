@@ -43,8 +43,8 @@ it tells you what to catch next, and where, to beat the rest of the game.</p>
 </body></html>"""
 
 
-@app.get("/healthz")
-def healthz() -> dict:
+@app.get("/health")  # not /healthz: Cloud Run reserves paths ending in "z"
+def health() -> dict:
     return {"status": "ok", "revision": os.environ.get("K_REVISION", "local")}
 
 
