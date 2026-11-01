@@ -26,7 +26,7 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
 4. **Authentication:** **Require authentication**, keep **IAM** checked, and check **Identity-Aware Proxy (IAP)**. Click **Edit policy** and set Principal 1 to `columbia.edu` (it won't autocomplete). Columbia's org policy blocks **Allow public access**, so this is the only option; graders sign in with their Columbia accounts.
 5. **Service settings:**
    - Service name: `lockesmith`
-   - Region: `us-east1` (closest low-cost region to NYC; `us-east4` also fine)
+   - Region: `us-east4` (what the live service uses; `us-east1` is also fine)
    - Billing: **Request-based**
    - Minimum instances: `0` for now. Bump to `1` during the grading window to avoid cold starts.
    - Maximum instances: `3` (caps spend if something loops)
@@ -52,7 +52,7 @@ From then on, every push to `main` builds and rolls out a new revision.
 - Put the URL in `submission.json` (`deploy_url`).
 - Phase 2 env vars (Service → Edit & deploy new revision → Variables & Secrets). Names are placeholders until the runtime lands:
   - `LOCKESMITH_LEAD_MODEL`, `LOCKESMITH_RESEARCHER_MODEL` (model strings)
-  - `VERTEXAI_PROJECT=<project id>`, `VERTEXAI_LOCATION=us-east1` (or `global`), and grant the service's runtime service account the **Vertex AI User** role (`roles/aiplatform.user`; IAM → the `...-compute@developer.gserviceaccount.com` account, unless you set a dedicated one). No API key needed. Locally, `gcloud auth application-default login` covers the same calls.
+  - `VERTEXAI_PROJECT=lockesmith`, `VERTEXAI_LOCATION=global` (the current Gemini models answer on `global` only; `us-east4` returns 404), and grant the service's runtime service account the **Vertex AI User** role (`roles/aiplatform.user`; IAM → the `...-compute@developer.gserviceaccount.com` account, unless you set a dedicated one). No API key needed. Locally, `gcloud auth application-default login` covers the same calls.
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` as secrets in Phase 4.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 

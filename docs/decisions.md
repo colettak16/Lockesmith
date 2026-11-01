@@ -54,6 +54,8 @@ Two caveats I couldn't settle without credentials:
 1. Run a 15-minute spike at the start of Phase 2: one agent, one tool, through LiteLLM on Vertex. If the Agents SDK's strict tool schemas trip Gemini, the fallback is **Claude on Vertex** (Model Garden). That keeps the same auth and billing, and Claude is the stronger tool user. Model Garden access can need a quota request, so enabling it early costs nothing.
 2. If the course gives you an Anthropic key or credits, the Anthropic route is equally good and is a config change.
 
+*Checked 2026-11-01 with local ADC on project `lockesmith`:* Gemini answers on location **`global`** only. `gemini-3.5-flash` and `gemini-3.8-flash` respond; `gemini-2.5-flash` is in the model catalog but returns 404, and the regional `us-east4` endpoint returns 404 for every model tried. So `VERTEXAI_LOCATION=global`, and the Phase 2 spike picks between the current 3.x Flash models and `gemini-3.1-pro-preview` for the Lead.
+
 *Switching cost:* env vars only, since `agent/runtime.py` isolates the framework.
 
 ---
@@ -95,7 +97,7 @@ PokeAPI stays the primary source for everything else (encounter slots and rariti
 - `data/emerald.duckdb` (~7 MB) and `data/guide/` (~0.9 MB) are committed, as PLAN §12 allows.
 - The build runs in memory and copies the final tables out, so the file doesn't carry dropped staging pages.
 - `agent/db.py` `connect_session()` attaches the shipped DB read-only and keeps randomizer overlays in memory per session.
-- Cloud Run region `us-east1`, 600 s request timeout, max 3 instances (docs/deploy.md).
+- Cloud Run region `us-east4` (as deployed), 600 s request timeout, max 3 instances (docs/deploy.md).
 - Not started, by design (Phase 2): `agent/runtime.py`, `agent/state.py`, tools, agents.
 
 ---
