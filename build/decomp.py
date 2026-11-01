@@ -279,3 +279,9 @@ def tm_hm_moves(decomp: Path) -> list[tuple[str, str]]:
 def trainer_class_names(decomp: Path) -> dict[str, str]:
     text = read(decomp, "src/data/text/trainer_class_names.h")
     return {k: v.title() for k, v in re.findall(r"\[(TRAINER_CLASS_\w+)\]\s*=\s*_\(\"([^\"]*)\"\)", text)}
+
+
+@cache
+def rom_names(decomp: Path, rel: str) -> dict[str, str]:
+    """`[CONST] = _("NAME")` tables (species, move, ability names as the ROM prints them)."""
+    return dict(re.findall(r"\[(\w+)\]\s*=\s*_\(\"([^\"]*)\"\)", read(decomp, rel)))

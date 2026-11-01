@@ -59,6 +59,36 @@ def build_map_sections(con: duckdb.DuckDBPyConnection) -> None:
     )
     con.executemany("INSERT INTO map_sections VALUES (?, ?, ?, ?, ?)", rows)
 
+    sections = {r[0]: (r[3], r[4]) for r in rows}
+    map_rows = [
+        (map_id, m["folder"], m["region_map_section"], *sections.get(m["region_map_section"], (None, None)))
+        for map_id, m in sorted(decomp.maps(DECOMP_DIR).items())
+    ]
+    con.execute("CREATE TABLE maps (map VARCHAR PRIMARY KEY, folder VARCHAR, mapsec VARCHAR, location VARCHAR, area VARCHAR)")
+    con.executemany("INSERT INTO maps VALUES (?, ?, ?, ?, ?)", map_rows)
+
+
+def add_rom_names(con: duckdb.DuckDBPyConnection) -> None:
+    """Names as the Emerald ROM spells them ("FAINT ATTACK", "NIDORAN♀"). Randomizer logs use these."""
+    tables = [
+        ("species", "species_id", decomp.national_dex(DECOMP_DIR), "src/data/text/species_names.h"),
+        ("moves", "move_id", decomp.move_ids(DECOMP_DIR), "src/data/text/move_names.h"),
+    ]
+    for table, key, ids, rel in tables:
+        con.execute(f"ALTER TABLE {table} ADD COLUMN rom_name VARCHAR")
+        rows = [(name, ids[const]) for const, name in decomp.rom_names(DECOMP_DIR, rel).items() if const in ids]
+        con.executemany(f"UPDATE {table} SET rom_name = ? WHERE {key} = ?", rows)
+    con.execute("ALTER TABLE abilities ADD COLUMN rom_name VARCHAR")
+    rows = [
+        (name, decomp.ability_identifier(const))
+        for const, name in decomp.rom_names(DECOMP_DIR, "src/data/text/abilities.h").items()
+        if const.startswith("ABILITY_")
+    ]
+    con.executemany("UPDATE abilities SET rom_name = ? WHERE identifier = ?", rows)
+    for table in ("species", "moves", "abilities"):
+        (missing,) = con.execute(f"SELECT count(*) FROM {table} WHERE rom_name IS NULL").fetchone()
+        assert missing == 0, f"{missing} {table} rows without a ROM name"
+
 
 def build_meta(con: duckdb.DuckDBPyConnection) -> None:
     lock = json.loads(LOCK.read_text())
@@ -84,6 +114,7 @@ def main() -> None:
     gen3_corrections.reconcile_moves_with_rom(con, DECOMP_DIR)
     build_map_sections(con)
     gen3_corrections.reconcile_statics_with_rom(con, DECOMP_DIR)
+    add_rom_names(con)
     parse_decomp_trainers.build(con, DECOMP_DIR)
     tm_locations.build(con, DECOMP_DIR)
     build_meta(con)

@@ -54,6 +54,8 @@ POKEEMERALD_PATHS = [
     "src/data/wild_encounters.json",
     "src/data/text/species_names.h",
     "src/data/text/trainer_class_names.h",
+    "src/data/text/move_names.h",
+    "src/data/text/abilities.h",
     "src/data/region_map",
     "src/battle_main.c",
     "src/pokemon.c",
