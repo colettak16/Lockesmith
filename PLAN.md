@@ -1,4 +1,4 @@
-# Project 2 Plan: Emerald Run Planner (working name)
+# Project 2 Plan: Lockesmith
 
 A deep research agent that tells a Pokémon Emerald player which Pokémon to catch next, and where, to beat the rest of the game. It works for normal runs, Nuzlocke and custom-ruleset runs, and randomized runs (via an uploaded randomizer spoiler log).
 
@@ -8,8 +8,10 @@ Course: IEOR E4570 Agentic AI, Project 2 (Deep Research path). Solo. Due **Wed N
 
 ## 0. Instructions for Claude Code
 
-- Read this whole file before writing code. Then read the course reference starter in `reference/wikipedia-deep-research/` and the assignment page in `docs/assignment.html`.
-- Mirror the reference starter's framework, `/chat` contract and project layout wherever this plan doesn't say otherwise. If the starter and this plan conflict, stop and tell me rather than picking one.
+- Read this whole file before writing code, then the assignment page in `docs/assignment.html`.
+- The course reference starter (`wikipedia-deep-research`) is **not available yet**. Build without it. If it later appears in `reference/wikipedia-deep-research/`, read it and tell me where this plan's structure differs before changing anything.
+- Until then, keep the agent framework behind a thin layer (`agent/runtime.py`: one function to run an agent with tools and return output + tool calls) so swapping frameworks later only touches that file.
+- The `/chat` contract in section 8 is fixed by Project 1 and the assignment text, so build to it now.
 - Items marked **OPEN** are decisions I haven't made. Ask me before resolving them.
 - Every phase in section 13 has acceptance checks. Don't mark a phase done until they pass.
 - Keep scope tight. Out of scope: other games, ROM hacks, the Battle Frontier and other postgame content, team-building for competitive play.
@@ -175,7 +177,7 @@ Every tool returns rows plus a `source_id` per row (see §7). Tools read run sta
 
 ## 6. Agents
 
-Framework: **OPEN**. Default to whatever the reference starter uses (likely OpenAI Agents SDK through LiteLLM). Models configured by env vars via LiteLLM; a cheap/fast model for researchers, a stronger one for Lead and Writer. **OPEN**: Gemini on Vertex vs Anthropic API key.
+Framework: default to the OpenAI Agents SDK through LiteLLM (covered in the agent-frameworks lecture), wrapped by `agent/runtime.py`. Revisit if the reference starter turns out to use something else. Models configured by env vars via LiteLLM; a cheap/fast model for researchers, a stronger one for Lead and Writer. **OPEN**: Gemini on Vertex vs Anthropic API key.
 
 **Clarifier (gatekeeper).** Checks the request against the run state. Asks one targeted question when it lacks what the answer depends on (badges or last gym beaten, party species + levels, starter for rival teams, ruleset if the user mentions a challenge). Declines out-of-scope requests clearly (other games, ROM hacks, postgame, competitive sets), saying what it does cover. Vague example: "what should I catch?" with no state → asks for badges and party. The front-end form should make clarification rare for normal use.
 
@@ -296,11 +298,11 @@ README sections:
 ## 13. Phases and timeline
 
 **Phase 0: setup and spikes (Sun Nov 1 – Mon Nov 2)**
-- Scaffold with uv; read the reference starter; deploy hello-world to Cloud Run.
+- Scaffold with uv; prepare a hello-world `app.py` and Dockerfile/Cloud Run config, and give me the exact steps to connect continuous deploy (I'll do the GCP console part).
 - Spike: TM/item location source (**OPEN**: decomp map data vs guide pages vs hand-curated CSV of the 50 TMs). Recommend the fastest accurate option.
 - Spike: guide corpus fetch via MediaWiki API for Emerald pages only, cached to `data/guide/`.
 - Spike: randomizer log join using my fixture log.
-- ✅ Acceptance: Cloud Run URL serves hello-world; short written summary of the starter's framework and fan-out; a recommendation on each OPEN item.
+- ✅ Acceptance: hello-world runs locally and deploy steps are written up; a recommendation on each OPEN item.
 
 **Phase 1: data layer (Mon Nov 2 – Wed Nov 4)**
 - `build/` scripts → `data/emerald.duckdb`; Gen 3 corrections; trainer parsing incl. default moves; entity matching; draft `progression.yaml` (I review); randomizer log parser + overlays.
@@ -327,12 +329,13 @@ README sections:
 ```
 app.py                      # FastAPI entry (required at root)
 pyproject.toml  uv.lock  README.md  submission.json  PLAN.md
-reference/                  # course starter (read-only reference)
+reference/                  # course starter, if/when it's released (read-only reference)
 docs/assignment.html  docs/baseline/
 build/                      # offline build: fetch_sources.py, build_db.py, gen3_corrections.py,
                             # parse_decomp_trainers.py, build_guide_corpus.py
 data/                       # emerald.duckdb, progression.yaml, guide/, sources.lock.json
 agent/
+  runtime.py                # thin wrapper around the agent framework
   state.py  evidence.py  randomizer_log.py  entities.py
   tools/  battles.py  encounters.py  moves.py  guide.py  sql.py
   clarifier.py  lead.py  researchers.py  verifier.py  writer.py
