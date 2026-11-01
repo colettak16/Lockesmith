@@ -2,7 +2,7 @@
 
 This follows the course guide, [Deploying to Cloud Run from GitHub](https://docs.google.com/document/d/1GZHWyRmOGXGJqsiIPMypKUZFRVTReCDJgC_8AdekaXk/edit), which assumes [Setting up GCP and Gemini](https://docs.google.com/document/d/1DSdDGTEt_TAGqL3HLwRB5bkCmul_cgIf0z9xweDvUkg/edit) is done. Where the two differ, the course guide wins; the notes below only add what's specific to this repo.
 
-The repo builds from the root `Dockerfile` (Python 3.12 + uv, dependencies locked by `uv.lock`). Cloud Run injects `PORT`; the container listens on it. Nothing here needs a local Docker install: Cloud Build does the build.
+Cloud Build builds the repo with Google's Python buildpack, as the course guide does. It picks uv because `uv.lock` sits next to `pyproject.toml`, installs the locked runtime dependencies, and uses the Python version in `.python-version` (3.12). Keep `uv.lock` committed and current (`uv lock` after editing `pyproject.toml`), and don't add a `requirements.txt`: the buildpack would use it instead of the lockfile. Cloud Run injects `PORT`; the entrypoint binds to it. Nothing here needs a local Docker install.
 
 Console labels shift a little between GCP releases. If a label below doesn't match exactly, the step order still applies.
 
@@ -18,7 +18,11 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
 2. **Repository:** drop-down → **Link new repository** → GitHub → Continue → "I understand and continue". Install the Developer Connect GitHub app on your account with access to the `Lockesmith` repo only, then pick the repo from the drop-down.
 3. **Build configuration:**
    - Branch: `^main$`
-   - Build type: **Dockerfile**, source location `/Dockerfile`. (The course guide uses a buildpack with entrypoint `uvicorn app:app --host 0.0.0.0 --port $PORT`; that also works for this repo and is the fallback if the Dockerfile build fails.)
+   - Build type: **Go, Node.js, Python, Java, .NET Core, Ruby or PHP via Google Cloud's buildpacks**
+   - Build context directory: leave blank (repo root)
+   - Entrypoint: `uvicorn app:app --host 0.0.0.0 --port $PORT`
+   - Function target: leave blank
+   - Click **Save**
 4. **Authentication:** **Require authentication**, keep **IAM** checked, and check **Identity-Aware Proxy (IAP)**. Click **Edit policy** and set Principal 1 to `columbia.edu` (it won't autocomplete). Columbia's org policy blocks **Allow public access**, so this is the only option; graders sign in with their Columbia accounts.
 5. **Service settings:**
    - Service name: `lockesmith`
@@ -54,5 +58,5 @@ From then on, every push to `main` builds and rolls out a new revision.
 
 - First build fails with `Permission 'developerconnect.gitRepositoryLinks.fetchReadToken' denied`: the new Developer Connect link was still being provisioned. Wait a minute, then Cloud Build → History → the failed build → **Rebuild**.
 - Build missing from Cloud Build → History: check the region selector at the top. Builds run in the Developer Connect connection's region, which may not be the service's region.
-- Cloud Build → History shows the build log (dependency or Dockerfile errors).
-- Cloud Run → service → Logs shows startup errors. The usual one is the app not listening on `$PORT`; the Dockerfile's `CMD` handles that.
+- Cloud Build → History shows the build log (dependency errors, or a stale `uv.lock`).
+- Cloud Run → service → Logs shows startup errors. The usual one is the app not listening on `$PORT`: check the entrypoint matches step 3 exactly.
