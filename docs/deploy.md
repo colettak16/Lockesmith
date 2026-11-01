@@ -2,7 +2,7 @@
 
 This follows the course guide, [Deploying to Cloud Run from GitHub](https://docs.google.com/document/d/1GZHWyRmOGXGJqsiIPMypKUZFRVTReCDJgC_8AdekaXk/edit), which assumes [Setting up GCP and Gemini](https://docs.google.com/document/d/1DSdDGTEt_TAGqL3HLwRB5bkCmul_cgIf0z9xweDvUkg/edit) is done. Where the two differ, the course guide wins; the notes below only add what's specific to this repo.
 
-Cloud Build builds the repo with Google's Python buildpack, as the course guide does. It picks uv because `uv.lock` sits next to `pyproject.toml`, installs the locked runtime dependencies, and uses the Python version in `.python-version` (3.12). Keep `uv.lock` committed and current (`uv lock` after editing `pyproject.toml`), and don't add a `requirements.txt`: the buildpack would use it instead of the lockfile. Cloud Run injects `PORT`; the entrypoint binds to it. Nothing here needs a local Docker install.
+Cloud Build builds the repo with Google's Python buildpack, as the course guide does. It picks uv because `uv.lock` sits next to `pyproject.toml`, installs the locked runtime dependencies, and uses the Python version in `.python-version` (3.13; the current Ubuntu 24.04 builder offers 3.13 and newer only, so a 3.12 pin fails the build). Keep `uv.lock` committed and current (`uv lock` after editing `pyproject.toml`), and don't add a `requirements.txt`: the buildpack would use it instead of the lockfile. Cloud Run injects `PORT`; the entrypoint binds to it. Nothing here needs a local Docker install.
 
 Console labels shift a little between GCP releases. If a label below doesn't match exactly, the step order still applies.
 
