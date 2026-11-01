@@ -68,6 +68,22 @@ def build_map_sections(con: duckdb.DuckDBPyConnection) -> None:
     con.executemany("INSERT INTO maps VALUES (?, ?, ?, ?, ?)", map_rows)
 
 
+def build_wild_headers(con: duckdb.DuckDBPyConnection) -> None:
+    """gWildMonHeaders in ROM order, one row per (header, method). Randomizer logs list wild
+    sets in this order, which lets the log parser pin each set to an exact map."""
+    rows, n = [], 0
+    for i, header in enumerate(decomp.wild_headers(DECOMP_DIR)):
+        for key, method in (("land_mons", "Grass/Cave"), ("water_mons", "Surfing"), ("rock_smash_mons", "Rock Smash"), ("fishing_mons", "Fishing")):
+            if key in header:
+                n += 1
+                rows.append((n, i, header["map"], header["base_label"], method, header[key]["encounter_rate"], len(header[key]["mons"])))
+    con.execute(
+        "CREATE TABLE wild_headers (set_no INTEGER PRIMARY KEY, header_index INTEGER, map VARCHAR, base_label VARCHAR, "
+        "method VARCHAR, rate INTEGER, slots INTEGER)"
+    )
+    con.executemany("INSERT INTO wild_headers VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+
+
 def add_rom_names(con: duckdb.DuckDBPyConnection) -> None:
     """Names as the Emerald ROM spells them ("FAINT ATTACK", "NIDORAN♀"). Randomizer logs use these."""
     tables = [
@@ -115,6 +131,7 @@ def main() -> None:
     build_map_sections(con)
     gen3_corrections.reconcile_statics_with_rom(con, DECOMP_DIR)
     add_rom_names(con)
+    build_wild_headers(con)
     parse_decomp_trainers.build(con, DECOMP_DIR)
     tm_locations.build(con, DECOMP_DIR)
     build_meta(con)
