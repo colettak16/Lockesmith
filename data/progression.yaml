@@ -1,0 +1,591 @@
+# Lockesmith progression file: DRAFT for review (PLAN.md section 4.4)
+#
+# The ordered list of story battles from the first rival fight to the Champion. The
+# data doesn't say when each fight happens, so this file does. Agents and tools read
+# it for "what's left", "what can I catch before X" and Nuzlocke level caps.
+#
+# How it was drafted
+#   - Order and trainer constants: every {{Party}} block in the 21-part Bulbapedia Emerald
+#     walkthrough (data/guide/) was matched to a pokeemerald party by exact species and
+#     levels. All 32 battles below matched a decomp trainer (Space Center: per side).
+#   - HM gates: an HM counts as open when you hold it AND have the badge that allows it
+#     outside battle (Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat,
+#     Surf: Balance, Fly: Feather, Dive: Mind, Waterfall: Rain), at the point the
+#     walkthrough hands it to you.
+#   - Areas: where wild/gift/static encounters become reachable, from the walkthrough's
+#     section order plus what each area physically needs. Judgement calls carry a
+#     `review:` note.
+#
+# Fields (beyond PLAN.md's schema, see docs/decisions.md D5)
+#   badges_before     badges held when the fight starts
+#   trainer_consts    decomp TRAINER_* constants; null when starter_variants is used
+#   starter_variants  rival fights only, keyed by the PLAYER's starter, then by rival.
+#                     The rival is May if you play as Brendan and vice versa. Two fights
+#                     differ by rival (Rustboro if you chose Torchic, Route 119 if you
+#                     chose Mudkip), so RunState will need the player's gender or rival.
+#   battle_format     single | double | multi. From this file, not the trainer struct:
+#                     the Space Center multi battle is set up by a map script.
+#   optional          true if the story doesn't force the fight
+#   location          PokeAPI location slug of the battle
+#   hm_gates_open     HMs usable in the field when the fight starts
+#   key_items         encounter-gating items held: rods (fishing methods), devon-scope
+#                     (Kecleon), go-goggles (Route 111 desert)
+#   areas_new         encounter areas that became reachable since the previous battle.
+#                     `location` means every area of it; `location/area` one PokeAPI
+#                     area; `location/main` the location's unnamed main area. The loader
+#                     (agent/progression.py) accumulates these into areas_reachable.
+#                     Method gates still apply on top: surf needs surf, fishing a rod,
+#                     rock-smash needs rock-smash, seaweed (underwater) needs dive.
+#   source            guide chunk the fight is described in (data/guide/chunks.jsonl)
+#   notes / review    context for the agent / open questions for the reviewer
+#
+# You can't catch anything before the first rival fight: Birch only hands out Poké
+# Balls afterwards.
+
+version: 1
+
+battles:
+  - id: rival1_route103
+    order: 1
+    label: "Route 103: Rival (first battle)"
+    badges_before: 0
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_ROUTE_103_TREECKO, brendan: TRAINER_BRENDAN_ROUTE_103_TREECKO}
+      torchic: {may: TRAINER_MAY_ROUTE_103_TORCHIC, brendan: TRAINER_BRENDAN_ROUTE_103_TORCHIC}
+      mudkip: {may: TRAINER_MAY_ROUTE_103_MUDKIP, brendan: TRAINER_BRENDAN_ROUTE_103_MUDKIP}
+    battle_format: single
+    optional: false
+    location: hoenn-route-103
+    hm_gates_open: []
+    key_items: []
+    areas_new: []
+    notes: "Rival's Lv5 starter has the type advantage. No Poké Balls yet, so nothing is catchable before this fight."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_1#Rival_Battle_1"
+
+  - id: grunt_petalburg_woods
+    order: 2
+    label: "Petalburg Woods: Team Aqua Grunt"
+    badges_before: 0
+    trainer_consts: [TRAINER_GRUNT_PETALBURG_WOODS]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: petalburg-woods
+    hm_gates_open: []
+    key_items: []
+    areas_new: [hoenn-route-101, hoenn-route-103, hoenn-route-102, petalburg-city, hoenn-route-104, petalburg-woods]
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Scuffle"
+
+  - id: gym1_roxanne
+    order: 3
+    label: "Rustboro Gym: Roxanne"
+    badges_before: 0
+    trainer_consts: [TRAINER_ROXANNE_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: rustboro-city
+    hm_gates_open: []
+    key_items: []
+    areas_new: [rustboro-city, hoenn-route-116]
+    notes: "Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade."
+    review: "Route 116 is open from Rustboro before Roxanne, though the walkthrough only visits it after the gym."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_2#Rustboro_Gym"
+
+  - id: grunt_rusturf_tunnel
+    order: 4
+    label: "Rusturf Tunnel: Team Aqua Grunt (Devon Goods)"
+    badges_before: 1
+    trainer_consts: [TRAINER_GRUNT_RUSTURF_TUNNEL]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: rusturf-tunnel
+    hm_gates_open: [cut]
+    key_items: []
+    areas_new: [rusturf-tunnel]
+    review: "The tunnel's west end might be enterable before Roxanne; placed here because the walkthrough enters it during the chase."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down"
+
+  - id: rival2_rustboro
+    order: 5
+    label: "Rustboro City: Rival (optional)"
+    badges_before: 1
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_RUSTBORO_TREECKO, brendan: TRAINER_BRENDAN_RUSTBORO_TREECKO}
+      torchic: {may: TRAINER_MAY_RUSTBORO_TORCHIC, brendan: TRAINER_BRENDAN_RUSTBORO_TORCHIC}
+      mudkip: {may: TRAINER_MAY_RUSTBORO_MUDKIP, brendan: TRAINER_BRENDAN_RUSTBORO_MUDKIP}
+    battle_format: single
+    optional: true
+    location: rustboro-city
+    hm_gates_open: [cut]
+    key_items: []
+    areas_new: []
+    notes: "Torchic players: May leads with Torkoal, Brendan with Slugma. Other variants are the same for both rivals."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_3#Rival_Battle_2_(optional)"
+
+  - id: gym2_brawly
+    order: 6
+    label: "Dewford Gym: Brawly"
+    badges_before: 1
+    trainer_consts: [TRAINER_BRAWLY_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: dewford-town
+    hm_gates_open: [cut]
+    key_items: [old-rod]
+    areas_new: [hoenn-route-105, hoenn-route-106, dewford-town, granite-cave]
+    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is reachable via Route 106; Flash (from its Hiker) needs this badge."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym"
+
+  - id: grunts_oceanic_museum
+    order: 7
+    label: "Oceanic Museum: Team Aqua Grunts"
+    badges_before: 2
+    trainer_consts: [TRAINER_GRUNT_MUSEUM_1, TRAINER_GRUNT_MUSEUM_2]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: slateport-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod]
+    areas_new: [hoenn-route-107, hoenn-route-108, hoenn-route-109, slateport-city]
+    notes: "Two separate single battles on the museum's second floor."
+    review: "Mr. Briney sails Dewford -> Slateport once Steven has his letter, which may not need Brawly's badge. These areas are water/shore only, so it changes little."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_4#Oceanic_Museum"
+
+  - id: rival3_route110
+    order: 8
+    label: "Route 110: Rival"
+    badges_before: 2
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_ROUTE_110_TREECKO, brendan: TRAINER_BRENDAN_ROUTE_110_TREECKO}
+      torchic: {may: TRAINER_MAY_ROUTE_110_TORCHIC, brendan: TRAINER_BRENDAN_ROUTE_110_TORCHIC}
+      mudkip: {may: TRAINER_MAY_ROUTE_110_MUDKIP, brendan: TRAINER_BRENDAN_ROUTE_110_MUDKIP}
+    battle_format: single
+    optional: false
+    location: hoenn-route-110
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod]
+    areas_new: [hoenn-route-110]
+    notes: "Mudkip players: same team for both rivals, but May leads with Wingull and Brendan with Slugma."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_4#Rival_Battle_3"
+
+  - id: wally_mauville
+    order: 9
+    label: "Mauville City: Wally"
+    badges_before: 2
+    trainer_consts: [TRAINER_WALLY_MAUVILLE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mauville-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod]
+    areas_new: [hoenn-route-117, hoenn-route-118]
+    notes: "Wally has one Lv16 Ralts. Bikes from Rydel's Cycles are available in Mauville before this."
+    review: "Routes 117 and 118 (west bank) open as soon as you reach Mauville, before Wally challenges you outside the gym."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_5#Wally's_Challenge"
+
+  - id: gym3_wattson
+    order: 10
+    label: "Mauville Gym: Wattson"
+    badges_before: 2
+    trainer_consts: [TRAINER_WATTSON_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mauville-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_5#Mauville_Gym"
+
+  - id: tabitha_mt_chimney
+    order: 11
+    label: "Mt. Chimney: Magma Admin Tabitha"
+    badges_before: 3
+    trainer_consts: [TRAINER_TABITHA_MT_CHIMNEY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mt-chimney
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod]
+    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main, hoenn-route-115]
+    notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles."
+    review: "Route 115 reached through the Meteor Falls exit, as the walkthrough does. Meteor Falls' other areas are placed after Juan (Waterfall)."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!"
+
+  - id: maxie_mt_chimney
+    order: 12
+    label: "Mt. Chimney: Magma Leader Maxie"
+    badges_before: 3
+    trainer_consts: [TRAINER_MAXIE_MT_CHIMNEY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mt-chimney
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod]
+    areas_new: []
+    notes: "Straight after Tabitha, with no Pokémon Center in between."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_7#VS_Maxie"
+
+  - id: gym4_flannery
+    order: 13
+    label: "Lavaridge Gym: Flannery"
+    badges_before: 3
+    trainer_consts: [TRAINER_FLANNERY_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: lavaridge-town
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod]
+    areas_new: [jagged-pass, lavaridge-town]
+    notes: "Lavaridge's gift is an Egg (Wynaut) from the old woman by the sand baths; you need a free party slot."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_7#Lavaridge_Gym"
+
+  - id: gym5_norman
+    order: 14
+    label: "Petalburg Gym: Norman"
+    badges_before: 4
+    trainer_consts: [TRAINER_NORMAN_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: petalburg-city
+    hm_gates_open: [cut, flash, rock-smash, strength]
+    key_items: [old-rod, go-goggles]
+    areas_new: [hoenn-route-111, mirage-tower]
+    notes: "Go-Goggles from the rival after Flannery open the Route 111 desert. Mirage Tower (fossil choice) needs the Mach Bike and Rock Smash."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_8#Petalburg_Gym"
+
+  - id: shelly_weather_institute
+    order: 15
+    label: "Weather Institute: Aqua Admin Shelly"
+    badges_before: 5
+    trainer_consts: [TRAINER_SHELLY_WEATHER_INSTITUTE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: hoenn-route-119
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, go-goggles]
+    areas_new: [abandoned-ship, new-mauville, hoenn-route-123, hoenn-route-119/main]
+    notes: "Surf (Wally's father, after Norman) opens the water on earlier routes too. Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 tile fishing."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_10#Looking_for_Answers"
+
+  - id: rival4_route119
+    order: 16
+    label: "Route 119: Rival"
+    badges_before: 5
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_ROUTE_119_TREECKO, brendan: TRAINER_BRENDAN_ROUTE_119_TREECKO}
+      torchic: {may: TRAINER_MAY_ROUTE_119_TORCHIC, brendan: TRAINER_BRENDAN_ROUTE_119_TORCHIC}
+      mudkip: {may: TRAINER_MAY_ROUTE_119_MUDKIP, brendan: TRAINER_BRENDAN_ROUTE_119_MUDKIP}
+    battle_format: single
+    optional: false
+    location: hoenn-route-119
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, go-goggles]
+    areas_new: [hoenn-route-119/weather-institute]
+    notes: "Mudkip players: May has Lombre, Brendan has Pelipper. The rival gives HM02 Fly afterwards (usable from the 6th badge). Castform is the Weather Institute's thank-you gift for beating Shelly."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_10#Rival_Battle_4"
+
+  - id: gym6_winona
+    order: 17
+    label: "Fortree Gym: Winona"
+    badges_before: 5
+    trainer_consts: [TRAINER_WINONA_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: fortree-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: [fortree-city, hoenn-route-120]
+    notes: "Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120)."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym"
+
+  - id: tabitha_magma_hideout
+    order: 18
+    label: "Magma Hideout: Magma Admin Tabitha"
+    badges_before: 6
+    trainer_consts: [TRAINER_TABITHA_MAGMA_HIDEOUT]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: magma-hideout
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new:
+      - hoenn-route-121
+      - hoenn-route-122
+      - lilycove-city
+      - mt-pyre
+      - hoenn-safari-zone/sw
+      - hoenn-safari-zone/se
+      - hoenn-safari-zone/nwmach-bike-area
+      - hoenn-safari-zone/neacro-bike-area
+      - magma-hideout
+    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. The Safari Zone's bike areas each need one bike (swap at Rydel's). Its two expansion areas are postgame."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha"
+
+  - id: maxie_magma_hideout
+    order: 19
+    label: "Magma Hideout: Magma Leader Maxie"
+    badges_before: 6
+    trainer_consts: [TRAINER_MAXIE_MAGMA_HIDEOUT]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: magma-hideout
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Straight after Tabitha."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Maxie"
+
+  - id: rival5_lilycove
+    order: 20
+    label: "Lilycove City: Rival (optional)"
+    badges_before: 6
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_LILYCOVE_TREECKO, brendan: TRAINER_BRENDAN_LILYCOVE_TREECKO}
+      torchic: {may: TRAINER_MAY_LILYCOVE_TORCHIC, brendan: TRAINER_BRENDAN_LILYCOVE_TORCHIC}
+      mudkip: {may: TRAINER_MAY_LILYCOVE_MUDKIP, brendan: TRAINER_BRENDAN_LILYCOVE_MUDKIP}
+    battle_format: single
+    optional: true
+    location: lilycove-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: []
+    review: "Placed where the walkthrough has it (after the Magma Hideout). The rival can probably be challenged on your first visit to Lilycove, before Mt. Pyre."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)"
+
+  - id: matt_aqua_hideout
+    order: 21
+    label: "Aqua Hideout: Aqua Admin Matt"
+    badges_before: 6
+    trainer_consts: [TRAINER_MATT]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: team-aqua-hideout
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: [team-aqua-hideout]
+    notes: "The hideout's two Electrode are disguised as items."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Submarine_room_2"
+
+  - id: gym7_tate_liza
+    order: 22
+    label: "Mossdeep Gym: Tate & Liza"
+    badges_before: 6
+    trainer_consts: [TRAINER_TATE_AND_LIZA_1]
+    starter_variants: null
+    battle_format: double
+    optional: false
+    location: mossdeep-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: [hoenn-route-124/main, mossdeep-city/main, hoenn-route-125, shoal-cave]
+    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
+
+  - id: space_center
+    order: 23
+    label: "Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)"
+    badges_before: 7
+    trainer_consts: [TRAINER_MAXIE_MOSSDEEP, TRAINER_TABITHA_MOSSDEEP]
+    starter_variants: null
+    battle_format: multi
+    partner: {name: Steven, team: [[metang, 42], [skarmory, 43], [aggron, 44]], source: "guide:Walkthrough:Pokemon_Emerald/Part_14#VS_Maxie,_Tabitha"}
+    optional: false
+    location: mossdeep-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Two-on-two with Steven as partner; the map script sets it up and both trainer structs say single. Before it: four Magma Grunts on 1F, then three on 2F fought one after another with no break."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_14#VS_Maxie,_Tabitha"
+
+  - id: shelly_seafloor_cavern
+    order: 24
+    label: "Seafloor Cavern: Aqua Admin Shelly"
+    badges_before: 7
+    trainer_consts: [TRAINER_SHELLY_SEAFLOOR_CAVERN]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: seafloor-cavern
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: [hoenn-route-124/underwater, hoenn-route-126/main, hoenn-route-126/underwater, hoenn-route-127, hoenn-route-128, seafloor-cavern]
+    notes: "Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_15#Room_7"
+
+  - id: archie_seafloor_cavern
+    order: 25
+    label: "Seafloor Cavern: Aqua Leader Archie"
+    badges_before: 7
+    trainer_consts: [TRAINER_ARCHIE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: seafloor-cavern
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_15#VS_Archie"
+
+  - id: gym8_juan
+    order: 26
+    label: "Sootopolis Gym: Juan"
+    badges_before: 7
+    trainer_consts: [TRAINER_JUAN_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: sootopolis-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new:
+      - sootopolis-city
+      - cave-of-origin/entrance
+      - cave-of-origin/1f
+      - cave-of-origin/b1f
+      - hoenn-route-129
+      - hoenn-route-130
+      - mirage-island
+      - hoenn-route-131
+      - pacifidlog-town
+      - hoenn-route-132
+      - hoenn-route-133
+      - hoenn-route-134
+      - sky-pillar/1f
+      - sky-pillar/3f
+      - sky-pillar/5f
+      - desert-ruins
+      - island-cave
+      - ancient-tomb
+    notes: "Juan is the 8th leader in Emerald (Wallace is Champion). Regirock/Regice/Registeel need the Sealed Chamber puzzle on Route 134 (Dig, then Wailord first and Relicanth last in the party). Mirage Island only appears some days."
+    review: "Waterfall is handed over before Juan but needs his badge, so Meteor Falls' back rooms (Bagon) and Rayquaza are placed at the next battle."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym"
+
+  - id: wally_victory_road
+    order: 27
+    label: "Victory Road: Wally"
+    badges_before: 8
+    trainer_consts: [TRAINER_WALLY_VR_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: hoenn-victory-road
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: [ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room, sky-pillar/apex]
+    notes: "Bagon is only in Meteor Falls' back small room (Waterfall). Rayquaza (Lv70) waits at Sky Pillar's apex."
+    review: "meteor-falls/b1f might be reachable with Surf alone; the walkthrough only enters it with Waterfall."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_18#VS_Wally"
+
+  - id: e4_sidney
+    order: 28
+    label: "Elite Four: Sidney"
+    badges_before: 8
+    trainer_consts: [TRAINER_SIDNEY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "The Elite Four and Champion are a gauntlet: no Pokémon Center and no catching between these five fights. Bag items still work."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_1:_Sidney"
+
+  - id: e4_phoebe
+    order: 29
+    label: "Elite Four: Phoebe"
+    badges_before: 8
+    trainer_consts: [TRAINER_PHOEBE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_2:_Phoebe"
+
+  - id: e4_glacia
+    order: 30
+    label: "Elite Four: Glacia"
+    badges_before: 8
+    trainer_consts: [TRAINER_GLACIA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_3:_Glacia"
+
+  - id: e4_drake
+    order: 31
+    label: "Elite Four: Drake"
+    badges_before: 8
+    trainer_consts: [TRAINER_DRAKE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_4:_Drake"
+
+  - id: champion_wallace
+    order: 32
+    label: "Champion: Wallace"
+    badges_before: 8
+    trainer_consts: [TRAINER_WALLACE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Emerald's Champion is Wallace (Steven is Champion in Ruby/Sapphire)."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Champion"
+
+# Areas with Emerald encounters that are never reachable before the Champion. Tools
+# should say "postgame" or "event only" rather than "not in the data".
+never_reachable:
+  - {area: littleroot-town, reason: "Johto starters from Birch after completing the Hoenn Pokédex (postgame)"}
+  - {area: mossdeep-city/stevens-house, reason: "Beldum in Steven's house after the Hall of Fame"}
+  - {area: hoenn-safari-zone/expansion-north, reason: "Safari Zone expansion opens after the Hall of Fame"}
+  - {area: hoenn-safari-zone/expansion-south, reason: "Safari Zone expansion opens after the Hall of Fame"}
+  - {area: cave-of-origin/b2f, reason: "unused Ruby/Sapphire map in Emerald (PokeAPI still lists encounters)"}
+  - {area: cave-of-origin/b3f, reason: "unused Ruby/Sapphire map in Emerald (PokeAPI still lists encounters)"}
+  - {area: hoenn-altering-cave, reason: "opens after the Hall of Fame"}
+  - {area: desert-underpass, reason: "opens after the Hall of Fame"}
+  - {area: marine-cave, reason: "postgame (Kyogre)"}
+  - {area: terra-cave, reason: "postgame (Groudon)"}
+  - {area: roaming-hoenn, reason: "Latios/Latias start roaming after the Hall of Fame"}
+  - {area: artisan-cave, reason: "Battle Frontier (postgame)"}
+  - {area: hoenn-battle-frontier, reason: "Battle Frontier (postgame)"}
+  - {area: southern-island, reason: "Eon Ticket event"}
+  - {area: faraway-island, reason: "Old Sea Map event"}
+  - {area: birth-island, reason: "Aurora Ticket event"}
+  - {area: navel-rock, reason: "Mystic Ticket event"}
+  - {area: hoenn-pokecenter, reason: "Colosseum bonus disc (Japan) gift"}
