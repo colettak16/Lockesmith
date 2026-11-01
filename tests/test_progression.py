@@ -157,3 +157,23 @@ def test_reachability_examples(prog):
     assert prog.is_reachable("e4_sidney", "meteor-falls", "backsmall-room")
     assert prog.never_reason("mossdeep-city", "stevens-house")  # Beldum is postgame
     assert prog.is_reachable("gym7_tate_liza", "mossdeep-city", None)
+
+
+def test_resolved_review_placements(prog):
+    """The draft's review flags, as settled from decomp scripts and Bulbapedia (see each battle's notes)."""
+    assert all(b.review is None for b in prog.battles)
+    # Route 116 and Rusturf Tunnel's west end: open before Roxanne
+    assert prog.is_reachable("gym1_roxanne", "hoenn-route-116", None)
+    assert prog.is_reachable("gym1_roxanne", "rusturf-tunnel", None)
+    # Briney sails to Slateport once Steven has the letter; Aqua grunts hold Route 110 until the museum
+    assert prog.is_reachable("gym2_brawly", "slateport-city", None)
+    assert not prog.is_reachable("grunts_oceanic_museum", "hoenn-route-110", None)
+    # Mauville's side routes are open before Wally; Route 115's grass only via Meteor Falls
+    assert prog.is_reachable("wally_mauville", "hoenn-route-117", None)
+    assert not prog.is_reachable("gym3_wattson", "hoenn-route-115", None)
+    # The Devon Scope opens Lilycove before Winona; the rival waits there from the first visit
+    assert prog.is_reachable("gym6_winona", "lilycove-city", None)
+    assert prog.get("rival5_lilycove").order == prog.get("gym6_winona").order + 1
+    # Rayquaza returns to Sky Pillar before Juan; Meteor Falls past 1F 1R needs Waterfall (Rain Badge)
+    assert prog.is_reachable("gym8_juan", "sky-pillar", "apex")
+    assert not prog.is_reachable("gym8_juan", "meteor-falls", "b1f")

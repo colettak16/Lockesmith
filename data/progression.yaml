@@ -12,9 +12,16 @@
 #     outside battle (Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat,
 #     Surf: Balance, Fly: Feather, Dive: Mind, Waterfall: Rain), at the point the
 #     walkthrough hands it to you.
-#   - Areas: where wild/gift/static encounters become reachable, from the walkthrough's
-#     section order plus what each area physically needs. Judgement calls carry a
-#     `review:` note.
+#   - Areas: each area is listed at the first battle it can be reached before, having
+#     fought only the battles above it in this order. Detours that need no listed battle
+#     count, so an area can open before the walkthrough visits it. The eight placements
+#     first drafted as judgement calls were checked on 2026-11-01 against the decomp's
+#     event scripts (data/maps/*/scripts.inc) and Bulbapedia; each battle's `notes` cites
+#     the evidence.
+#   - Badge order: the game only checks earlier badges at Norman's gym, which opens after
+#     the first four in any order. Brawly can be deferred until Norman, and nothing from
+#     Fortree to the Magma Hideout checks Winona's badge. This file follows the standard
+#     order; a run that deviates is placed by the battles it has done, not its badge count.
 #
 # Fields (beyond PLAN.md's schema, see docs/decisions.md D5)
 #   badges_before     badges held when the fight starts
@@ -88,9 +95,8 @@ battles:
     location: rustboro-city
     hm_gates_open: []
     key_items: []
-    areas_new: [rustboro-city, hoenn-route-116]
-    notes: "Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade."
-    review: "Route 116 is open from Rustboro before Roxanne, though the walkthrough only visits it after the gym."
+    areas_new: [rustboro-city, hoenn-route-116, rusturf-tunnel]
+    notes: "Route 116 and the west end of Rusturf Tunnel (Whismur) are open before the gym: nothing blocks Rustboro's east exit, and the Devon Goods theft only starts after this badge (RustboroCity_Gym sets VAR_RUSTBORO_CITY_STATE). The tunnel's far side stays behind Rock Smash boulders. Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_2#Rustboro_Gym"
 
   - id: grunt_rusturf_tunnel
@@ -104,8 +110,8 @@ battles:
     location: rusturf-tunnel
     hm_gates_open: [cut]
     key_items: []
-    areas_new: [rusturf-tunnel]
-    review: "The tunnel's west end might be enterable before Roxanne; placed here because the walkthrough enters it during the chase."
+    areas_new: []
+    notes: "The tunnel itself opened before Roxanne; this is the Devon Goods chase."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down"
 
   - id: rival2_rustboro
@@ -137,8 +143,8 @@ battles:
     location: dewford-town
     hm_gates_open: [cut]
     key_items: [old-rod]
-    areas_new: [hoenn-route-105, hoenn-route-106, dewford-town, granite-cave]
-    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is reachable via Route 106; Flash (from its Hiker) needs this badge."
+    areas_new: [hoenn-route-105, hoenn-route-106, dewford-town, granite-cave, hoenn-route-107, hoenn-route-108, hoenn-route-109, slateport-city]
+    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is reachable via Route 106; Flash (from its Hiker) needs this badge. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Routes 107-109 open before Brawly. Brawly can even be deferred until Norman: no other event checks his badge."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym"
 
   - id: grunts_oceanic_museum
@@ -152,9 +158,8 @@ battles:
     location: slateport-city
     hm_gates_open: [cut, flash]
     key_items: [old-rod]
-    areas_new: [hoenn-route-107, hoenn-route-108, hoenn-route-109, slateport-city]
-    notes: "Two separate single battles on the museum's second floor."
-    review: "Mr. Briney sails Dewford -> Slateport once Steven has his letter, which may not need Brawly's badge. These areas are water/shore only, so it changes little."
+    areas_new: []
+    notes: "Two separate single battles on the museum's second floor. Until this fight, Team Aqua grunts stand across Route 110 just north of Slateport; the museum script hides them (FLAG_HIDE_ROUTE_110_TEAM_AQUA)."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_4#Oceanic_Museum"
 
   - id: rival3_route110
@@ -187,8 +192,7 @@ battles:
     hm_gates_open: [cut, flash]
     key_items: [old-rod]
     areas_new: [hoenn-route-117, hoenn-route-118]
-    notes: "Wally has one Lv16 Ralts. Bikes from Rydel's Cycles are available in Mauville before this."
-    review: "Routes 117 and 118 (west bank) open as soon as you reach Mauville, before Wally challenges you outside the gym."
+    notes: "Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Bikes from Rydel's Cycles are available in Mauville before this."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_5#Wally's_Challenge"
 
   - id: gym3_wattson
@@ -217,8 +221,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash]
     key_items: [old-rod]
     areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main, hoenn-route-115]
-    notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles."
-    review: "Route 115 reached through the Meteor Falls exit, as the walkthrough does. Meteor Falls' other areas are placed after Juan (Waterfall)."
+    notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. Route 115 borders Rustboro, but from there you only reach a beach; its grass is reached through the Meteor Falls exit (Bulbapedia: Route 115). A rod works from the beach earlier. Meteor Falls' other rooms need Waterfall."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!"
 
   - id: maxie_mt_chimney
@@ -310,22 +313,9 @@ battles:
     location: fortree-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf]
     key_items: [old-rod, good-rod, go-goggles, devon-scope]
-    areas_new: [fortree-city, hoenn-route-120]
-    notes: "Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120)."
-    source: "guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym"
-
-  - id: tabitha_magma_hideout
-    order: 18
-    label: "Magma Hideout: Magma Admin Tabitha"
-    badges_before: 6
-    trainer_consts: [TRAINER_TABITHA_MAGMA_HIDEOUT]
-    starter_variants: null
-    battle_format: single
-    optional: false
-    location: magma-hideout
-    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
     areas_new:
+      - fortree-city
+      - hoenn-route-120
       - hoenn-route-121
       - hoenn-route-122
       - lilycove-city
@@ -335,26 +325,11 @@ battles:
       - hoenn-safari-zone/nwmach-bike-area
       - hoenn-safari-zone/neacro-bike-area
       - magma-hideout
-    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. The Safari Zone's bike areas each need one bike (swap at Rydel's). Its two expansion areas are postgame."
-    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha"
-
-  - id: maxie_magma_hideout
-    order: 19
-    label: "Magma Hideout: Magma Leader Maxie"
-    badges_before: 6
-    trainer_consts: [TRAINER_MAXIE_MAGMA_HIDEOUT]
-    starter_variants: null
-    battle_format: single
-    optional: false
-    location: magma-hideout
-    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
-    areas_new: []
-    notes: "Straight after Tabitha."
-    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Maxie"
+    notes: "Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's bike areas each need one bike (swap at Rydel's); its two expansion areas are postgame."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym"
 
   - id: rival5_lilycove
-    order: 20
+    order: 18
     label: "Lilycove City: Rival (optional)"
     badges_before: 6
     trainer_consts: null
@@ -368,8 +343,38 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, go-goggles, devon-scope]
     areas_new: []
-    review: "Placed where the walkthrough has it (after the Magma Hideout). The rival can probably be challenged on your first visit to Lilycove, before Mt. Pyre."
+    notes: "The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)"
+
+  - id: tabitha_magma_hideout
+    order: 19
+    label: "Magma Hideout: Magma Admin Tabitha"
+    badges_before: 6
+    trainer_consts: [TRAINER_TABITHA_MAGMA_HIDEOUT]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: magma-hideout
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha"
+
+  - id: maxie_magma_hideout
+    order: 20
+    label: "Magma Hideout: Magma Leader Maxie"
+    badges_before: 6
+    trainer_consts: [TRAINER_MAXIE_MAGMA_HIDEOUT]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: magma-hideout
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Straight after Tabitha."
+    source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Maxie"
 
   - id: matt_aqua_hideout
     order: 21
@@ -473,11 +478,11 @@ battles:
       - sky-pillar/1f
       - sky-pillar/3f
       - sky-pillar/5f
+      - sky-pillar/apex
       - desert-ruins
       - island-cave
       - ancient-tomb
-    notes: "Juan is the 8th leader in Emerald (Wallace is Champion). Regirock/Regice/Registeel need the Sealed Chamber puzzle on Route 134 (Dig, then Wailord first and Relicanth last in the party). Mirage Island only appears some days."
-    review: "Waterfall is handed over before Juan but needs his badge, so Meteor Falls' back rooms (Bagon) and Rayquaza are placed at the next battle."
+    notes: "Juan is the 8th leader in Emerald (Wallace is Champion). Regirock/Regice/Registeel need the Sealed Chamber puzzle on Route 134 (Dig, then Wailord first and Relicanth last in the party). Mirage Island only appears some days. Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym"
 
   - id: wally_victory_road
@@ -491,9 +496,8 @@ battles:
     location: hoenn-victory-road
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
     key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
-    areas_new: [ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room, sky-pillar/apex]
-    notes: "Bagon is only in Meteor Falls' back small room (Waterfall). Rayquaza (Lv70) waits at Sky Pillar's apex."
-    review: "meteor-falls/b1f might be reachable with Surf alone; the walkthrough only enters it with Waterfall."
+    areas_new: [ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room]
+    notes: "Bagon is only in Meteor Falls' back small room (B1F 2R). Every Meteor Falls room past 1F 1R needs Waterfall: Bulbapedia marks all B1F items and trainers 'requires Surf and Waterfall'. PokeAPI areas: main = 1F 1R, back / b1f = 1F 2R / B1F 1R (identical tables), backsmall-room = B1F 2R."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_18#VS_Wally"
 
   - id: e4_sidney

@@ -80,6 +80,17 @@ The draft keeps PLAN's fields and changes or adds these. All of them are needed 
 - **`key_items`** (rods, Devon Scope, Go-Goggles) because encounter methods depend on them. **`optional`**, **`partner`** (Steven in the Space Center multi battle), **`notes`**, and **`review`** flags on every judgement call.
 - **`never_reachable`**: 18 areas PokeAPI lists with Emerald encounters that you can't reach before the Champion (postgame, event islands, unused maps), each with a reason. That lets tools answer "postgame" instead of "not in the data".
 
+**Review flags resolved (2026-11-01).** The 8 `review:` flags were settled from the decomp's event scripts plus Bulbapedia, and each battle's `notes` cites the evidence. Six placements moved:
+- Route 116 and Rusturf Tunnel open before Roxanne.
+- Slateport and Routes 107–109 open before Brawly, because Briney only checks `FLAG_DELIVERED_STEVEN_LETTER`.
+- Lilycove, Mt. Pyre, the Safari Zone and the Magma Hideout open before Winona, because the Devon Scope is the only gate.
+- The Lilycove rival moved to the first visit, right after Winona.
+- Rayquaza opens before Juan.
+
+Two placements held: Bagon still needs Juan's badge for Waterfall, and Route 115's grass is still reached only through Meteor Falls. The areas rule is now stated in the file's header: each area is listed at the first battle it can be reached before, having fought only the battles above it.
+
+**Badge order is looser than the file's order.** Only Norman's gym checks earlier badges, and it opens after the first four in any order. So Brawly can be deferred until Norman, and nothing from Fortree to the Magma Hideout checks Winona's badge. The file keeps the standard order. **`RunState` should therefore record which battles are done, not just a badge count.** `Progression.remaining(badges)` is a fallback for when only the count is known.
+
 32 battles, not ~40: all 8 gyms, the Elite Four, the Champion, all 5 rival fights, both Wally fights, every Maxie/Archie fight, the Magma/Aqua admins, and the three early grunt fights that block the story. I left out the hideouts' generic grunts.
 
 ## D6. The decompilation is ground truth where PokeAPI disagrees
