@@ -35,6 +35,8 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
    - Memory: `1 GiB`, CPU: `1`
    - **Request timeout: `600` seconds** (graders wait up to 5 min; our request budget is ~120 s)
    - Concurrency: `20`
+   - Execution environment: **Second generation** (full Linux compatibility and faster CPU for DuckDB; needs at least 512 MiB)
+   - Ingress: **All**. IAP still does the sign-in; **Internal** would block graders' browsers.
    - Variables & Secrets: none needed for hello-world. Phase 2 adds model env vars (see below).
 7. **Create.** The first build takes a few minutes. When it's green, click the service name for its URL and check in a browser signed in to your Columbia account (IAP turns away `curl` without a token):
    - `/` shows the Lockesmith page
