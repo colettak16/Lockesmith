@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Raw source downloads (rebuilt by build/fetch_sources.py)
+build/.cache/
+
+# Never commit ROMs or save files
+*.gba
+*.gbc
+*.gb
+*.nds
+*.sav
+*.srm
+
+# Randomizer fixture logs can be large; keep them local
+tests/fixtures/*.log
+
+# Local env
+.env
