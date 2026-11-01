@@ -7,7 +7,7 @@ Console labels shift a little between GCP releases. If a label below doesn't mat
 ## One-time setup
 
 1. **Project and billing.** In the GCP console, pick (or create) the project you'll use for the course and confirm billing is attached (course credits count).
-2. **Enable APIs.** APIs & Services → Enable APIs: **Cloud Run Admin API**, **Cloud Build API**, **Artifact Registry API**. If we go with Vertex AI for models (see `docs/decisions.md`, D3), also enable **Vertex AI API** now.
+2. **Enable APIs.** APIs & Services → Enable APIs: **Cloud Run Admin API**, **Cloud Build API**, **Artifact Registry API**. If we go with Vertex AI for models (see `docs/decisions.md`, D3), also enable **Vertex AI API** now. After enabling, the console may offer **Create credentials**: cancel it. Nothing here uses API keys, OAuth clients or service account key files; Cloud Build and Cloud Run run as service accounts GCP creates for the project.
 3. **Push the repo to GitHub.** `main` is the deploy branch.
 
 ## Create the service
