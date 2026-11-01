@@ -1,0 +1,24 @@
+@import 'https://columbia.evaluationkit.com/canvas/css';
+
+#add_people_modal label[for=peoplesearch_radio_sis_user_id] {
+    display: none;
+}
+.ic-Login-header {
+	padding: 0;
+}
+
+.ic-Login-header img {
+	max-width: 200%;
+}
+
+#mobileContextNavContainer .hidden {
+    display: none !important;
+}
+
+#course_details_tabs #nav_form #nav_enabled_list .navitem.hidden {
+    display: none !important;
+}
+
+#course_details_tabs #nav_form #nav_disabled_list .navitem.hidden {
+    display: none !important;
+}

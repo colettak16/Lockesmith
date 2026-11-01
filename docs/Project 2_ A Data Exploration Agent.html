@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://courseworks2.columbia.edu/courses/252703/assignments/1759754 -->
+<html dir="ltr" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#003a63">
+  
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="apple-itunes-app" content="app-id=480883488"><link rel="manifest" href="https://courseworks2.columbia.edu/web-app-manifest/manifest.json">
+  <meta name="sentry-trace" content="69d5f859f74d45cabb35c239e9223b89-d0e8ecce55ad4d80-0">
+  <title>Project 2: A Data Exploration Agent</title>
+
+  <link rel="preload" href="https://du11hjcvx0uqb.cloudfront.net/dist/fonts/lato/extended/Lato-Regular-bd03a2cc27.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="https://du11hjcvx0uqb.cloudfront.net/dist/fonts/lato/extended/Lato-Bold-cccb897485.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="https://du11hjcvx0uqb.cloudfront.net/dist/fonts/lato/extended/Lato-Italic-4eb103b4d1.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/fonts-eb4a10fb18.css" media="screen">
+  <link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/variables-9dec371ad57e3dd0396f0b2eddb63479.css" media="all">
+  <link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/common-0b407277f8.css" media="all">
+  <link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/assignments-4972bcd969.css" media="screen"><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/tinymce-52b6599678.css" media="screen"><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/learning_outcomes-ea9b7d1110.css" media="screen">
+  <link rel="apple-touch-icon" href="https://du11hjcvx0uqb.cloudfront.net/dist/images/apple-touch-icon-585e5d997d.png">
+  <link rel="icon" type="image/x-icon" href="https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico">
+  <link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/columbia.css" media="all">
+<link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/Columbia Cousebuilder_GLOBAL_STYLE2021 %281%29.css" media="all">
+  
+  <script async="" src="./Project 2_ A Data Exploration Agent_files/gtm.js.download"></script><script async="" src="./Project 2_ A Data Exploration Agent_files/analytics.js.download"></script><script>if (navigator.userAgent.match(/(MSIE|Trident\/)/)) location.replace('/ie-is-not-supported.html')</script>
+  <script>
+    INST = {"environment":"production","allowMediaComments":true,"kalturaSettings":{"domain":"nv.instructuremedia.com","resource_domain":"nv.instructuremedia.com","rtmp_domain":"iad.rtmp.instructuremedia.com","partner_id":"9","subpartner_id":"0","player_ui_conf":"0","kcw_ui_conf":"0","upload_ui_conf":"0","max_file_size_bytes":534773760,"do_analytics":false,"hide_rte_button":false,"js_uploader":true},"logPageViews":true,"editorButtons":[{"name":"Mediathread","id":8836,"favorite":true,"url":"https://mediathread.ctl.columbia.edu/lti/","icon_url":"https://ccnmtl-mediathread-static-prod.s3.amazonaws.com/media/img/icons/icon-16.png","canvas_icon_class":null,"width":665,"height":600,"use_tray":false,"on_by_default":false,"description":"\u003cp\u003eView and filter your Mediathread selections. A new icon will show up in your course rich editor letting you search and filter your Mediathread selections and click to embed selections in your course material.\u003c/p\u003e\n"},{"name":"Video Library","id":12497,"favorite":true,"url":"https://cvn.hosted.panopto.com/Panopto/LTI/LTI.aspx","icon_url":"https://cvn.hosted.panopto.com/Panopto/images/panopto_logo_globe.png","canvas_icon_class":null,"width":900,"height":700,"use_tray":false,"on_by_default":false,"description":""}]};
+    ENV = {"ASSET_HOST":"https://du11hjcvx0uqb.cloudfront.net","active_brand_config_json_url":"https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/3aefb361438e6b78f8546b26f97c59df/variables-9dec371ad57e3dd0396f0b2eddb63479.json","active_brand_config":{"md5":"3aefb361438e6b78f8546b26f97c59df","variables":{"ic-brand-header-image":"https://instructure-uploads.s3.amazonaws.com/account_13960000000000001/attachments/16352785/SEAS_Vertical_Mark-white-01.svg","ic-brand-watermark-opacity":"1"},"share":false,"name":null,"created_at":"2026-09-01T13:10:17-04:00","js_overrides":"https://instructure-uploads.s3.amazonaws.com/account_13960000000000001/attachments/20561588/app2.js","css_overrides":"https://instructure-uploads.s3.amazonaws.com/account_13960000000000001/attachments/11486894/Columbia%20Cousebuilder_GLOBAL_STYLE2021%20%25281%2529.css","parent_md5":"f999ae511818fb5fa293e0303d33ad68","mobile_js_overrides":"","mobile_css_overrides":""},"confetti_branding_enabled":false,"url_to_what_gets_loaded_inside_the_tinymce_editor_css":["https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/3aefb361438e6b78f8546b26f97c59df/variables-9dec371ad57e3dd0396f0b2eddb63479.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_normal_contrast/bundles/what_gets_loaded_inside_the_tinymce_editor-22bd6126d9.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/no_variables/bundles/fonts-eb4a10fb18.css"],"url_for_high_contrast_tinymce_editor_css":["https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/default/variables-high_contrast-9dec371ad57e3dd0396f0b2eddb63479.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/new_styles_high_contrast/bundles/what_gets_loaded_inside_the_tinymce_editor-4e2d1cef91.css","https://du11hjcvx0uqb.cloudfront.net/dist/brandable_css/no_variables/bundles/fonts-eb4a10fb18.css"],"captcha_site_key":"6LftyLgZAAAAAC10tel8XGucbApMIY8-uFB_yVcN","current_user_id":"818313","current_user_global_id":"13960000000818313","current_user_uuid":"9j6oyxPY439ihnEokmdBcVnnYq77G61TzVCIPSgc","current_user_usage_metrics_id":"9a48b82a14a5a86bafcfc060802a432b2597f942bbb2de40603c9bf6c507f4b1","current_user_roles":["user","student"],"current_user_granular_roles":["user","student"],"current_user_is_student":true,"current_user_types":[],"current_user_disabled_inbox":false,"current_user_visited_tabs":null,"discussions_reporting":false,"portfolio_notifications":false,"files_domain":"cluster377.canvas-user-content.com","group_information":null,"DOMAIN_ROOT_ACCOUNT_ID":"13960000000000001","DOMAIN_ROOT_ACCOUNT_UUID":"ntZgkM1nh5DIuczSIKJlraBGE1FVxCiZ4KsH5puX","CAREER_THEME_URL":null,"CAREER_DARK_THEME_URL":null,"k12":false,"help_link_name":"Help","help_link_icon":"information","ADA_CHATBOT_ENABLED":false,"use_high_contrast":false,"auto_show_cc":false,"disable_celebrations":false,"disable_keyboard_shortcuts":false,"LTI_LAUNCH_FRAME_ALLOWANCES":["geolocation *","microphone *","camera *","midi *","encrypted-media *","autoplay *","clipboard-write *","display-capture *","fullscreen *"],"DEEP_LINKING_POST_MESSAGE_ORIGIN":"https://courseworks2.columbia.edu","comment_library_suggestions_enabled":false,"SETTINGS":{"open_registration":false,"collapse_global_nav":false,"release_notes_badge_disabled":false,"can_add_pronouns":false,"show_sections_in_course_tray":true,"enable_content_a11y_checker":false,"suppress_assignments":false,"filter_speed_grader_by_student_group":false},"RAILS_ENVIRONMENT":"production","use_dyslexic_font":false,"IN_PACED_COURSE":false,"SENTRY_FRONTEND":{"dsn":"https://355a1d96717e4038ac25aa852fa79a8f@relay-iad.sentry.insops.net/388","org_slug":"instructure","base_url":"https://sentry.insops.net","normalized_route":"/courses/{course_id}/assignments/{id}","errors_sample_rate":"0.005","traces_sample_rate":"0.005","url_deny_pattern":"instructure-uploads.*amazonaws.com","revision":"canvas-lms@20261021.1330"},"DATA_COLLECTION_ENDPOINT":"https://canvas-frontend-data-iad-prod.inscloudgate.net/submit","DOMAIN_ROOT_ACCOUNT_SFID":"001A000000rJvKRIA0","DIRECT_SHARE_ENABLED":false,"CAN_VIEW_CONTENT_SHARES":false,"FEATURES":{"account_level_blackout_dates":false,"assignment_edit_placement_not_on_announcements":false,"a11y_checker_ga2_features":true,"block_content_editor_toolbar_reorder":false,"clarify_developer_key_token_count":true,"commons_new_quizzes":true,"create_external_apps_side_tray_overrides":false,"dashboard_graphql_integration":false,"developer_key_user_agent_alert":true,"disallow_threaded_replies_fix_alert":true,"disallow_threaded_replies_manage":true,"discussion_ai_survey_link":false,"discussion_checkpoints":true,"discussion_permalink":true,"enhanced_course_creation_account_fetching":false,"explicit_latex_typesetting":false,"feature_flag_ui_sorting":true,"files_a11y_rewrite":true,"files_a11y_rewrite_toggle":true,"files_a11y_folder_duplicates":true,"horizon_course_setting":false,"instui_for_import_page":true,"instui_header":false,"media_links_use_attachment_id":true,"multiselect_gradebook_filters":true,"new_quizzes_media_type":true,"new_quizzes_navigation_updates":true,"practice_quizzes":false,"non_admin_access_token_expiration":true,"permanent_page_links":true,"rce_a11y_resize":true,"rce_find_replace":true,"require_mfa_verification_for_removal":false,"render_both_to_do_lists":false,"scheduled_feedback_releases":true,"speedgrader_studio_media_capture":true,"validate_call_to_action":false,"block_content_editor_ai_alt_text":true,"ux_list_concluded_courses_in_bp":true,"a11y_checker_ga1":false,"accessibility_automatic_scanning":false,"account_level_mastery_scales":false,"ai_rubrics":false,"ams_root_account_integration":false,"ams_advanced_content_organization":false,"canvas_apps_api_edit":false,"buttons_and_icons_root_account":false,"canvas_apps_api_keys":false,"canvas_apps_sub_account_access":true,"checkpoints_grading_periods":false,"cookie_consent_necessary":false,"course_backup_reminders":false,"course_pace_allow_bulk_pace_assign":false,"course_pace_download_document":false,"course_pace_draft_state":false,"course_pace_pacing_status_labels":false,"course_pace_pacing_with_mastery_paths":false,"course_pace_time_selection":false,"course_pace_weighted_assignments":false,"course_paces_skip_selected_days":false,"create_course_subaccount_picker":true,"disable_iframe_sandbox_file_show":false,"discussion_insights":false,"discussion_summary":false,"extended_submission_state":false,"file_verifiers_for_quiz_links":true,"grading_rubrics_pagination":false,"institutional_tags":false,"instui_nav":false,"login_registration_ui_identity":false,"lock_lti_registrations":true,"lti_apps_page_instructors":false,"lti_asset_processor":true,"lti_asset_processor_discussions":false,"lti_deactivate_registrations":true,"lti_link_to_apps_from_developer_keys":true,"lti_registrations_next":true,"lti_registrations_templates":false,"lti_registrations_usage_data":true,"lti_registrations_usage_data_dev":false,"lti_registrations_usage_data_low_usage":false,"lti_registrations_usage_tab":false,"lti_toggle_placements":true,"substitution_variable_display":false,"migrate_to_new_quizzes_by_default":false,"mobile_offline_mode":false,"modules_requirements_allow_percentage":false,"nav_menu_links":true,"new_account_reports_ui":false,"new_quizzes_ai_quiz_file_import":false,"new_quizzes_ai_quiz_generation":false,"new_quizzes_buildless_navigation":false,"new_quizzes_migration":false,"non_scoring_rubrics":true,"notebook":false,"oak_for_admins":false,"oak_for_teachers":false,"product_tours":false,"project_lhotse":false,"rce_asr_captioning_improvements":false,"rce_lite_enabled_speedgrader_comments":true,"rce_transform_loaded_content":false,"react_discussions_post":true,"redirect_tool_migration":false,"require_migration_to_new_quizzes":false,"restrict_student_access":false,"rubric_criterion_range":true,"rubrics_page_pagination":false,"scheduled_page_publication":true,"send_usage_metrics":true,"send_usage_metrics_after_consent":false,"smart_search":false,"top_navigation_placement":false,"translate_inbox_messages":false,"translation":false,"youtube_migration":false,"educator_dashboard":false,"widget_dashboard":false,"default_discussion_options":false,"course_navigation_and_feature_options_permissions":false,"developer_key_public_client_ui":true,"developer_key_jwk_url":true,"developer_key_expiration":true,"api_scopes_text_paste":true,"account_survey_notifications":true,"embedded_release_notes":true,"pendo_extended":true,"ai_experiences":false,"canvas_k6_theme":false,"lti_asset_processor_course":false,"new_math_equation_handling":true,"youtube_overlay":false,"rce_studio_embed_improvements":true,"a11y_checker_ai_table_caption_generation":false,"a11y_checker_ai_alt_text_generation":false,"a11y_checker_close_issues":true,"a11y_checker_additional_resources":true,"peer_review_allocation_and_grading":false},"EXPECTED_USAGE_METRICS_BEHAVIOR":"track_usage","PRE_COOKIE_CONSENT":"true","PENDO_APP_ID":"1ca366f1-739e-4565-52d2-9e6f6a8d438f","PENDO_APP_ENV":"io","PRE_FUNCTIONAL_COOKIE_CONSENT":"true","current_user":{"id":"818313","anonymous_id":"hjex","display_name":"Kyle Coletta","avatar_image_url":"https://courseworks2.columbia.edu/images/messages/avatar-50.png","html_url":"https://courseworks2.columbia.edu/about/818313","pronouns":null,"avatar_is_fallback":true,"email":"kc3936@columbia.edu"},"current_user_is_admin":false,"page_view_update_url":"/page_views/77c24926-d08b-4cc3-866d-a1752ce522ba?page_view_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpIjoiNzdjMjQ5MjYtZDA4Yi00Y2MzLTg2NmQtYTE3NTJjZTUyMmJhIiwidSI6MTM5NjAwMDAwMDA4MTgzMTMsImMiOiIyMDI2LTExLTAxVDE1OjI5OjI5LjY5WiJ9.S2LLj1tdhFUDNUow7VgQyjgbAmPOxYdAcGR_r3Wpoxg","context_asset_string":"course_252703","ping_url":"https://courseworks2.columbia.edu/api/v1/courses/252703/ping","TIMEZONE":"America/New_York","CONTEXT_TIMEZONE":"America/New_York","LOCALES":["en"],"BIGEASY_LOCALE":"en_US","FULLCALENDAR_LOCALE":"en","MOMENT_LOCALE":"en","rce_auto_save_max_age_ms":86400000,"K5_USER":false,"USE_CLASSIC_FONT":false,"K5_HOMEROOM_COURSE":false,"K5_SUBJECT_COURSE":false,"OAK_SESSION_KEY":"igniteAgent","LOCALE_TRANSLATION_FILE":"https://du11hjcvx0uqb.cloudfront.net/dist/javascripts/translations/en-423811a925.json","ACCOUNT_ID":"255","user_cache_key":"7028ce8910448c8eea87412f8f84743109c4ae8472dd604304af16d2e4c6b99dd75ce98260430d72e76cdb3d759b59ffda1c8b9d412f189751c129821f28514c","horizon_course":false,"HORIZON_ACCOUNT":false,"USAGE_METRICS_AWS_REGION":"us-east-1","USAGE_METRICS_METADATA":{"instance_domain":"courseworks2.columbia.edu","sub_account_id":"255","sub_account_name":"Indstrl Engnrng \u0026 Opertn Rsrch","sub_account_names_list":["Indstrl Engnrng \u0026 Opertn Rsrch","Fu Foundation School of Engineering and Applied Science","CourseWorks Courses","Columbia University"],"sub_account_sis_id":"SEAS|IEOR","user_id":"818313","user_uuid":"9j6oyxPY439ihnEokmdBcVnnYq77G61TzVCIPSgc","user_sis_id":"kc3936","user_display_name":"Kyle Coletta","user_first_name":"Kyle","user_email":"kc3936@columbia.edu","user_time_zone":"America/New_York","custom_canvas_roles":[],"custom_course_roles":["NRA Student"],"institutional_tags":[],"course_id":"252703","course_long_name":"IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH - IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH","course_status":"available","course_is_blueprint":false,"course_is_k5":false,"course_has_no_students":false,"course_sis_source_id":"IEORE4570_001_2026_3","course_sis_batch_id":"113632","course_enrollment_term_id":"589","course_enrollment_term_name":"Fall 2026","course_enrollment_term_sis_id":"20263","course_enrollment_term_start_at":null,"course_enrollment_term_end_at":null},"current_context":{"id":"252703","name":"IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH","type":"Course","url":"https://courseworks2.columbia.edu/courses/252703"},"ASSIGNMENT_POINTS_POSSIBLE":null,"media_comment_asset_string":"user_818313","ASSET_PROCESSOR_EULA_LAUNCH_URLS":[],"COURSE_ID":"252703","MODULE_ITEM_ID":null,"ROOT_OUTCOME_GROUP":{"id":"139302","title":"IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH","vendor_guid":null,"url":"/api/v1/courses/252703/outcome_groups/139302","subgroups_url":"/api/v1/courses/252703/outcome_groups/139302/subgroups","outcomes_url":"/api/v1/courses/252703/outcome_groups/139302/outcomes","can_edit":false,"import_url":"/api/v1/courses/252703/outcome_groups/139302/import","context_id":"252703","context_type":"Course","description":null},"HAS_GRADING_PERIODS":false,"VALID_DATE_RANGE":{"start_at":{"date":null,"date_context":"term"},"end_at":{"date":null,"date_context":"term"}},"POST_TO_SIS":false,"DUE_DATE_REQUIRED_FOR_ACCOUNT":false,"ALLOW_ASSIGN_TO_DIFFERENTIATION_TAGS":false,"CAN_MANAGE_DIFFERENTIATION_TAGS":false,"PEER_REVIEW_ALLOCATION_AND_GRADING_ENABLED":false,"HAS_PEER_REVIEW_SUB_ASSIGNMENT":false,"CAN_EDIT_ASSIGNMENTS":false,"SECTION_LIST":[{"id":"243494","name":"IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH","start_at":null,"end_at":null,"override_course_and_term_dates":null}],"SUBMISSION_ID":"69277244","FIRST_ANNOTATION_SUBMISSION":false,"RICH_CONTENT_APP_HOST":"rich-content-iad.inscloudgate.net","JWT":"ZXlKaGJHY2lPaUprYVhJaUxDSmxibU1pT2lKQk1qVTJSME5OSWl3aWNtVm5hVzl1SWpvaWRYTXRaV0Z6ZEMweElpd2laVzUyYVhKdmJtMWxiblFpT2lKd2NtOWtkV04wYVc5dUluMC4uWTlxajg2cy1qUjJFdnFPWS53N0VyX0NFZFY2NWFyazQ4RXU5VDZaMzN4Y3R6aE9DMXIzSnNJWUZrRGRlaDF6bTlEZFF1SlEydmhjNDV0bHFiV0p5Q0RlVFZpcVkyY3ZsOFB5aDEwOVBkc196bjIwaTJYbnR4NXBYdV9KSW0tRXI1U0s1TElhUmxidG8zTnJZOFVPaVlranIwWThmbzNiMGlXR09PUG5uVThmd1FGQ21CTl9UVlBMQ0kxdXhuaWlQLTJWSDM3NS1PaFlmR0xjaUR5YVdKb0dfM1NRc0xScTMwbGk3dU9jTng2NEtrd3REZjNITkY2M0RIQVJHMmZta0dqdUdveHZBNnRTUzIwR3JUYUJMUHpjOC1mTWViYTl5U1lubUVHb0xka0R6Njl5M0EwWFllSzJ4aGFtMDFvcmRwSV9odlFFSEJDYWFXUWlHS2daVWpFRGVwUDk3Y1VhdW1oeV8tYTFVdjhDdWFmdm5PMnh2b1FNa1pBRFJWRnB6eGU2bDV5ZGlnWXpnblRrVk1DTGhVOWlhdjJtaGRBQkRISVJQNE81T0FjMWNjWW1ZdXBiQmxTN1RSVEVOMDZET205Z3JlVnpFNmpYNWtreHQ1VVdmcDZpcENEdXZ6eEN6RkZDUVpaZU9PRWJNVVVjYXZqOERrUmpudXRGZl9mbkxmSUQ2MU4wZ1pVSEJxa2x4aHBsU05DUVBldEpnNWRMNTdTclh1QWxvV3R3bVd2WkVNdTBEWXFSWjViWkRZdjE4T1hSOTloUnE2VU81LXZtdFBRbDFpRGV4MG0wbndFV3dydTF1cnhZY0dUbnRHRERRNXdTZXJfZnZpVFRHYkZQenBtX3ZDTm42VGNJaG94TFFnYWNuV1VUbjF3bk5YREU4MS1sbVhBdjhFZW5VMmdDUVVpbUliMkRpNEFjUHNqSzVaRGUyTy12a0FOS3NnczVMN0ZBckxQdzRmTjdSMWUyQXRlb3NXdjc3anZLQXZ2LWZpNGJmWVFua2RhaUNTLTU1UVMzSFM0SFpuRUFqV2JzTFUwQnRPOGJlVnNQX1BTdmRkTVdPVURhNENfb0cxQnd6N1dqaGcxQjFkRnM1YXJfemdmT0dmZDFKOUJlT095LXhFdkxRbktQRlNFT01teDNuaW54THNoWURFRUdHTVhwMlprNHVHSFdTTGdhVlh4bW9oRmQza3JmTU1nUkUyNUNQYmR2amZyQkpYUjF6cXVVYUpvVlJ6S2Nza3R1MTFfekJQMEhPa2JDQm1WV0djT2dnandsb21TRVEuUEwzUzFtNVowb3ktcXJjY1ljZHFDZw==","RICH_CONTENT_CAN_UPLOAD_FILES":false,"RICH_CONTENT_CAN_EDIT_FILES":false,"RICH_CONTENT_FILES_TAB_DISABLED":false,"RICH_CONTENT_NAV_TABS":{"pages":false,"assignments":true,"quizzes":false,"announcements":true,"discussions":false,"modules":false},"RICH_CONTENT_INST_RECORD_TAB_DISABLED":false,"ASSIGNMENT_ID":"1759754","PREREQS":{},"EULA_URL":null,"EXTERNAL_TOOLS":[],"PERMISSIONS":{"context":{"read_as_admin":false,"manage_assignments_edit":false},"assignment":{"update":false,"submit":true},"can_manage_groups":true,"manage_rubrics":false},"SIMILARITY_PLEDGE":null,"ACADEMIC_INTEGRITY_PLEDGE":null,"CONFETTI_ENABLED":false,"EMOJIS_ENABLED":false,"EMOJI_DENY_LIST":"","USER_ASSET_STRING":"user_818313","OUTCOMES_NEW_DECAYING_AVERAGE_CALCULATION":true,"ASSIGNMENT_POINTS":25.0,"assigned_rubric":{"id":"138993","title":"Peer Review Rubric (non-credit, peer style critique only) (1)","context_id":"252703","context_type":"Course","points_possible":15.0,"reusable":false,"public":false,"read_only":true,"free_form_criterion_comments":false,"hide_score_total":false,"data":[{"description":"Experience \u0026 Usefulness","long_description":"USE THE AGENT. As a user, did this agent actually work for you? Focus on your real experience, not what you imagine it could do with more polish.","points":5.0,"id":"_2202","criterion_use_range":false,"generated":false,"ratings":[{"description":"Wow","long_description":"Immediately intuitive, and the results made me think or see something differently.","points":5.0,"criterion_id":"_2202","id":"blank"},{"description":"Impressed","long_description":"Smooth experience, results felt genuinely useful or interesting.","points":4.0,"criterion_id":"_2202","id":"_832"},{"description":"Functional","long_description":"Understood it, got it working, results were okay but not memorable.","points":3.0,"criterion_id":"_2202","id":"_3833"},{"description":"Bumpy","long_description":"Got the general idea, but struggled to get useful results.","points":2.0,"criterion_id":"_2202","id":"_452"},{"description":"Lost","long_description":"Couldn't figure out what it does or how to use it.","points":1.0,"criterion_id":"_2202","id":"blank_2"}]},{"description":"Risk-Taking \u0026 Ambition","long_description":"READ THE CODE. Did the creator push beyond what was comfortable or expected? Ambitious failures count more than safe successes here.","points":5.0,"id":"_3458","criterion_use_range":false,"generated":false,"ratings":[{"description":"Full send","long_description":"Went for something genuinely bold, even if parts are rough around the edges.","points":5.0,"criterion_id":"_3458","id":"_6038"},{"description":"Real swing","long_description":"Took on something clearly difficult or unfamiliar and made real progress.","points":4.0,"criterion_id":"_3458","id":"_9666"},{"description":"Solid push","long_description":"Tried something meaningfully outside their comfort zone, with mixed results.","points":3.0,"criterion_id":"_3458","id":"_1296"},{"description":"Toe in the water","long_description":"One small stretch beyond the requirements, but mostly played it safe.","points":2.0,"criterion_id":"_3458","id":"_854"},{"description":"Safe bet","long_description":"Did exactly what the assignment asked, nothing more.","points":1.0,"criterion_id":"_3458","id":"_9350"}]},{"description":"Originality \u0026 Voice","long_description":"Does this project feel like the creator made it their own?","points":5.0,"id":"_5652","criterion_use_range":false,"generated":false,"ratings":[{"description":"One of a kind","long_description":"Feels like no one else in the class would have built this. The choices reflect real curiosity and a distinct perspective.","points":5.0,"criterion_id":"_5652","id":"_779"},{"description":"Their own thing","long_description":"Clear point of view. They explored the problem and made deliberate, personal choices.","points":4.0,"criterion_id":"_5652","id":"_3422"},{"description":"Getting there","long_description":"Some creative choices hint at a perspective behind the project.","points":3.0,"criterion_id":"_5652","id":"_1262"},{"description":"Light touch","long_description":"One or two personal choices, but mostly follows the obvious path.","points":2.0,"criterion_id":"_5652","id":"_3471"},{"description":"Off the shelf","long_description":"Feels like a template. Could be anyone's project.","points":1.0,"criterion_id":"_5652","id":"_6311"}]}],"rating_order":"descending","button_display":"numeric","criteria":[{"description":"Experience \u0026 Usefulness","long_description":"USE THE AGENT. As a user, did this agent actually work for you? Focus on your real experience, not what you imagine it could do with more polish.","points":5.0,"id":"_2202","criterion_use_range":false,"generated":false,"ratings":[{"description":"Wow","long_description":"Immediately intuitive, and the results made me think or see something differently.","points":5.0,"criterion_id":"_2202","id":"blank"},{"description":"Impressed","long_description":"Smooth experience, results felt genuinely useful or interesting.","points":4.0,"criterion_id":"_2202","id":"_832"},{"description":"Functional","long_description":"Understood it, got it working, results were okay but not memorable.","points":3.0,"criterion_id":"_2202","id":"_3833"},{"description":"Bumpy","long_description":"Got the general idea, but struggled to get useful results.","points":2.0,"criterion_id":"_2202","id":"_452"},{"description":"Lost","long_description":"Couldn't figure out what it does or how to use it.","points":1.0,"criterion_id":"_2202","id":"blank_2"}]},{"description":"Risk-Taking \u0026 Ambition","long_description":"READ THE CODE. Did the creator push beyond what was comfortable or expected? Ambitious failures count more than safe successes here.","points":5.0,"id":"_3458","criterion_use_range":false,"generated":false,"ratings":[{"description":"Full send","long_description":"Went for something genuinely bold, even if parts are rough around the edges.","points":5.0,"criterion_id":"_3458","id":"_6038"},{"description":"Real swing","long_description":"Took on something clearly difficult or unfamiliar and made real progress.","points":4.0,"criterion_id":"_3458","id":"_9666"},{"description":"Solid push","long_description":"Tried something meaningfully outside their comfort zone, with mixed results.","points":3.0,"criterion_id":"_3458","id":"_1296"},{"description":"Toe in the water","long_description":"One small stretch beyond the requirements, but mostly played it safe.","points":2.0,"criterion_id":"_3458","id":"_854"},{"description":"Safe bet","long_description":"Did exactly what the assignment asked, nothing more.","points":1.0,"criterion_id":"_3458","id":"_9350"}]},{"description":"Originality \u0026 Voice","long_description":"Does this project feel like the creator made it their own?","points":5.0,"id":"_5652","criterion_use_range":false,"generated":false,"ratings":[{"description":"One of a kind","long_description":"Feels like no one else in the class would have built this. The choices reflect real curiosity and a distinct perspective.","points":5.0,"criterion_id":"_5652","id":"_779"},{"description":"Their own thing","long_description":"Clear point of view. They explored the problem and made deliberate, personal choices.","points":4.0,"criterion_id":"_5652","id":"_3422"},{"description":"Getting there","long_description":"Some creative choices hint at a perspective behind the project.","points":3.0,"criterion_id":"_5652","id":"_1262"},{"description":"Light touch","long_description":"One or two personal choices, but mostly follows the obvious path.","points":2.0,"criterion_id":"_5652","id":"_3471"},{"description":"Off the shelf","long_description":"Feels like a template. Could be anyone's project.","points":1.0,"criterion_id":"_5652","id":"_6311"}]}],"unassessed":true,"can_update":false,"association_count":2},"rubric_association":{"id":"298728","rubric_id":"138993","association_type":"Assignment","association_id":"1759754","use_for_grading":false,"summary_data":null,"purpose":"grading","hide_score_total":false,"hide_points":false,"hide_outcome_results":false,"can_update":false,"can_delete":false},"rubric_self_assessment_enabled":false,"can_update_rubric_self_assessment":false,"ACCOUNT_LEVEL_MASTERY_SCALES":false,"ai_rubrics_enabled":false,"rubric_self_assessment_ff_enabled":false,"SUBMIT_ASSIGNMENT":{"ALLOWED_EXTENSIONS":[],"ID":"1759754","GROUP_ID_FOR_USER":null},"badge_counts":{"submissions":1},"notices":[],"active_context_tab":"assignments"};
+    BRANDABLE_CSS_HANDLEBARS_INDEX = [["new_styles_normal_contrast","new_styles_normal_contrast_rtl","new_styles_normal_contrast_dyslexic","new_styles_normal_contrast_dyslexic_rtl","new_styles_high_contrast","new_styles_high_contrast_rtl","new_styles_high_contrast_dyslexic","new_styles_high_contrast_dyslexic_rtl"],{"10":["d23393c03d","bd6f348c95",0,1,0,1,0,1],"15":["8e901305e1","c1944a4be0",0,1,0,1,0,1],"19":["df5777ed9c"],"61":["4e217d8c34","6f764d0b06",0,1,"f417b7a963","c776fb4e9b",4,5],"67":["baa4802ef6","82090e0afa",0,1,0,1,0,1],"71":["e3f2dff066","011e1595e5",0,1,"92a6b79610","1088e12640",4,5],"c2":["402203a2ae"],"08":["64bff5a97d"],"f2":["51574f9b13"],"e2":["79d37f210d"],"9f":["1f56efcf92",0,0,0,0,0,0,0],"0c":["fceec3ee91","158a5ba572",0,1,0,1,0,1],"f0":["d5caf89bf0",0,0,0,0,0,0,0],"1d":["470cefbe8a","d5a7c454d6",0,1,0,1,0,1],"da":["44f55e6d41","1d45016523",0,1,"397e4302b9","ed01088b07",4,5],"c5":["c503856284","596e85a72e",0,1,"a6f0f11b5e","f4a9821d32",4,5],"1e":["624cab7096","73ae39026e",0,1,"a2d25d8708","2872ebc25c",4,5],"06":["9a29bbf2ce","102d937bd1",0,1,0,1,0,1],"2b":["c2eee620fe","d363096eb8",0,1,"6ce1b668de","283d26dd84",4,5],"c8":["415fa5e02a","96f2010fa1",0,1,"3e8f413c02","b23818c533",4,5],"2c":["641bd86790",0,0,0,0,0,0,0]}];
+      Object.defineProperty(window, 'REMOTES', {
+        value: (function deepFreeze(o) {
+          if (o && typeof o === 'object') {
+            for (var k in o) deepFreeze(o[k]);
+            Object.freeze(o);
+          }
+          return o;
+        })({}),
+        writable: false,
+        configurable: false,
+        enumerable: true,
+      });
+  </script>
+  <script type="text/javascript">
+    window.CANVAS_COOKIE_CONSENT_STATE = true;
+    window.CANVAS_FUNCTIONAL_COOKIE_CONSENT_STATE = true;
+  </script>
+  <script src="./Project 2_ A Data Exploration Agent_files/variables-9dec371ad57e3dd0396f0b2eddb63479.js.download" defer="defer"></script><script src="./Project 2_ A Data Exploration Agent_files/New_York-c54723a191.js.download" defer="defer"></script><script src="./Project 2_ A Data Exploration Agent_files/New_York-c54723a191.js.download" defer="defer"></script><script src="./Project 2_ A Data Exploration Agent_files/en_US-72c7f8f463.js.download" defer="defer"></script>
+  <script src="./Project 2_ A Data Exploration Agent_files/48040-entry-b20e46e1b948effa.js.download" crossorigin="anonymous" defer="defer"></script><script src="./Project 2_ A Data Exploration Agent_files/main-entry-94dda0fb5ff23be0.js.download" crossorigin="anonymous" defer="defer"></script>
+<script>
+//<![CDATA[
+(window.bundles || (window.bundles = [])).push('assignment_show');
+(window.bundles || (window.bundles = [])).push('submit_assignment');
+(window.bundles || (window.bundles = [])).push('group_submission_reminder');
+(window.bundles || (window.bundles = [])).push('edit_rubric');
+(window.bundles || (window.bundles = [])).push('navigation_header');
+//]]>
+</script>
+  
+<style type="text/css"></style><script defer="defer" type="text/javascript" src="./Project 2_ A Data Exploration Agent_files/js"></script><script type="text/javascript" src="./Project 2_ A Data Exploration Agent_files/ally.d99016863659810cf259.js.download"></script><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/canvas.a917da58860b4e88b889.css"><style type="text/css">.draggable.dragging {
+  background: white;
+  box-shadow: 2px 2px 4px grey;
+  padding: 1rem;
+}
+
+.draggable.dragging.generated-criterion-row {
+  background:
+    linear-gradient(#f9f7fb, #f9f7fb) padding-box,
+    linear-gradient(to bottom, #7f61b3, #32759c) border-box;
+  border-radius: 0.25rem;
+  border: 2px solid transparent;
+  box-shadow: 2px 2px 4px grey;
+  padding: 1rem;
+}
+
+/* IgniteAI branding for generated rows */
+.generated-criterion-row {
+  background:
+    linear-gradient(#f9f7fb, #f9f7fb) padding-box,
+    linear-gradient(to bottom, #7f61b3, #32759c) border-box;
+  border-radius: 0.25rem;
+  border: 2px solid transparent;
+}
+
+.criterion-row {
+  padding: 1rem 0.75rem;
+  margin-bottom: 0.125rem;
+}
+
+.divided-criterion-row {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Cell padding and alignment */
+.criterion-cell {
+  vertical-align: top;
+}
+
+.criterion-cell--drag {
+  width: 2rem;
+}
+
+.criterion-cell--actions {
+  padding-right: 0;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.criterion-cell--ratings {
+  padding-top: 0;
+}
+
+.criterion-cell--description {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+  padding-left: 0;
+}
+
+/* Rating scale table: no visible headers or borders */
+.rating-scale-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.rating-scale-table th,
+.rating-scale-table td {
+  border: none;
+  padding: 0.25rem 0.5rem;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+</style><style type="text/css">.mejs-offscreen{clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);clip-path:polygon(0px 0,0 0,0 0,0 0);position:absolute!important;height:1px;width:1px;overflow:hidden}.mejs-container{position:relative;background:#000;font-family:Helvetica,Arial,serif;text-align:left;vertical-align:top;text-indent:0}.mejs-fill-container,.mejs-fill-container .mejs-container{width:100%;height:100%}.mejs-fill-container{overflow:hidden}.mejs-container:focus{outline:0}.me-plugin{position:absolute}.mejs-embed,.mejs-embed body{width:100%;height:100%;margin:0;padding:0;background:#000;overflow:hidden}.mejs-fullscreen{overflow:hidden!important}.mejs-container-fullscreen{position:fixed;left:0;top:0;right:0;bottom:0;overflow:hidden;z-index:1000}.mejs-container-fullscreen .mejs-mediaelement,.mejs-container-fullscreen video{width:100%;height:100%}.mejs-clear{clear:both}.mejs-background{position:absolute;top:0;left:0}.mejs-mediaelement{position:absolute;top:0;left:0;width:100%;height:100%}.mejs-poster{position:absolute;top:0;left:0;background-size:contain;background-position:50% 50%;background-repeat:no-repeat}:root .mejs-poster img{display:none}.mejs-poster img{border:0;padding:0}.mejs-overlay{position:absolute;top:0;left:0}.mejs-overlay-play{cursor:pointer}.mejs-overlay-button{position:absolute;top:50%;left:50%;width:100px;height:100px;margin:-50px 0 0 -50px;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/ab412966d30a966c.svg) no-repeat}.no-svg .mejs-overlay-button{background-image:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/403b9897d2f9584a.png)}.mejs-overlay:hover .mejs-overlay-button{background-position:0 -100px}.mejs-overlay-loading{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;background:#333;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(0,0,0,.9);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(50,50,50,.9)),to(rgba(0,0,0,.9)));background:-webkit-linear-gradient(top,rgba(50,50,50,.9),rgba(0,0,0,.9));background:-moz-linear-gradient(top,rgba(50,50,50,.9),rgba(0,0,0,.9));background:-o-linear-gradient(top,rgba(50,50,50,.9),rgba(0,0,0,.9));background:-ms-linear-gradient(top,rgba(50,50,50,.9),rgba(0,0,0,.9));background:linear-gradient(rgba(50,50,50,.9),rgba(0,0,0,.9))}.mejs-overlay-loading span{display:block;width:80px;height:80px;background:transparent url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/3d2aa6c0efad5113.gif) 50% 50% no-repeat}.mejs-container .mejs-controls{position:absolute;list-style-type:none;margin:0;padding:0;bottom:0;left:0;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(0,0,0,.7);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(50,50,50,.7)),to(rgba(0,0,0,.7)));background:-webkit-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-moz-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-o-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-ms-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:linear-gradient(rgba(50,50,50,.7),rgba(0,0,0,.7));height:30px;width:100%}.mejs-container .mejs-controls div{list-style-type:none;background-image:none;display:block;float:left;margin:0;padding:0;width:26px;height:26px;font-size:11px;line-height:11px;font-family:Helvetica,Arial,serif;border:0}.mejs-controls .mejs-button button{cursor:pointer;display:block;font-size:0;line-height:0;text-decoration:none;margin:7px 5px;padding:0;position:absolute;height:16px;width:16px;border:0;background:transparent url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/e63625629c427008.svg) no-repeat}.no-svg .mejs-controls .mejs-button button{background-image:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/21af56cf08cc9170.png)}.mejs-controls .mejs-button button:focus{outline:dotted 1px #999}.mejs-container .mejs-controls .mejs-time{color:#fff;display:block;height:17px;width:auto;padding:10px 3px 0;overflow:hidden;text-align:center;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}.mejs-container .mejs-controls .mejs-time a{color:#fff;font-size:11px;line-height:12px;display:block;float:left;margin:1px 2px 0 0;width:auto}.mejs-controls .mejs-play button{background-position:0 0}.mejs-controls .mejs-pause button{background-position:0 -16px}.mejs-controls .mejs-stop button{background-position:-112px 0}.mejs-controls div.mejs-time-rail{direction:ltr;width:200px;padding-top:5px}.mejs-controls .mejs-time-rail span,.mejs-controls .mejs-time-rail a{display:block;position:absolute;width:180px;height:10px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px;cursor:pointer}.mejs-controls .mejs-time-rail .mejs-time-total{margin:5px;background:#333;background:rgba(50,50,50,.8);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(30,30,30,.8)),to(rgba(60,60,60,.8)));background:-webkit-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-moz-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-o-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-ms-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:linear-gradient(rgba(30,30,30,.8),rgba(60,60,60,.8))}.mejs-controls .mejs-time-rail .mejs-time-buffering{width:100%;background-image:-o-linear-gradient(-45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-image:-webkit-gradient(linear,0 100%,100% 0,color-stop(0.25,rgba(255,255,255,.15)),color-stop(0.25,transparent),color-stop(0.5,transparent),color-stop(0.5,rgba(255,255,255,.15)),color-stop(0.75,rgba(255,255,255,.15)),color-stop(0.75,transparent),to(transparent));background-image:-webkit-linear-gradient(-45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-image:-moz-linear-gradient(-45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-image:-ms-linear-gradient(-45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);background-image:linear-gradient(-45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);-webkit-background-size:15px 15px;-moz-background-size:15px 15px;-o-background-size:15px 15px;background-size:15px 15px;-webkit-animation:buffering-stripes 2s linear infinite;-moz-animation:buffering-stripes 2s linear infinite;-ms-animation:buffering-stripes 2s linear infinite;-o-animation:buffering-stripes 2s linear infinite;animation:buffering-stripes 2s linear infinite}@-webkit-keyframes buffering-stripes{from{background-position:0 0}to{background-position:30px 0}}@-moz-keyframes buffering-stripes{from{background-position:0 0}to{background-position:30px 0}}@-ms-keyframes buffering-stripes{from{background-position:0 0}to{background-position:30px 0}}@-o-keyframes buffering-stripes{from{background-position:0 0}to{background-position:30px 0}}@keyframes buffering-stripes{from{background-position:0 0}to{background-position:30px 0}}.mejs-controls .mejs-time-rail .mejs-time-loaded{background:#3caac8;background:rgba(60,170,200,.8);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(44,124,145,.8)),to(rgba(78,183,212,.8)));background:-webkit-linear-gradient(top,rgba(44,124,145,.8),rgba(78,183,212,.8));background:-moz-linear-gradient(top,rgba(44,124,145,.8),rgba(78,183,212,.8));background:-o-linear-gradient(top,rgba(44,124,145,.8),rgba(78,183,212,.8));background:-ms-linear-gradient(top,rgba(44,124,145,.8),rgba(78,183,212,.8));background:linear-gradient(rgba(44,124,145,.8),rgba(78,183,212,.8));width:0}.mejs-controls .mejs-time-rail .mejs-time-current{background:#fff;background:rgba(255,255,255,.8);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(255,255,255,.9)),to(rgba(200,200,200,.8)));background:-webkit-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-moz-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-o-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-ms-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:linear-gradient(rgba(255,255,255,.9),rgba(200,200,200,.8));width:0}.mejs-controls .mejs-time-rail .mejs-time-handle{display:none;position:absolute;margin:0;width:10px;background:#fff;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;cursor:pointer;border:solid 2px #333;top:-2px;text-align:center}.mejs-controls .mejs-time-rail .mejs-time-float{position:absolute;display:none;background:#eee;width:36px;height:17px;border:solid 1px #333;top:-26px;margin-left:-18px;text-align:center;color:#111}.mejs-controls .mejs-time-rail .mejs-time-float-current{margin:2px;width:30px;display:block;text-align:center;left:0}.mejs-controls .mejs-time-rail .mejs-time-float-corner{position:absolute;display:block;width:0;height:0;line-height:0;border:solid 5px #eee;border-color:#eee transparent transparent;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;top:15px;left:13px}.mejs-long-video .mejs-controls .mejs-time-rail .mejs-time-float{width:48px}.mejs-long-video .mejs-controls .mejs-time-rail .mejs-time-float-current{width:44px}.mejs-long-video .mejs-controls .mejs-time-rail .mejs-time-float-corner{left:18px}.mejs-controls .mejs-fullscreen-button button{background-position:-32px 0}.mejs-controls .mejs-unfullscreen button{background-position:-32px -16px}.mejs-controls .mejs-volume-button{}.mejs-controls .mejs-mute button{background-position:-16px -16px}.mejs-controls .mejs-unmute button{background-position:-16px 0}.mejs-controls .mejs-volume-button{position:relative}.mejs-controls .mejs-volume-button .mejs-volume-slider{height:115px;width:25px;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;top:-115px;left:0;z-index:1;position:absolute;margin:0}.mejs-controls .mejs-volume-button:hover{-webkit-border-radius:0 0 4px 4px;-moz-border-radius:0 0 4px 4px;border-radius:0 0 4px 4px}.mejs-controls .mejs-volume-button .mejs-volume-slider .mejs-volume-total{position:absolute;left:11px;top:8px;width:2px;height:100px;background:#ddd;background:rgba(255,255,255,.5);margin:0}.mejs-controls .mejs-volume-button .mejs-volume-slider .mejs-volume-current{position:absolute;left:11px;top:8px;width:2px;height:100px;background:#ddd;background:rgba(255,255,255,.9);margin:0}.mejs-controls .mejs-volume-button .mejs-volume-slider .mejs-volume-handle{position:absolute;left:4px;top:-3px;width:16px;height:6px;background:#ddd;background:rgba(255,255,255,.9);cursor:N-resize;-webkit-border-radius:1px;-moz-border-radius:1px;border-radius:1px;margin:0}.mejs-controls a.mejs-horizontal-volume-slider{height:26px;width:56px;position:relative;display:block;float:left;vertical-align:middle}.mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-total{position:absolute;left:0;top:11px;width:50px;height:8px;margin:0;padding:0;font-size:1px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px;background:#333;background:rgba(50,50,50,.8);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(30,30,30,.8)),to(rgba(60,60,60,.8)));background:-webkit-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-moz-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-o-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:-ms-linear-gradient(top,rgba(30,30,30,.8),rgba(60,60,60,.8));background:linear-gradient(rgba(30,30,30,.8),rgba(60,60,60,.8))}.mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-current{position:absolute;left:0;top:11px;width:50px;height:8px;margin:0;padding:0;font-size:1px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px;background:#fff;background:rgba(255,255,255,.8);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(255,255,255,.9)),to(rgba(200,200,200,.8)));background:-webkit-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-moz-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-o-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:-ms-linear-gradient(top,rgba(255,255,255,.9),rgba(200,200,200,.8));background:linear-gradient(rgba(255,255,255,.9),rgba(200,200,200,.8))}.mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-handle{display:none}.mejs-controls .mejs-captions-button{position:relative}.mejs-controls .mejs-captions-button button{background-position:-48px 0}.mejs-controls .mejs-captions-button .mejs-captions-selector{position:absolute;bottom:26px;right:-51px;width:85px;height:100px;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);border:solid 1px transparent;padding:10px 10px 0;overflow:hidden;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.mejs-controls .mejs-captions-button .mejs-captions-selector ul{margin:0;padding:0;display:block;list-style-type:none!important;overflow:hidden}.mejs-controls .mejs-captions-button .mejs-captions-selector ul li{margin:0 0 6px;padding:0;list-style-type:none!important;display:block;color:#fff;overflow:hidden}.mejs-controls .mejs-captions-button .mejs-captions-selector ul li input{clear:both;float:left;margin:3px 3px 0 5px}.mejs-controls .mejs-captions-button .mejs-captions-selector ul li label{width:55px;float:left;padding:4px 0 0;line-height:15px;font-family:Helvetica,Arial,serif;font-size:10px}.mejs-controls .mejs-captions-button .mejs-captions-translations{font-size:10px;margin:0 0 5px}.mejs-chapters{position:absolute;top:0;left:0;border-right:solid 1px #fff;width:10000px;z-index:1}.mejs-chapters .mejs-chapter{position:absolute;float:left;background:#222;background:rgba(0,0,0,.7);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(50,50,50,.7)),to(rgba(0,0,0,.7)));background:-webkit-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-moz-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-o-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:-ms-linear-gradient(top,rgba(50,50,50,.7),rgba(0,0,0,.7));background:linear-gradient(rgba(50,50,50,.7),rgba(0,0,0,.7));filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#323232, endColorstr=#000000);overflow:hidden;border:0}.mejs-chapters .mejs-chapter .mejs-chapter-block{font-size:11px;color:#fff;padding:5px;display:block;border-right:solid 1px #333;border-bottom:solid 1px #333;cursor:pointer}.mejs-chapters .mejs-chapter .mejs-chapter-block-last{border-right:0}.mejs-chapters .mejs-chapter .mejs-chapter-block:hover{background:#666;background:rgba(102,102,102,.7);background:-webkit-gradient(linear,0 0,0 100%,from(rgba(102,102,102,.7)),to(rgba(50,50,50,.6)));background:-webkit-linear-gradient(top,rgba(102,102,102,.7),rgba(50,50,50,.6));background:-moz-linear-gradient(top,rgba(102,102,102,.7),rgba(50,50,50,.6));background:-o-linear-gradient(top,rgba(102,102,102,.7),rgba(50,50,50,.6));background:-ms-linear-gradient(top,rgba(102,102,102,.7),rgba(50,50,50,.6));background:linear-gradient(rgba(102,102,102,.7),rgba(50,50,50,.6));filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#666666, endColorstr=#323232)}.mejs-chapters .mejs-chapter .mejs-chapter-block .ch-title{font-size:12px;font-weight:700;display:block;white-space:nowrap;text-overflow:ellipsis;margin:0 0 3px;line-height:12px}.mejs-chapters .mejs-chapter .mejs-chapter-block .ch-timespan{font-size:12px;line-height:12px;margin:3px 0 4px;display:block;white-space:nowrap;text-overflow:ellipsis}.mejs-captions-layer{position:absolute;bottom:0;left:0;text-align:center;line-height:20px;font-size:16px;color:#fff}.mejs-captions-layer a{color:#fff;text-decoration:underline}.mejs-captions-layer[lang=ar]{font-size:20px;font-weight:400}.mejs-captions-position{position:absolute;width:100%;bottom:15px;left:0}.mejs-captions-position-hover{bottom:35px}.mejs-captions-text,.mejs__captions-text *{padding:0;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(20,20,20,.5);white-space:pre-wrap;-webkit-box-shadow:5px 0 0 rgba(20,20,20,.5),-5px 0 0 rgba(20,20,20,.5);box-shadow:5px 0 0 rgba(20,20,20,.5),-5px 0 0 rgba(20,20,20,.5)}.me-cannotplay{}.me-cannotplay a{color:#fff;font-weight:700}.me-cannotplay span{padding:15px;display:block}.mejs-controls .mejs-loop-off button{background-position:-64px -16px}.mejs-controls .mejs-loop-on button{background-position:-64px 0}.mejs-controls .mejs-backlight-off button{background-position:-80px -16px}.mejs-controls .mejs-backlight-on button{background-position:-80px 0}.mejs-controls .mejs-picturecontrols-button{background-position:-96px 0}.mejs-contextmenu{position:absolute;width:150px;padding:10px;border-radius:4px;top:0;left:0;background:#fff;border:solid 1px #999;z-index:1001}.mejs-contextmenu .mejs-contextmenu-separator{height:1px;font-size:0;margin:5px 6px;background:#333}.mejs-contextmenu .mejs-contextmenu-item{font-family:Helvetica,Arial,serif;font-size:12px;padding:4px 6px;cursor:pointer;color:#333}.mejs-contextmenu .mejs-contextmenu-item:hover{background:#2C7C91;color:#fff}.mejs-controls .mejs-sourcechooser-button{position:relative}.mejs-controls .mejs-sourcechooser-button button{background-position:-128px 0}.mejs-controls .mejs-sourcechooser-button .mejs-sourcechooser-selector{position:absolute;bottom:26px;right:-10px;width:130px;height:100px;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);border:solid 1px transparent;padding:10px;overflow:hidden;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.mejs-controls .mejs-sourcechooser-button .mejs-sourcechooser-selector ul{margin:0;padding:0;display:block;list-style-type:none!important;overflow:hidden}.mejs-controls .mejs-sourcechooser-button .mejs-sourcechooser-selector ul li{margin:0 0 6px;padding:0;list-style-type:none!important;display:block;color:#fff;overflow:hidden}.mejs-controls .mejs-sourcechooser-button .mejs-sourcechooser-selector ul li input{clear:both;float:left;margin:3px 3px 0 5px}.mejs-controls .mejs-sourcechooser-button .mejs-sourcechooser-selector ul li label{width:100px;float:left;padding:4px 0 0;line-height:15px;font-family:Helvetica,Arial,serif;font-size:10px}.mejs-postroll-layer{position:absolute;bottom:0;left:0;width:100%;height:100%;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);z-index:1000;overflow:hidden}.mejs-postroll-layer-content{width:100%;height:100%}.mejs-postroll-close{position:absolute;right:0;top:0;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);color:#fff;padding:4px;z-index:100;cursor:pointer}div.mejs-speed-button{width:46px!important;position:relative}.mejs-controls .mejs-button.mejs-speed-button button{background:transparent;width:36px;font-size:11px;line-height:normal;color:#fff}.mejs-controls .mejs-speed-button .mejs-speed-selector{position:absolute;top:-100px;left:-10px;width:60px;height:100px;background:url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/019e02a0194687d6.png);background:rgba(50,50,50,.7);border:solid 1px transparent;padding:0;overflow:hidden;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.mejs-controls .mejs-speed-button .mejs-speed-selector ul li label.mejs-speed-selected{color:rgba(33,248,248,1)}.mejs-controls .mejs-speed-button .mejs-speed-selector ul{margin:0;padding:0;display:block;list-style-type:none!important;overflow:hidden}.mejs-controls .mejs-speed-button .mejs-speed-selector ul li{margin:0 0 6px;padding:0 10px;list-style-type:none!important;display:block;color:#fff;overflow:hidden}.mejs-controls .mejs-speed-button .mejs-speed-selector ul li input{clear:both;float:left;margin:3px 3px 0 5px}.mejs-controls .mejs-speed-button .mejs-speed-selector ul li label{width:60px;float:left;padding:4px 0 0;line-height:15px;font-family:Helvetica,Arial,serif;font-size:11px;color:#fff;margin-left:5px;cursor:pointer}.mejs-controls .mejs-speed-button .mejs-speed-selector ul li:hover{background-color:#c8c8c8!important;background-color:rgba(255,255,255,.4)!important}.mejs-controls .mejs-button.mejs-jump-forward-button{background:transparent url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/1b04fe65cf397777.png) no-repeat 3px 3px}.mejs-controls .mejs-button.mejs-jump-forward-button button{background:transparent;font-size:9px;line-height:normal;color:#fff}.mejs-controls .mejs-button.mejs-skip-back-button{background:transparent url(https://du11hjcvx0uqb.cloudfront.net/dist/webpack-production/83bc028944a3cf2a.png) no-repeat 3px 3px}.mejs-controls .mejs-button.mejs-skip-back-button button{background:transparent;font-size:9px;line-height:normal;color:#fff}</style><style type="text/css">/*
+ * Copyright (C) 2014 - present Instructure, Inc.
+ *
+ * This file is part of Canvas.
+ *
+ * Canvas is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, version 3 of the License.
+ *
+ * Canvas is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* customizations to mediaelementplayer css */
+
+/*
+  Because this file is not proccessed by our brandable_css sass pipeline,
+  it cannot use our sass-direction helpers. So we have to handle RTL manually
+  by putting direction-specific styles in [dir="ltr"] or [dir="rtl"] blocks.
+*/
+/* stylelint-disable property-disallowed-list, declaration-property-value-disallowed-list */
+
+/* good menu widths */
+.mejs-sourcechooser-selector {
+  width: 160px;
+}
+.mejs-sourcechooser-selector label {
+  width: 160px !important;
+}
+
+.mejs-captions-selector {
+  width: 105px;
+}
+[dir="ltr"]  .mejs-captions-selector { text-align: left }
+[dir="rtl"]  .mejs-captions-selector { text-align: right }
+
+.mejs-captions-selector label {
+  width: 70px !important;
+}
+
+/* Subtitile upload link */
+.mejs-captions-selector .upload-track {
+  color: white;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+[dir="ltr"] .mejs-captions-selector .upload-track {
+  margin-right: 0px;
+  margin-left: 5px;
+  float: left;
+}
+[dir="rtl"] .mejs-captions-selector .upload-track {
+  margin-left: 0px;
+  margin-right: 5px;
+  float: right;
+}
+
+/* inherited caption "?" icon for tooltip */
+.mejs-captions-selector .track-tip-container {
+  position: absolute;
+  top: 5px;
+}
+
+/* "x" button to remove a subtitle */
+.mejs-captions-selector a[data-remove] {
+  position: absolute;
+  top: 5px;
+  color: white;
+}
+[dir="ltr"] .mejs-captions-selector a[data-remove] { right: 5px }
+[dir="rtl"] .mejs-captions-selector a[data-remove] { left: 5px }
+
+[dir="ltr"] .mejs-captions-selector .track-tip-container { right: 6px }
+[dir="rtl"] .mejs-captions-selector .track-tip-container { left: 6px }
+
+
+/* style menu items without a radio button */
+.mejs-button [role="menu"] {
+  padding: 0 !important;
+}
+ /* compensate for above 0 padding */
+ .mejs-button [role="menu"] ul li {
+  position: relative;
+  padding: 0 10px !important;
+}
+/* add a hover effect */
+.mejs-button [role="menu"] ul li:hover {
+  background-color: #c8c8c8 !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+.mejs-button [role="menu"] ul li input {
+  border: 0;
+  clip: rect(0 0 0 0);
+  position: absolute;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.mejs-button [role="menu"] ul li input[type="radio"]:not(:checked)+span {
+  display: none;
+}
+
+.mejs-button [role="menu"] ul li input[type="radio"]:checked+span {
+  display: inline;
+  position: absolute;
+  top: 5px;
+  left: 2px;
+}
+
+.mejs-button [role="menu"] ul li label {
+  cursor: pointer;
+}
+[dir="ltr"] .mejs-button [role="menu"] ul li label { margin-left: 5px }
+[dir="rtl"] .mejs-button [role="menu"] ul li label { margin-right: 5px }
+
+
+.mejs-button [role="menu"] label.mejs-selected {
+  color: #21f8f8 !important;
+}
+
+.mejs-button.mejs-speed-button .mejs-speed-selector{
+  height: 150px;
+}
+.mejs-button.mejs-speed-button .mejs-speed-selector li, label { margin-bottom: 0px; }
+
+/* stylelint-enable property-disallowed-list, declaration-property-value-disallowed-list */
+</style><style data-emotion="css-global" data-s=""></style><style data-emotion="css" data-s=""></style><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/PaginatedView-641bd86790.css" data-loaded-by-brandablecss="true"><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/TreeBrowser-c503856284.css" data-loaded-by-brandablecss="true"><link rel="stylesheet" href="./Project 2_ A Data Exploration Agent_files/MoveOutcomeDialog-1f56efcf92.css" data-loaded-by-brandablecss="true"></head>
+
+<body class="with-left-side course-menu-expanded with-right-side assignments primary-nav-expanded context-course_252703 responsive_student_grades_page ally-tooltips-enabled webkit chrome no-touch">
+
+<noscript>
+  <div role="alert" class="ic-flash-static ic-flash-error">
+    <div class="ic-flash__icon" aria-hidden="true">
+      <i class="icon-warning"></i>
+    </div>
+    <h1>You need to have JavaScript enabled in order to access this site.</h1>
+  </div>
+</noscript>
+
+
+
+
+<div id="flash_message_holder"></div>
+<div id="flash_screenreader_holder" role="alert" aria-live="assertive" aria-relevant="additions" class="screenreader-only" aria-atomic="true"></div>
+
+<div id="application" class="ic-app ">
+  
+
+
+
+
+<header id="mobile-header" class="no-print">
+  <button type="button" class="Button Button--icon-action-rev Button--large mobile-header-hamburger">
+    <i class="icon-solid icon-hamburger"></i>
+    <span id="mobileHeaderInboxUnreadBadge" class="menu-item__badge" style="min-width: 0; top: 12px; height: 12px; right: 6px; display:none;"></span>
+    <span class="screenreader-only">Global Navigation Menu</span>
+  </button>
+  <div class="mobile-header-space"></div>
+    <a class="mobile-header-title expandable" href="https://courseworks2.columbia.edu/courses/252703" role="button" aria-controls="mobileContextNavContainer">
+      <div>IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH</div>
+        <div>Project 2: A Data Exploration Agent</div>
+    </a>
+
+  <div id="nutrition_facts_mobile_container"></div>
+
+
+    <div class="mobile-header-space"></div>
+    <button type="button" class="Button Button--icon-action-rev Button--large mobile-header-arrow" aria-label="Navigation Menu">
+      <i class="icon-arrow-open-down" id="mobileHeaderArrowIcon"></i>
+    </button>
+</header>
+<nav id="mobileContextNavContainer" aria-expanded="false"><div></div></nav>
+
+<header id="header" class="ic-app-header no-print " aria-label="Global Header">
+  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#content" id="skip_navigation_link">Skip To Content</a>
+  <div role="region" class="ic-app-header__main-navigation" aria-label="Global Navigation">
+      <div class="ic-app-header__logomark-container">
+        <a href="https://courseworks2.columbia.edu/" class="ic-app-header__logomark">
+          <span class="screenreader-only">Dashboard</span>
+        </a>
+      </div>
+    <ul id="menu" class="ic-app-header__menu-list">
+        <li class="menu-item ic-app-header__menu-list-item ">
+          <a id="global_nav_profile_link" role="button" href="https://courseworks2.columbia.edu/profile/settings" class="ic-app-header__menu-list-link">
+            <div class="menu-item-icon-container">
+              <div aria-hidden="true" class="fs-exclude ic-avatar ">
+                <img src="./Project 2_ A Data Exploration Agent_files/avatar-50.png" alt="Kyle Coletta">
+              </div>
+              <span class="menu-item__badge"></span>
+            </div>
+            <div class="menu-item__text">
+              Account
+            </div>
+          </a>
+        </li>
+      <li class="ic-app-header__menu-list-item ">
+        <a id="global_nav_dashboard_link" href="https://courseworks2.columbia.edu/" class="ic-app-header__menu-list-link">
+          <div class="menu-item-icon-container" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--dashboard" version="1.1" x="0" y="0" viewBox="0 0 280 200" enable-background="new 0 0 280 200" xml:space="preserve"><path d="M273.09,180.75H197.47V164.47h62.62A122.16,122.16,0,1,0,17.85,142a124,124,0,0,0,2,22.51H90.18v16.29H6.89l-1.5-6.22A138.51,138.51,0,0,1,1.57,142C1.57,65.64,63.67,3.53,140,3.53S278.43,65.64,278.43,142a137.67,137.67,0,0,1-3.84,32.57ZM66.49,87.63,50.24,71.38,61.75,59.86,78,76.12Zm147,0L202,76.12l16.25-16.25,11.51,11.51ZM131.85,53.82v-23h16.29v23Zm15.63,142.3a31.71,31.71,0,0,1-28-16.81c-6.4-12.08-15.73-72.29-17.54-84.25a8.15,8.15,0,0,1,13.58-7.2c8.88,8.21,53.48,49.72,59.88,61.81a31.61,31.61,0,0,1-27.9,46.45ZM121.81,116.2c4.17,24.56,9.23,50.21,12,55.49A15.35,15.35,0,1,0,161,157.3C158.18,152,139.79,133.44,121.81,116.2Z"></path></svg>
+
+          </div>
+          <div class="menu-item__text">
+            Dashboard
+          </div>
+        </a>
+      </li>
+        <li class="menu-item ic-app-header__menu-list-item "><a id="global_nav_mycourses_link" href="https://courseworks2.columbia.edu/users/818313/external_tools/10924" class="ic-app-header__menu-list-link"><div class="menu-item-icon-container" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--courses" version="1.1" x="0" y="0" viewBox="0 0 512.004 512.004" enable-background="new 0 0 280 280" xml:space="preserve"><path d="M291.057,242.811c1.51,2.953,4.514,4.659,7.62,4.659c1.297,0,2.628-0.299,3.866-0.93 c0.503-0.256,50.731-25.771,75.503-33.596c4.489-1.425,6.98-6.221,5.555-10.709c-1.417-4.489-6.178-6.989-10.709-5.572 c-26.095,8.252-75.981,33.596-78.097,34.671C290.596,233.467,288.924,238.605,291.057,242.811z"></path><path d="M298.677,145.071c1.297,0,2.628-0.299,3.866-0.93c0.503-0.256,50.731-25.771,75.503-33.596 c4.489-1.425,6.98-6.221,5.555-10.709c-1.417-4.489-6.178-6.989-10.709-5.572c-26.095,8.252-75.981,33.596-78.097,34.671 c-4.198,2.133-5.871,7.27-3.738,11.477C292.567,143.364,295.571,145.071,298.677,145.071z"></path><path d="M503.469,128.004c-4.719,0-8.533,3.823-8.533,8.533v332.8c0,14.114-11.486,25.6-25.6,25.6h-204.8v-19.635 c12.442-4.352,44.851-14.498,76.8-14.498c74.334,0,124.809,16.461,125.312,16.631c2.568,0.853,5.436,0.427,7.68-1.178 c2.227-1.604,3.541-4.181,3.541-6.921V93.871c0-4.002-2.773-7.467-6.682-8.329c0,0-6.69-1.493-18.125-3.593 c-4.617-0.853-9.079,2.219-9.933,6.844c-0.853,4.642,2.21,9.088,6.844,9.941c4.361,0.802,8.013,1.51,10.829,2.074v357.188 c-19.337-5.069-62.276-14.259-119.467-14.259c-37.18,0-73.702,12.211-85.001,16.35c-10.044-4.437-40.405-16.35-77.133-16.35 c-58.778,0-107.196,9.694-128,14.618V100.475c17.041-4.19,67.371-15.138,128-15.138c31.113,0,57.796,9.685,68.267,14.063v335.804 c0,3.072,1.655,5.914,4.326,7.424c2.671,1.519,5.965,1.476,8.602-0.111c0.845-0.503,85.393-51.004,160.435-76.015 c3.49-1.169,5.837-4.42,5.837-8.098V8.537c0-2.799-1.374-5.419-3.678-7.014c-2.287-1.596-5.222-1.963-7.859-0.981 C346.856,26.15,277.771,69.141,277.079,69.568c-3.994,2.5-5.214,7.765-2.714,11.759c2.492,3.994,7.757,5.214,11.759,2.714 c0.631-0.401,60.732-37.794,123.477-63.027v331.281c-58.249,20.241-119.066,53.291-145.067,68.087V93.871 c0-3.234-1.826-6.187-4.719-7.637c-1.468-0.725-36.437-17.963-80.614-17.963c-77.107,0-136.388,16.683-138.88,17.399 c-3.661,1.041-6.187,4.395-6.187,8.201v375.467c0,2.671,1.263,5.197,3.388,6.81c1.502,1.135,3.311,1.724,5.146,1.724 c0.785,0,1.57-0.111,2.338-0.333c0.589-0.162,59.597-16.734,134.195-16.734c31.198,0,57.856,9.711,68.267,14.071v20.062h-204.8 c-14.114,0-25.6-11.486-25.6-25.6v-332.8c0-4.71-3.823-8.533-8.533-8.533s-8.533,3.823-8.533,8.533v332.8 c0,23.526,19.14,42.667,42.667,42.667h426.667c23.526,0,42.667-19.14,42.667-42.667v-332.8 C512.002,131.827,508.188,128.004,503.469,128.004z"></path><path d="M291.057,191.611c1.51,2.953,4.514,4.659,7.62,4.659c1.297,0,2.628-0.299,3.866-0.93 c0.503-0.256,50.731-25.771,75.503-33.596c4.489-1.425,6.98-6.221,5.555-10.709c-1.417-4.489-6.178-6.989-10.709-5.572 c-26.095,8.252-75.981,33.596-78.097,34.671C290.596,182.267,288.924,187.405,291.057,191.611z"></path><path d="M291.057,294.011c1.51,2.953,4.514,4.659,7.62,4.659c1.297,0,2.628-0.299,3.866-0.93 c0.503-0.256,50.731-25.771,75.503-33.596c4.489-1.425,6.98-6.221,5.555-10.709c-1.417-4.489-6.178-6.989-10.709-5.572 c-26.095,8.252-75.981,33.596-78.097,34.671C290.596,284.667,288.924,289.805,291.057,294.011z"></path><path d="M206.748,158.366c-52.693-12.365-112.572,3.388-115.089,4.062c-4.548,1.22-7.253,5.896-6.033,10.453 c1.024,3.814,4.471,6.323,8.235,6.323c0.734,0,1.476-0.094,2.219-0.29c0.572-0.162,58.223-15.326,106.778-3.934 c4.565,1.067,9.182-1.775,10.257-6.366C214.189,164.032,211.339,159.441,206.748,158.366z"></path><path d="M206.748,209.566c-52.693-12.356-112.572,3.388-115.089,4.062c-4.548,1.22-7.253,5.897-6.033,10.453 c1.024,3.814,4.471,6.323,8.235,6.323c0.734,0,1.476-0.094,2.219-0.29c0.572-0.162,58.223-15.326,106.778-3.934 c4.565,1.067,9.182-1.775,10.257-6.366C214.189,215.232,211.339,210.641,206.748,209.566z"></path><path d="M291.057,345.211c1.51,2.953,4.514,4.659,7.62,4.659c1.297,0,2.628-0.299,3.866-0.93 c0.503-0.256,50.731-25.771,75.503-33.596c4.489-1.425,6.98-6.221,5.555-10.709c-1.417-4.488-6.178-6.989-10.709-5.572 c-26.095,8.252-75.981,33.596-78.097,34.671C290.596,335.867,288.924,341.005,291.057,345.211z"></path><path d="M206.748,260.766c-52.693-12.356-112.572,3.379-115.089,4.062c-4.548,1.22-7.253,5.897-6.033,10.453 c1.024,3.814,4.471,6.332,8.235,6.332c0.734,0,1.476-0.102,2.219-0.299c0.572-0.162,58.223-15.326,106.778-3.934 c4.565,1.067,9.182-1.775,10.257-6.366C214.189,266.432,211.339,261.841,206.748,260.766z"></path><path d="M206.748,363.166c-52.693-12.365-112.572,3.388-115.089,4.062c-4.548,1.22-7.253,5.897-6.033,10.453 c1.024,3.814,4.471,6.332,8.235,6.332c0.734,0,1.476-0.102,2.219-0.299c0.572-0.162,58.223-15.326,106.778-3.934 c4.565,1.058,9.182-1.775,10.257-6.366C214.189,368.832,211.339,364.241,206.748,363.166z"></path><path d="M206.748,311.966c-52.693-12.365-112.572,3.379-115.089,4.062c-4.548,1.22-7.253,5.897-6.033,10.453 c1.024,3.814,4.471,6.332,8.235,6.332c0.734,0,1.476-0.102,2.219-0.299c0.572-0.162,58.223-15.326,106.778-3.934 c4.565,1.067,9.182-1.775,10.257-6.366C214.189,317.632,211.339,313.041,206.748,311.966z"></path></svg></div><div class="menu-item__text">My Courses</div></a></li><li class="menu-item ic-app-header__menu-list-item ic-app-header__menu-list-item--active" aria-current="page">
+          <a id="global_nav_courses_link" role="button" href="https://courseworks2.columbia.edu/courses" class="ic-app-header__menu-list-link columbia_bound">
+            <div class="menu-item-icon-container" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--courses" version="1.1" x="0" y="0" viewBox="0 0 280 259" enable-background="new 0 0 280 259" xml:space="preserve"><path d="M73.31,198c-11.93,0-22.22,8-24,18.73a26.67,26.67,0,0,0-.3,3.63v.3a22,22,0,0,0,5.44,14.65,22.47,22.47,0,0,0,17.22,8H200V228.19h-134V213.08H200V198Zm21-105.74h90.64V62H94.3ZM79.19,107.34V46.92H200v60.42Zm7.55,30.21V122.45H192.49v15.11ZM71.65,16.71A22.72,22.72,0,0,0,49,39.36V190.88a41.12,41.12,0,0,1,24.32-8h157V16.71ZM33.88,39.36A37.78,37.78,0,0,1,71.65,1.6H245.36V198H215.15v45.32h22.66V258.4H71.65a37.85,37.85,0,0,1-37.76-37.76Z"></path></svg>
+
+            </div>
+            <div class="menu-item__text">
+              Courses
+            </div>
+          </a>
+        </li>
+        <li class="menu-item ic-app-header__menu-list-item ">
+          <a id="global_nav_groups_link" role="button" href="https://courseworks2.columbia.edu/groups" class="ic-app-header__menu-list-link">
+            <div class="menu-item-icon-container" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--groups" viewBox="0 0 200 135"><path d="M134.5 129.4c0-1.1 0-19.8-6.2-31.1-4.5-8.5-16.4-12.4-35-19.2-1.7-.6-3.4-1.1-5.1-1.7v-8.5c5.6-5.1 8.5-12.4 8.5-20.3V29.4C96.6 13 83.6 0 67.2 0S37.9 13 37.9 29.4v19.2c0 7.3 3.4 14.7 8.5 20.3v8.5c-1.7.6-3.4 1.1-5.1 1.7-18.6 6.2-30.5 10.7-35 19.2C0 109.6 0 128.8 0 129.4c0 3.4 2.3 5.6 5.6 5.6h123.7c3.5 0 5.7-2.3 5.2-5.6zm-123.2-5.7c.6-5.6 1.7-14.7 3.4-19.8C17 98.8 30 94.3 43.5 89.8c2.8-1.1 5.6-2.3 9-3.4 2.3-.6 4-2.8 4-5.1V66.7c0-1.7-.6-3.4-1.7-4.5-4-3.4-6.2-8.5-6.2-13.6V29.4c0-10.2 7.9-18.1 18.1-18.1s18.1 7.9 18.1 18.1v19.2c0 5.1-2.3 10.2-6.2 13.6-1.1 1.1-1.7 2.8-1.7 4.5v14.7c0 2.3 1.7 4.5 4 5.1 2.8 1.1 6.2 2.3 9 3.4 13.6 5.1 26.6 9.6 28.8 14.1 2.8 5.1 4 13.6 4.5 19.8H11.3zM196 79.1c-2.8-6.2-11.3-9.6-22.6-13.6l-1.7-.6v-3.4c4.5-4 6.8-9.6 6.8-15.8V35c0-12.4-9.6-22-22-22s-22 10.2-22 22v10.7c0 6.2 2.3 11.9 6.8 15.8V65l-1.7.6c-7.3 2.8-13 4.5-16.9 7.3-1.7 1.1-2.3 2.8-2.3 5.1.6 1.7 1.7 3.4 3.4 4.5 7.9 4 12.4 7.3 14.1 10.7 2.3 4.5 4 10.2 5.1 18.1.6 2.3 2.8 4.5 5.6 4.5h45.8c3.4 0 5.6-2.8 5.6-5.1 0-3.9 0-24.3-4-31.6zm-42.9 25.4c-1.1-6.8-2.8-12.4-5.1-16.9-1.7-4-5.1-6.8-9.6-10.2 1.7-1.1 3.4-1.7 5.1-2.3l5.6-2.3c1.7-.6 3.4-2.8 3.4-5.1v-9.6c0-1.7-.6-3.4-2.3-4.5-2.8-1.7-4.5-5.1-4.5-8.5V34.5c0-6.2 4.5-10.7 10.7-10.7s10.7 5.1 10.7 10.7v10.7c0 3.4-1.7 6.2-4.5 8.5-1.1 1.1-2.3 2.8-2.3 4.5v10.2c0 2.3 1.1 4.5 3.4 5.1l5.6 2.3c6.8 2.3 15.3 5.6 16.4 7.9 1.7 2.8 2.8 12.4 2.8 20.9h-35.4z"></path></svg>
+
+            </div>
+            <div class="menu-item__text">
+              Groups
+            </div>
+          </a>
+        </li>
+      <li class="menu-item ic-app-header__menu-list-item ">
+        <a id="global_nav_calendar_link" href="https://courseworks2.columbia.edu/calendar" class="ic-app-header__menu-list-link">
+          <div class="menu-item-icon-container" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--calendar" version="1.1" x="0" y="0" viewBox="0 0 280 280" enable-background="new 0 0 280 280" xml:space="preserve"><path d="M197.07,213.38h16.31V197.07H197.07Zm-16.31,16.31V180.76h48.92v48.92Zm-48.92-16.31h16.31V197.07H131.85Zm-16.31,16.31V180.76h48.92v48.92ZM66.62,213.38H82.93V197.07H66.62ZM50.32,229.68V180.76H99.24v48.92Zm146.75-81.53h16.31V131.85H197.07Zm-16.31,16.31V115.54h48.92v48.92Zm-48.92-16.31h16.31V131.85H131.85Zm-16.31,16.31V115.54h48.92v48.92ZM66.62,148.15H82.93V131.85H66.62ZM50.32,164.46V115.54H99.24v48.92ZM34,262.29H246V82.93H34ZM246,66.62V42.16A8.17,8.17,0,0,0,237.84,34H213.38v8.15a8.15,8.15,0,1,1-16.31,0V34H82.93v8.15a8.15,8.15,0,0,1-16.31,0V34H42.16A8.17,8.17,0,0,0,34,42.16V66.62Zm-8.15-48.92a24.49,24.49,0,0,1,24.46,24.46V278.6H17.71V42.16A24.49,24.49,0,0,1,42.16,17.71H66.62V9.55a8.15,8.15,0,0,1,16.31,0v8.15H197.07V9.55a8.15,8.15,0,1,1,16.31,0v8.15Z"></path></svg>
+
+          </div>
+          <div class="menu-item__text">
+            Calendar
+          </div>
+        </a>
+      </li>
+      <li class="menu-item ic-app-header__menu-list-item ">
+      <!-- TODO: Add back global search when available -->
+        <a id="global_nav_conversations_link" href="https://courseworks2.columbia.edu/conversations" class="ic-app-header__menu-list-link">
+          <div class="menu-item-icon-container">
+            <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--inbox" version="1.1" x="0" y="0" viewBox="0 0 280 280" enable-background="new 0 0 280 280" xml:space="preserve"><path d="M91.72,120.75h96.56V104.65H91.72Zm0,48.28h80.47V152.94H91.72Zm0-96.56h80.47V56.37H91.72Zm160.94,34.88H228.52V10.78h-177v96.56H27.34A24.17,24.17,0,0,0,3.2,131.48V244.14a24.17,24.17,0,0,0,24.14,24.14H252.66a24.17,24.17,0,0,0,24.14-24.14V131.48A24.17,24.17,0,0,0,252.66,107.34Zm0,16.09a8.06,8.06,0,0,1,8,8v51.77l-32.19,19.31V123.44ZM67.58,203.91v-177H212.42v177ZM27.34,123.44H51.48v79.13L19.29,183.26V131.48A8.06,8.06,0,0,1,27.34,123.44ZM252.66,252.19H27.34a8.06,8.06,0,0,1-8-8V202l30,18H230.75l30-18v42.12A8.06,8.06,0,0,1,252.66,252.19Z"></path></svg>
+</span>
+            <span class="menu-item__badge"></span>
+          </div>
+          <div class="menu-item__text">
+            Inbox
+          </div>
+        </a>
+      </li>
+        <li class="menu-item ic-app-header__menu-list-item">
+          <a id="global_nav_history_link" role="button" href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="ic-app-header__menu-list-link">
+            <div class="menu-item-icon-container" aria-hidden="true">
+              <svg viewBox="0 0 1920 1920" class="ic-icon-svg menu-item__icon svg-icon-history" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path d="M960 112.941c-467.125 0-847.059 379.934-847.059 847.059 0 467.125 379.934 847.059 847.059 847.059 467.125 0 847.059-379.934 847.059-847.059 0-467.125-379.934-847.059-847.059-847.059M960 1920C430.645 1920 0 1489.355 0 960S430.645 0 960 0s960 430.645 960 960-430.645 960-960 960m417.905-575.955L903.552 988.28V395.34h112.941v536.47l429.177 321.77-67.765 90.465z" stroke="none" stroke-width="1" fill-rule="evenodd"></path>
+</svg>
+            </div>
+            <div class="menu-item__text">
+              History
+            </div>
+          </a>
+        </li>
+        
+
+      <li class="ic-app-header__menu-list-item">
+        <a id="global_nav_help_link" role="button" class="ic-app-header__menu-list-link" data-track-category="help system" data-track-label="help button" href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#">
+          <div class="menu-item-icon-container" role="presentation">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="ic-icon-svg menu-item__icon svg-icon-information" x="0" y="0" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve" fill="currentColor"><path d="M94.42,139h11.15V105.58H94.42ZM83.27,150.19V94.42h33.46v55.76ZM100,72.12A11.15,11.15,0,1,1,111.15,61,11.16,11.16,0,0,1,100,72.12Zm0-33.46A22.31,22.31,0,1,0,122.31,61,22.33,22.33,0,0,0,100,38.66M100,5.2A94.8,94.8,0,1,0,194.8,100,94.91,94.91,0,0,0,100,5.2m0,178.45A83.65,83.65,0,1,1,183.65,100,83.73,83.73,0,0,1,100,183.65"></path></svg>
+
+            <span class="menu-item__badge"><span dir="ltr"><span class="css-p7pe68-screenReaderContent">10 unread release notes.</span><span aria-hidden="true">10</span></span></span>
+          </div>
+          <div class="menu-item__text">
+            Help
+          </div>
+</a>      </li>
+    </ul>
+  </div>
+  <div class="ic-app-header__secondary-navigation">
+    <ul class="ic-app-header__menu-list">
+      <li class="menu-item ic-app-header__menu-list-item">
+        <a id="primaryNavToggle" role="button" href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="ic-app-header__menu-list-link ic-app-header__menu-list-link--nav-toggle" aria-label="Minimize global navigation" title="Minimize global navigation">
+          <div class="menu-item-icon-container" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--navtoggle" version="1.1" x="0" y="0" width="40" height="32" viewBox="0 0 40 32" xml:space="preserve">
+  <path d="M39.5,30.28V2.48H37.18v27.8Zm-4.93-13.9L22.17,4,20.53,5.61l9.61,9.61H.5v2.31H30.14l-9.61,9.61,1.64,1.64Z"></path>
+</svg>
+
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div id="global_nav_tray_container"></div>
+  <div id="global_nav_tour"></div>
+</header>
+
+
+  <div id="instructure_ajax_error_box">
+    <div style="text-align: right; background-color: #fff;"><a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="close_instructure_ajax_error_box_link">Close</a></div>
+    <iframe id="instructure_ajax_error_result" src="./Project 2_ A Data Exploration Agent_files/saved_resource.html" style="border: 0;" title="Error"></iframe>
+  </div>
+
+  <div id="wrapper" class="ic-Layout-wrapper">
+      <div class="ic-app-nav-toggle-and-crumbs no-print">
+          <button type="button" id="courseMenuToggle" class="Button Button--link ic-app-course-nav-toggle" aria-live="polite" aria-label="Hide Courses Navigation Menu">
+            <i class="icon-hamburger" aria-hidden="true"></i>
+          </button>
+
+        <div class="ic-app-crumbs ic-app-crumbs-enhanced-rubrics ic-app-crumbs-ready" style="min-width: 0px;"><div dir="ltr" id="breadcrumbs" class="css-1adc43d-view--block"><div dir="ltr" role="navigation" aria-label="breadcrumbs" data-cid="Breadcrumb" class="css-16f4rhd-view"><ol class="css-1bsiv2v-breadcrumb"><li class="css-svmxy1-breadcrumb__crumb" style="max-width: 33%;"><span data-position="Popover___0" data-cid="Position Popover Tooltip" class="css-1ihz85b-position"><span aria-describedby="Tooltip___0" data-popover-trigger="true" data-position-target="Popover___0"><a dir="ltr" data-cid="Link BreadcrumbLink" href="https://courseworks2.columbia.edu/courses/252703" class="css-7jfiys-view--block-link" aria-label="IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH"><span data-cid="TruncateText" class="css-1p1uj7k-truncateText"><span aria-hidden="true">IEORE4570_001_2026_3 - TOPICS IN OPERA…<span class="css-1vt246c-truncateText__spacer" style="width: 515.51px;"></span></span></span></a></span></span><svg name="IconArrowOpenEnd" viewBox="0 0 1920 1920" rotate="0" data-cid="InlineSVG SVGIcon" width="1em" height="1em" aria-hidden="true" role="presentation" focusable="false" class="css-1m16qi-inlineSVG-svgIcon-breadcrumb__separator" style="width: 1em; height: 1em;"><g role="presentation"><path d="M568.13.012 392 176.142l783.864 783.989L392 1743.87 568.13 1920l960.118-959.87z" fill-rule="evenodd"></path></g></svg></li><li class="css-svmxy1-breadcrumb__crumb" style="max-width: 33%;"><span data-position="Popover___1" data-cid="Position Popover Tooltip" class="css-1ihz85b-position"><span aria-describedby="Tooltip___1" data-popover-trigger="true" data-position-target="Popover___1"><a dir="ltr" data-cid="Link BreadcrumbLink" href="https://courseworks2.columbia.edu/courses/252703/assignments" class="css-7jfiys-view--block-link"><span data-cid="TruncateText" class="css-1p1uj7k-truncateText"><span aria-hidden="false">Assignments</span></span></a></span></span><svg name="IconArrowOpenEnd" viewBox="0 0 1920 1920" rotate="0" data-cid="InlineSVG SVGIcon" width="1em" height="1em" aria-hidden="true" role="presentation" focusable="false" class="css-1m16qi-inlineSVG-svgIcon-breadcrumb__separator" style="width: 1em; height: 1em;"><g role="presentation"><path d="M568.13.012 392 176.142l783.864 783.989L392 1743.87 568.13 1920l960.118-959.87z" fill-rule="evenodd"></path></g></svg></li><li class="css-svmxy1-breadcrumb__crumb" style="max-width: 33%;"><span data-position="Popover___2" data-cid="Position Popover Tooltip" class="css-1ihz85b-position"><span dir="ltr" aria-current="page" data-cid="Link BreadcrumbLink" aria-describedby="Tooltip___2" data-popover-trigger="true" data-position-target="Popover___2" class="css-7jfiys-view--block-link"><span data-cid="TruncateText" class="css-1p1uj7k-truncateText"><span aria-hidden="false">Project 2: A Data Exploration Agent</span></span></span></span></li></ol></div></div></div>
+
+
+        <div id="nutrition_facts_container"></div>
+        <div class="right-of-crumbs right-of-crumbs-no-reverse">
+          <div id="ai-information-mount"></div>
+        </div>
+
+      </div>
+    <div id="main" class="ic-Layout-columns">
+        <div class="ic-Layout-watermark" aria-hidden="true"></div>
+        <div id="left-side" class="ic-app-course-menu ic-sticky-on list-view" style="display: block">
+          <div id="sticky-container" class="ic-sticky-frame has-scrollbar">
+              <span id="section-tabs-header-subtitle" class="ellipsis">Fall 2026</span>
+            <nav role="navigation" aria-label="Courses Navigation Menu"><ul id="section-tabs"><li class="section"><a id="home-link" href="https://courseworks2.columbia.edu/courses/252703" class="home" tabindex="0">Home</a></li><li class="section"><a id="announcements-link" href="https://courseworks2.columbia.edu/courses/252703/announcements" class="announcements" tabindex="0">Announcements</a></li><li class="section"><a id="context_external_tool_37606-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/37606?display=borderless" class="context_external_tool_37606" rel="opener" target="_blank" tabindex="0">Ed Discussion</a></li><li class="section"><a id="files-link" href="https://courseworks2.columbia.edu/courses/252703/files" class="files" tabindex="0">Files</a></li><li class="section"><a id="context_external_tool_7232-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/7232" class="context_external_tool_7232" tabindex="0">Course Info</a></li><li class="section"><a id="syllabus-link" href="https://courseworks2.columbia.edu/courses/252703/assignments/syllabus" class="syllabus" tabindex="0">Syllabus</a></li><li class="section"><a id="assignments-link" href="https://courseworks2.columbia.edu/courses/252703/assignments" aria-current="page" class="assignments active" tabindex="0">Assignments</a></li><li class="section"><a id="people-link" href="https://courseworks2.columbia.edu/courses/252703/users" class="people" tabindex="0">People</a></li><li class="section"><a id="grades-link" href="https://courseworks2.columbia.edu/courses/252703/grades" class="grades" tabindex="0">Grades<b class="nav-badge">1</b></a></li><li class="section"><a id="context_external_tool_12497-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/12497" class="context_external_tool_12497" tabindex="0">Video Library</a></li><li class="section"><a id="context_external_tool_55370-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/55370" class="context_external_tool_55370" tabindex="0">Course Evaluations</a></li><li class="section"><a id="context_external_tool_49335-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/49335" class="context_external_tool_49335" tabindex="0">On-Campus Student Health and Wellness</a></li><li class="section"><a id="context_external_tool_62951-link" href="https://courseworks2.columbia.edu/courses/252703/external_tools/62951" class="context_external_tool_62951" tabindex="0">You@Columbia</a></li></ul></nav>
+          </div>
+        </div>
+      <div id="not_right_side" class="ic-app-main-content">
+        <div id="content-wrapper" class="ic-Layout-contentWrapper">
+          
+          <div id="content" class="ic-Layout-contentMain" role="main">
+            
+<style>
+  #right-side-wrapper {
+    height: 100%;
+  }
+
+  .assignment_header {
+    border-bottom: 1px solid #a4a4a4;
+    overflow: hidden;
+  }
+
+  #assignment_head {
+    margin-top: 0;
+    font-weight: bold;
+  }
+
+  .lock_explanation {
+    text-align: left;
+    margin-top: 20px;
+  }
+</style>
+
+
+
+<div id="assignment_show" class="assignment content_underline_links" data-lti-page-content="true">
+    <!--Student View-->
+    <div class="assignment-title">
+      <div class="title-content">
+        <h1 class="title">
+          Project 2: A Data Exploration Agent
+        <button aria-haspopup="dialog" class="ally-accessible-versions ally-add-tooltip" data-id="assignment:1759754" data-ally-content-id="assignment:1759754" data-ally-richcontent-eid="assignment:1759754" aria-label="Alternative formats" title="Alternative formats">
+    <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation">
+        <path fill="currentColor" d="M22,4.3875 L17.1875,11.7 L12.375,4.3875 L15.2625,4.3875 L15.2625,0 L19.1125,0 L19.1125,4.3875 L22,4.3875 Z M0,13 L7.56170223,2.6 L15.125,13 L11.5074634,13 C10.8377941,11.637446 9.34323244,10.6886103 7.60683311,10.6886103 C5.87043379,10.6886103 4.37564424,11.637446 3.70597488,13 L0,13 Z M5.76079766,8.21256906 C5.76079766,9.12421192 6.56722727,9.86326321 7.56170223,9.86326321 C8.55617719,9.86326321 9.36237887,9.12421192 9.36237887,8.21256906 C9.36237887,7.3009262 8.55617719,6.56187491 7.56170223,6.56187491 C6.56722727,6.56187491 5.76079766,7.3009262 5.76079766,8.21256906 Z"></path>
+    </svg>
+</button></h1>
+      </div>
+      <div class="assignment-buttons">
+        
+
+        <button type="button" class="Button Button--primary submit_assignment_link ">Start Assignment</button>
+      </div>
+    </div>
+      <div id="assignment_asset_processor_eula"></div>
+    
+<ul class="student-assignment-overview">
+  <li>
+    <span class="title">Due</span>
+    <span class="value">
+          <span class="date_text">
+              <span class="display_date">Nov 11</span> by <span class="display_time">11:59pm</span>
+          </span><!--
+        --></span>
+  </li>
+    <li>
+      <span class="title">Points</span>
+      <span class="value">25</span>
+    </li>
+    <li>
+      <span class="title">Submitting</span>
+      <span class="value">a website url</span>
+    </li>
+  
+
+  <div class="clear"></div>
+</ul>
+
+
+  <div class="clear"></div>
+
+
+  <div class="clear"></div>
+
+
+
+
+  <div class="description user_content enhanced" data-resource-type="assignment.body" data-resource-id="1759754"><h1><span>Project 2: A Data Exploration Agent</span></h1>
+<p><span>Build an agent that explores a dataset to answer questions people actually have, and deploy it to Google Cloud Run.</span></p>
+<h2><span>What you're building</span></h2>
+<p><span>Pick a dataset and a question to explore. </span><strong>Either the dataset or the question has to be unique</strong><span>:</span></p>
+<ul>
+<li aria-level="1"><span>A unique dataset is one no other team uses. Maybe you found it online, scraped it yourself, or set up an account to get access to it.</span></li>
+<li aria-level="1"><span>A unique exploration problem can use a well-known dataset (NYC Open Data, SEC filings, NOAA weather) if the kinds of questions you’re asking are unique.</span></li>
+</ul>
+<p><i></i></p>
+<p><i><span>Before you start, add your dataset, question(s) you’re exploring, and path to </span></i><a href="https://docs.google.com/spreadsheets/d/1Xf4Kk03xjnbAotORk5ywrnA45Bcc2052Ef6frqUsBkg/edit?usp=sharing" class="external" target="_blank" rel="noreferrer noopener"><span><i><span>the sign-up sheet</span></i></span><span class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; " role="presentation"><svg name="IconExternalLink" viewBox="0 0 1920 1920" rotate="0" data-cid="InlineSVG SVGIcon" style="width:1em; height:1em; vertical-align:middle; fill:currentColor" width="1em" height="1em" aria-hidden="true" role="presentation" focusable="false" class="css-1xnn9jb-inlineSVG-svgIcon"><g role="presentation"><path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path></g></svg><span class="screenreader-only">Links to an external site.</span></span></a><i><span>. Entries are first-come and visible to everyone. You can reuse a listed dataset only if your question domain is clearly different (and vice-versa). If you’re unsure, add your entry and flag it on the Ed Discussion board as a private question.</span></i></p>
+<p><i></i></p>
+<p><span>Your agent must:</span></p>
+<ul>
+<li aria-level="1"><span>Use data the model doesn't already know deeply.</span></li>
+<li aria-level="1"><span>Get at the data through tools: SQL, files, search, or an API.</span></li>
+<li aria-level="1"><span>Combine evidence into a supported claim.</span></li>
+<li aria-level="1"><span>State if the data can't answer a question.</span></li>
+<li aria-level="1"><span>Show its work. Keep the </span><span>/chat</span><span> response shape from Project 1. Sub-agent tool calls go in </span><span>tool_calls</span><span> too, with an </span><span>agent</span><span> field.</span></li>
+<li aria-level="1"><span>Have a front end that says what the agent explores, who it's for and how to use it.</span></li>
+<li aria-level="1"><span>Be deployed to GCP Cloud Run.</span></li>
+</ul>
+<h2><span>Pick a path</span></h2>
+<table>
+<thead>
+<tr>
+<th>
+<p><strong>Path</strong></p>
+</th>
+<th>
+<p><strong>What you build</strong></p>
+</th>
+<th>
+<p><strong>Reference</strong></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><strong>Text2SQL</strong></p>
+</td>
+<td>
+<p><span>A Text2SQL agent over a database/datawarehouse, with context built offline</span></p>
+</td>
+<td>
+<p><span>subway-survey-text2sql-improved.zip</span></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><strong>Deep Research</strong><span> (recommended)</span></p>
+</td>
+<td>
+<p><span>A Lead that plans, Researchers that explore in parallel and a Writer that reports</span></p>
+</td>
+<td>
+<p><span>wikipedia-deep-research.zip</span></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><strong>Evals + Simple RAG</strong></p>
+</td>
+<td>
+<p><span>A RAG agent with an eval suite for your agent and two rounds of hill-climbing against it</span></p>
+</td>
+<td>
+<p><span>nyc-311-agent.zip</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span>Text2SQL</span></h3>
+<ul>
+<li aria-level="1"><span>You must have an offline build step that supports your agent writing SQL.</span></li>
+<li aria-level="1"><span>You should nicely present the results, either a formatted table or as a data visualization.</span></li>
+<li aria-level="1"><span>In the README, show two questions the plain </span><span>run_sql</span><span> agent got wrong and your agent gets right, with both traces.</span></li>
+<li aria-level="1"><span>You can use DuckDB and local datasets, but it would be more interesting to host data in BigQuery, CloudSQL, or GCS (queryable with DuckDB).</span></li>
+</ul>
+<h3><span>Deep Research</span></h3>
+<ul>
+<li aria-level="1"><span>At least three agent shapes with different jobs, for example Lead, Researcher and Writer.</span></li>
+<li aria-level="1"><span>The Lead fans out to several Researchers in one turn, and they run in parallel in fresh contexts.</span></li>
+<li aria-level="1"><span>The Lead goes back for more when the findings leave a gap, up to a turn cap.</span></li>
+<li aria-level="1"><span>Vague input questions require clarification.</span></li>
+<li aria-level="1"><span>The output is accurately cited.</span></li>
+</ul>
+<h3><span>Evals</span></h3>
+<ul>
+<li aria-level="1"><span>At least 50 samples, gold or silver, with where each came from written down. None of them can also appear in your prompt as a few-shot example.</span></li>
+<li aria-level="1"><span>At least two kinds of scorer: deterministic checks, a judge with a golden reference, or a judge with a rubric.</span></li>
+<li aria-level="1"><span>A way to run the evals documented in the README (e.g. </span><span>uv run inspect eval task.py</span><span> but you may use any eval framework)</span></li>
+<li aria-level="1"><span>A hill-climbing log in the README:</span></li>
+<ul>
+<li aria-level="2"><span>Your baseline score.</span></li>
+<li aria-level="2"><span>Two or more changes you made with the new score.</span></li>
+<li aria-level="2"><span>Which gains are bigger than the margin of error (±1/√n).</span></li>
+</ul>
+</ul>
+<p><strong><i>You may notice that the exact requirements are vague. This is by design. The most important part of this assignment is that you're creative with it.</i></strong></p>
+<h2><span>README</span></h2>
+<p><span>Each agent should come with a </span><span>README.md</span><span> that:</span></p>
+<ul>
+<li aria-level="1"><span>Describes the project and who the target user is</span></li>
+<li aria-level="1"><span>Where your data came from and how someone could load it (it’s not strictly necessary that the grader </span><i><span>can</span></i><span> load it, just that they understand where it came from).</span></li>
+<li aria-level="1"><span>Lists three sample queries for the grader to test with. For each, give the answer you expect and the file, table or API endpoint it comes from.</span></li>
+<li aria-level="1"><span>For each sample query, include the answer from the same model with no tools and no system prompt, next to your agent's answer. This will help us measure the effectiveness of how your agent uses the information even if the model already knows the domain.</span></li>
+</ul>
+<h2><span>How it's graded</span></h2>
+<table style="width: 78.6885%;">
+<thead>
+<tr>
+<th style="width: 11.9018%;">
+<p><strong>Section</strong></p>
+</th>
+<th style="width: 5.88957%;">
+<p><strong>Points</strong></p>
+</th>
+<th style="width: 82.3313%;">
+<p><strong>What we assess</strong></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="width: 11.9018%;">
+<p><span>Basics</span></p>
+</td>
+<td style="width: 5.88957%;">1</td>
+<td style="width: 82.3313%;">
+<p><span>A README and a valid </span><span>submission.json</span><span>.</span></p>
+</td>
+</tr>
+<tr>
+<td style="width: 11.9018%;">
+<p><span>Functionality</span></p>
+</td>
+<td style="width: 5.88957%;">
+<p><span>9</span></p>
+</td>
+<td style="width: 82.3313%;">
+<p><span>Deployed and reachable. Clear purpose. Answers its research questions correctly.</span></p>
+</td>
+</tr>
+<tr>
+<td style="width: 11.9018%;">
+<p><span>Data</span></p>
+</td>
+<td style="width: 5.88957%;">
+<p><span>4</span></p>
+</td>
+<td style="width: 82.3313%;">
+<p><span>A unique dataset or problem. Data the model doesn't know. Admits what the data can't answer.</span></p>
+</td>
+</tr>
+<tr>
+<td style="width: 11.9018%;">
+<p><span>Path</span></p>
+</td>
+<td style="width: 5.88957%;">
+<p><span>7</span></p>
+</td>
+<td style="width: 82.3313%;">
+<p><span>The items for your path.</span></p>
+</td>
+</tr>
+<tr>
+<td style="width: 11.9018%;">
+<p><span>Creativity</span></p>
+</td>
+<td style="width: 5.88957%;">
+<p><span>4</span></p>
+</td>
+<td style="width: 82.3313%;">
+<p><span>A frontend changed from the starter. The agent does something interesting.</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p><i><span>Larger groups come with larger expectations. Here, that means the agent uses at least one data source per team member.</span></i></p>
+<h2><span>How to submit</span></h2>
+<p><span>Submit your GitHub repo URL on Courseworks. One person submits per group.</span></p>
+<h3><span>Repo</span></h3>
+<ul>
+<li aria-level="1"><span>At the root of your repo:</span></li>
+<ul>
+<li aria-level="2"><span>app.py</span><span>, </span><span>pyproject.toml</span><span> and </span><span>uv.lock</span></li>
+<li aria-level="2"><span>README.md</span></li>
+<li aria-level="2">submission.json<span style="font-size: 1rem;">, listing every team member's Columbia UNI or email in </span><span style="font-size: 1rem;">authors</span><span style="font-size: 1rem;">, including your own:</span></li>
+</ul>
+</ul>
+<ul>
+<li aria-level="1"><strong>Additionally, include a </strong><span>path</span> <strong>field stating </strong><span>"text2sql"</span><span>, </span><span>"research"</span> <strong>or</strong> <span>"evals"</span><strong>.</strong><strong></strong></li>
+</ul>
+<pre><span>{</span><br><span> &nbsp;"deploy_url": "https://your-agent.example.run.app",</span><br><span> &nbsp;"authors": ["abc1234", "xyz9876"],</span><br><span> &nbsp;"path": "text2sql"</span><br><span>}</span></pre>
+<ul>
+<li aria-level="1"><span>Private repos are fine. Just add these GitHub accounts as collaborators (Settings &gt; Collaborators &gt; Add people): </span><span>codeboi07</span><span>, </span><span>bhuvighosh3</span><span>, </span><span>nniishhh</span><span>, </span><span>x</span><span>.</span></li>
+</ul>
+<h3><span>Deployment</span></h3>
+<ul>
+<li aria-level="1"><span>Deploy to Cloud Run with continuous deploy from GitHub, following </span><a href="https://docs.google.com/document/d/1GZHWyRmOGXGJqsiIPMypKUZFRVTReCDJgC_8AdekaXk/edit" class="external" target="_blank" rel="noreferrer noopener"><span><span>Deploying to Cloud Run from GitHub</span></span><span class="external_link_icon" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; " role="presentation"><svg name="IconExternalLink" viewBox="0 0 1920 1920" rotate="0" data-cid="InlineSVG SVGIcon" style="width:1em; height:1em; vertical-align:middle; fill:currentColor" width="1em" height="1em" aria-hidden="true" role="presentation" focusable="false" class="css-1xnn9jb-inlineSVG-svgIcon"><g role="presentation"><path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path></g></svg><span class="screenreader-only">Links to an external site.</span></span></a><span>.</span></li>
+<li aria-level="1"><span>Ship the data with the deploy. Commit it if it's under GitHub's 100 MB file limit. Otherwise, load it from a GCS bucket at startup.</span></li>
+<li aria-level="1"><span>Graders wait up to 5 minutes per answer. Raise Cloud Run's request timeout if you need more, and cap your agent's </span><span>max_turns</span><span>.</span></li>
+<li aria-level="1"><span>Keep it running until grades are released.</span></li>
+</ul></div>
+
+
+  <div style="display: none;">
+    <span class="timestamp">1794459599</span>
+    <span class="due_date_string">11/11/2026</span>
+    <span class="due_time_string">11:59pm</span>
+  </div>
+</div>
+
+
+  
+<div style="display: none;" id="submit_assignment" data-context_code="course_252703" data-asset_string="assignment_1759754">
+  <div class="content" id="submit_assignment_tabs">
+    <ul>
+        <li><a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#submit_online_url_form" class="submit_online_url_option">Website URL</a></li>
+    </ul>
+
+
+      <form id="submit_online_url_form" class="submit_assignment_form" action="https://courseworks2.columbia.edu/courses/252703/assignments/1759754/submissions" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" autocomplete="off"><input type="hidden" name="authenticity_token" value="rzqHw4ltDaZEMc2p6sVqQg57Gg/cXiAL9ETsu/CLOfXsStK08Qh0kyN5/OGCt1oXIR5tR/Mzd1KQPI3hsvhRrA==" autocomplete="off">
+        <input value="online_url" autocomplete="off" type="hidden" name="submission[submission_type]" id="submission_submission_type">
+        <table class="formtable" style="width: 100%;">
+            <tbody><tr>
+              <td colspan="2">
+                
+
+  <div class="group_submission_alert" data-group-type="Project 2 Groups"><div dir="ltr" open="" class="css-2mip9c-view-alert transition--fade-entered"><div class="css-vucydy"><svg name="IconWarningBorderless" viewBox="0 0 1920 1920" rotate="0" data-cid="InlineSVG SVGIcon" width="1em" height="1em" aria-hidden="true" role="presentation" focusable="false" class="css-1uh2md0-inlineSVG-svgIcon" style="width: 1em; height: 1em;"><g role="presentation"><path d="M994.578 1436.356c-133.365 0-241.822 108.457-241.822 241.822S861.213 1920 994.578 1920s241.822-108.457 241.822-241.822-108.457-241.822-241.822-241.822zm170.485-120.912L1310.156 0H679l145.093 1315.444z" fill-rule="evenodd"></path></g></svg></div><div class="css-qfe6jw">Keep in mind, this submission will count for everyone in your Project 2 Groups group.</div></div></div>
+
+              </td>
+            </tr>
+          <tr>
+            <td colspan="2">
+              <input autocomplete="off" type="hidden" name="submission[url]" id="submission_url">
+              <div id="online_url_submission_input"><div dir="ltr" direction="row" wrap="no-wrap" class="css-5wm3kq-view--flex-flex"><span dir="ltr" class="css-tgsvdb-view-flexItem"><div dir="ltr" direction="row" wrap="no-wrap" class="css-d7fvb4-view--flex-flex"><label data-cid="TextInput" for="online-url-input" class="css-6cc1eb-formFieldLayout"><span class="css-1nuqag6-formFieldLayout__label"><span wrap="normal" letter-spacing="normal" class="css-1jyml41-text">Website URL</span><span color="primary" wrap="normal" letter-spacing="normal" class="css-vqt2vm-text">*</span></span><span class="css-j7s35e-formFieldLayout__children"><span class="css-jwt7s2-textInput__facade"><input id="online-url-input" data-testid="online-url-input" placeholder="https://" type="text" class="css-1ylbheh-textInput" value=""></span></span></label></div></span></div></div>
+            </td>
+          </tr>
+            <tr>
+              <td colspan="2" style="text-align: center;">
+                <div style="text-align: left;">
+                  <div class="textarea-emoji-container">
+                    <div class="textarea-container">
+                      <textarea class="submission_comment_textarea" placeholder="Comments..." title="Additional comments" name="submission[comment]" id="submission_comment"></textarea>
+                      <span class="emoji-picker-container" style="display: none;"></span>
+                    </div>
+                    <div class="emoji-quick-picker-container" style="display: none;"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            
+    <tr><td colspan="2">
+      All comments are sent to the whole group.
+      <input type="hidden" name="submission[group_comment]" value="1">
+    </td></tr>
+
+          
+
+          <tr>
+            <td colspan="2" class="button-container">
+              <button type="button" class="cancel_button btn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit Assignment</button>
+            </td>
+          </tr>
+        </tbody></table>
+</form>
+
+    <style>
+    #google_docs_tree li.folder {
+      cursor: pointer;
+    }
+    #google_docs_tree li.file {
+      cursor: pointer;
+      -moz-border-radius: 3px;
+      width: 80%;
+      padding-right: 20px;
+    }
+    #google_docs_tree li.file:hover {
+      background-color: #eee;
+    }
+    ul.instTree li span.active {
+      background: none;
+    }
+    #google_docs_tree li.file.leaf.active {
+      background-color: #ddd;
+    }
+    #google_docs_tree li.file .filename {
+      float: left;
+      max-width: 98%;
+    }
+    #google_docs_tree li.file .popout {
+      float: right;
+    }
+    </style>
+
+
+  </div>
+</div>
+
+
+<!--Show partial rubrics ERB if enhanced_rubrics_assignments is not enabled or in Student View-->
+  
+
+
+
+  <div id="rubrics" class="mathjax_ignore" style="margin-bottom: 10px;">
+      
+  <div class="rubric_container rubric  " id="rubric_138993" style="">
+    <div class="screenreader-only rubric-screenreader-title">
+      <h2>
+        Rubric
+      </h2>
+    </div>
+    <div class="rubric_title">
+      <div class="editing" style="text-align: left">
+        <label class="rubric-title-label">
+          Title:
+          <input id="rubric-title" type="text" class="no-margin-bottom" name="title" value="Peer Review Rubric (non-credit, peer style critique only) (1)" style="width: 200px;" maxlength="255">
+        </label>
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" style="display: none;" aria-hidden="true">
+          <img alt="" src="./Project 2_ A Data Exploration Agent_files/find-6164443e2a.png"> Find Rubric
+        </a>
+        <div class="editing">
+          <i class="icon-warning icon-Solid title_error_message" aria-hidden="true" style="color: #AE1B1F; padding: 5px 0 5px 35px; vertical-align: middle; font-weight: normal;
+                    display: none; align-items: center; gap: 5px; font-size: 14px;">
+            Please include a title
+          </i>
+        </div>
+      </div>
+
+      <div class="editing">
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" class="find_rubric_link icon-search" role="button" style="display: none;" title="Find Existing Rubric">
+          Find a Rubric
+        </a>
+      </div>
+
+      <div class="displaying">
+        <span class="title" tabindex="-1">Peer Review Rubric (non-credit, peer style critique only) (1)</span>
+      </div>
+      <div class="has-assessments-warning" style="display: none;">
+        You've already rated students with this rubric. Any major changes could affect their assessment results.
+      </div>
+
+      <div style="display: none;" class="links displaying pull-right">
+        <a href="https://courseworks2.columbia.edu/courses/252703/rubrics/138993?rubric_association_id=298728" class="copy_edit edit_rubric_link no-print no-hover" style="display: none;" title="Edit Rubric" aria-label="Edit Rubric" role="button"><i class="icon-edit standalone-icon"></i></a>
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" class="find_rubric_link no-print no-hover" style="display: none;" title="Find Another Rubric" aria-label="Find Another Rubric" role="button"><i class="icon-search standalone-icon"></i></a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/298728" class="delete_rubric_link no-print no-hover" style="display: none;" title="Delete Rubric" aria-label="Delete Rubric" role="button"><i class="icon-trash standalone-icon"></i></a>
+        <div style="display: none;">
+          <div class="use_for_grading">&nbsp;</div>
+          <div class="free_form_criterion_comments">&nbsp;</div>
+          <div class="hide_score_total">&nbsp;</div>
+          <div class="hide_outcome_results">&nbsp;</div>
+          <div class="hide_points">&nbsp;</div>
+          <div class="rubric_association_id">298728</div>
+            <div class="user_id">&nbsp;</div>
+          <div class="assessment_type"></div>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/298728/assessments/%7B%7B%20assessment_id%20%7D%7D" rel="nofollow" class="edit_assessment_link">&nbsp;</a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubrics/%7B%7B%20rubric_id%20%7D%7D" class="edit_rubric_url">&nbsp;</a>
+            <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url">&nbsp;</a>
+        </div>
+      </div>
+      <div style="font-size: 0.8em; display: none" class="links displaying locked">
+        <span style="">Can't change a rubric once you've started using it.</span>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url" style="display: none;">&nbsp;</a>
+      </div>
+    </div>
+
+    <table class="rubric_table">
+      <caption>
+        <div class="screenreader-only">
+          <span class="title">Peer Review Rubric (non-credit, peer style critique only) (1)</span>
+        </div>
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Criteria</th>
+          <th scope="col">Ratings</th>
+          <th scope="col" class="toggle_for_hide_points ">
+            Pts
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+            
+<tr id="criterion__2202" class="criterion   " style="">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Experience &amp; Usefulness</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;">_2202</span>
+            <div class="long_description small_description">
+              USE THE AGENT. As a user, did this agent actually work for you? Focus on your real experience, not what you imagine it could do with more polish.
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points"></span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">4.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Wow</span>
+                  <span class="rating_long_description small_description">Immediately intuitive, and the results made me think or see something differently.</span>
+                </span>
+                <span class="rating_id" style="display: none;">blank</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">4</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">3.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Impressed</span>
+                  <span class="rating_long_description small_description">Smooth experience, results felt genuinely useful or interesting.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_832</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">3</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">2.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Functional</span>
+                  <span class="rating_long_description small_description">Understood it, got it working, results were okay but not memorable.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_3833</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">2</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">1.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Bumpy</span>
+                  <span class="rating_long_description small_description">Got the general idea, but struggled to get useful results.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_452</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">1</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Lost</span>
+                  <span class="rating_long_description small_description">Couldn't figure out what it does or how to use it.</span>
+                </span>
+                <span class="rating_id" style="display: none;">blank_2</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+            
+<tr id="criterion__3458" class="criterion   " style="">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Risk-Taking &amp; Ambition</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;">_3458</span>
+            <div class="long_description small_description">
+              READ THE CODE. Did the creator push beyond what was comfortable or expected? Ambitious failures count more than safe successes here.
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points"></span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">4.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Full send</span>
+                  <span class="rating_long_description small_description">Went for something genuinely bold, even if parts are rough around the edges.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_6038</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">4</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">3.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Real swing</span>
+                  <span class="rating_long_description small_description">Took on something clearly difficult or unfamiliar and made real progress.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_9666</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">3</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">2.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Solid push</span>
+                  <span class="rating_long_description small_description">Tried something meaningfully outside their comfort zone, with mixed results.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_1296</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">2</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">1.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Toe in the water</span>
+                  <span class="rating_long_description small_description">One small stretch beyond the requirements, but mostly played it safe.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_854</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">1</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Safe bet</span>
+                  <span class="rating_long_description small_description">Did exactly what the assignment asked, nothing more.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_9350</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+            
+<tr id="criterion__5652" class="criterion   " style="">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Originality &amp; Voice</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;">_5652</span>
+            <div class="long_description small_description">
+              Does this project feel like the creator made it their own?
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points"></span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">4.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">One of a kind</span>
+                  <span class="rating_long_description small_description">Feels like no one else in the class would have built this. The choices reflect real curiosity and a distinct perspective.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_779</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">4</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">3.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Their own thing</span>
+                  <span class="rating_long_description small_description">Clear point of view. They explored the problem and made deliberate, personal choices.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_3422</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">3</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">2.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Getting there</span>
+                  <span class="rating_long_description small_description">Some creative choices hint at a perspective behind the project.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_1262</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating 
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">2</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">1.0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Light touch</span>
+                  <span class="rating_long_description small_description">One or two personal choices, but mostly follows the obvious path.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_3471</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">1</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Off the shelf</span>
+                  <span class="rating_long_description small_description">Feels like a template. Could be anyone's project.</span>
+                </span>
+                <span class="rating_id" style="display: none;">_6311</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+        
+<tr id="criterion_blank" class="criterion blank  " style="display: none;">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Description of criterion</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;"></span>
+            <div class="long_description small_description">
+              
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points">5</span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_criterion_link" role="button"><i class="icon-trash standalone-icon"></i><span class="screenreader-only">Delete criterion row</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Full Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                infinitesimal
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">0</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">No Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank_2</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+      </tbody>
+    </table>
+
+    <div class="rubric-footer" aria-label="Rubric criteria configuration">
+      <div class="editing pull-left">
+        <span id="add_criterion_holder" class="criterion_link"></span>
+      </div>
+      <div class="total_points_holder toggle_for_hide_points " style="">
+        <span role="text">Total Points:
+          <span class="rubric_total">15</span> <span class="assessing">out of 15</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div id="edit_rubric" style="display: none;">
+    <form id="edit_rubric_form" class="edit-rubric-form no-margin-bottom" aria-label="Rubric configuration">
+      <div class="rubric_custom_ratings" style="">
+        <label>
+          <input type="checkbox" id="rubric_custom_rating" class="rubric_custom_rating">
+          I'll write free-form comments when assessing students
+        </label>
+      </div>
+        <div class="hide_points" style="">
+          <label>
+            <input type="checkbox" id="hide_points" name="hide_points" class="hide_points_checkbox">
+            Remove points from rubric
+          </label>
+        </div>
+        <div class="hide_outcome_results" style="">
+          <label>
+            <input type="checkbox" id="hide_outcome_results" class="hide_outcome_results_checkbox">
+            Don't post Outcomes results to Learning Mastery Gradebook
+          </label>
+        </div>
+        <div class="rubric_grading" style="">
+          <label>
+            <input type="checkbox" id="grading_rubric" class="grading_rubric_checkbox">
+            Use this rubric for assignment grading
+          </label>
+        </div>
+      <div class="totalling_rubric" style="">
+        <label>
+          <input type="checkbox" id="totalling_rubric" class="totalling_rubric_checkbox">
+          Hide score total for assessment results
+        </label>
+      </div>
+      <div class="ic-Action-header ic-Action-header--half-margin">
+        <div class="ic-Action-header__Primary">
+          <button type="button" class="Button cancel_button">Cancel</button>
+          <button type="submit" class="Button Button--primary save_button">Create Rubric</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+    <div style="display: none;" id="rubric_parameters">
+      <input type="hidden" name="rubric_association[association_type]" value="Assignment">
+      <input type="hidden" name="rubric_association[association_id]" value="1759754">
+      <input type="hidden" name="rubric_association[purpose]" value="grading">
+    </div>
+    
+<div id="rubric_long_description_dialog" style="display: none;">
+  <div class="editing">
+    <form id="edit_criterion_form" class="no-margin-bottom">
+      <div>
+        <label class="rating_form_label">Description
+          <textarea class="description" rows="1" name="description"></textarea>
+        </label>
+        <i class="icon-warning icon-Solid description_error_message" aria-hidden="true" style="color: red; display: none">
+          Please include a description
+        </i>
+      </div>
+      <div>
+        <label class="rating_form_label">Long Description
+          <textarea class="long_description" rows="4" name="long_description"></textarea>
+        </label>
+      </div>
+      <div class="button-container">
+        <button type="button" class="btn btn button-secondary cancel_button">Cancel</button>
+        <button type="button" class="btn save_button btn-primary">Update Criterion</button>
+      </div>
+    </form>
+  </div>
+  <div class="displaying">
+    <div class="long_description">
+    </div>
+  </div>
+</div>
+<div id="rubric_criterion_comments_dialog" style="display: none;">
+  <div class="criterion_description" style="border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 1.2em; font-weight: bold; margin-bottom: 5px;" tabindex="-1"></div>
+  <div class="editing">
+    <label for="criterion_comments_textarea">
+      Additional Comments:
+    </label>
+    <textarea id="criterion_comments_textarea" class="criterion_comments" name="criterion_comments" style="width: 370px;"></textarea>
+    <div class="button-container">
+      <button type="button" class="btn btn button-secondary cancel_button">Cancel</button>
+      <button type="button" class="btn save_button">Update Comments</button>
+    </div>
+  </div>
+  <div class="displaying">
+    Additional Comments:
+    <div class="criterion_comments" style="margin-top: 10px;">
+    </div>
+  </div>
+</div>
+<div id="rubric_rating_dialog" style="display: none;">
+  <div class="description" style="border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 1.2em; font-weight: bold; margin-bottom: 5px;">
+    <span id="edit_rating_form_criterion_description"></span>
+  </div>
+  <div class="editing">
+    <form id="edit_rating_form" class="no-margin-bottom">
+      <div class="toggle_for_hide_points">
+        <div><label id="rating_form_score_label" class="rating_form_label">Rating Score</label></div>
+        <span id="rating_form_max_score_label" hidden="">Rating max score</span>
+        <input id="points" aria-labelledby="rating_form_score_label" type="text" size="2" name="points" class="no-margin-bottom ic-field-1">
+        <span class="range_rating">to &gt;
+          <input aria-label="Rating min score" type="text" size="2" name="min_points" class="no-margin-bottom ic-field-1 min_points" placeholder="min">
+        </span>pts
+      </div>
+      <div>
+        <label for="rating_form_title" class="rating_form_label">Rating Title</label>
+        <input id="rating_form_title" type="text" class="rating_description" style="width: 90%;" name="description">
+        <i class="icon-warning icon-Solid description_error_message" aria-hidden="true" style="color: red; display: none">
+          Please include a rating title
+        </i>
+      </div>
+      <div>
+        <label for="rating_form_description" class="rating_form_label">Rating Description</label>
+        <textarea id="rating_form_description" rows="4" style="width: 90%;" class="rating_long_description" name="rating_long_description" form="edit_rating_form"></textarea>
+      </div>
+      <div class="button-container">
+        <button type="button" class="btn button-secondary cancel_button">Cancel</button>
+        <button type="button" class="btn btn-primary save_button ok_button">Update Rating</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  </div>
+  
+  <div class="rubric_container rubric  " id="default_rubric" style="display: none;">
+    <div class="screenreader-only rubric-screenreader-title">
+      <h2>
+        Rubric
+      </h2>
+    </div>
+    <div class="rubric_title">
+      <div class="editing" style="text-align: left">
+        <label class="rubric-title-label">
+          Title:
+          <input id="rubric-title" type="text" class="no-margin-bottom" name="title" value="Some Rubric" style="width: 200px;" maxlength="255">
+        </label>
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" style="display: none;" aria-hidden="true">
+          <img alt="" src="./Project 2_ A Data Exploration Agent_files/find-6164443e2a.png"> Find Rubric
+        </a>
+        <div class="editing">
+          <i class="icon-warning icon-Solid title_error_message" aria-hidden="true" style="color: #AE1B1F; padding: 5px 0 5px 35px; vertical-align: middle; font-weight: normal;
+                    display: none; align-items: center; gap: 5px; font-size: 14px;">
+            Please include a title
+          </i>
+        </div>
+      </div>
+
+      <div class="editing">
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" class="find_rubric_link icon-search" role="button" style="" title="Find Existing Rubric">
+          Find a Rubric
+        </a>
+      </div>
+
+      <div class="displaying">
+        <span class="title" tabindex="-1">Title</span>
+      </div>
+      <div class="has-assessments-warning" style="display: none;">
+        You've already rated students with this rubric. Any major changes could affect their assessment results.
+      </div>
+
+      <div style="display: none;" class="links displaying pull-right">
+        <a href="https://courseworks2.columbia.edu/courses/252703/rubrics/%7B%7B%20id%20%7D%7D" class=" edit_rubric_link no-print no-hover" style="" title="Edit Rubric" aria-label="Edit Rubric" role="button"><i class="icon-edit standalone-icon"></i></a>
+        <a href="https://courseworks2.columbia.edu/search/rubrics?q=" class="find_rubric_link no-print no-hover" style="" title="Find Another Rubric" aria-label="Find Another Rubric" role="button"><i class="icon-search standalone-icon"></i></a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20rubric_association_id%20%7D%7D" class="delete_rubric_link no-print no-hover" style="" title="Delete Rubric" aria-label="Delete Rubric" role="button"><i class="icon-trash standalone-icon"></i></a>
+        <div style="display: none;">
+          <div class="use_for_grading">&nbsp;</div>
+          <div class="free_form_criterion_comments">&nbsp;</div>
+          <div class="hide_score_total">&nbsp;</div>
+          <div class="hide_outcome_results">&nbsp;</div>
+          <div class="hide_points">&nbsp;</div>
+          <div class="rubric_association_id">&nbsp;</div>
+            <div class="user_id">&nbsp;</div>
+          <div class="assessment_type"></div>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20rubric_association_id%20%7D%7D/assessments/%7B%7B%20assessment_id%20%7D%7D" rel="nofollow" class="edit_assessment_link">&nbsp;</a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubrics/%7B%7B%20rubric_id%20%7D%7D" class="edit_rubric_url">&nbsp;</a>
+            <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url">&nbsp;</a>
+        </div>
+      </div>
+      <div style="font-size: 0.8em; display: none" class="links displaying locked">
+        <span style="">Can't change a rubric once you've started using it.</span>
+          <a href="https://courseworks2.columbia.edu/courses/252703/rubric_associations/%7B%7B%20association_id%20%7D%7D" class="delete_rubric_url" style="display: none;">&nbsp;</a>
+      </div>
+    </div>
+
+    <table class="rubric_table">
+      <caption>
+        <div class="screenreader-only">
+          <span class="title">Title</span>
+        </div>
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Criteria</th>
+          <th scope="col">Ratings</th>
+          <th scope="col" class="toggle_for_hide_points ">
+            Pts
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        
+<tr id="criterion_blank" class="criterion blank" style="display: none;">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Description of criterion</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;"></span>
+            <div class="long_description small_description">
+              
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points">5</span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_criterion_link" role="button"><i class="icon-trash standalone-icon"></i><span class="screenreader-only">Delete criterion row</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Full Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                infinitesimal
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">0</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">No Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank_2</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr>
+
+      <tr id="criterion_1" class="criterion" style="">
+  <td class="criterion_description hover-container pad-box-micro" aria-label="description of criterion">
+    <div class="criterion_description_container">
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span role="text">
+          <span class="description description_title">Description of criterion</span>
+          <span class="learning_outcome_id" style="display: none;"></span>
+          <span class="criterion_id" style="display: none;"></span>
+            <div class="long_description small_description">
+              
+            </div>
+          <div role="text" class="threshold toggle_for_hide_points ">
+            threshold:
+            <span class="mastery_points">5</span> pts
+          </div>
+        </span>
+        <div class="hide_when_learning_outcome ">
+          <div class="criterion_use_range_div editing toggle_for_hide_points ">
+            <label class="criterion_range_label" aria-label="Range">
+              <input type="checkbox" class="criterion_use_range">
+              <span aria-hidden="true">
+                Range
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="links editing">
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_criterion_link" role="button"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+          <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_criterion_link" role="button"><i class="icon-trash standalone-icon"></i><span class="screenreader-only">Delete criterion row</span></a>
+      </div>
+    </div>
+  </td>
+  <td style="padding: 0;" aria-label="criterion ratings">
+      <div class="ratings" style="">
+          <div class="rating edge_rating
+                
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">5</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">Full Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+                <div class="editing links add_rating_link">
+                  <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="add_rating_link_after" aria-label="Add rating" role="button"><i class="icon-add icon-Solid"></i></a>
+                </div>
+            </div>
+          </div>
+          <div class="rating edge_rating
+                infinitesimal
+                ">
+            <div class="rubric-container">
+              <div class="rating-main">
+                <span role="text" class="rating-content-wrapper">
+                  <span class="nobr toggle_for_hide_points ">
+                    <span class="points">0</span>
+                    <span class="range_rating" style="display: none;">to &gt;<span class="min_points">0</span></span> pts
+                  </span>
+                  <span class="description rating_description_value">No Marks</span>
+                  <span class="rating_long_description small_description"></span>
+                </span>
+                <span class="rating_id" style="display: none;">blank_2</span>
+                  <div class="editing links">
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="edit_rating_link" role="button" aria-label="Edit rating">
+                      <i class="icon-edit standalone-icon" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="delete_rating_link" role="button" aria-label="Delete rating" aria-hidden="true">
+                      <i class="icon-trash standalone-icon" aria-hidden="true"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div style="display: none; font-size: 0.8em; margin: 5px;" class="custom_ratings">
+        This area will be used by the assessor to leave comments related to this criterion.
+      </div>
+  </td>
+  <td class="nobr points_form toggle_for_hide_points " aria-label="criterion points">
+    <div class="editing" style="white-space: normal">
+      <span style="white-space: nowrap; font-size: 0.8em">
+          <input type="text" aria-label="Points" value="5" class="criterion_points ic-field-1 no-margin-bottom"> pts
+      </span><br>
+    </div>
+    <div class="displaying" role="text">
+      <span style="white-space: nowrap;">
+        <span class="criterion_rating_points_holder" style="display: none;">
+          <span class="criterion_rating_points">&nbsp;</span> /
+        </span>
+        <span class="display_criterion_points">5</span> pts<br>
+      </span>
+    </div>
+    <div class="ignoring">
+      <span> -- </span>
+    </div>
+    <div class="criterion_comments">
+        <a href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" class="no-hover criterion_comments_link" title="Additional Comments">
+          <img alt="Additional Comments" src="./Project 2_ A Data Exploration Agent_files/rubric_comment-ddae8546ab.png">
+        </a>
+        <div class="custom_rating" style="display: none;"></div>
+    </div>
+  </td>
+</tr></tbody>
+    </table>
+
+    <div class="rubric-footer" aria-label="Rubric criteria configuration">
+      <div class="editing pull-left">
+        <span id="add_criterion_holder" class="criterion_link"></span>
+      </div>
+      <div class="total_points_holder toggle_for_hide_points " style="">
+        <span role="text">Total Points:
+          <span class="rubric_total">5</span> <span class="assessing">out of 5</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div id="edit_rubric" style="display: none;">
+    <form id="edit_rubric_form" class="edit-rubric-form no-margin-bottom" aria-label="Rubric configuration">
+      <div class="rubric_custom_ratings" style="">
+        <label>
+          <input type="checkbox" id="rubric_custom_rating" class="rubric_custom_rating">
+          I'll write free-form comments when assessing students
+        </label>
+      </div>
+        <div class="hide_points" style="">
+          <label>
+            <input type="checkbox" id="hide_points" name="hide_points" class="hide_points_checkbox">
+            Remove points from rubric
+          </label>
+        </div>
+        <div class="hide_outcome_results" style="">
+          <label>
+            <input type="checkbox" id="hide_outcome_results" class="hide_outcome_results_checkbox">
+            Don't post Outcomes results to Learning Mastery Gradebook
+          </label>
+        </div>
+        <div class="rubric_grading" style="">
+          <label>
+            <input type="checkbox" id="grading_rubric" class="grading_rubric_checkbox">
+            Use this rubric for assignment grading
+          </label>
+        </div>
+      <div class="totalling_rubric" style="">
+        <label>
+          <input type="checkbox" id="totalling_rubric" class="totalling_rubric_checkbox">
+          Hide score total for assessment results
+        </label>
+      </div>
+      <div class="ic-Action-header ic-Action-header--half-margin">
+        <div class="ic-Action-header__Primary">
+          <button type="button" class="Button cancel_button">Cancel</button>
+          <button type="submit" class="Button Button--primary save_button">Create Rubric</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <div id="assignment_external_tools"><div></div></div>
+
+  
+
+
+
+          </div>
+        </div>
+        <div id="right-side-wrapper" class="ic-app-main-content__secondary">
+          <aside id="right-side">
+            
+<div id="sidebar_content">
+
+
+</div>
+
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+    <div style="display:none;"><!-- Everything inside of this should always stay hidden -->
+        <div id="page_view_id">77c24926-d08b-4cc3-866d-a1752ce522ba</div>
+    </div>
+  <div id="aria_alerts" class="hide-text affix" role="alert" aria-live="assertive"></div>
+  <div id="StudentTray__Container"></div>
+  <div id="react-router-portals"></div>
+
+
+  
+
+  <iframe src="./Project 2_ A Data Exploration Agent_files/post_message_forwarding.html" name="post_message_forwarding" title="post_message_forwarding" id="post_message_forwarding" sandbox="allow-scripts allow-same-origin" style="display:none;"></iframe>
+
+
+  <script>
+    Object.assign(
+      ENV,
+      {}
+    )
+  </script>
+
+<script>
+//<![CDATA[
+(window.deferredBundles || (window.deferredBundles = [])).push('usage_metrics');
+(window.bundles || (window.bundles = [])).push('inst_fs_service_worker');
+//]]>
+</script>
+<script src="./Project 2_ A Data Exploration Agent_files/Ally-prod-js-update.js.download" defer="defer"></script><script src="./Project 2_ A Data Exploration Agent_files/app2.js.download" defer="defer"></script>
+
+
+</div> <!-- #application -->
+
+
+<div id="ek-overlay" style="display: none;"></div><div id="ek-modal" role="dialog" tabindex="0" aria-live="assertive" aria-labelledby="ek-modal-header" aria-modal="true" style="display: none;"><div class="ek-modal-content"><h2 class="ek-modal-header" id="ek-modal-header"></h2><a id="ek-modal-close" href="https://courseworks2.columbia.edu/courses/252703/assignments/1759754#" tabindex="0" role="button" aria-label="Close dialog"></a><div class="ek-modal-body" id="ek-modal-body"></div><div class="ek-modal-footer"></div></div></div><span dir="ltr"><span dir="ltr" data-position-content="Popover___0" class="css-x1c36j-view--inlineBlock-contextView" style=""><span dir="ltr" class="css-1wfyn6r-view--block-contextView__content"><span class="css-zxcbwr-contextView__arrow"></span><span id="Tooltip___0" role="tooltip" class="css-cfm3yr-tooltip">IEORE4570_001_2026_3 - TOPICS IN OPERATIONS RESEARCH</span></span></span></span><span dir="ltr"><span dir="ltr" data-position-content="Popover___1" class="css-1pmm9ov-view--inlineBlock-contextView"><span dir="ltr" class="css-1wfyn6r-view--block-contextView__content"><span class="css-16a23f3-contextView__arrow"></span></span></span></span><span dir="ltr"><span dir="ltr" data-position-content="Popover___2" class="css-1pmm9ov-view--inlineBlock-contextView"><span dir="ltr" class="css-1wfyn6r-view--block-contextView__content"><span class="css-16a23f3-contextView__arrow"></span></span></span></span><div id="nav-tray-portal" style="position: relative; z-index: 99;"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ally-helper-hidden-accessible"></div></body></html>
