@@ -776,22 +776,16 @@ async function restore() {
 /* ---- banner and about drawer ------------------------------------------------------------------ */
 
 function playBannerVideo() {
-  // static/media/banner.mp4, when present, replaces the still banner art: a crisp copy in the
-  // middle and a blurred copy filling the sides (see .hero in style.css)
+  // static/media/banner.mp4, when present, replaces the still banner art (see .hero in style.css)
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const make = (cls) => {
-    const v = document.createElement("video");
-    Object.assign(v, { src: "/static/media/banner.mp4", poster: "/static/media/banner-poster.jpg",
-                       muted: true, loop: true, playsInline: true, autoplay: !still, preload: "auto" });
-    v.setAttribute("muted", "");
-    v.setAttribute("aria-hidden", "true");
-    v.className = cls;
-    return v;
-  };
-  const fill = make("hero-fill"), main = make("hero-video");
-  main.addEventListener("loadeddata", () => $("#hero").classList.add("has-video"), { once: true });
-  $("img.hero-fill").after(fill);
-  $("img.hero-art").after(main);
+  const video = document.createElement("video");
+  Object.assign(video, { src: "/static/media/banner.mp4", poster: "/static/media/banner-poster.jpg",
+                         muted: true, loop: true, playsInline: true, autoplay: !still, preload: "auto" });
+  video.setAttribute("muted", "");
+  video.setAttribute("aria-hidden", "true");
+  video.className = "hero-video";
+  video.addEventListener("loadeddata", () => $("#hero").classList.add("has-video"), { once: true });
+  $("img.hero-art").after(video);
 }
 
 function setUpAbout() {

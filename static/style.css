@@ -70,21 +70,19 @@ code { font-family: var(--mono); font-size: .85em; }
 
 /* ---- hero: Pokémon Emerald's ending, with the title in a GBA-style text box -------------- */
 .hero { position: relative; height: clamp(210px, 27vw, 400px); overflow: hidden; background: #9fd3ee; border-bottom: 4px solid var(--emerald-2); }
-/* The whole frame always shows (never cropped): the crisp art or video sits centered at its own
-   shape, and a blurred, enlarged copy of it fills the sides on wide screens. */
+/* The banner is the game's scene widened to 6.4:1: the game's own 3:2 frame in the middle, and sides
+   rebuilt from the clip's scrolling background layers. It keeps the full height and stays centred, so
+   narrower screens trim the sides evenly and the middle frame always shows in full. Screens wider than
+   6.4:1 get a blurred copy at the far edges. */
 .hero-fill {
   position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover;
   filter: blur(22px) saturate(1.15) brightness(.93);
 }
 .hero-art, .hero-video {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; max-width: 100%; object-fit: contain;
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; aspect-ratio: 1024 / 160; max-width: none;
   image-rendering: pixelated; /* scaled-up GBA pixels stay crisp */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
 }
-.hero-art { aspect-ratio: 3 / 2; }
-.hero-video { aspect-ratio: 3 / 2; }
-.hero.has-video img { display: none; }
+.hero.has-video img.hero-art { display: none; }
 .hero-inner { position: relative; height: 100%; max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; align-items: flex-start; }
 .title-card {
   display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 9px 12px 9px 11px; max-width: calc(100vw - 32px);
