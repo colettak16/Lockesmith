@@ -1,18 +1,22 @@
 """The /chat pipeline's control flow with the models stubbed (scripts/phase2_acceptance.py runs
-the real ones): asking, declining, citations, rules learned in conversation, rejected picks."""
+the real ones): asking, declining, the Verifier's gap loop, citation checks, rules learned in
+conversation, rejected picks."""
 
 import asyncio
 
 import pytest
 
 from agent import pipeline, runtime
-from agent.schemas import ClarifierDecision, LeadDraft, Recommendation, RuleUpdate, StateUpdate
+from agent.schemas import Alternative, ClarifierDecision, LeadDraft, Recommendation, RuleUpdate, StateUpdate
 from agent.session import SESSIONS
 from agent.state import RunState
 
 NO_STATE = StateUpdate(starter=None, badges=None, rival=None, last_battle=None, party=None)
-NO_RULES = RuleUpdate(nuzlocke=None, dupes_clause=None, level_caps=None, monotype=None, no_legendaries=None,
-                      wild_only=None, add_banned_species=[], add_used_routes=[], add_notes=[])
+NO_RULES = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
+                      level_caps=None, level_cap_offset=None, monotype=None, no_legendaries=None, wild_only=None,
+                      add_banned_species=[], add_used_routes=[], add_notes=[])
+CITED = ["progression:gym7_tate_liza"]
+STATE = RunState(starter="mudkip", badges=["stone", "knuckle", "dynamo", "heat", "balance", "feather"])
 
 
 def decision(**kw) -> ClarifierDecision:
@@ -21,27 +25,38 @@ def decision(**kw) -> ClarifierDecision:
     return ClarifierDecision(**{**base, **kw})
 
 
-DRAFT = LeadDraft(
-    intent="catch", headline="Catch Sharpedo.",
-    recommendations=[Recommendation(species="Sharpedo", role="special attacker", horizon="core", where="Route 118, Super Rod",
-                                    when="before gym7_tate_liza", why="Dark beats Psychic",
-                                    long_term="Water/Dark stays useful against Phoebe and Wallace",
-                                    source_ids=["progression:gym7_tate_liza"], alternatives=[])],
-    steps=[], battle_notes=[], assumptions=[], follow_up_questions=[], unresolved=[],
-)
+def rec(species, alts=()) -> Recommendation:
+    return Recommendation(species=species, role="answer to Psychic", horizon="core", before_battle="gym7_tate_liza",
+                          where="w", when="before Tate & Liza", why="fits", long_term="lt", evolve_to="", key_moves=[],
+                          source_ids=CITED, alternatives=list(alts))
+
+
+def backup(species) -> Alternative:
+    return Alternative(species=species, horizon="core", where="w", why="fits", long_term="lt", evolve_to="",
+                       key_moves=[], source_ids=CITED)
+
+
+def draft(*recs) -> LeadDraft:
+    return LeadDraft(intent="catch", headline="h", recommendations=list(recs), steps=[], battle_notes=[],
+                     assumptions=[], follow_up_questions=[], unresolved=[])
+
+
+DRAFT = draft(rec("Sharpedo"))
 
 
 @pytest.fixture
 def models(monkeypatch):
-    """Stub runtime.run per agent name; returns the list of agents that ran."""
+    """Stub runtime.run per agent name (a list scripts successive calls); returns the agents that ran."""
     calls, script = [], {}
 
     async def fake_run(agent, input, context, max_turns=8):
         calls.append(agent.name)
         if agent.name == "lead":
-            context.ledger.add("progression:gym7_tate_liza")
-            context.research_round = 1
+            context.ledger.add(CITED[0])
+            context.research_round += 1
         out = script[agent.name]
+        if isinstance(out, list):
+            out = out.pop(0) if len(out) > 1 else out[0]
         return out(context) if callable(out) else out
 
     monkeypatch.setattr(runtime, "run", fake_run)
@@ -72,11 +87,56 @@ def test_full_turn_cites_ledger_ids_and_flags_unknown(models):
     script["clarifier"] = decision()
     script["lead"] = DRAFT
     script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]. It's great [[made:up]]."
-    body = chat("what for Tate & Liza?", "p-full", RunState(starter="mudkip", badges=["stone"]))
-    assert calls == ["clarifier", "lead", "writer"]
+    body = chat("what for Tate & Liza?", "p-full", STATE)
+    assert calls == ["clarifier", "lead", "writer", "writer"]  # one retry for the unknown id
     assert body["response"] == "Catch Sharpedo [1]. It's great ."
     assert body["citations"][0]["source_id"] == "progression:gym7_tate_liza"
-    assert body["plan"]["unverified_source_ids"] == ["made:up"]
+    assert body["plan"]["citation_warnings"] == ["[[made:up]] isn't a source any tool returned"]
+
+
+def test_citation_retry_fixes_an_uncited_pick(models):
+    calls, script = models
+    script["clarifier"] = decision()
+    script["lead"] = DRAFT
+    script["writer"] = ["Catch Sharpedo, it's great.", "Catch Sharpedo [[progression:gym7_tate_liza]]."]
+    body = chat("what for Tate & Liza?", "p-cite-retry", STATE)
+    assert calls.count("writer") == 2 and "citation_warnings" not in body["plan"]
+    checks = [c for c in body["tool_calls"] if c["name"] == "citation_check"]
+    assert "no citation" in checks[0]["result"] and "all citations resolve" in checks[1]["result"]
+
+
+def test_seeded_bad_pick_is_replaced_by_its_backup(models):
+    """PLAN's Phase 3 acceptance: a bad candidate is rejected and replaced in the gap loop."""
+    calls, script = models
+    script["clarifier"] = decision()
+    script["lead"] = draft(rec("Bagon", alts=[backup("Absol")]))  # Bagon needs Waterfall: not before Tate & Liza
+    script["writer"] = "Catch Absol [[progression:gym7_tate_liza]]."
+    body = chat("what for Tate & Liza?", "p-seeded", STATE)
+    assert [r["species"] for r in body["plan"]["recommendations"]] == ["Absol"]
+    assert calls.count("lead") == 1  # the backup was promoted without a repair round
+    verifier = [c for c in body["tool_calls"] if c["agent"] == "verifier"]
+    assert "NOT_OBTAINABLE_BEFORE" in verifier[0]["result"] and "replaced Bagon" in verifier[1]["result"]
+
+
+def test_pick_without_a_backup_sends_the_lead_back(models):
+    calls, script = models
+    script["clarifier"] = decision()
+    script["lead"] = [draft(rec("Bagon")), draft(rec("Absol"))]
+    script["writer"] = "Catch Absol [[progression:gym7_tate_liza]]."
+    body = chat("what for Tate & Liza?", "p-repair", STATE)
+    assert calls.count("lead") == 2
+    assert [r["species"] for r in body["plan"]["recommendations"]] == ["Absol"]
+
+
+def test_unfixable_pick_is_dropped_with_a_reason(models):
+    calls, script = models
+    script["clarifier"] = decision()
+    script["lead"] = draft(rec("Absol"), rec("Bagon"))  # the repair returns the same draft
+    script["writer"] = "Catch Absol [[progression:gym7_tate_liza]]."
+    body = chat("what for Tate & Liza?", "p-drop", STATE)
+    plan = body["plan"]
+    assert [r["species"] for r in plan["recommendations"]] == ["Absol"]
+    assert any(u.startswith("Dropped Bagon") for u in plan["unresolved"])
 
 
 def test_rules_and_rejections_persist_across_turns(models):

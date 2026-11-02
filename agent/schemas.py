@@ -35,8 +35,11 @@ class RuleUpdate(BaseModel):
     """Rules the player added in this message; null/[] means "not mentioned"."""
 
     nuzlocke: bool | None
+    encounter_scope: Literal["location", "area"] | None
+    gifts_count_as_encounter: bool | None
     dupes_clause: bool | None
     level_caps: bool | None
+    level_cap_offset: int | None
     monotype: str | None
     no_legendaries: bool | None
     wild_only: bool | None
@@ -89,9 +92,15 @@ class ResearchTask(BaseModel):
 
 
 class Alternative(BaseModel):
+    """A backup pick, complete enough to be promoted if the main pick fails verification."""
+
     species: str
+    horizon: Literal["core", "situational"]
     where: str
     why: str
+    long_term: str
+    evolve_to: str  # the evolved form the plan relies on by the battle, or ""
+    key_moves: list[str]  # moves the plan relies on by the battle
     source_ids: list[str]
 
 
@@ -99,10 +108,13 @@ class Recommendation(BaseModel):
     species: str
     role: str
     horizon: Literal["core", "situational"]  # a keeper through the Champion, or an answer to one fight
+    before_battle: str  # battle id the pick should be ready for, e.g. "gym7_tate_liza"
     where: str
     when: str
     why: str
     long_term: str
+    evolve_to: str  # the evolved form the plan relies on by that battle, or ""
+    key_moves: list[str]  # moves the plan relies on by that battle
     source_ids: list[str]
     alternatives: list[Alternative]
 

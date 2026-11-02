@@ -1,7 +1,9 @@
-"""One /chat turn: Clarifier -> Lead (with parallel researchers) -> Writer -> citations.
+"""One /chat turn: Clarifier -> Lead (parallel researchers) -> Verifier -> Writer -> citation check.
 
-The Verifier and the gap loop it drives come in Phase 3; for now the Lead's own coverage
-check decides whether to run another research round.
+The Verifier (code, no LLM) checks every pick and backup. A failing pick is replaced by a
+passing backup at no model cost; only a pick with no valid backup sends the Lead back for one
+targeted repair round (the gap loop, capped at PLAN's 3 research rounds in total). The Writer's
+citations are then checked, with one retry.
 """
 
 import asyncio
@@ -17,6 +19,7 @@ from agent.lead import make_lead
 from agent.schemas import ClarifierDecision, LeadDraft, StateUpdate
 from agent.session import SESSIONS, Session, apply_rules
 from agent.state import RunState
+from agent.verifier import ERROR, WARNING, Violation, promote_backups, verify
 from agent.writer import make_writer
 
 REQUEST_BUDGET_S = 270  # graders wait up to 5 minutes; Cloud Run's timeout is 600 s
@@ -60,6 +63,67 @@ def record(ctx: RequestContext, agent: str, name: str, args: dict, result) -> No
     )
 
 
+def sanitize_citations(ctx: RequestContext, draft: LeadDraft) -> LeadDraft:
+    """Strip ids no tool returned from steps and battle notes (picks with bad ids go through repair)."""
+    def clean(items):
+        return [i.model_copy(update={"source_ids": [s for s in i.source_ids if s in ctx.ledger]}) for i in items]
+    return draft.model_copy(update={"steps": clean(draft.steps), "battle_notes": clean(draft.battle_notes)})
+
+
+async def verify_and_repair(ctx: RequestContext, draft: LeadDraft, lead_input: str) -> tuple[LeadDraft, list[Violation]]:
+    """The gap loop: verify, promote passing backups, send the Lead back once for picks that
+    still fail, then drop whatever can't be fixed. Returns the draft and the remaining warnings."""
+    violations = verify(ctx, draft)
+    record(ctx, "verifier", "verify", {"picks": [r.species for r in draft.recommendations]}, [v.to_dict() for v in violations] or "all checks passed")
+    draft, actions, unfixed = promote_backups(draft, violations)
+    if actions:
+        record(ctx, "verifier", "promote_backups", {}, actions)
+    if unfixed:
+        failing = [v for v in violations if v.severity == ERROR and v.alt is None and v.rec is not None
+                   and draft.recommendations[v.rec].species == v.species]
+        ctx.round_cap = ctx.research_round + 1
+        repair_input = (
+            f"{lead_input}\n\nYOUR DRAFT (JSON)\n{draft.model_dump_json()}\n\nVERIFIER ERRORS (code: detail)\n"
+            + "\n".join(f"- {v.species}: {v.code}: {v.detail}" for v in failing)
+            + "\n\nFix only these. For each failing pick, find a replacement that passes these checks (one targeted "
+            "dispatch_researchers round if you need new data), keep every pick that passed, and return the full corrected draft."
+        )
+        draft = await runtime.run(make_lead(), repair_input, ctx, max_turns=LEAD_MAX_TURNS)
+        violations = verify(ctx, draft)
+        record(ctx, "verifier", "verify", {"picks": [r.species for r in draft.recommendations], "after": "repair"},
+               [v.to_dict() for v in violations] or "all checks passed")
+        draft, actions, unfixed = promote_backups(draft, violations)
+        if unfixed:
+            dropped = [draft.recommendations[i] for i in unfixed]
+            reasons = {i: next(v.detail for v in violations if v.rec == i and v.alt is None and v.severity == ERROR) for i in unfixed}
+            draft = draft.model_copy(update={
+                "recommendations": [r for i, r in enumerate(draft.recommendations) if i not in unfixed],
+                "unresolved": draft.unresolved + [f"Dropped {d.species}: {reasons[i]}" for i, d in zip(unfixed, dropped)],
+            })
+            actions.append("dropped " + ", ".join(d.species for d in dropped) + " after the repair round")
+        if actions:
+            record(ctx, "verifier", "promote_backups", {"after": "repair"}, actions)
+    return sanitize_citations(ctx, draft), [v for v in violations if v.severity == WARNING]
+
+
+def citation_problems(ctx: RequestContext, markdown: str, draft: LeadDraft) -> list[str]:
+    """Ids the ledger doesn't have, and picks whose part of the answer cites nothing."""
+    _, _, unknown = ctx.ledger.cite(markdown)
+    problems = [f"[[{u}]] isn't a source any tool returned" for u in sorted(set(unknown))]
+    lines = markdown.splitlines()
+    names = [r.species for r in draft.recommendations]
+    starts = {n: next((i for i, l in enumerate(lines) if n.lower() in l.lower()), None) for n in names}
+    marks = sorted(i for i in starts.values() if i is not None)
+    for n, i in starts.items():
+        if i is None:
+            problems.append(f"the pick {n} is missing from the answer")
+            continue
+        end = next((s for s in marks if s > i), len(lines))
+        if "[[" not in "\n".join(lines[i:end]):
+            problems.append(f"the section for {n} has no citation")
+    return problems
+
+
 async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     decision: ClarifierDecision = await runtime.run(make_clarifier(), clarifier_input(message, session), ctx, max_turns=2)
     record(ctx, "clarifier", "decide", {"message": message}, decision.model_dump())
@@ -89,17 +153,30 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
             f"\nPLAYER FEEDBACK: {decision.revision_feedback or 'vague'}"
         )
     draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
+    draft, warnings = await verify_and_repair(ctx, draft, lead_input)
 
     writer_input = (
         f"PLAYER QUESTION\n{message}\n\nRUN STATE\n{state_brief(ctx)}\n\n"
         f"PLAYER RULES\n{json.dumps(session.state.ruleset.describe())}\n\n"
-        f"REVISION FEEDBACK: {decision.revision_feedback or 'none'}\n\nDRAFT (JSON)\n{draft.model_dump_json()}"
+        f"REVISION FEEDBACK: {decision.revision_feedback or 'none'}\n\n"
+        f"VERIFIER WARNINGS (mention briefly where they matter)\n{json.dumps([f'{w.species}: {w.detail}' for w in warnings])}\n\n"
+        f"DRAFT (JSON)\n{draft.model_dump_json()}"
     )
     markdown = await runtime.run(make_writer(), writer_input, ctx, max_turns=2)
-    text, citations, unknown = ctx.ledger.cite(markdown)
+    problems = citation_problems(ctx, markdown, draft)
+    record(ctx, "verifier", "citation_check", {}, problems or "all citations resolve")
+    if problems:
+        retry_input = (
+            f"{writer_input}\n\nYOUR PREVIOUS ANSWER\n{markdown}\n\nCITATION PROBLEMS\n" + "\n".join(f"- {p}" for p in problems)
+            + "\n\nRewrite the answer fixing only these: cite only ids that appear in the draft, and cite every pick."
+        )
+        markdown = await runtime.run(make_writer(), retry_input, ctx, max_turns=2)
+        problems = citation_problems(ctx, markdown, draft)
+        record(ctx, "verifier", "citation_check", {"after": "retry"}, problems or "all citations resolve")
+    text, citations, _ = ctx.ledger.cite(markdown)
     plan = draft.model_dump()
-    if unknown:
-        plan["unverified_source_ids"] = sorted(set(unknown))
+    if problems:
+        plan["citation_warnings"] = problems
     session.last_plan = plan
     return {"response": text, "citations": citations, "plan": plan}
 

@@ -32,6 +32,24 @@ def _norm(text: str) -> str:
     return text.strip().lower().replace(" ", "-")
 
 
+def area_used(r: dict, used: set[str], scope: str) -> bool:
+    """Is this encounter row's area in the player's used list?
+
+    scope "location": one encounter per named place, so naming the place or any floor of it
+    ("Granite Cave B1F") uses all of it. scope "area": each floor/room is separate, so only the
+    named floor is used (naming just the place still covers all of it).
+    """
+    places = {_norm(r["location"]), _norm(r["location_name"] or r["location"])}
+    if places & used:
+        return True
+    if scope == "location":
+        return any(u.startswith(p + "-") or u.startswith(p + "/") for u in used for p in places)
+    if not r["area"]:
+        return False
+    area = _norm(r["area"])
+    return bool(({f"{p}/{area}" for p in places} | {f"{p}-{area}" for p in places}) & used)
+
+
 def rule_filter(ctx: RequestContext, cur):
     """A function (row) -> reason it's excluded by the player's rules, or None."""
     rules = ctx.state.ruleset
@@ -56,7 +74,9 @@ def rule_filter(ctx: RequestContext, cur):
             return "legendary/mythical"
         if rules.wild_only and r["method"] in NOT_WILD:
             return "not a wild catch"
-        if used and (_norm(r["location"]) in used or _norm(r["location_name"]) in used):
+        if used and area_used(r, used, rules.encounter_scope) and (
+            rules.gifts_count_as_encounter or r["method"] not in NOT_WILD
+        ):
             return "Nuzlocke: this area's encounter is used"
         if r["evolution_chain_id"] in party_chains:
             return "dupes clause: family already in the party"
@@ -65,16 +85,13 @@ def rule_filter(ctx: RequestContext, cur):
     return check
 
 
-def catchable(ctx: RequestContext, before_battle: str | None = None, species: str | None = None,
-              types: list[str] | None = None) -> dict:
-    """Species obtainable before a battle, with where, how, levels and slot odds; optionally only
-    species with any of `types`."""
-    b = battle(ctx, before_battle)
-    wanted = {t.strip().lower() for t in types or [] if t.strip()}
+def available_rows(ctx: RequestContext, b, target: str | None = None, wanted: set[str] | None = None,
+                   apply_rules: bool = True) -> tuple[list[dict], dict[str, list[str]], dict[str, int]]:
+    """Encounter rows obtainable before battle `b`: (rows, why each blocked species isn't
+    available, how many rows each rule removed). The Verifier uses the raw rows."""
     cur = ctx.cursor()
-    target = resolve(ctx, species, "species") if species else None
-    excluded_by_rule = rule_filter(ctx, cur)
-    found: dict[str, dict] = {}
+    excluded_by_rule = rule_filter(ctx, cur) if apply_rules else (lambda r: None)
+    out: list[dict] = []
     blocked: dict[str, list[str]] = defaultdict(list)
     removed: dict[str, int] = defaultdict(int)
     for r in rows(cur, ENCOUNTER_SQL):
@@ -103,6 +120,24 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
         if reason:
             removed[reason] += 1
             continue
+        r["condition_note"] = needs[1] if needs else None
+        out.append(r)
+    return out, blocked, removed
+
+
+def catchable(ctx: RequestContext, before_battle: str | None = None, species: str | None = None,
+              types: list[str] | None = None, apply_rules: bool = True) -> dict:
+    """Species obtainable before a battle, with where, how, levels and slot odds; optionally only
+    species with any of `types`. `apply_rules=False` ignores the player's rules and rejections
+    (the Verifier checks those separately, to report each with its own code)."""
+    b = battle(ctx, before_battle)
+    wanted = {t.strip().lower() for t in types or [] if t.strip()}
+    target = resolve(ctx, species, "species") if species else None
+    available, blocked, removed = available_rows(ctx, b, target, wanted, apply_rules)
+    found: dict[str, dict] = {}
+    for r in available:
+        where = r["location"] + (f"/{r['area']}" if r["area"] else "")
+        needs = r["condition_note"]
         sp = found.setdefault(
             r["identifier"],
             {"species": r["name"], "types": [t for t in (r["type1"], r["type2"]) if t], "places": {}},
@@ -116,7 +151,7 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
         if r["conditions"]:
             place["conditions"] = list(r["conditions"])
         if needs:
-            place["note"] = needs[1]
+            place["note"] = needs
         place["rate_pct"] += r["rarity"] or 0
         place["lv"] = [min(place["lv"][0], r["min_level"]), max(place["lv"][1], r["max_level"])]
     species_out = []

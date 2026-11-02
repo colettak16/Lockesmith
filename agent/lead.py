@@ -42,8 +42,8 @@ async def dispatch_researchers(ctx: RunContextWrapper[RequestContext], tasks: li
         tasks: One entry per researcher job, each a specific, self-contained instruction.
     """
     c = ctx.context
-    if c.research_round >= MAX_RESEARCH_ROUNDS:
-        return json.dumps({"error": f"research round limit ({MAX_RESEARCH_ROUNDS}) reached; draft the answer now and list what's unresolved"})
+    if c.research_round >= c.round_cap:
+        return json.dumps({"error": f"research round limit ({c.round_cap}) reached; draft the answer now and list what's unresolved"})
     c.research_round += 1
     results = await asyncio.gather(*(run_researcher(c, t) for t in tasks[:MAX_TASKS_PER_ROUND]))
     return json.dumps({"round": c.research_round, "results": results}, ensure_ascii=False)
@@ -79,12 +79,21 @@ end; if none exists, say what the trade-off is. Weigh what the party already cov
 
 DRAFT. Fill LeadDraft:
 - recommendations: for catch/plan/revision, 2-4 picks, best long-term value first. Each has role;
-  horizon ("core" if worth raising to the Champion, "situational" if it's for one fight); where
-  (exact location, method and levels from the catch finding, e.g. "Route 119, Super Rod, Lv25-30");
-  when (the battle it should be caught before); why (for the immediate goal); long_term (how it
-  holds up through the Elite Four and Champion, evolution timing, what it adds to the party);
-  source_ids; and 1-2 `alternatives` (with exact where) taken from other candidates the
-  researchers found. Never recommend a species the player rejected or that breaks their rules.
+  horizon ("core" if worth raising to the Champion, "situational" if it's for one fight);
+  before_battle (the battle id it should be ready for, e.g. "gym7_tate_liza"); where (exact
+  location, method and levels from the catch finding, e.g. "Route 119, Super Rod, Lv25-30"); when
+  (in words); why (for the immediate goal); long_term (how it holds up through the Elite Four and
+  Champion, evolution timing, what it adds to the party); evolve_to (the evolved form your plan
+  relies on by that battle, or ""); key_moves (the moves your plan relies on by then, from the
+  moves finding); source_ids; and 1-2 `alternatives`, each complete (species, horizon, exact
+  where, why, long_term, evolve_to, key_moves, source_ids) so it can stand in for the pick.
+  Never recommend a species the player rejected or that breaks their rules. In a Nuzlocke the
+  player only gets the first encounter in each area: recommend areas whose odds favour the target,
+  and say what the odds are.
+
+A code Verifier checks every pick and backup against the data before the answer is written:
+obtainable before before_battle, evolution reachable in time (no trade evolutions), key moves
+learnable by then, the player's rules, Gen III facts, and that every source id came from a tool.
 - steps: for next_steps/plan, ordered steps with detail and source_ids. For lookups, put the answer
   in steps.
 - battle_notes: per relevant battle, the threat and how to handle it, with source_ids.

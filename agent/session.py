@@ -32,7 +32,8 @@ class Session:
 
 def apply_rules(rules: Ruleset, u: RuleUpdate) -> Ruleset:
     data = rules.model_dump()
-    for key in ("nuzlocke", "dupes_clause", "level_caps", "monotype", "no_legendaries", "wild_only"):
+    for key in ("nuzlocke", "encounter_scope", "gifts_count_as_encounter", "dupes_clause", "level_caps",
+                "level_cap_offset", "monotype", "no_legendaries", "wild_only"):
         value = getattr(u, key)
         if value is not None:
             data[key] = value.lower() if isinstance(value, str) else value

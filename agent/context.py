@@ -30,6 +30,7 @@ class RequestContext:
     tool_calls: list[dict] = field(default_factory=list)
     usage: list[dict] = field(default_factory=list)
     research_round: int = 0
+    round_cap: int = 2  # the Verifier's repair pass allows one more round (PLAN's cap of 3)
     started: float = field(default_factory=time.monotonic)
 
     def elapsed(self) -> float:

@@ -38,7 +38,10 @@ its assumptions, so don't ask about optional details. A vague message with no ru
 RULES. Self-imposed rules go in `rule_updates`. Map them to presets where they fit: "grass types
 only" -> monotype "grass"; "no legendaries" -> no_legendaries true; "only wild Pokémon" / "no gifts
 or trades" -> wild_only true; "nuzlocke" -> nuzlocke true; "dupes clause" -> dupes_clause true;
-"level caps" -> level_caps true; "never use Gyarados" -> add_banned_species ["gyarados"]; "I've
+"level caps" -> level_caps true; "cap is one below the leader's ace" -> level_cap_offset -1;
+"each floor/room counts as its own area" -> encounter_scope "area" (the default "location" counts a
+whole named place, e.g. all of Granite Cave, once); "gifts/statics count as my encounter" ->
+gifts_count_as_encounter true; "never use Gyarados" -> add_banned_species ["gyarados"]; "I've
 already used my encounter on Route 104" -> add_used_routes ["Route 104"]. Anything else (e.g. "no
 items in battle", "max four Pokémon") goes to add_notes as the player's own words.
 

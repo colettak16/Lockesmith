@@ -52,9 +52,17 @@ class Ruleset(BaseModel):
     """Challenge rules. Presets are checked in code; `notes` holds free-text rules that aren't."""
 
     nuzlocke: bool = False
-    used_routes: list[str] = Field(default_factory=list, description="Locations whose one encounter is used up")
+    used_routes: list[str] = Field(default_factory=list, description="Areas whose one encounter is used up")
+    encounter_scope: Literal["location", "area"] = Field(
+        default="location",
+        description="What one Nuzlocke encounter covers: each named location (Granite Cave is one) or each floor/room",
+    )
+    gifts_count_as_encounter: bool = Field(
+        default=False, description="Whether gifts, static encounters and trades use up their area's encounter"
+    )
     dupes_clause: bool = False
     level_caps: bool = False
+    level_cap_offset: int = Field(default=0, description="Cap = the next boss's highest level plus this (e.g. -1)")
     monotype: str | None = Field(default=None, description="Every Pokémon must have this type (dual types count)")
     no_legendaries: bool = False
     banned_species: list[str] = Field(default_factory=list)
@@ -64,11 +72,18 @@ class Ruleset(BaseModel):
     def describe(self) -> list[str]:
         out = []
         if self.nuzlocke:
-            out.append("Nuzlocke: first encounter per area only" + (", dupes clause" if self.dupes_clause else ""))
+            scope = "named location" if self.encounter_scope == "location" else "floor or room"
+            out.append(
+                f"Nuzlocke: first encounter per {scope} only"
+                + (", dupes clause" if self.dupes_clause else "")
+                + ("; gifts, statics and trades use up their area's encounter" if self.gifts_count_as_encounter
+                   else "; gifts, statics and trades are free")
+            )
         if self.used_routes:
             out.append("encounters already used: " + ", ".join(self.used_routes))
         if self.level_caps:
-            out.append("level caps: stay at or below the next boss's highest level")
+            offset = f" {self.level_cap_offset:+d}" if self.level_cap_offset else ""
+            out.append(f"level caps: stay at or below the next boss's highest level{offset}")
         if self.monotype:
             out.append(f"{self.monotype}-type only")
         if self.no_legendaries:
