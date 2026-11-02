@@ -2,7 +2,7 @@
 
 Generated 2026-11-01 by `build/review_packet.py` from the database built 2026-11-02: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
 
-A previous review round was applied after re-verification; section 3's D-10 to D-13 and docs/decisions.md D7 say what changed. Fresh eyes on sections 4 and 5 are still the most useful.
+Two previous review rounds were applied after re-verification; docs/decisions.md D7 says what changed. Fresh eyes on sections 4, 5 and 7 are still the most useful.
 
 **ID prefixes**: M mechanics, MV moves, SP species, LG later-gen relatives, EV evolutions, D data findings, P/N progression, K trainer teams, L locations, SE special encounters, TM/TU machines and tutors, R randomizer, Q questions.
 
@@ -682,7 +682,13 @@ This is the most judgement-heavy section and the one we most want checked.
   A first cross-check round then moved the open-water routes, Route 115's grass, the eastern sea,
   Sootopolis and the Regi caves (D7).
 - **P-R8** Grunt fights outside the 32 battles are noted on the battle they precede (Mt. Chimney,
-  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants.
+  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants; the hideouts carry
+  a general warning. The optional Winstrate family (Route 111, four battles with no healing) is noted
+  at P-09.
+- **P-R9** A route can open in stages: an entry limited to some methods (Route 110's grass before
+  Brawly, its water after the museum; Route 111's pond and rocks from Mauville, its desert grass after
+  the Go-Goggles). `never_reachable` entries can be method-limited the same way, so a postgame gift
+  doesn't make its town unreachable.
 
 ### Battles in order
 
@@ -718,8 +724,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-06** Dewford Gym: Brawly (`gym2_brawly`, at `dewford-town`): badges before: 1, single, required.
   - Trainers: TRAINER_BRAWLY_1 (teams: K-gym2_brawly)
   - HMs usable: cut; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-106, dewford-town, granite-cave, hoenn-route-109, slateport-city
-  - Notes: Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge.
+  - Areas newly reachable before this battle: hoenn-route-106, dewford-town, granite-cave, hoenn-route-109, slateport-city, hoenn-route-110 (walk only)
+  - Notes: Route 110's first grass patch, just north of Slateport, sits south of the Team Aqua line (grunts at y=83, Route 103 junction at y=60-80), so its grass opens with Slateport (Bulbapedia: Route 110). Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym`
 - **P-07** Oceanic Museum: Team Aqua Grunts (`grunts_oceanic_museum`, at `slateport-city`): badges before: 2, single, required.
   - Trainers: TRAINER_GRUNT_MUSEUM_1, TRAINER_GRUNT_MUSEUM_2 (teams: K-grunts_oceanic_museum)
@@ -730,14 +736,14 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-08** Route 110: Rival (`rival3_route110`, at `hoenn-route-110`): badges before: 2, single, required.
   - Trainers: depend on starter and rival (teams: K-rival3_route110)
   - HMs usable: cut, flash; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-110
-  - Notes: Mudkip players: same team for both rivals, but May leads with Wingull and Brendan with Slugma.
+  - Areas newly reachable before this battle: hoenn-route-110 (surf, old-rod, good-rod, super-rod only)
+  - Notes: Mudkip players: same team for both rivals, but May leads with Wingull and Brendan with Slugma. North of the Team Aqua line the route's water opens (the grass table is the same one opened before Brawly).
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_4#Rival_Battle_3`
 - **P-09** Mauville City: Wally (`wally_mauville`, at `mauville-city`): badges before: 2, single, required.
   - Trainers: TRAINER_WALLY_MAUVILLE (teams: K-wally_mauville)
   - HMs usable: cut, flash; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-117, hoenn-route-118
-  - Notes: Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Bikes from Rydel's Cycles are available in Mauville before this.
+  - Areas newly reachable before this battle: hoenn-route-117, hoenn-route-118, hoenn-route-111 (old-rod, good-rod, super-rod, surf, rock-smash only)
+  - Notes: Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Route 111's southern segment is open too: its pond (the route's only water) can be fished now, and its crumbling rocks are Rock Smash encounters once Rock Smash works; its grass is all in the desert (Bulbapedia: Route 111). Optional hazard there: the Winstrate family, four battles back to back with no healing (Route111_EventScript_BattleWinstrates: Victor, Victoria, Vivi, Vicky); Victoria gives a Macho Brace. Bikes from Rydel's Cycles are available in Mauville before this.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_5#Wally's_Challenge`
 - **P-10** Mauville Gym: Wattson (`gym3_wattson`, at `mauville-city`): badges before: 2, single, required.
   - Trainers: TRAINER_WATTSON_1 (teams: K-gym3_wattson)
@@ -765,7 +771,7 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-14** Petalburg Gym: Norman (`gym5_norman`, at `petalburg-city`): badges before: 4, single, required.
   - Trainers: TRAINER_NORMAN_1 (teams: K-gym5_norman)
   - HMs usable: cut, flash, rock-smash, strength; key items: old-rod, go-goggles
-  - Areas newly reachable before this battle: hoenn-route-111, mirage-tower
+  - Areas newly reachable before this battle: hoenn-route-111 (walk only), mirage-tower
   - Notes: Go-Goggles from the rival after Flannery open the Route 111 desert. Mirage Tower (fossil choice) needs the Mach Bike and Rock Smash.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_8#Petalburg_Gym`
 - **P-15** Weather Institute: Aqua Admin Shelly (`shelly_weather_institute`, at `hoenn-route-119`): badges before: 5, single, required.
@@ -782,102 +788,102 @@ This is the most judgement-heavy section and the one we most want checked.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_10#Rival_Battle_4`
 - **P-17** Fortree Gym: Winona (`gym6_winona`, at `fortree-city`): badges before: 5, single, required.
   - Trainers: TRAINER_WINONA_1 (teams: K-gym6_winona)
-  - HMs usable: cut, flash, rock-smash, strength, surf; key items: old-rod, good-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: fortree-city, hoenn-route-120, hoenn-route-121, hoenn-route-122, lilycove-city, mt-pyre, hoenn-safari-zone/sw, hoenn-safari-zone/se, hoenn-safari-zone/nwmach-bike-area, hoenn-safari-zone/neacro-bike-area, magma-hideout
-  - Notes: Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's bike areas each need one bike (swap at Rydel's); its two expansion areas are postgame.
+  - Notes: Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's entrance checks for the Pokéblock Case (Route121_SafariZoneEntrance), which the Lilycove Contest Hall gives out (contest_hall.inc); its bike areas each need one bike (swap at Rydel's), and its two expansion areas are postgame.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym`
 - **P-18** Lilycove City: Rival (optional) (`rival5_lilycove`, at `lilycove-city`): badges before: 6, single, optional.
   - Trainers: depend on starter and rival (teams: K-rival5_lilycove)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Notes: The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)`
 - **P-19** Magma Hideout: Magma Admin Tabitha (`tabitha_magma_hideout`, at `magma-hideout`): badges before: 6, single, required.
   - Trainers: TRAINER_TABITHA_MAGMA_HIDEOUT (teams: K-tabitha_magma_hideout)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
-  - Notes: The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle.
+  - Notes: The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle. Inside the hideout, more Magma grunts stand along the way; which can't be avoided hasn't been checked.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha`
 - **P-20** Magma Hideout: Magma Leader Maxie (`maxie_magma_hideout`, at `magma-hideout`): badges before: 6, single, required.
   - Trainers: TRAINER_MAXIE_MAGMA_HIDEOUT (teams: K-maxie_magma_hideout)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Notes: Straight after Tabitha.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Maxie`
 - **P-21** Aqua Hideout: Aqua Admin Matt (`matt_aqua_hideout`, at `team-aqua-hideout`): badges before: 6, single, required.
   - Trainers: TRAINER_MATT (teams: K-matt_aqua_hideout)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: team-aqua-hideout
-  - Notes: The hideout's two Electrode are disguised as items.
+  - Notes: The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_13#Submarine_room_2`
 - **P-22** Mossdeep Gym: Tate & Liza (`gym7_tate_liza`, at `mossdeep-city`): badges before: 6, double, required.
   - Trainers: TRAINER_TATE_AND_LIZA_1 (teams: K-gym7_tate_liza)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: hoenn-route-124/main, mossdeep-city/main, hoenn-route-125, shoal-cave, hoenn-route-126/main, hoenn-route-127, hoenn-route-128, hoenn-route-129, hoenn-route-130, mirage-island, hoenn-route-131, pacifidlog-town, hoenn-route-132, hoenn-route-133, hoenn-route-134
-  - Notes: Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days.
+  - Notes: Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) appears only on days when the daily value matches the low 16 bits of a party Pokémon's personality value (time_events.c IsMirageIslandPresent), so swapping party members can change it; the old man in Pacifidlog says whether it's visible.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym`
 - **P-23** Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven) (`space_center`, at `mossdeep-city`): badges before: 7, multi, required.
   - Trainers: TRAINER_MAXIE_MOSSDEEP, TRAINER_TABITHA_MOSSDEEP (teams: K-space_center)
   - Partner: Steven, Metang Lv42, Skarmory Lv43, Aggron Lv44
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Notes: Two-on-two with Steven as partner; the map script sets it up and both trainer structs say single. Before it: four Magma Grunts on 1F, then three on 2F fought one after another with no break.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_14#VS_Maxie,_Tabitha`
 - **P-24** Seafloor Cavern: Aqua Admin Shelly (`shelly_seafloor_cavern`, at `seafloor-cavern`): badges before: 7, single, required.
   - Trainers: TRAINER_SHELLY_SEAFLOOR_CAVERN (teams: K-shelly_seafloor_cavern)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: hoenn-route-124/underwater, hoenn-route-126/underwater, seafloor-cavern, sootopolis-city, desert-ruins, island-cave, ancient-tomb
   - Notes: Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) can be visited before Seafloor Cavern; its gym stays closed (walkthrough Part 16). The Regi caves open with no story gate: in the Sealed Chamber (underwater, Route 134) use Dig (FLAG_SYS_BRAILLE_DIG), then read the inner wall with Wailord first and Relicanth last in the party (CheckRelicanthWailord). Each Regi cave then has its own puzzle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_15#Room_7`
 - **P-25** Seafloor Cavern: Aqua Leader Archie (`archie_seafloor_cavern`, at `seafloor-cavern`): badges before: 7, single, required.
   - Trainers: TRAINER_ARCHIE (teams: K-archie_seafloor_cavern)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_15#VS_Archie`
 - **P-26** Sootopolis Gym: Juan (`gym8_juan`, at `sootopolis-city`): badges before: 7, single, required.
   - Trainers: TRAINER_JUAN_1 (teams: K-gym8_juan)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: cave-of-origin/entrance, cave-of-origin/1f, cave-of-origin/b1f, sky-pillar/1f, sky-pillar/3f, sky-pillar/5f, sky-pillar/apex
   - Notes: Juan is the 8th leader in Emerald (Wallace is Champion). Cave of Origin is open only during the crisis: an Expert stands in front of its entrance, and the Sootopolis script moves him aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, before Sky Pillar). Catch there on the way to Wallace or not at all before the Champion. Sky Pillar opens when Wallace goes there (FLAG_WALLACE_GOES_TO_SKY_PILLAR). Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym`
 - **P-27** Victory Road: Wally (`wally_victory_road`, at `hoenn-victory-road`): badges before: 8, single, required.
   - Trainers: TRAINER_WALLY_VR_1 (teams: K-wally_victory_road)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room
   - Notes: Bagon is only in Meteor Falls' back small room (B1F 2R). Every Meteor Falls room past 1F 1R needs Waterfall: Bulbapedia marks all B1F items and trainers 'requires Surf and Waterfall'. PokeAPI areas: main = 1F 1R, back / b1f = 1F 2R / B1F 1R (identical tables), backsmall-room = B1F 2R.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_18#VS_Wally`
 - **P-28** Elite Four: Sidney (`e4_sidney`, at `ever-grande-city`): badges before: 8, single, required.
   - Trainers: TRAINER_SIDNEY (teams: K-e4_sidney)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Notes: The Elite Four and Champion are a gauntlet: no Pokémon Center and no catching between these five fights. Bag items still work.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_1:_Sidney`
 - **P-29** Elite Four: Phoebe (`e4_phoebe`, at `ever-grande-city`): badges before: 8, single, required.
   - Trainers: TRAINER_PHOEBE (teams: K-e4_phoebe)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_2:_Phoebe`
 - **P-30** Elite Four: Glacia (`e4_glacia`, at `ever-grande-city`): badges before: 8, single, required.
   - Trainers: TRAINER_GLACIA (teams: K-e4_glacia)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_3:_Glacia`
 - **P-31** Elite Four: Drake (`e4_drake`, at `ever-grande-city`): badges before: 8, single, required.
   - Trainers: TRAINER_DRAKE (teams: K-e4_drake)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_4:_Drake`
 - **P-32** Champion: Wallace (`champion_wallace`, at `ever-grande-city`): badges before: 8, single, required.
   - Trainers: TRAINER_WALLACE (teams: K-champion_wallace)
-  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
+  - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive, waterfall; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
   - Notes: Emerald's Champion is Wallace (Steven is Champion in Ruby/Sapphire).
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_19#Champion`
 
 ### Never reachable before the Champion (N)
 
-- **N-01** `littleroot-town`: Johto starters from Birch after completing the Hoenn Pokédex (postgame)
-- **N-02** `mossdeep-city/stevens-house`: Beldum in Steven's house after the Hall of Fame
+- **N-01** `littleroot-town` (gift only): the town is where you start; only Birch's Johto starter gift is postgame (after completing the Hoenn Pokédex)
+- **N-02** `mossdeep-city/stevens-house` (gift only): you visit Steven's house for HM08 Dive before the Champion; only the Beldum gift comes after the Hall of Fame
 - **N-03** `hoenn-safari-zone/expansion-north`: Safari Zone expansion opens after the Hall of Fame
 - **N-04** `hoenn-safari-zone/expansion-south`: Safari Zone expansion opens after the Hall of Fame
 - **N-05** `cave-of-origin/b2f`: unused Ruby/Sapphire map in Emerald (PokeAPI still lists encounters)
@@ -919,7 +925,18 @@ This is the most judgement-heavy section and the one we most want checked.
   TV choice that sets the roaming Latios/Latias, and Hall of Fame progress.
 
 
-**L-09 encounter conditions**: `item-claw-fossil`, `item-root-fossil`, `story-progress-hall-of-fame`, `trade-bagon`, `trade-ralts`, `trade-skitty`, `trade-volbeat`, `tv-option-blue`, `tv-option-red`
+**L-09 encounter conditions**: `item-claw-fossil`, `item-root-fossil`, `mirage-island-visible`, `rayquaza-returned`, `regice-puzzle`, `regirock-puzzle`, `registeel-puzzle`, `sealed-chamber-opened`, `story-progress-hall-of-fame`, `trade-bagon`, `trade-ralts`, `trade-skitty`, `trade-volbeat`, `tv-option-blue`, `tv-option-red`
+
+**L-10** `[decomp]` Conditions PokeAPI doesn't model, added by the build to the rows they gate (Regis, Rayquaza, Mirage Island):
+
+| Condition | Decomp symbol | Meaning |
+|---|---|---|
+| mirage-island-visible | IsMirageIslandPresent | Mirage Island shows on Route 130 only on days when the daily value matches the low 16 bits of a party Pokemon's personality value (time_events.c) |
+| rayquaza-returned | VAR_SKY_PILLAR_STATE | Rayquaza is back at Sky Pillar's apex after calming Groudon and Kyogre (state >= 2); the cracked floors need the Mach Bike |
+| regice-puzzle | FLAG_SYS_BRAILLE_REGICE_COMPLETED | Island Cave: walk the route the braille describes |
+| regirock-puzzle | FLAG_SYS_REGIROCK_PUZZLE_COMPLETED | Desert Ruins: use Rock Smash where the braille says |
+| registeel-puzzle | FLAG_SYS_REGISTEEL_PUZZLE_COMPLETED | Ancient Tomb: use Flash where the braille says |
+| sealed-chamber-opened | FLAG_REGI_DOORS_OPENED | Sealed Chamber (underwater, Route 134): use Dig on the outer wall, then read the inner wall with Wailord first and Relicanth last in the party |
 
 ### Special encounters (SE): statics, gifts, trades, roamers and other non-wild methods
 
@@ -955,16 +972,16 @@ This is the most judgement-heavy section and the one we most want checked.
 | SE-28 | roaming-hoenn/area | roaming-grass | Latios | 40 | story-progress-hall-of-fame, tv-option-blue |
 | SE-29 | roaming-hoenn/area | roaming-water | Latias | 40 | story-progress-hall-of-fame, tv-option-red |
 | SE-30 | roaming-hoenn/area | roaming-water | Latios | 40 | story-progress-hall-of-fame, tv-option-blue |
-| SE-31 | ancient-tomb/area | static | Registeel | 40 | — |
+| SE-31 | ancient-tomb/area | static | Registeel | 40 | sealed-chamber-opened, registeel-puzzle |
 | SE-32 | birth-island/area | static | Deoxys | 30 | — |
-| SE-33 | desert-ruins/area | static | Regirock | 40 | — |
+| SE-33 | desert-ruins/area | static | Regirock | 40 | sealed-chamber-opened, regirock-puzzle |
 | SE-34 | faraway-island/area | static | Mew | 30 | — |
-| SE-35 | island-cave/area | static | Regice | 40 | — |
+| SE-35 | island-cave/area | static | Regice | 40 | sealed-chamber-opened, regice-puzzle |
 | SE-36 | marine-cave/area | static | Kyogre | 70 | — |
 | SE-37 | navel-rock/area | static | Lugia | 70 | — |
 | SE-38 | navel-rock/area | static | Ho-Oh | 70 | — |
 | SE-39 | new-mauville | static | Voltorb | 25 | — |
-| SE-40 | sky-pillar/apex | static | Rayquaza | 70 | — |
+| SE-40 | sky-pillar/apex | static | Rayquaza | 70 | rayquaza-returned |
 | SE-41 | southern-island | static | Latias | 50 | — |
 | SE-42 | southern-island | static | Latios | 50 | — |
 | SE-43 | team-aqua-hideout | static | Electrode | 30 | — |
@@ -1310,75 +1327,76 @@ This is the most judgement-heavy section and the one we most want checked.
 
 `[decomp]` From map data: item balls, hidden items, NPC gifts, marts and Game Corner prizes. One row per source; a TM can have several. Gym TMs name the leader that triggers the gift. HM field use needs a badge (M-12).
 
-| ID | Move | Method | Location | Map | Detail |
-|---|---|---|---|---|---|
-| TM-TM01 | Focus Punch | item-ball | hoenn-route-115 | Route115 | — |
-| TM-TM02 | Dragon Claw | item-ball | meteor-falls | MeteorFalls_B1F_2R | — |
-| TM-TM03 | Water Pulse | gift | sootopolis-city | SootopolisCity_Gym_1F | after defeating TRAINER_JUAN_1 |
-| TM-TM04 | Calm Mind | gift | mossdeep-city | MossdeepCity_Gym | after defeating TRAINER_TATE_AND_LIZA_1 |
-| TM-TM05 | Roar | gift | hoenn-route-114 | Route114 | — |
-| TM-TM06 | Toxic | item-ball | fiery-path | FieryPath | — |
-| TM-TM07 | Hail | item-ball | shoal-cave | ShoalCave_LowTideIceRoom | — |
-| TM-TM08 | Bulk Up | gift | dewford-town | DewfordTown_Gym | after defeating TRAINER_BRAWLY_1 |
-| TM-TM09 | Bullet Seed | gift | hoenn-route-104 | Route104 | — |
-| TM-TM10 | Hidden Power | gift | fortree-city | FortreeCity_House2 | — |
-| TM-TM10 | Hidden Power | mart | slateport-city | SlateportCity | SlateportCity_Pokemart_PowerTMs |
-| TM-TM11 | Sunny Day | item-ball | scorched-slab | ScorchedSlab | — |
-| TM-TM12 | Taunt | gift | hoenn-route-110 | Route110_TrickHouseEnd | — |
-| TM-TM12 | Taunt | gift | hoenn-route-110 | Route110_TrickHouseEntrance | — |
-| TM-TM13 | Ice Beam | game-corner | mauville-city | MauvilleCity_GameCorner | — |
-| TM-TM13 | Ice Beam | item-ball | abandoned-ship | AbandonedShip_Room_B1F | — |
-| TM-TM14 | Blizzard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs |
-| TM-TM15 | Hyper Beam | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs |
-| TM-TM16 | Light Screen | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs |
-| TM-TM17 | Protect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs |
-| TM-TM18 | Rain Dance | item-ball | abandoned-ship | AbandonedShip_HiddenFloorRooms | — |
-| TM-TM19 | Giga Drain | gift | hoenn-route-123 | Route123 | — |
-| TM-TM20 | Safeguard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs |
-| TM-TM21 | Frustration | gift | pacifidlog-town | PacifidlogTown_House2 | — |
-| TM-TM22 | Solar Beam | item-ball | hoenn-safari-zone | SafariZone_Northwest | — |
-| TM-TM23 | Iron Tail | item-ball | meteor-falls | MeteorFalls_1F_1R | — |
-| TM-TM24 | Thunderbolt | game-corner | mauville-city | MauvilleCity_GameCorner | — |
-| TM-TM24 | Thunderbolt | gift | mauville-city | MauvilleCity | — |
-| TM-TM25 | Thunder | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs |
-| TM-TM26 | Earthquake | item-ball | seafloor-cavern | SeafloorCavern_Room9 | — |
-| TM-TM27 | Return | gift | fallarbor-town | FallarborTown_CozmosHouse | — |
-| TM-TM27 | Return | gift | pacifidlog-town | PacifidlogTown_House2 | — |
-| TM-TM28 | Dig | gift | hoenn-route-114 | Route114_FossilManiacsHouse | — |
-| TM-TM29 | Psychic | game-corner | mauville-city | MauvilleCity_GameCorner | — |
-| TM-TM29 | Psychic | item-ball | hoenn-victory-road | VictoryRoad_B1F | — |
-| TM-TM30 | Shadow Ball | item-ball | mt-pyre | MtPyre_6F | — |
-| TM-TM31 | Brick Break | gift | sootopolis-city | SootopolisCity_House1 | — |
-| TM-TM32 | Double Team | game-corner | mauville-city | MauvilleCity_GameCorner | — |
-| TM-TM32 | Double Team | hidden-item | hoenn-route-113 | Route113 | — |
-| TM-TM33 | Reflect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs |
-| TM-TM34 | Shock Wave | gift | mauville-city | MauvilleCity_Gym | after defeating TRAINER_WATTSON_1 |
-| TM-TM35 | Flamethrower | game-corner | mauville-city | MauvilleCity_GameCorner | — |
-| TM-TM36 | Sludge Bomb | gift | dewford-town | DewfordTown_Hall | — |
-| TM-TM37 | Sandstorm | item-ball | hoenn-route-111 | Route111 | — |
-| TM-TM38 | Fire Blast | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs |
-| TM-TM39 | Rock Tomb | gift | rustboro-city | RustboroCity_Gym | after defeating TRAINER_ROXANNE_1 |
-| TM-TM40 | Aerial Ace | gift | fortree-city | FortreeCity_Gym | after defeating TRAINER_WINONA_1 |
-| TM-TM41 | Torment | gift | slateport-city | SlateportCity_BattleTentLobby | — |
-| TM-TM42 | Facade | gift | petalburg-city | PetalburgCity_Gym | after defeating TRAINER_NORMAN_1 |
-| TM-TM43 | Secret Power | mart | slateport-city | SlateportCity | SlateportCity_Pokemart_PowerTMs |
-| TM-TM44 | Rest | gift | lilycove-city | LilycoveCity_House2 | — |
-| TM-TM45 | Attract | gift | verdanturf-town | VerdanturfTown_BattleTentLobby | — |
-| TM-TM46 | Thief | gift | slateport-city | SlateportCity_OceanicMuseum_1F | — |
-| TM-TM47 | Steel Wing | gift | granite-cave | GraniteCave_StevensRoom | — |
-| TM-TM48 | Skill Swap | item-ball | mt-pyre | MtPyre_Exterior | — |
-| TM-TM49 | Snatch | gift | ss-tidal | SSTidalRooms | — |
-| TM-TM50 | Overheat | gift | lavaridge-town | LavaridgeTown_Gym_1F | after defeating TRAINER_FLANNERY_1 |
-| TM-HM01 | Cut | gift | rustboro-city | RustboroCity_CuttersHouse | — |
-| TM-HM02 | Fly | gift | hoenn-route-119 | Route119 | — |
-| TM-HM03 | Surf | gift | petalburg-city | PetalburgCity_WallysHouse | — |
-| TM-HM04 | Strength | gift | rusturf-tunnel | RusturfTunnel | — |
-| TM-HM05 | Flash | gift | granite-cave | GraniteCave_1F | — |
-| TM-HM06 | Rock Smash | gift | mauville-city | MauvilleCity_House1 | — |
-| TM-HM07 | Waterfall | gift | sootopolis-city | SootopolisCity | — |
-| TM-HM08 | Dive | gift | mossdeep-city | MossdeepCity_StevensHouse | — |
+`Requires` is hand-checked against decomp scripts or Bulbapedia: what the source needs beyond reaching its map (an HM, a key, a side quest, a party condition, postgame).
 
-**Known conditions the table can't show** (from docs/decisions.md D1): TM02 Dragon Claw needs Waterfall (Meteor Falls back room); TM26 Earthquake is in Seafloor Cavern; TM07 Hail is in Shoal Cave's ice room; TM11 Sunny Day is in Scorched Slab (Surf); TM18 Rain Dance is on the Abandoned Ship's hidden floor (Dive); TM21/TM27 in Pacifidlog depend on friendship; TM19 Giga Drain needs a Grass Pokémon; TM12 Taunt is a Trick House reward; TM49 Snatch is on the S.S. Tidal (postgame).
+| ID | Move | Method | Location | Map | Detail | Requires |
+|---|---|---|---|---|---|---|
+| TM-TM01 | Focus Punch | item-ball | hoenn-route-115 | Route115 | — | — |
+| TM-TM02 | Dragon Claw | item-ball | meteor-falls | MeteorFalls_B1F_2R | — | Waterfall (Rain Badge) to reach Meteor Falls' back rooms |
+| TM-TM03 | Water Pulse | gift | sootopolis-city | SootopolisCity_Gym_1F | after defeating TRAINER_JUAN_1 | — |
+| TM-TM04 | Calm Mind | gift | mossdeep-city | MossdeepCity_Gym | after defeating TRAINER_TATE_AND_LIZA_1 | — |
+| TM-TM05 | Roar | gift | hoenn-route-114 | Route114 | — | — |
+| TM-TM06 | Toxic | item-ball | fiery-path | FieryPath | — | Strength (Heat Badge) to move the boulders in front of it (Bulbapedia: Fiery Path) |
+| TM-TM07 | Hail | item-ball | shoal-cave | ShoalCave_LowTideIceRoom | — | Shoal Cave at low tide (the tide changes every six hours) |
+| TM-TM08 | Bulk Up | gift | dewford-town | DewfordTown_Gym | after defeating TRAINER_BRAWLY_1 | — |
+| TM-TM09 | Bullet Seed | gift | hoenn-route-104 | Route104 | — | — |
+| TM-TM10 | Hidden Power | gift | fortree-city | FortreeCity_House2 | — | — |
+| TM-TM10 | Hidden Power | mart | slateport-city | SlateportCity | SlateportCity_Pokemart_PowerTMs | the Slateport TM salesman appears only after Route 111's Secret Power man gives you TM43 (secret_power_tm.inc clears FLAG_HIDE_SLATEPORT_CITY_TM_SALESMAN) |
+| TM-TM11 | Sunny Day | item-ball | scorched-slab | ScorchedSlab | — | Surf to reach Scorched Slab on Route 120 |
+| TM-TM12 | Taunt | gift | hoenn-route-110 | Route110_TrickHouseEnd | — | a Trick House puzzle prize |
+| TM-TM12 | Taunt | gift | hoenn-route-110 | Route110_TrickHouseEntrance | — | a Trick House puzzle prize |
+| TM-TM13 | Ice Beam | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
+| TM-TM13 | Ice Beam | item-ball | abandoned-ship | AbandonedShip_Room_B1F | — | the Storage Key from the Captain's Office unlocks this room (FLAG_USED_STORAGE_KEY) |
+| TM-TM14 | Blizzard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM15 | Hyper Beam | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM16 | Light Screen | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM17 | Protect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM18 | Rain Dance | item-ball | abandoned-ship | AbandonedShip_HiddenFloorRooms | — | Dive to reach the Abandoned Ship's hidden floor |
+| TM-TM19 | Giga Drain | gift | hoenn-route-123 | Route123 | — | a Grass-type Pokemon in the party (IsGrassTypeInParty) |
+| TM-TM20 | Safeguard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM21 | Frustration | gift | pacifidlog-town | PacifidlogTown_House2 | — | once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK) |
+| TM-TM22 | Solar Beam | item-ball | hoenn-safari-zone | SafariZone_Northwest | — | — |
+| TM-TM23 | Iron Tail | item-ball | meteor-falls | MeteorFalls_1F_1R | — | — |
+| TM-TM24 | Thunderbolt | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
+| TM-TM24 | Thunderbolt | gift | mauville-city | MauvilleCity | — | Wattson gives it after you finish New Mauville with his Basement Key |
+| TM-TM25 | Thunder | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM26 | Earthquake | item-ball | seafloor-cavern | SeafloorCavern_Room9 | — | inside Seafloor Cavern (Dive) |
+| TM-TM27 | Return | gift | fallarbor-town | FallarborTown_CozmosHouse | — | Professor Cozmo gives it once you hand over the Meteorite (from Mt. Chimney) |
+| TM-TM27 | Return | gift | pacifidlog-town | PacifidlogTown_House2 | — | once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK) |
+| TM-TM28 | Dig | gift | hoenn-route-114 | Route114_FossilManiacsHouse | — | — |
+| TM-TM29 | Psychic | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
+| TM-TM29 | Psychic | item-ball | hoenn-victory-road | VictoryRoad_B1F | — | — |
+| TM-TM30 | Shadow Ball | item-ball | mt-pyre | MtPyre_6F | — | — |
+| TM-TM31 | Brick Break | gift | sootopolis-city | SootopolisCity_House1 | — | — |
+| TM-TM32 | Double Team | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
+| TM-TM32 | Double Team | hidden-item | hoenn-route-113 | Route113 | — | — |
+| TM-TM33 | Reflect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM34 | Shock Wave | gift | mauville-city | MauvilleCity_Gym | after defeating TRAINER_WATTSON_1 | — |
+| TM-TM35 | Flamethrower | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
+| TM-TM36 | Sludge Bomb | gift | dewford-town | DewfordTown_Hall | — | — |
+| TM-TM37 | Sandstorm | item-ball | hoenn-route-111 | Route111 | — | — |
+| TM-TM38 | Fire Blast | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM39 | Rock Tomb | gift | rustboro-city | RustboroCity_Gym | after defeating TRAINER_ROXANNE_1 | — |
+| TM-TM40 | Aerial Ace | gift | fortree-city | FortreeCity_Gym | after defeating TRAINER_WINONA_1 | — |
+| TM-TM41 | Torment | gift | slateport-city | SlateportCity_BattleTentLobby | — | — |
+| TM-TM42 | Facade | gift | petalburg-city | PetalburgCity_Gym | after defeating TRAINER_NORMAN_1 | — |
+| TM-TM43 | Secret Power | gift | hoenn-route-111 | Route111 | shared script secret_power_tm.inc | — |
+| TM-TM43 | Secret Power | mart | slateport-city | SlateportCity | SlateportCity_Pokemart_PowerTMs | the Slateport TM salesman appears only after Route 111's Secret Power man gives you TM43 (secret_power_tm.inc clears FLAG_HIDE_SLATEPORT_CITY_TM_SALESMAN) |
+| TM-TM44 | Rest | gift | lilycove-city | LilycoveCity_House2 | — | — |
+| TM-TM45 | Attract | gift | verdanturf-town | VerdanturfTown_BattleTentLobby | — | — |
+| TM-TM46 | Thief | gift | slateport-city | SlateportCity_OceanicMuseum_1F | — | — |
+| TM-TM47 | Steel Wing | gift | granite-cave | GraniteCave_StevensRoom | — | — |
+| TM-TM48 | Skill Swap | item-ball | mt-pyre | MtPyre_Exterior | — | — |
+| TM-TM49 | Snatch | gift | ss-tidal | SSTidalRooms | — | postgame: the S.S. Ticket comes after the Hall of Fame (hall_of_fame.inc) |
+| TM-TM50 | Overheat | gift | lavaridge-town | LavaridgeTown_Gym_1F | after defeating TRAINER_FLANNERY_1 | — |
+| TM-HM01 | Cut | gift | rustboro-city | RustboroCity_CuttersHouse | — | — |
+| TM-HM02 | Fly | gift | hoenn-route-119 | Route119 | — | — |
+| TM-HM03 | Surf | gift | petalburg-city | PetalburgCity_WallysHouse | — | — |
+| TM-HM04 | Strength | gift | rusturf-tunnel | RusturfTunnel | — | — |
+| TM-HM05 | Flash | gift | granite-cave | GraniteCave_1F | — | — |
+| TM-HM06 | Rock Smash | gift | mauville-city | MauvilleCity_House1 | — | — |
+| TM-HM07 | Waterfall | gift | sootopolis-city | SootopolisCity | — | — |
+| TM-HM08 | Dive | gift | mossdeep-city | MossdeepCity_StevensHouse | — | — |
 
 ### Move tutors (TU)
 
@@ -1405,9 +1423,16 @@ has been through the parser yet.
 
 - **R-01** Sections are headed `--Name--`: `--Wild Pokemon--`, `--Trainers Pokemon--`, `--TM Moves--`,
   `--Move Tutor Moves--`, `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, `--Static Pokemon--`,
-  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. A section
-  appears only for what was randomized; anything missing falls back to vanilla. Other sections are
-  recorded, not parsed.
+  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. Evolution
+  *methods* changed by settings get their own sections (`--Removing Impossible Evolutions--`,
+  `--Making Evolutions Easier--` with "Friendship evolutions now take 160 happiness (was 220).",
+  `--Removing Timed-Based Evolutions--`), parsed as `A -> B at level N` / `using a ITEM` / `now also
+  evolves into B at minimum level N`. Between sections UPR prints status lines such as `Trainers:
+  Unchanged.` and `Pokemon Movesets: Metronome Only.`
+- **R-09** The parser keeps a per-kind record (`changes`): parsed, unparsed, metronome-only or unchanged.
+  Tools answer a kind from vanilla only when the log never mentions it or says `Unchanged`. Sections it
+  recognizes but doesn't parse yet (movesets, TM/tutor compatibility, move data, trades, shops) block
+  vanilla answers for that kind.
 - **R-02** Wild sets: `Set #N - ROUTE 104 Grass/Cave (rate=20)`; Gen 3 labels are `Grass/Cave`, `Surfing`,
   `Rock Smash`, `Fishing`. Then one line per slot: `Zigzagoon Lv2` or `Zigzagoon Lvs 2-4`, padded, then
   `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
@@ -1429,11 +1454,8 @@ has been through the parser yet.
 
 ## 9. Open questions
 
-- **Q-01** Under rule P-R2 (including "can stand there"), which areas in section 4 are still placed too
-  early or too late? Route 110's southern end below the Team Aqua line, and water reachable from
-  shorelines before Surf, are the cases we checked least.
-- **Q-02** Cave of Origin (P-26): is it really unenterable before the Champion except during the crisis?
-- **Q-03** Mirage Island (P-22): what decides on which days it appears in Emerald?
-- **Q-04** Are any forced battles still missing from the notes (P-R8)?
-- **Q-05** Does anything in R-01 to R-08 differ in UPR ZX versions people commonly use for Emerald
-  (4.6.x vs current master)?
+- **Q-01** Which other routes open in stages (P-R9) that the file still treats as one unlock point?
+  Shorelines you can fish from before Surf are the likeliest cases.
+- **Q-02** Are any TM sources still missing a `Requires` gate (section 7)?
+- **Q-03** Does anything else in UPR's Emerald output change game data without its own section or
+  status line (R-01, R-09)?

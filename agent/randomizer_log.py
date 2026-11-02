@@ -5,9 +5,13 @@ TrainerPokemon.toString, StaticEncounter.toString and Gen3RomHandler's set names
 but no real Emerald log has been run through it yet (tests/fixtures/ is empty), so
 each section parser is tolerant and records anything it can't read in `warnings`.
 
-A log only has sections for what was randomized; missing sections mean "use the
-vanilla tables". `load_overlay` writes what was parsed into per-session tables
-that the tools read in preference to vanilla.
+A log only has sections for what was randomized, but a missing section doesn't
+always mean vanilla: UPR also prints status lines between sections ("Pokemon
+Movesets: Metronome Only.", "Trainers: Unchanged.") and separate sections for
+evolution-method changes ("--Making Evolutions Easier--"). `RandomizerLog.changes`
+gathers all of it per kind of data, and `vanilla_ok(kind)` says whether tools may
+answer that kind from the vanilla tables. `load_overlay` writes what was parsed
+into per-session tables that the tools read in preference to vanilla.
 
 Wild sets are pinned to exact maps by position: UPR walks the ROM's wild-header
 table in order (grass, surf, rock smash, fishing per header), and `wild_headers`
@@ -34,6 +38,17 @@ TRAINER_MON_RE = re.compile(
     r"(?:\s*,\s*Ability:\s*(?P<ability>.+?))?(?:\s+-\s+(?P<moves>.*))?$"
 )
 STATIC_SUFFIX_RE = re.compile(r"(?:\s+\(egg\))?(?:\(\d+\))?(?:\s+Lv\s*\d+(?:-\d+)?.*)?$")
+# "Pokemon Movesets: Metronome Only." / "Trainers: Unchanged.", printed between sections
+STATUS_RE = re.compile(r"^(?P<what>[A-Z][A-Za-z ]+): (?P<status>Unchanged|Metronome Only)\.$")
+# EvolutionUpdate.toString: "EEVEE -> ESPEON by reaching high happiness", or the condensed
+# "NINCADA now also evolves into SHEDINJA at minimum level 20"
+EVO_UPDATE_RE = re.compile(
+    r"^(?P<src>.+?)\s+(?:->\s+(?P<dst>.+?)\s+(?P<how>at level .+?|using an? .+?|by reaching high happiness"
+    r"|by leveling up holding .+?|by leveling up with .+? in the party)"
+    r"|now(?: also)? evolves into\s+(?P<dst2>.+?)\s+(?P<how2>at minimum level .+?))"
+    r"(?P<overwritten>\s+\(Overwritten by .*\))?$"
+)
+FRIENDSHIP_RE = re.compile(r"Friendship evolutions now take (\d+) happiness")
 TM_RE = re.compile(r"^((?:TM|HM)\d{2})\s*[-:]?\s*(.+)$")
 STARTER_RE = re.compile(r"starter\s*(\d)\s*to\s*(.+)$", re.I)
 ARROW_RE = re.compile(r"^(.+?)\s*(?:=>|->)\s*(.+)$")
@@ -50,6 +65,28 @@ SECTION_KEYS = {
     "randomized evolutions": "evolutions",
     "static pokemon": "statics",
     "move tutor moves": "move_tutors",
+    "removing impossible evolutions": "evolution_methods",
+    "making evolutions easier": "evolution_methods",
+    "removing timed-based evolutions": "evolution_methods",  # sic, UPR's spelling
+    # Not parsed yet: tools must not answer these from vanilla when present
+    "pokemon movesets": "movesets",
+    "tm compatibility": "tm_compatibility",
+    "move tutor compatibility": "tutor_compatibility",
+    "move data": "move_data",
+    "move updates": "move_data",
+    "in-game trades": "trades",
+    "shops": "shops",
+    "pickup items": "pickup_items",
+}
+# Status-line subjects -> the same kinds
+STATUS_KEYS = {
+    "pokemon movesets": "movesets",
+    "tm moves": "tm_moves",
+    "move tutor moves": "move_tutors",
+    "move data": "move_data",
+    "trainers": "trainers",
+    "wild pokemon": "wild",
+    "static pokemon": "statics",
 }
 
 
@@ -97,10 +134,22 @@ class TrainerEntry:
 
 
 @dataclass
+class EvolutionUpdate:
+    section: str  # which UPR option made the change
+    src: str | None
+    dst: str | None
+    how: str  # UPR's wording: "at level 30", "using a Moon Stone", ...
+    overwritten: bool = False  # superseded by "Making Evolutions Easier"
+
+
+@dataclass
 class RandomizerLog:
     header: dict[str, str] = field(default_factory=dict)
     sections: list[str] = field(default_factory=list)
     unparsed_sections: list[str] = field(default_factory=list)
+    statuses: dict[str, str] = field(default_factory=dict)  # kind -> "unchanged" | "metronome-only"
+    evolution_updates: list[EvolutionUpdate] = field(default_factory=list)
+    friendship_threshold: int | None = None  # set when evolutions were made easier (160)
     wild_sets: list[WildSet] = field(default_factory=list)
     trainers: dict[int, TrainerEntry] = field(default_factory=dict)
     tm_moves: dict[str, str] = field(default_factory=dict)  # TM01 -> move identifier
@@ -114,11 +163,33 @@ class RandomizerLog:
     def randomized(self, key: str) -> bool:
         return key in {SECTION_KEYS.get(s.lower(), s.lower()) for s in self.sections}
 
+    @property
+    def changes(self) -> dict[str, str]:
+        """Kind of data -> "parsed" | "unparsed" | "metronome-only" | "unchanged".
 
-def split_sections(text: str) -> tuple[list[str], dict[str, list[str]]]:
-    """Header lines before the first `--Section--`, and section name -> its lines."""
-    header, sections, current = [], {}, None
+        Kinds missing here weren't mentioned by the log, which means vanilla.
+        """
+        out = dict(self.statuses)
+        for name in self.sections:
+            kind = SECTION_KEYS.get(name.lower(), name.lower())
+            out[kind] = "unparsed" if name in self.unparsed_sections else "parsed"
+        return out
+
+    def vanilla_ok(self, kind: str) -> bool:
+        """May tools answer this kind of data (e.g. "movesets") from the vanilla tables?"""
+        return self.changes.get(kind, "unchanged") == "unchanged"
+
+
+def split_sections(text: str) -> tuple[list[str], dict[str, list[str]], dict[str, str]]:
+    """Header lines before the first `--Section--`, section name -> its lines, and the
+    status lines UPR prints between sections (kind -> status)."""
+    header, sections, statuses, current = [], {}, {}, None
     for line in text.splitlines():
+        status = STATUS_RE.match(line.strip())
+        if status and status.group("what").lower() in STATUS_KEYS:
+            kind = STATUS_KEYS[status.group("what").lower()]
+            statuses[kind] = status.group("status").lower().replace(" ", "-")
+            continue
         m = SECTION_RE.match(line.strip())
         if m:
             current = m.group(1)
@@ -127,7 +198,7 @@ def split_sections(text: str) -> tuple[list[str], dict[str, list[str]]]:
             header.append(line)
         else:
             sections[current].append(line.rstrip())
-    return header, sections
+    return header, sections, statuses
 
 
 class LogParser:
@@ -168,7 +239,7 @@ class LogParser:
 
     def parse(self, text: str) -> RandomizerLog:
         log = RandomizerLog()
-        header, sections = split_sections(text)
+        header, sections, log.statuses = split_sections(text)
         for line in header:
             if ":" in line:
                 k, v = line.split(":", 1)
@@ -187,6 +258,8 @@ class LogParser:
             key = SECTION_KEYS.get(name.lower())
             if key is None and "starter" in name.lower():
                 self._starters(lines, log)
+            elif key == "evolution_methods":
+                self._evolution_updates(name, lines, log)
             elif key in handlers:
                 handlers[key](lines, log)
             else:
@@ -330,6 +403,26 @@ class LogParser:
             if src:
                 log.evolutions[src] = [t for t in targets if t]
 
+    def _evolution_updates(self, section: str, lines: list[str], log: RandomizerLog) -> None:
+        for line in lines:
+            s = line.strip()
+            if not s:
+                continue
+            threshold = FRIENDSHIP_RE.search(s)
+            if threshold:
+                log.friendship_threshold = int(threshold.group(1))
+                continue
+            m = EVO_UPDATE_RE.match(s)
+            if not m:
+                log.warnings.append(f"evolution update: unreadable line {s!r}")
+                continue
+            log.evolution_updates.append(
+                EvolutionUpdate(
+                    section, self.species(m.group("src"), log), self.species(m.group("dst") or m.group("dst2"), log),
+                    m.group("how") or m.group("how2"), bool(m.group("overwritten")),
+                )
+            )
+
     def _starters(self, lines: list[str], log: RandomizerLog) -> None:
         for line in lines:
             m = STARTER_RE.search(line)
@@ -380,6 +473,10 @@ def load_overlay(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str
         "overlay_evolutions": "log_id VARCHAR, from_species_id INTEGER, to_species_id INTEGER, source_id VARCHAR",
         "overlay_starters": "log_id VARCHAR, slot INTEGER, species_id INTEGER, source_id VARCHAR",
         "overlay_statics": "log_id VARCHAR, vanilla_species_id INTEGER, species_id INTEGER, source_id VARCHAR",
+        # kind -> parsed | unparsed | metronome-only | unchanged (plus friendship_threshold when changed)
+        "overlay_changes": "log_id VARCHAR, kind VARCHAR, status VARCHAR",
+        "overlay_evolution_updates": "log_id VARCHAR, section VARCHAR, from_species_id INTEGER, to_species_id INTEGER, "
+        "how VARCHAR, overwritten BOOLEAN, source_id VARCHAR",
     }
     for table, cols in ddl.items():
         con.execute(f"CREATE TABLE IF NOT EXISTS {table} ({cols})")
@@ -422,3 +519,14 @@ def load_overlay(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str
     )
     insert("overlay_starters", [(log_id, i, ids[sp], f"log:starters#{i}") for i, sp in enumerate(log.starters, 1)])
     insert("overlay_statics", [(log_id, ids[a], ids[b], f"log:statics#{a}") for a, b in log.statics])
+    changes = [(log_id, kind, status) for kind, status in log.changes.items()]
+    if log.friendship_threshold is not None:
+        changes.append((log_id, "friendship_threshold", str(log.friendship_threshold)))
+    insert("overlay_changes", changes)
+    insert(
+        "overlay_evolution_updates",
+        [
+            (log_id, u.section, ids[u.src], ids[u.dst], u.how, u.overwritten, f"log:evolution_updates#{u.src}")
+            for u in log.evolution_updates if u.src and u.dst
+        ],
+    )

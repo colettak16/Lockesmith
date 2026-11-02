@@ -232,7 +232,13 @@ This is the most judgement-heavy section and the one we most want checked.
   A first cross-check round then moved the open-water routes, Route 115's grass, the eastern sea,
   Sootopolis and the Regi caves (D7).
 - **P-R8** Grunt fights outside the 32 battles are noted on the battle they precede (Mt. Chimney,
-  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants.
+  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants; the hideouts carry
+  a general warning. The optional Winstrate family (Route 111, four battles with no healing) is noted
+  at P-09.
+- **P-R9** A route can open in stages: an entry limited to some methods (Route 110's grass before
+  Brawly, its water after the museum; Route 111's pond and rocks from Mauville, its desert grass after
+  the Go-Goggles). `never_reachable` entries can be method-limited the same way, so a postgame gift
+  doesn't make its town unreachable.
 """
 
 RANDOMIZER = """\
@@ -244,9 +250,16 @@ has been through the parser yet.
 
 - **R-01** Sections are headed `--Name--`: `--Wild Pokemon--`, `--Trainers Pokemon--`, `--TM Moves--`,
   `--Move Tutor Moves--`, `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, `--Static Pokemon--`,
-  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. A section
-  appears only for what was randomized; anything missing falls back to vanilla. Other sections are
-  recorded, not parsed.
+  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. Evolution
+  *methods* changed by settings get their own sections (`--Removing Impossible Evolutions--`,
+  `--Making Evolutions Easier--` with "Friendship evolutions now take 160 happiness (was 220).",
+  `--Removing Timed-Based Evolutions--`), parsed as `A -> B at level N` / `using a ITEM` / `now also
+  evolves into B at minimum level N`. Between sections UPR prints status lines such as `Trainers:
+  Unchanged.` and `Pokemon Movesets: Metronome Only.`
+- **R-09** The parser keeps a per-kind record (`changes`): parsed, unparsed, metronome-only or unchanged.
+  Tools answer a kind from vanilla only when the log never mentions it or says `Unchanged`. Sections it
+  recognizes but doesn't parse yet (movesets, TM/tutor compatibility, move data, trades, shops) block
+  vanilla answers for that kind.
 - **R-02** Wild sets: `Set #N - ROUTE 104 Grass/Cave (rate=20)`; Gen 3 labels are `Grass/Cave`, `Surfing`,
   `Rock Smash`, `Fishing`. Then one line per slot: `Zigzagoon Lv2` or `Zigzagoon Lvs 2-4`, padded, then
   `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
@@ -270,14 +283,11 @@ has been through the parser yet.
 QUESTIONS = """\
 ## 9. Open questions
 
-- **Q-01** Under rule P-R2 (including "can stand there"), which areas in section 4 are still placed too
-  early or too late? Route 110's southern end below the Team Aqua line, and water reachable from
-  shorelines before Surf, are the cases we checked least.
-- **Q-02** Cave of Origin (P-26): is it really unenterable before the Champion except during the crisis?
-- **Q-03** Mirage Island (P-22): what decides on which days it appears in Emerald?
-- **Q-04** Are any forced battles still missing from the notes (P-R8)?
-- **Q-05** Does anything in R-01 to R-08 differ in UPR ZX versions people commonly use for Emerald
-  (4.6.x vs current master)?
+- **Q-01** Which other routes open in stages (P-R9) that the file still treats as one unlock point?
+  Shorelines you can fish from before Surf are the likeliest cases.
+- **Q-02** Are any TM sources still missing a `Requires` gate (section 7)?
+- **Q-03** Does anything else in UPR's Emerald output change game data without its own section or
+  status line (R-01, R-09)?
 """
 
 
@@ -291,8 +301,8 @@ def header(con) -> str:
         f"Generated {date.today().isoformat()} by `build/review_packet.py` from the database built "
         f"{info['built_at'][:10]}: pokeemerald `{info['pokeemerald_sha'][:12]}`, PokeAPI "
         f"`{info['pokeapi_sha'][:12]}`. Bulbapedia text is CC BY-NC-SA 2.5.\n\n"
-        "A previous review round was applied after re-verification; section 3's D-10 to D-13 and "
-        "docs/decisions.md D7 say what changed. Fresh eyes on sections 4 and 5 are still the most useful.\n\n"
+        "Two previous review rounds were applied after re-verification; docs/decisions.md D7 says what "
+        "changed. Fresh eyes on sections 4, 5 and 7 are still the most useful.\n\n"
         "**ID prefixes**: M mechanics, MV moves, SP species, LG later-gen relatives, EV evolutions, "
         "D data findings, P/N progression, K trainer teams, L locations, SE special encounters, "
         "TM/TU machines and tutors, R randomizer, Q questions.\n"
@@ -529,7 +539,11 @@ def progression(con) -> str:
             out.append(f"  - Notes: {b['notes']}")
         out.append(f"  - Source: `{b['source']}`")
     out.append("\n### Never reachable before the Champion (N)\n")
-    out += [f"- **N-{i:02d}** `{n['area']}`: {n['reason']}" for i, n in enumerate(raw["never_reachable"], 1)]
+    out += [
+        f"- **N-{i:02d}** `{n['area']}`" + (f" ({', '.join(n['methods'])} only)" if n.get("methods") else "")
+        + f": {n['reason']}"
+        for i, n in enumerate(raw["never_reachable"], 1)
+    ]
     return "\n".join(out)
 
 
@@ -579,9 +593,13 @@ def locations(con) -> str:
     ).fetchall()
     rows = [[f"SE-{i:02d}", loc + (f"/{area}" if area else ""), method, sp,
              f"{lo}" if lo == hi else f"{lo}-{hi}", cond] for i, (loc, area, method, sp, lo, hi, cond) in enumerate(special, 1)]
+    rom = con.execute("SELECT condition, decomp_symbol, description FROM e.rom_conditions ORDER BY 1").fetchall()
     return "\n\n".join([
         LOCATIONS,
         "**L-09 encounter conditions**: " + ", ".join(f"`{c}`" for c in conds),
+        "**L-10** `[decomp]` Conditions PokeAPI doesn't model, added by the build to the rows they gate "
+        "(Regis, Rayquaza, Mirage Island):\n\n"
+        + table(["Condition", "Decomp symbol", "Meaning"], [list(r) for r in rom]),
         "### Special encounters (SE): statics, gifts, trades, roamers and other non-wild methods\n\n"
         + table(["ID", "Location/area", "Method", "Species", "Level", "Conditions"], rows),
     ])
@@ -590,7 +608,7 @@ def locations(con) -> str:
 def machines(con) -> str:
     rows = con.execute(
         """
-        SELECT m.label, mv.name, tl.method, tl.location, tl.map_folder, tl.detail
+        SELECT m.label, mv.name, tl.method, tl.location, tl.map_folder, tl.detail, tl.requires
         FROM e.machines m JOIN e.moves mv USING (move_id)
         LEFT JOIN e.tm_locations tl ON tl.label = m.label
         ORDER BY m.machine_number, tl.method, tl.map_folder
@@ -604,13 +622,10 @@ def machines(con) -> str:
         "## 7. TM/HM sources and move tutors\n\n`[decomp]` From map data: item balls, hidden items, NPC "
         "gifts, marts and Game Corner prizes. One row per source; a TM can have several. Gym TMs name "
         "the leader that triggers the gift. HM field use needs a badge (M-12).",
-        table(["ID", "Move", "Method", "Location", "Map", "Detail"],
-              [[f"TM-{lab}", mv, meth, loc, mp, det] for lab, mv, meth, loc, mp, det in rows]),
-        "**Known conditions the table can't show** (from docs/decisions.md D1): TM02 Dragon Claw needs "
-        "Waterfall (Meteor Falls back room); TM26 Earthquake is in Seafloor Cavern; TM07 Hail is in Shoal "
-        "Cave's ice room; TM11 Sunny Day is in Scorched Slab (Surf); TM18 Rain Dance is on the Abandoned "
-        "Ship's hidden floor (Dive); TM21/TM27 in Pacifidlog depend on friendship; TM19 Giga Drain needs a "
-        "Grass Pokémon; TM12 Taunt is a Trick House reward; TM49 Snatch is on the S.S. Tidal (postgame).",
+        "`Requires` is hand-checked against decomp scripts or Bulbapedia: what the source needs beyond "
+        "reaching its map (an HM, a key, a side quest, a party condition, postgame).",
+        table(["ID", "Move", "Method", "Location", "Map", "Detail", "Requires"],
+              [[f"TM-{lab}", mv, meth, loc, mp, det, req] for lab, mv, meth, loc, mp, det, req in rows]),
         "### Move tutors (TU)\n\nEach Hoenn tutor teaches once in Emerald; the other tutors are at the "
         "postgame Battle Frontier.\n\n"
         + table(["ID", "Move", "Location", "Map", "One time"],

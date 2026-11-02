@@ -21,7 +21,7 @@ PLAN.md §0 says to ask before resolving OPEN items. Your Nov 1 instruction was 
 - Items inside a map that need an HM to reach: TM02 Dragon Claw (Meteor Falls back room, Waterfall), TM26 Earthquake (Seafloor Cavern), TM07 Hail (Shoal Cave ice room), TM11 Sunny Day (Scorched Slab, Surf), TM18 Rain Dance (Abandoned Ship hidden floor, Dive).
 - Conditional gifts: TM21/TM27 in Pacifidlog depend on friendship; TM19 Giga Drain needs a Grass Pokémon; TM12 Taunt is a Trick House reward; TM49 Snatch is on the S.S. Tidal (postgame).
 
-I'd add a short hand-reviewed `requires` column (about 12 rows) rather than parse these.
+Done in the second cross-check (D7): `tm_locations.requires` holds 17 hand-checked gates, and the extractor now also finds gifts given by shared scripts that a map refers to from `map.json` (TM43 on Route 111).
 
 *Switching cost:* low. `get_tm_availability` reads one table.
 
@@ -163,3 +163,28 @@ GPT's sample log was from Pokémon X, though. Its "Surf/Old Rod" set labels don'
 - UPR adds Steven's Space Center team as pseudo-trainer #855. The parser marks it as a partner.
 - Cave of Origin is enterable only during the crisis: an Expert blocks it unless `VAR_SOOTOPOLIS_CITY_STATE` is 2–3.
 - Routes 132–134 only flow west (Bulbapedia), so they can't be reached from Slateport before the eastern sea opens.
+
+**Second round.** Every claim checked out after verification, with one placement corrected. Applied:
+- **Routes that open in stages.**
+  - Route 110's first grass lies south of the Team Aqua line (grunts at y=83, the Route 103 junction at y=60–80). It opens with Slateport, before Brawly; GPT had said P-07, but Slateport already opens at P-06.
+  - Route 111's pond and Rock Smash rocks open from Mauville. Its grass is desert-only, behind the Go-Goggles.
+- **TM gates:** `tm_locations.requires` (see D1). Highlights:
+  - TM43 is first a gift from Route 111's Secret Power man. That gift also makes the Slateport TM salesman appear (`secret_power_tm.inc`).
+  - TM06 needs Strength.
+  - TM13 needs the Storage Key.
+  - TM24 comes after New Mauville; TM27 after returning the Meteorite.
+  - The Pacifidlog friendship TM is **weekly** (`FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK`), not daily as I first said.
+- **Encounter conditions PokeAPI lacks**, in the `rom_conditions` table:
+  - Regis: the Sealed Chamber, then Regirock's Rock Smash, Regice's walking and Registeel's Flash puzzles (`braille_puzzles.c`, `fldeff_rocksmash.c`, `fldeff_flash.c`)
+  - Rayquaza's return to Sky Pillar
+  - Mirage Island's daily personality match (`time_events.c`)
+- **The Safari Zone checks for the Pokéblock Case**, which the Lilycove Contest Hall gives out.
+- **Method-limited `never_reachable`:** Littleroot and Steven's house are reachable; only their gifts are postgame.
+- **Battle notes:** the Winstrates' four battles with no healing, and a warning about hideout grunts.
+- **Randomizer changes outside the obvious sections**, confirmed in UPR's `Randomizer.java`:
+  - three evolution-method sections, including the friendship threshold dropping to 160
+  - `X: Unchanged.` and `X: Metronome Only.` status lines
+
+  The parser now reads both and keeps a per-kind `changes` record, so tools only answer from vanilla when the log never mentions that data or says it's unchanged.
+
+Still open, with no verdict possible without a real Emerald log: whether real logs match the R-03/R-05 numbering and the exact grammar across UPR versions.

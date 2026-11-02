@@ -265,6 +265,48 @@ def test_moveset_logging_form(con, index):
     assert log.warnings == []
 
 
+CHANGES_LOG = """\
+Randomizer Version: 4.6.1
+Random Seed: 42
+
+--Removing Impossible Evolutions--
+FEEBAS          -> MILOTIC         at level 30 (Overwritten by "Make Evolutions Easier", see below)
+NINCADA         now also evolves into SHEDINJA             at minimum level 20
+
+--Making Evolutions Easier--
+Friendship evolutions now take 160 happiness (was 220).
+FEEBAS          -> MILOTIC         at level 25
+KADABRA         -> ALAKAZAM        at level 37
+
+--Removing Timed-Based Evolutions--
+EEVEE           -> ESPEON          using a Sun Stone
+
+Pokemon Movesets: Metronome Only.
+
+TM Moves: Unchanged.
+
+--TM Compatibility--
+  1 BULBASAUR  |  TM01 FOCUS PUNCH |
+
+Trainers: Unchanged.
+"""
+
+
+def test_evolution_method_sections_and_status_lines(con, index):
+    """UPR logs evolution-method changes and some settings outside the obvious sections."""
+    log = parse_log(CHANGES_LOG, con, index)
+    assert log.friendship_threshold == 160
+    updates = [(u.src, u.dst, u.how, u.overwritten) for u in log.evolution_updates]
+    assert ("feebas", "milotic", "at level 30", True) in updates
+    assert ("nincada", "shedinja", "at minimum level 20", False) in updates
+    assert ("eevee", "espeon", "using a Sun Stone", False) in updates
+    assert log.changes["movesets"] == "metronome-only" and not log.vanilla_ok("movesets")
+    assert log.changes["evolution_methods"] == "parsed" and not log.vanilla_ok("evolution_methods")
+    assert log.changes["tm_compatibility"] == "unparsed" and not log.vanilla_ok("tm_compatibility")
+    assert log.vanilla_ok("tm_moves") and log.vanilla_ok("trainers") and log.vanilla_ok("wild")
+    assert [w for w in log.warnings if "unreadable" in w] == []
+
+
 def test_overlay_tables(con, sample):
     load_overlay(con, sample, "sample")
     rows = con.execute(
