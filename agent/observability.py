@@ -20,10 +20,13 @@ question and the answer as the trace's input and output):
 """
 
 import hashlib
+import logging
 import os
+import threading
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 
+log = logging.getLogger("lockesmith.observability")
 _enabled = False
 
 # Agent -> the step its run performs (the Agents SDK's workflow name for that run)
@@ -64,8 +67,51 @@ def setup() -> bool:
     get_client()  # sets the global OpenTelemetry provider the instrumentor's spans export through
     OpenAIAgentsInstrumentor().instrument()  # exclusive by default: the SDK's OpenAI exporter is dropped
     set_tracing_disabled(False)
+    _count_exports()
     _enabled = True
     return True
+
+
+# Trace id -> [spans LangFuse accepted, spans whose export failed]. Some deployed turns never
+# appeared in LangFuse with no error logged; counting what the exporter sends per trace tells a
+# span that was never sent from one LangFuse dropped (docs/decisions.md D12).
+_exports: dict[str, list[int]] = {}
+_exports_lock = threading.Lock()
+
+
+def _count_exports() -> None:
+    """Wrap the LangFuse exporter to count exported spans per trace. Diagnostic only: it reaches
+    into SDK internals, so if they've moved it does nothing rather than break tracing."""
+    try:
+        from langfuse import get_client
+        from opentelemetry.sdk.trace.export import SpanExportResult
+
+        provider = get_client()._resources.tracer_provider
+        for processor in provider._active_span_processor._span_processors:
+            exporter = getattr(getattr(processor, "_batch_processor", None), "_exporter", None)
+            if exporter is None:
+                continue
+
+            def export(spans, _export=exporter.export):
+                result = _export(spans)
+                slot = 0 if result == SpanExportResult.SUCCESS else 1
+                with _exports_lock:
+                    for span in spans:
+                        _exports.setdefault(format(span.context.trace_id, "032x"), [0, 0])[slot] += 1
+                return result
+
+            exporter.export = export
+    except Exception as error:  # noqa: BLE001 - diagnostics must never break tracing
+        log.warning("couldn't watch LangFuse exports: %s", error)
+
+
+def exported(trace_id: str | None) -> tuple[int, int] | None:
+    """(spans accepted, spans failed) for a trace so far, forgetting it; None when not tracing."""
+    if not _enabled or not trace_id:
+        return None
+    with _exports_lock:
+        accepted, failed = _exports.pop(trace_id, [0, 0])
+    return accepted, failed
 
 
 def enabled() -> bool:

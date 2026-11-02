@@ -290,9 +290,11 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
         })
     await asyncio.to_thread(observability.flush)
     # One line per turn in the service logs, to match against LangFuse
-    log.info("chat session=%s trace=%s intent=%s seconds=%.1f model_calls=%d fallbacks=%d cost_usd=%.3f",
+    log.info("chat session=%s trace=%s intent=%s seconds=%.1f model_calls=%d fallbacks=%d cost_usd=%.3f "
+             "spans_exported(accepted,failed)=%s",
              session.id, trace_id, result.get("intent"), ctx.elapsed(), len(ctx.usage),
-             sum(1 for u in ctx.usage if u.get("fallback")), sum(u.get("cost_usd") or 0 for u in ctx.usage))
+             sum(1 for u in ctx.usage if u.get("fallback")), sum(u.get("cost_usd") or 0 for u in ctx.usage),
+             observability.exported(trace_id))
     session.history += [{"role": "user", "content": message}, {"role": "assistant", "content": result["response"]}]
     return {
         "response": result["response"],
