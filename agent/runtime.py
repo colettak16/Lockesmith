@@ -15,8 +15,11 @@ import json
 import os
 from typing import Any
 
-from agents import Agent, RunHooks, Runner, set_tracing_disabled
+from agents import Agent, ModelSettings, RunHooks, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
+from agents.retry import ModelRetrySettings, retry_policies
+from agents.run_error_handlers import RunErrorHandlerInput, RunErrorHandlerResult
+from openai.types.shared import Reasoning
 
 os.environ.setdefault("VERTEXAI_PROJECT", "lockesmith")
 os.environ.setdefault("VERTEXAI_LOCATION", "global")
@@ -24,6 +27,13 @@ os.environ.setdefault("VERTEXAI_LOCATION", "global")
 set_tracing_disabled(True)
 
 RESULT_PREVIEW_CHARS = 1200
+# Parallel researchers can trip Vertex's quota ("429 Resource exhausted"); the runner retries
+# those, server errors and network errors with exponential backoff and jitter.
+RETRY = ModelRetrySettings(
+    max_retries=5,
+    backoff={"initial_delay": 2.0, "multiplier": 2.0, "max_delay": 20.0, "jitter": True},
+    policy=retry_policies.any(retry_policies.http_status([429, 500, 503]), retry_policies.network_error()),
+)
 
 
 def model_name(tier: str) -> str:
@@ -32,11 +42,14 @@ def model_name(tier: str) -> str:
     return os.environ.get("LOCKESMITH_STRONG_MODEL", "vertex_ai/gemini-3.1-pro-preview")
 
 
-def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=None) -> Agent:
+def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=None, effort: str | None = None) -> Agent:
+    """`effort` ("low", "medium", "high") caps the model's thinking; LiteLLM maps it to each
+    provider's setting (Gemini thinking level, Claude thinking budget)."""
     return Agent(
         name=name,
         instructions=instructions,
         model=LitellmModel(model=model_name(tier)),
+        model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY),
         tools=list(tools),
         output_type=output_type,
     )
@@ -61,22 +74,44 @@ class ToolCallRecorder(RunHooks):
             args = {"raw": raw}
         ctx = context.context
         ctx.tool_calls.append(
-            {"agent": agent.name, "name": tool.name, "args": args, "result": preview(result), "round": ctx.research_round}
+            {"agent": agent.name, "name": tool.name, "args": args, "result": preview(result),
+             "round": ctx.research_round, "t": ctx.elapsed()}
         )
 
     async def on_llm_end(self, context, agent, response) -> None:
         usage = getattr(response, "usage", None)
         if usage is not None:
             context.context.usage.append(
-                {"agent": agent.name, "input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens}
+                {"agent": agent.name, "input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens,
+                 "t": context.context.elapsed()}
             )
 
 
 RECORDER = ToolCallRecorder()
+WRAP_UP = "You've used your tool budget. Give your final answer now, using only the tool results above."
+
+
+async def finish_at_turn_limit(data: RunErrorHandlerInput):
+    """When an agent hits max_turns still calling tools, give it one more turn with tools
+    switched off so it reports what it found instead of failing."""
+    agent = data.run_data.last_agent
+    ctx = data.context.context
+    ctx.tool_calls.append(
+        {"agent": agent.name, "name": "turn_limit_wrap_up", "args": {}, "result": "tool budget used; asked for the final answer",
+         "round": ctx.research_round, "t": ctx.elapsed()}
+    )
+    closer = agent.clone(model_settings=agent.model_settings.resolve(ModelSettings(tool_choice="none")))
+    history = list(data.run_data.history) + [{"role": "user", "content": WRAP_UP}]
+    result = await Runner.run(closer, history, context=ctx, hooks=RECORDER, max_turns=1)
+    return RunErrorHandlerResult(final_output=result.final_output, include_in_history=False)
 
 
 async def run(agent: Agent, input: str, context, max_turns: int = 8):
     """Run one agent to completion and return its final output (a pydantic model when the
-    agent has an output_type, else text)."""
-    result = await Runner.run(agent, input, context=context, hooks=RECORDER, max_turns=max_turns)
+    agent has an output_type, else text). An agent that runs out of turns while still
+    calling tools is asked to wrap up rather than failing."""
+    result = await Runner.run(
+        agent, input, context=context, hooks=RECORDER, max_turns=max_turns,
+        error_handlers={"max_turns": finish_at_turn_limit},
+    )
     return result.final_output

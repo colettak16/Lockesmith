@@ -201,3 +201,13 @@ def test_cite_numbers_known_ids_and_drops_unknown():
     assert text == "Juan is next [1]. Gym puzzle [2]."
     assert [c["n"] for c in citations] == [1, 2] and citations[1]["url"].startswith("https://bulbapedia")
     assert unknown == ["made:up"]
+
+
+def test_cite_handles_ids_with_commas():
+    ledger = Ledger()
+    ledger.add("guide:Walkthrough:Pokemon_Emerald/Part_2#Stop,_Thief!")
+    ledger.add("progression:gym1_roxanne")
+    text, citations, unknown = ledger.cite(
+        "Chase the grunt [[guide:Walkthrough:Pokemon_Emerald/Part_2#Stop,_Thief!, progression:gym1_roxanne]]."
+    )
+    assert text == "Chase the grunt [1][2]." and unknown == []

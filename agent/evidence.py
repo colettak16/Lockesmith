@@ -78,8 +78,21 @@ class Ledger:
         numbers: dict[str, int] = {}
         unknown: list[str] = []
 
+        def split_ids(group: str) -> list[str]:
+            # Ids can contain commas (guide anchors like "#Stop,_Thief!"), so join comma-separated
+            # pieces back together whenever the joined text is a known id.
+            pieces, out, i = group.split(","), [], 0
+            while i < len(pieces):
+                for j in range(len(pieces), i, -1):
+                    candidate = ",".join(pieces[i:j]).strip()
+                    if candidate in self.entries or j == i + 1:
+                        out.append(candidate)
+                        i = j
+                        break
+            return [s for s in out if s]
+
         def sub(m):
-            ids = [s.strip() for s in m.group(1).split(",")]
+            ids = split_ids(m.group(1))
             marks = []
             for sid in ids:
                 if sid not in self.entries:

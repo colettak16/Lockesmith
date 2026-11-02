@@ -1,5 +1,6 @@
 """What every tool and agent sees during one /chat request."""
 
+import time
 from dataclasses import dataclass, field
 from functools import cache
 
@@ -29,6 +30,10 @@ class RequestContext:
     tool_calls: list[dict] = field(default_factory=list)
     usage: list[dict] = field(default_factory=list)
     research_round: int = 0
+    started: float = field(default_factory=time.monotonic)
+
+    def elapsed(self) -> float:
+        return round(time.monotonic() - self.started, 2)
 
     def cursor(self) -> duckdb.DuckDBPyConnection:
         """A cursor per tool call: researchers run in parallel, and DuckDB connections

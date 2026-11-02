@@ -1,16 +1,19 @@
 """Lockesmith FastAPI entry point.
 
-Phase 0: a hello-world service that proves the Cloud Run deploy path. The
-/chat endpoint already returns the response shape fixed in PLAN.md section 8,
-so the deploy can be smoke-tested against the real contract.
+/chat runs the agent pipeline (agent/pipeline.py) and returns the response shape fixed in
+PLAN.md §8. /history, /clear and /run_state follow the course's chatbot conventions; the
+front end that uses them comes in Phase 4.
 """
 
 import os
-import uuid
 
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+
+from agent import pipeline
+from agent.session import SESSIONS
+from agent.state import RunState
 
 app = FastAPI(title="Lockesmith")
 
@@ -18,7 +21,7 @@ app = FastAPI(title="Lockesmith")
 class ChatRequest(BaseModel):
     message: str
     session_id: str | None = None
-    run_state: dict | None = None
+    run_state: RunState | None = None
 
 
 class ChatResponse(BaseModel):
@@ -30,6 +33,10 @@ class ChatResponse(BaseModel):
     chart: dict | None = None
 
 
+class SessionRequest(BaseModel):
+    session_id: str
+
+
 @app.get("/", response_class=HTMLResponse)
 def index() -> str:
     return """<!doctype html>
@@ -38,8 +45,8 @@ def index() -> str:
 <body style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem;">
 <h1>Lockesmith</h1>
 <p>A research agent for Pok&eacute;mon Emerald runs (normal, Nuzlocke and randomized):
-it tells you what to catch next, and where, to beat the rest of the game.</p>
-<p>Under construction. The agent is not wired up yet.</p>
+what to catch, what to do next, and how to beat the rest of the game.</p>
+<p>The agent answers on <code>POST /chat</code>; the full front end is coming.</p>
 </body></html>"""
 
 
@@ -49,11 +56,30 @@ def health() -> dict:
 
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest) -> ChatResponse:
-    return ChatResponse(
-        response="Lockesmith is deployed but the agent isn't wired up yet.",
-        session_id=req.session_id or uuid.uuid4().hex,
-    )
+async def chat(req: ChatRequest) -> ChatResponse:
+    return ChatResponse(**await pipeline.chat(req.message, req.session_id, req.run_state))
+
+
+@app.get("/history")
+def history(session_id: str) -> dict:
+    session = SESSIONS.peek(session_id)
+    return {"session_id": session_id, "history": session.history if session else []}
+
+
+@app.post("/clear")
+def clear(req: SessionRequest) -> dict:
+    return {"session_id": req.session_id, "cleared": SESSIONS.clear(req.session_id)}
+
+
+@app.get("/run_state")
+def run_state(session_id: str) -> dict:
+    """The session's current run state, including rules and facts learned in conversation."""
+    session = SESSIONS.peek(session_id)
+    return {
+        "session_id": session_id,
+        "run_state": session.state.model_dump() if session else None,
+        "rejected_species": sorted(session.excluded) if session else [],
+    }
 
 
 if __name__ == "__main__":

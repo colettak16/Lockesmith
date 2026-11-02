@@ -1,0 +1,734 @@
+{
+  "response": "To defeat Tate & Liza, consider adding a Dark-type like Sharpedo or Absol to your team for their Psychic immunity. \n\n### Top picks\n\n**Sharpedo** (Psychic-Immune Attacker)\n*   **Where:** Route 122 using the Super Rod (Lv30-35) [1].\n*   **When:** Catch before facing Tate & Liza [2].\n*   **Why:** Its Water/Dark typing makes it completely immune to Psychic-type attacks, and it can hit the Gym Leaders' Pokémon with super-effective STAB Water and Dark moves [2]. Three of their Pokémon are weak to Water [2].\n*   **Backup:** Carvanha (Route 119, Super Rod, Lv20-45) [3]. A guaranteed encounter that evolves into Sharpedo at level 30 [2].\n\n**Absol** (Physical Dark Attacker)\n*   **Where:** Route 120 in the grass (Lv25-27) [4].\n*   **When:** Catch before facing Tate & Liza [2].\n*   **Why:** Pure Dark typing gives it immunity to Psychic attacks, allowing it to safely switch in and exploit the Gym's weaknesses [2].\n*   **Backup:** Shuppet (Mt. Pyre 1F, walking, Lv22-29) [5]. A highly accessible Ghost-type that can hit the Gym Leaders' Psychic types with super-effective Ghost-type moves [2].\n\n### Battle Notes\n*   **Tate & Liza:** They use Claydol (Lv41), Xatu (Lv41), Lunatone (Lv42), and Solrock (Lv42) [6][7][8][9]. \n*   All carry Psychic, which threatens Breloom [10]. \n*   Solrock has Sunny Day and Solar Beam, which is a quadruple threat to Marshtomp/Swampert [10]. \n*   Claydol's Earthquake threatens Manectric, and its Ancient Power threatens Swellow [10]. \n*   Level your team to around 40-42; Marshtomp will evolve into Swampert at 36, and Manectric learns Bite at 39, which is a Special move in Gen III and hits Psychic types hard [11][12].\n\n***\n\n**Assumptions**\n*   The player is willing to level up their team from the low 30s to around level 40-42 before facing the Gym Leaders.\n\n**To sharpen this**\n*   Do you want recommendations for TM moves that can bypass the Gen III physical/special split limitations for these species?\n*   Are you planning on using your starter Swampert as your primary Water-type user, or do you want to transition to a Water/Dark-type?",
+  "session_id": "session-vanilla",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What should I catch to get through Tate & Liza?"
+      },
+      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"Suggest what Pok\\u00e9mon to catch to prepare for and defeat Tate & Liza, considering the player's current team of Marshtomp, Breloom, Swellow, and Manectric, with Mudkip as starter and 6 badges.\", \"state_updates\": {\"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"dupes_clause\": null, \"level_caps\": null, \"monotype\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 3.64
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "get_trainer_team",
+      "args": {
+        "battle": "gym7_tate_liza"
+      },
+      "result": "{\"battle_id\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"format\": \"double\", \"location\": \"mossdeep-city\", \"partner\": null, \"notes\": \"Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) appears only on days when the daily value matches the low 16 bits of a party Pokémon's personality value (time_events.c IsMirageIslandPresent), so swapping party members can change it; the old man in Pacifidlog says whether it's visible.\", \"rival_note\": null, \"teams\": [{\"trainer\": \"Leader Tate&Liza\", \"trainer_const\": \"TRAINER_TATE_AND_LIZA_1\", \"pokemon\": [{\"species\": \"Claydol\", \"types\": [\"ground\", \"psychic\"], \"level\": 41, \"held_item\": null, \"ability\": \"levitate\", \"iv\": 30, \"moves_source\": \"c... [1486 more characters]",
+      "round": 1,
+      "t": 11.58
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "marshtomp"
+      },
+      "result": "{\"species\": \"Marshtomp\", \"types\": [\"water\", \"ground\"], \"base_stats\": {\"hp\": 70, \"attack\": 85, \"defense\": 70, \"sp_attack\": 60, \"sp_defense\": 70, \"speed\": 50, \"bst\": 405}, \"abilities\": [\"torrent\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium-slow\", \"evolutions\": [{\"from\": \"Mudkip\", \"to\": \"Marshtomp\", \"how\": \"level-up, level 16\", \"source_id\": \"pokeapi:pokemon_evolution#134\"}, {\"from\": \"Marshtomp\", \"to\": \"Swampert\", \"how\": \"level-up, level 36\", \"source_id\": \"pokeapi:pokemon_evolution#135\"}], \"source_id\": \"pokeapi:pokemon_species#259\"}",
+      "round": 1,
+      "t": 12.39
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "manectric"
+      },
+      "result": "{\"species\": \"Manectric\", \"types\": [\"electric\"], \"base_stats\": {\"hp\": 70, \"attack\": 75, \"defense\": 60, \"sp_attack\": 105, \"sp_defense\": 60, \"speed\": 105, \"bst\": 475}, \"abilities\": [\"static\", \"lightning-rod\"], \"legendary_or_mythical\": false, \"growth_rate\": \"slow\", \"evolutions\": [{\"from\": \"Electrike\", \"to\": \"Manectric\", \"how\": \"level-up, level 26\", \"source_id\": \"pokeapi:pokemon_evolution#163\"}], \"source_id\": \"pokeapi:pokemon_species#310\"}",
+      "round": 1,
+      "t": 12.39
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "swellow"
+      },
+      "result": "{\"species\": \"Swellow\", \"types\": [\"normal\", \"flying\"], \"base_stats\": {\"hp\": 60, \"attack\": 85, \"defense\": 60, \"sp_attack\": 50, \"sp_defense\": 50, \"speed\": 125, \"bst\": 430}, \"abilities\": [\"guts\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium-slow\", \"evolutions\": [{\"from\": \"Taillow\", \"to\": \"Swellow\", \"how\": \"level-up, level 22\", \"source_id\": \"pokeapi:pokemon_evolution#146\"}], \"source_id\": \"pokeapi:pokemon_species#277\"}",
+      "round": 1,
+      "t": 12.39
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "breloom"
+      },
+      "result": "{\"species\": \"Breloom\", \"types\": [\"grass\", \"fighting\"], \"base_stats\": {\"hp\": 60, \"attack\": 130, \"defense\": 80, \"sp_attack\": 60, \"sp_defense\": 60, \"speed\": 70, \"bst\": 460}, \"abilities\": [\"effect-spore\"], \"legendary_or_mythical\": false, \"growth_rate\": \"fast-then-very-slow\", \"evolutions\": [{\"from\": \"Shroomish\", \"to\": \"Breloom\", \"how\": \"level-up, level 23\", \"source_id\": \"pokeapi:pokemon_evolution#151\"}], \"source_id\": \"pokeapi:pokemon_species#286\"}",
+      "round": 1,
+      "t": 12.39
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "marshtomp",
+        "max_level": 42
+      },
+      "result": "{\"species\": \"marshtomp\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Tackle\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#259/33/level-up/1\"}, {\"level\": 1, \"name\": \"Growl\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#259/45/level-up/1\"}, {\"level\": 1, \"name\": \"Mud-Slap\", \"type\": \"ground\", \"damage_class\": \"physical\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#259/189/level-up/1\"}, {\"level\": 1, \"name\": \"Water Gun\", \"type\": \"water\", \"damage_class\": \"special\", \"power\": 40, \"source_id\": \"pokeapi:pokemon_moves#259/55/level-up/1\"}, {\"level\": 6, \"name\": \"Mud-Slap\", \"type\": \"ground\", \"damage_class\": \"physical\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#259/189/level-up/6\"}, {\"level\": 10, \"name\": \"Water Gun\", \"type\": \"water\", \"damage_class\": \"special\", \"power\": 40, \"source_id\": \"pokeapi:pokemon_moves#259/55/level-up/10\"}, {\"level\": 15, \"name\": \"Bide\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#259/117/level-up/15\"}, {\"level\": 16, \"name\": \"Mud Shot\", \"type\": \"ground\", \"damage_class\": \"physical\", \"power\": 55, \"source_id\"... [5643 more characters]",
+      "round": 1,
+      "t": 12.4
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "breloom",
+        "max_level": 42
+      },
+      "result": "{\"species\": \"breloom\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Absorb\", \"type\": \"grass\", \"damage_class\": \"special\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#286/71/level-up/1\"}, {\"level\": 1, \"name\": \"Tackle\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#286/33/level-up/1\"}, {\"level\": 1, \"name\": \"Stun Spore\", \"type\": \"grass\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#286/78/level-up/1\"}, {\"level\": 1, \"name\": \"Leech Seed\", \"type\": \"grass\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#286/73/level-up/1\"}, {\"level\": 4, \"name\": \"Tackle\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#286/33/level-up/4\"}, {\"level\": 7, \"name\": \"Stun Spore\", \"type\": \"grass\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#286/78/level-up/7\"}, {\"level\": 10, \"name\": \"Leech Seed\", \"type\": \"grass\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#286/73/level-up/10\"}, {\"level\": 16, \"name\": \"Mega Drain\", \"type\": \"grass\", \"damage_class\": \"special\", \"power\": 40, \"source_id\": ... [5854 more characters]",
+      "round": 1,
+      "t": 12.41
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "type_filter": "dark",
+        "species": null,
+        "before_battle": "gym7_tate_liza"
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 7, \"species\": [{\"species\": \"Carvanha\", \"types\": [\"water\", \"dark\"], \"places\": [{\"where\": \"Route 119\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#30515\"}, {\"where\": \"Route 118\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 60, \"source_id\": \"pokeapi:encounters#29835\"}, {\"where\": \"Route 118\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29831\"}], \"wild\": true}, {\"species\": \"Poochyena\", \"types\": [\"dark\"], \"places\": [{\"where\": \"Route 103\", \"method\": \"walk\", \"lv\": [2, 4], \"rate_pct\": 60, \"source_id\": \"pokeapi:encounters#29621\"}, {\"where\": \"Route 101\", \"method\": \"walk\", \"lv\": [2, 3], \"rate_pct\": 45, \"source_id\": \"pokeapi:encounters#29568\"}, {\"where\": \"Route 104\", \"method\": \"walk\", \"lv\": [4, 5], \"rate_pct\": 40, \"source_id\": \"pokeapi:encounters#29648\"}], \"wild\": true}, {\"species\": \"Sharpedo\", \"types\": [\"water\", \"dark\"], \"places\": [{\"where\": \"... [1550 more characters]",
+      "round": 1,
+      "t": 12.47
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "species": null,
+        "type_filter": "bug",
+        "before_battle": "gym7_tate_liza"
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 9, \"species\": [{\"species\": \"Wurmple\", \"types\": [\"bug\"], \"places\": [{\"where\": \"Route 101\", \"method\": \"walk\", \"lv\": [2, 3], \"rate_pct\": 45, \"source_id\": \"pokeapi:encounters#29567\"}, {\"where\": \"Route 102\", \"method\": \"walk\", \"lv\": [3, 4], \"rate_pct\": 30, \"source_id\": \"pokeapi:encounters#29595\"}, {\"where\": \"Petalburg Woods\", \"method\": \"walk\", \"lv\": [5, 6], \"rate_pct\": 25, \"source_id\": \"pokeapi:encounters#29877\"}], \"wild\": true}, {\"species\": \"Nincada\", \"types\": [\"bug\", \"ground\"], \"places\": [{\"where\": \"Route 116\", \"method\": \"walk\", \"lv\": [6, 7], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29792\"}], \"wild\": true}, {\"species\": \"Illumise\", \"types\": [\"bug\"], \"places\": [{\"where\": \"Route 117\", \"method\": \"walk\", \"lv\": [13, 14], \"rate_pct\": 18, \"source_id\": \"pokeapi:encounters#29823\"}], \"wild\": true}, {\"species\": \"Cascoon\", \"types\": [\"bug\"], \"places\": [{\"where\": \"Petalburg Woods\", \"method\": \"walk\", \"lv\": [5, 5], \"rate_pct\": 10, \"sourc... [1231 more characters]",
+      "round": 1,
+      "t": 12.47
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "species": null,
+        "before_battle": "gym7_tate_liza",
+        "type_filter": "water"
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 24, \"species\": [{\"species\": \"Barboach\", \"types\": [\"water\", \"ground\"], \"places\": [{\"where\": \"Route 111\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29712\"}, {\"where\": \"Route 114\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29768\"}, {\"where\": \"Route 120\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#30542\"}], \"wild\": true}, {\"species\": \"Carvanha\", \"types\": [\"water\", \"dark\"], \"places\": [{\"where\": \"Route 119\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#30515\"}, {\"where\": \"Route 118\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 60, \"source_id\": \"pokeapi:encounters#29835\"}, {\"where\": \"Route 118\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29831\"}], \"wild\": true}, {\"species\": \"Corphish\", \"types\": [\"wate... [7625 more characters]",
+      "round": 1,
+      "t": 12.47
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "before_battle": "gym7_tate_liza",
+        "type_filter": "ghost",
+        "species": null
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 3, \"species\": [{\"species\": \"Shuppet\", \"types\": [\"ghost\"], \"places\": [{\"where\": \"Mt. Pyre (1f)\", \"method\": \"walk\", \"lv\": [22, 29], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29953\"}, {\"where\": \"Mt. Pyre (2f)\", \"method\": \"walk\", \"lv\": [22, 29], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29965\"}, {\"where\": \"Mt. Pyre (3f)\", \"method\": \"walk\", \"lv\": [22, 29], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29977\"}], \"wild\": true}, {\"species\": \"Sableye\", \"types\": [\"dark\", \"ghost\"], \"places\": [{\"where\": \"Granite Cave (b2f)\", \"method\": \"walk\", \"lv\": [10, 12], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29935\"}, {\"where\": \"Granite Cave (b1f)\", \"method\": \"walk\", \"lv\": [9, 11], \"rate_pct\": 10, \"source_id\": \"pokeapi:encounters#29920\"}], \"wild\": true}, {\"species\": \"Duskull\", \"types\": [\"ghost\"], \"places\": [{\"where\": \"Mt. Pyre (summit)\", \"method\": \"walk\", \"lv\": [26, 30], \"rate_pct\": 13, \"source_id\": \"pokeapi:encounters#... [334 more characters]",
+      "round": 1,
+      "t": 12.48
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "threat_matrix",
+      "args": {
+        "battle": "gym7_tate_liza"
+      },
+      "result": "{\"battle_id\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"rival_note\": null, \"party_top_level\": 33, \"opponent_top_level\": 42, \"matchups\": [{\"opponent\": \"Claydol Lv41\", \"types\": [\"ground\", \"psychic\"], \"trainer\": \"TRAINER_TATE_AND_LIZA_1\", \"threatens\": [{\"member\": \"Breloom\", \"move\": \"Psychic\", \"effectiveness\": 2.0, \"stab\": true}, {\"member\": \"Swellow\", \"move\": \"Ancient Power\", \"effectiveness\": 2.0, \"stab\": false}, {\"member\": \"Manectric\", \"move\": \"Earthquake\", \"effectiveness\": 2.0, \"stab\": true}], \"answered_by\": [{\"member\": \"Breloom\", \"move\": \"Mega Drain\", \"effectiveness\": 2.0, \"stab\": true}], \"source_ids\": [\"decomp:trainer_parties.h#sParty_TateAndLiza1/1\", \"rules:gen3_type_chart\"]}, {\"opponent\": \"Xatu Lv41\", \"types\": [\"psychic\", \"flying\"], \"trainer\": \"TRAINER_TATE_AND_LIZA_1\", \"threatens\": [{\"member\": \"Breloom\", \"move\": \"Psychic\", \"effectiveness\": 2.0, \"stab\": true}], \"answered_by\": [{\"member\": \"Manectric\", \"move\": \"Spark\", \"effectiveness\": 2.0, \"stab\": true}], \"source_ids\": [\"decomp:trainer_parties.h#sParty_TateAndLiza1/2\", \"rules:gen3_type_chart\"]}, {\"opponent\": \"Lunatone Lv42\", \"types\": [\"rock\", \"psychic\"], \"trainer\": \"TRAINER_TATE_AND_LIZA_1\", \"threatens\": [{\"member\":... [1145 more characters]",
+      "round": 1,
+      "t": 13.4
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "swellow",
+        "max_level": 42
+      },
+      "result": "{\"species\": \"swellow\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Peck\", \"type\": \"flying\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#277/64/level-up/1\"}, {\"level\": 1, \"name\": \"Growl\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#277/45/level-up/1\"}, {\"level\": 1, \"name\": \"Focus Energy\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#277/116/level-up/1\"}, {\"level\": 1, \"name\": \"Quick Attack\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 40, \"source_id\": \"pokeapi:pokemon_moves#277/98/level-up/1\"}, {\"level\": 4, \"name\": \"Focus Energy\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#277/116/level-up/4\"}, {\"level\": 8, \"name\": \"Quick Attack\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 40, \"source_id\": \"pokeapi:pokemon_moves#277/98/level-up/8\"}, {\"level\": 13, \"name\": \"Wing Attack\", \"type\": \"flying\", \"damage_class\": \"physical\", \"power\": 60, \"source_id\": \"pokeapi:pokemon_moves#277/17/level-up/13\"}, {\"level\": 19, \"name\": \"Double Team\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\"... [3811 more characters]",
+      "round": 1,
+      "t": 13.62
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "manectric",
+        "max_level": 42
+      },
+      "result": "{\"species\": \"manectric\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Tackle\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#310/33/level-up/1\"}, {\"level\": 1, \"name\": \"Thunder Wave\", \"type\": \"electric\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/86/level-up/1\"}, {\"level\": 1, \"name\": \"Leer\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/43/level-up/1\"}, {\"level\": 1, \"name\": \"Howl\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/336/level-up/1\"}, {\"level\": 4, \"name\": \"Thunder Wave\", \"type\": \"electric\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/86/level-up/4\"}, {\"level\": 9, \"name\": \"Leer\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/43/level-up/9\"}, {\"level\": 12, \"name\": \"Howl\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#310/336/level-up/12\"}, {\"level\": 17, \"name\": \"Quick Attack\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 40, \"source... [4637 more characters]",
+      "round": 1,
+      "t": 14.6
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "sharpedo"
+      },
+      "result": "{\"species\": \"Sharpedo\", \"types\": [\"water\", \"dark\"], \"base_stats\": {\"hp\": 70, \"attack\": 120, \"defense\": 40, \"sp_attack\": 95, \"sp_defense\": 40, \"speed\": 95, \"bst\": 460}, \"abilities\": [\"rough-skin\"], \"legendary_or_mythical\": false, \"growth_rate\": \"slow\", \"evolutions\": [{\"from\": \"Carvanha\", \"to\": \"Sharpedo\", \"how\": \"level-up, level 30\", \"source_id\": \"pokeapi:pokemon_evolution#166\"}], \"source_id\": \"pokeapi:pokemon_species#319\"}",
+      "round": 1,
+      "t": 15.53
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "crawdaunt"
+      },
+      "result": "{\"species\": \"Crawdaunt\", \"types\": [\"water\", \"dark\"], \"base_stats\": {\"hp\": 63, \"attack\": 120, \"defense\": 85, \"sp_attack\": 90, \"sp_defense\": 55, \"speed\": 55, \"bst\": 468}, \"abilities\": [\"hyper-cutter\", \"shell-armor\"], \"legendary_or_mythical\": false, \"growth_rate\": \"fast-then-very-slow\", \"evolutions\": [{\"from\": \"Corphish\", \"to\": \"Crawdaunt\", \"how\": \"level-up, level 30\", \"source_id\": \"pokeapi:pokemon_evolution#175\"}], \"source_id\": \"pokeapi:pokemon_species#342\"}",
+      "round": 1,
+      "t": 16.49
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "species_info",
+      "args": {
+        "name": "absol"
+      },
+      "result": "{\"species\": \"Absol\", \"types\": [\"dark\"], \"base_stats\": {\"hp\": 65, \"attack\": 130, \"defense\": 60, \"sp_attack\": 75, \"sp_defense\": 60, \"speed\": 75, \"bst\": 465}, \"abilities\": [\"pressure\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium-slow\", \"evolutions\": [], \"source_id\": \"pokeapi:pokemon_species#359\"}",
+      "round": 1,
+      "t": 17.43
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "max_level": 42,
+        "species": "sharpedo"
+      },
+      "result": "{\"species\": \"sharpedo\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Leer\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#319/43/level-up/1\"}, {\"level\": 1, \"name\": \"Bite\", \"type\": \"dark\", \"damage_class\": \"special\", \"power\": 60, \"source_id\": \"pokeapi:pokemon_moves#319/44/level-up/1\"}, {\"level\": 1, \"name\": \"Rage\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#319/99/level-up/1\"}, {\"level\": 1, \"name\": \"Focus Energy\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#319/116/level-up/1\"}, {\"level\": 7, \"name\": \"Rage\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#319/99/level-up/7\"}, {\"level\": 13, \"name\": \"Focus Energy\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#319/116/level-up/13\"}, {\"level\": 16, \"name\": \"Scary Face\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#319/184/level-up/16\"}, {\"level\": 22, \"name\": \"Crunch\", \"type\": \"dark\", \"damage_class\": \"special\", \"power\": 80, \"source_id\": \"pok... [5740 more characters]",
+      "round": 1,
+      "t": 18.45
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "crawdaunt",
+        "max_level": 42
+      },
+      "result": "{\"species\": \"crawdaunt\", \"max_level\": 42, \"level_up\": [{\"level\": 1, \"name\": \"Bubble\", \"type\": \"water\", \"damage_class\": \"special\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#342/145/level-up/1\"}, {\"level\": 1, \"name\": \"Harden\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#342/106/level-up/1\"}, {\"level\": 1, \"name\": \"Vise Grip\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 55, \"source_id\": \"pokeapi:pokemon_moves#342/11/level-up/1\"}, {\"level\": 1, \"name\": \"Leer\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#342/43/level-up/1\"}, {\"level\": 7, \"name\": \"Harden\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#342/106/level-up/7\"}, {\"level\": 10, \"name\": \"Vise Grip\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 55, \"source_id\": \"pokeapi:pokemon_moves#342/11/level-up/10\"}, {\"level\": 13, \"name\": \"Leer\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#342/43/level-up/13\"}, {\"level\": 20, \"name\": \"Bubble Beam\", \"type\": \"water\", \"damage_class\": \"special\", \"power\": 65, \"source_id\": \"p... [5957 more characters]",
+      "round": 1,
+      "t": 19.41
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 19.41
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Mossdeep Gym Tate Liza strategy Emerald"
+      },
+      "result": "{\"query\": \"Mossdeep Gym Tate Liza strategy Emerald\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Par... [2188 more characters]",
+      "round": 1,
+      "t": 20.86
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Tate Liza Emerald battle"
+      },
+      "result": "{\"query\": \"Tate Liza Emerald battle\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_21#Ranking_Ha... [2353 more characters]",
+      "round": 1,
+      "t": 22.01
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Walkthrough:Pokémon Emerald/Part 14 Tate Liza Gym Leader"
+      },
+      "result": "{\"query\": \"Walkthrough:Pokémon Emerald/Part 14 Tate Liza Gym Leader\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Po... [1755 more characters]",
+      "round": 1,
+      "t": 23.19
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Xatu Claydol Solrock Lunatone Emerald Walkthrough"
+      },
+      "result": "{\"query\": \"Xatu Claydol Solrock Lunatone Emerald Walkthrough\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_E... [657 more characters]",
+      "round": 1,
+      "t": 24.28
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "\"Tate & Liza\" OR \"Tate and Liza\" OR \"Gym Leaders\" site:Walkthrough:Pokémon Emerald/Part 14"
+      },
+      "result": "{\"query\": \"\\\"Tate & Liza\\\" OR \\\"Tate and Liza\\\" OR \\\"Gym Leaders\\\" site:Walkthrough:Pokémon Emerald/Part 14\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central ro... [1799 more characters]",
+      "round": 1,
+      "t": 25.83
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Claydol Emerald Walkthrough"
+      },
+      "result": "{\"query\": \"Claydol Emerald Walkthrough\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_7#Mt._Chim... [635 more characters]",
+      "round": 1,
+      "t": 26.89
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 26.89
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Mossdeep Gym Tate Liza"
+      },
+      "result": "{\"query\": \"Mossdeep Gym Tate Liza\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Cit... [1408 more characters]",
+      "round": 1,
+      "t": 55.38
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Tate Liza Claydol Xatu Lunatone Solrock Emerald"
+      },
+      "result": "{\"query\": \"Tate Liza Claydol Xatu Lunatone Solrock Emerald\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Eme... [655 more characters]",
+      "round": 1,
+      "t": 57.21
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Claydol Xatu Lunatone Solrock gym7_tate_liza"
+      },
+      "result": "{\"query\": \"Claydol Xatu Lunatone Solrock gym7_tate_liza\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}]}",
+      "round": 1,
+      "t": 58.73
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Tate and Liza battle"
+      },
+      "result": "{\"query\": \"Tate and Liza battle\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_21#Ranking_Hall\",... [1830 more characters]",
+      "round": 1,
+      "t": 60.13
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "\"Walkthrough:Pokémon Emerald/Part 14\" Liza"
+      },
+      "result": "{\"query\": \"\\\"Walkthrough:Pokémon Emerald/Part 14\\\" Liza\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Trick_House_-_Puzzle_6_(optional)\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Trick House - Puzzle 6 (optional)\", \"text\": \"In Trick House now you can complete the puzzle 6.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Steven's_House\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Steven's House\", \"text\": \"The house on the island's northwest edge belongs to Steven, and contains part of his rock collection.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Eac... [845 more characters]",
+      "round": 1,
+      "t": 61.64
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Leaders Tate & Liza"
+      },
+      "result": "{\"query\": \"Leaders Tate & Liza\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_20#Gym_Leaders_and... [1722 more characters]",
+      "round": 1,
+      "t": 66.03
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Claydol Xatu Emerald"
+      },
+      "result": "{\"query\": \"Claydol Xatu Emerald\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Mossdeep City > Mossdeep Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Mossdeep Gym specializes in Psychic Pokémon, which are vulnerable to Dark- and Ghost moves. Dark Pokémon are both immune to Psychic moves and able to inflict super-effective damage. Three of the gym leaders' Pokémon have additional weaknesses to Water and Grass. While they're also weak to Bug, Bug attacks are generally too weak to be worthwhile. The Gym features several rooms linked only by warp panels. Each room contains Trainers and obstacles on spin tiles that rotate when certain tiles are stepped on, changing the path and often bringing challengers within view of opposing Gym Trainers.\\n\\nStep on the warp panel on the west side of the first room. Begin a battle with Hex Maniac Kathleen and Gentleman Clifford. Go east and step on the purple tile, and then battle Psychic Macey. Continue south and step on the green tile twice; this spins the obstacles in the south-central roo\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_7#Mt._Chimney_(op... [628 more characters]",
+      "round": 1,
+      "t": 67.7
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 67.7
+    },
+    {
+      "agent": "lead",
+      "name": "dispatch_researchers",
+      "args": {
+        "tasks": [
+          {
+            "task": "Analyze the gym7_tate_liza battle (Tate & Liza) in Emerald. What are their Pokémon, types, and moves? How do they threaten Marshtomp, Breloom, Swellow, and Manectric?",
+            "researcher": "battle"
+          },
+          {
+            "task": "Find Dark, Water, Ghost, or Bug type Pokémon obtainable before gym7_tate_liza (Tate & Liza) that would be good against Psychic types. Provide exact locations, methods, and levels.",
+            "researcher": "catch"
+          },
+          {
+            "researcher": "moves",
+            "task": "Check evolution timing and key moves for Marshtomp, Breloom, Swellow, Manectric, and potential Dark/Water catches like Sharpedo, Crawdaunt, or Absol before level 42."
+          }
+        ]
+      },
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Analyze the gym7_tate_liza battle (Tate & Liza) in Emerald. What are their Pokémon, types, and moves? How do they threaten Marshtomp, Breloom, Swellow, and Manectric?\", \"finding\": {\"summary\": \"The Mossdeep Gym battle against Leader Tate & Liza is a double battle featuring four high-level Psychic-type Pokémon (Lv 41-42), which have several immunities and coverage moves. The opponent's team poses high offensive threats to the player's underleveled party (Lv 30-33), particularly with Ground, Psychic, Flying, and Fire/Grass coverage options.\", \"claims\": [{\"text\": \"The seventh Gym Leader battle in Mossdeep City is a double battle against Gym Leaders Tate & Liza.\", \"source_ids\": [\"progression:gym7_tate_liza\"]}, {\"text\": \"Tate & Liza's team consists of Claydol (Lv41, Ground/Psychic), Xatu (Lv41, Psychic/Flying), Lunatone (Lv42, Rock/Psychic with Sitrus Berry), and Solrock (Lv42, Rock/Psychic with Sitrus Berry).\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_TateAndLiza1/1\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/2\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/3\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/4\"]}, {\"te... [7934 more characters]",
+      "round": 1,
+      "t": 191.35
+    }
+  ],
+  "citations": [
+    {
+      "n": 1,
+      "source_id": "pokeapi:encounters#30596",
+      "label": "PokeAPI encounters row 30596",
+      "url": null
+    },
+    {
+      "n": 2,
+      "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym",
+      "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 14 § Mossdeep City > Mossdeep Gym",
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_14#Mossdeep_Gym"
+    },
+    {
+      "n": 3,
+      "source_id": "pokeapi:encounters#30515",
+      "label": "PokeAPI encounters row 30515",
+      "url": null
+    },
+    {
+      "n": 4,
+      "source_id": "pokeapi:encounters#30560",
+      "label": "PokeAPI encounters row 30560",
+      "url": null
+    },
+    {
+      "n": 5,
+      "source_id": "pokeapi:encounters#29953",
+      "label": "PokeAPI encounters row 29953",
+      "url": null
+    },
+    {
+      "n": 6,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/1",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/1)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 7,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/2",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/2)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 8,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/3",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/3)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 9,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/4",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/4)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 10,
+      "source_id": "rules:gen3_type_chart",
+      "label": "Gen 3 type chart (pokeemerald gTypeEffectiveness)",
+      "url": null
+    },
+    {
+      "n": 11,
+      "source_id": "pokeapi:pokemon_evolution#135",
+      "label": "PokeAPI pokemon_evolution row 135",
+      "url": null
+    },
+    {
+      "n": 12,
+      "source_id": "pokeapi:pokemon_moves#310/44/level-up/39",
+      "label": "PokeAPI pokemon_moves row 310/44/level-up/39",
+      "url": null
+    }
+  ],
+  "plan": {
+    "intent": "catch",
+    "headline": "To defeat Tate & Liza, catch a Dark-type like Sharpedo or Absol to gain immunity to their Psychic attacks, and level your team to around 40.",
+    "recommendations": [
+      {
+        "species": "Sharpedo",
+        "role": "Psychic-Immune Attacker",
+        "where": "Route 122, Super Rod, Lv30-35",
+        "when": "Before Tate & Liza (gym7_tate_liza)",
+        "why": "Its Water/Dark typing makes it completely immune to Psychic-type attacks, and it can hit the Gym Leaders' Pokémon with super-effective STAB Water and Dark moves. Three of their Pokémon are weak to Water.",
+        "source_ids": [
+          "pokeapi:encounters#30596",
+          "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
+        ],
+        "alternatives": [
+          {
+            "species": "Carvanha",
+            "where": "Route 119, Super Rod, Lv20-45",
+            "why": "A guaranteed encounter that evolves into Sharpedo at level 30.",
+            "source_ids": [
+              "pokeapi:encounters#30515",
+              "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
+            ]
+          }
+        ]
+      },
+      {
+        "species": "Absol",
+        "role": "Physical Dark Attacker",
+        "where": "Route 120, walk, Lv25-27",
+        "when": "Before Tate & Liza (gym7_tate_liza)",
+        "why": "Pure Dark typing gives it immunity to Psychic attacks, allowing it to safely switch in and exploit the Gym's weaknesses.",
+        "source_ids": [
+          "pokeapi:encounters#30560",
+          "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
+        ],
+        "alternatives": [
+          {
+            "species": "Shuppet",
+            "where": "Mt. Pyre (1f), walk, Lv22-29",
+            "why": "A highly accessible Ghost-type that can hit the Gym Leaders' Psychic types with super-effective Ghost-type moves.",
+            "source_ids": [
+              "pokeapi:encounters#29953",
+              "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
+            ]
+          }
+        ]
+      }
+    ],
+    "steps": [],
+    "battle_notes": [
+      {
+        "battle_id": "gym7_tate_liza",
+        "note": "Tate & Liza use Claydol (Lv41), Xatu (Lv41), Lunatone (Lv42), and Solrock (Lv42). All carry Psychic, which threatens Breloom. Solrock has Sunny Day and Solar Beam, which is a quadruple threat to Marshtomp/Swampert. Claydol's Earthquake threatens Manectric, and its Ancient Power threatens Swellow. Level your team to around 40-42; Marshtomp will evolve into Swampert at 36, and Manectric learns Bite at 39, which is a Special move in Gen III and hits Psychic types hard.",
+        "source_ids": [
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/1",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/2",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/3",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/4",
+          "rules:gen3_type_chart",
+          "pokeapi:pokemon_evolution#135",
+          "pokeapi:pokemon_moves#310/44/level-up/39"
+        ]
+      }
+    ],
+    "assumptions": [
+      "The player is willing to level up their team from the low 30s to around level 40-42 before facing the Gym Leaders."
+    ],
+    "follow_up_questions": [
+      "Do you want recommendations for TM moves that can bypass the Gen III physical/special split limitations for these species?",
+      "Are you planning on using your starter Swampert as your primary Water-type user, or do you want to transition to a Water/Dark-type?"
+    ],
+    "unresolved": []
+  },
+  "chart": null,
+  "usage": [
+    {
+      "agent": "clarifier",
+      "input_tokens": 2193,
+      "output_tokens": 557,
+      "t": 3.64
+    },
+    {
+      "agent": "lead",
+      "input_tokens": 1800,
+      "output_tokens": 317,
+      "t": 9.86
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 1315,
+      "output_tokens": 207,
+      "t": 11.57
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 1633,
+      "output_tokens": 452,
+      "t": 12.38
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 1499,
+      "output_tokens": 344,
+      "t": 12.42
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 2200,
+      "output_tokens": 195,
+      "t": 13.33
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 5789,
+      "output_tokens": 44,
+      "t": 13.6
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 7004,
+      "output_tokens": 26,
+      "t": 14.59
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 8402,
+      "output_tokens": 33,
+      "t": 15.52
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 8531,
+      "output_tokens": 19,
+      "t": 16.48
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 8657,
+      "output_tokens": 16,
+      "t": 17.43
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 8739,
+      "output_tokens": 50,
+      "t": 18.44
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 10431,
+      "output_tokens": 27,
+      "t": 19.39
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 2857,
+      "output_tokens": 1672,
+      "t": 20.83
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 5264,
+      "output_tokens": 56,
+      "t": 22.01
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 6046,
+      "output_tokens": 68,
+      "t": 23.19
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 6761,
+      "output_tokens": 69,
+      "t": 24.27
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 7244,
+      "output_tokens": 112,
+      "t": 25.82
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 8011,
+      "output_tokens": 48,
+      "t": 26.88
+    },
+    {
+      "agent": "battle_researcher",
+      "input_tokens": 5878,
+      "output_tokens": 871,
+      "t": 31.64
+    },
+    {
+      "agent": "moves_researcher",
+      "input_tokens": 11078,
+      "output_tokens": 4225,
+      "t": 33.89
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 5556,
+      "output_tokens": 216,
+      "t": 55.38
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 6338,
+      "output_tokens": 62,
+      "t": 57.21
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 6815,
+      "output_tokens": 61,
+      "t": 58.73
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 7122,
+      "output_tokens": 44,
+      "t": 60.13
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 7790,
+      "output_tokens": 98,
+      "t": 61.64
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 8344,
+      "output_tokens": 43,
+      "t": 66.03
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 9016,
+      "output_tokens": 80,
+      "t": 67.69
+    },
+    {
+      "agent": "catch_researcher",
+      "input_tokens": 8407,
+      "output_tokens": 2747,
+      "t": 191.34
+    },
+    {
+      "agent": "lead",
+      "input_tokens": 4548,
+      "output_tokens": 1358,
+      "t": 213.33
+    },
+    {
+      "agent": "writer",
+      "input_tokens": 1389,
+      "output_tokens": 2162,
+      "t": 236.56
+    }
+  ]
+}

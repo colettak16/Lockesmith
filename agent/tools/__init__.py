@@ -150,6 +150,7 @@ _query_db.__doc__ = (
 query_db = function_tool(_query_db, name_override="query_db")
 
 BATTLE_TOOLS = [get_remaining_battles, get_trainer_team, threat_matrix, species_info, move_info, search_guide]
-CATCH_TOOLS = [get_catchable, encounter_odds, species_info, get_learnset, search_guide, query_db]
+# No query_db for the catch researcher: raw encounter rows skip the reachability and HM gates.
+CATCH_TOOLS = [get_catchable, encounter_odds, species_info, get_learnset, search_guide]
 MOVES_TOOLS = [get_learnset, get_tm_availability, move_info, species_info, query_db]
 STORY_TOOLS = [get_next_steps, get_story_outline, get_remaining_battles, get_tm_availability, search_guide]

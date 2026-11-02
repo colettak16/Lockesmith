@@ -1,0 +1,27 @@
+{
+  "response": "Hi there! I only assist with Pokémon Emerald (Generation III) main story gameplay, including team building, boss fights, map navigation, and Nuzlocke rules. I don't cover other games like Pokémon Sword, nor do I handle competitive EV/IV training.",
+  "session_id": "session-oos",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What's the best EV spread for Garchomp in Pokémon Sword?"
+      },
+      "result": "{\"action\": \"decline\", \"intent\": \"lookup\", \"reply\": \"Hi there! I only assist with Pok\\u00e9mon Emerald (Generation III) main story gameplay, including team building, boss fights, map navigation, and Nuzlocke rules. I don't cover other games like Pok\\u00e9mon Sword, nor do I handle competitive EV/IV training.\", \"research_brief\": \"The user is asking about EV spreads for Garchomp in Pok\\u00e9mon Sword, which is out of scope due to the game and competitive training focus.\", \"state_updates\": {\"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"dupes_clause\": null, \"level_caps\": null, \"monotype\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 3.56
+    }
+  ],
+  "citations": [],
+  "plan": null,
+  "chart": null,
+  "usage": [
+    {
+      "agent": "clarifier",
+      "input_tokens": 2128,
+      "output_tokens": 853,
+      "t": 3.56
+    }
+  ]
+}

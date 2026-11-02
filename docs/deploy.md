@@ -50,10 +50,22 @@ From then on, every push to `main` builds and rolls out a new revision.
 ## After it works
 
 - Put the URL in `submission.json` (`deploy_url`).
-- Phase 2 env vars (Service → Edit & deploy new revision → Variables & Secrets). Names are placeholders until the runtime lands:
-  - `LOCKESMITH_LEAD_MODEL`, `LOCKESMITH_RESEARCHER_MODEL` (model strings)
-  - `VERTEXAI_PROJECT=lockesmith`, `VERTEXAI_LOCATION=global` (the current Gemini models answer on `global` only; `us-east4` returns 404), and grant the service's runtime service account the **Vertex AI User** role (`roles/aiplatform.user`; IAM → the `...-compute@developer.gserviceaccount.com` account, unless you set a dedicated one). No API key needed. Locally, `gcloud auth application-default login` covers the same calls.
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` as secrets in Phase 4.
+
+## Turning on the agent (Phase 2)
+
+`/chat` calls Gemini on Vertex AI. The deployed service needs three things in the console:
+
+1. **Let the service call Vertex AI.** Go to IAM & Admin → IAM → **Grant access**. Set the principal to the service's runtime account, `816944548222-compute@developer.gserviceaccount.com` (or the one shown under the service's Security tab). Give it the role **Vertex AI User** (`roles/aiplatform.user`). No API key is involved.
+2. **Turn on session affinity.** Go to Cloud Run → `lockesmith` → **Edit & deploy new revision** → Networking (or the Container tab, depending on the console version) → check **Session affinity**. Conversations, learned rules and rejected picks live in one instance's memory, so follow-up messages must reach the same instance.
+3. **Environment variables** (optional; the defaults are below). Set them on the same Edit screen, under Variables & Secrets:
+   - `VERTEXAI_PROJECT` (default `lockesmith`) and `VERTEXAI_LOCATION` (default `global`; the current Gemini models answer only on `global`, and `us-east4` returns 404).
+   - `LOCKESMITH_FAST_MODEL` (default `vertex_ai/gemini-3.5-flash`): the Clarifier and researchers.
+   - `LOCKESMITH_STRONG_MODEL` (default `vertex_ai/gemini-3.1-pro-preview`): the Lead and Writer.
+
+   To switch to Claude, set these to a LiteLLM Claude model string. On Vertex, Claude needs enabling in Model Garden first; with an Anthropic API key, store `ANTHROPIC_API_KEY` in Secret Manager and reference it here.
+
+Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full answer takes about 2–3 minutes. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/phase2_acceptance.py` runs the acceptance scenarios.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 
 ## Checking a failed deploy

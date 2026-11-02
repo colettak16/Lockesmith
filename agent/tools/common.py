@@ -81,9 +81,9 @@ def resolve(ctx: RequestContext, text: str, kind: str) -> str:
 
 def battle(ctx: RequestContext, ref: str | None) -> Battle:
     """A battle by id ('gym8_juan') or by a name in its label ('Juan', 'Tate & Liza'); the
-    player's next battle when ref is empty."""
+    player's next required battle when ref is empty."""
     if not ref:
-        nxt = ctx.progress.next_battle
+        nxt = ctx.progress.next_required
         if nxt is None:
             raise ToolError("the run state has every story battle done; nothing is ahead")
         return nxt

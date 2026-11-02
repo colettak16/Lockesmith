@@ -115,6 +115,12 @@ class Progress:
     next_battle: Battle | None
     assumptions: list[str] = field(default_factory=list)
 
+    @property
+    def next_required(self) -> Battle | None:
+        """The next battle the story forces (optional rival fights skipped); the natural
+        "before which battle" for catch and TM questions."""
+        return next((b for b in self.remaining if not b.optional and b not in self.deferred), self.next_battle)
+
 
 def progress(state: RunState, prog: Progression) -> Progress:
     """Which story battles are behind the player and which are ahead.
