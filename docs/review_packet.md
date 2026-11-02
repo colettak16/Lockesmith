@@ -1,6 +1,8 @@
 # Lockesmith: Pokémon Emerald facts for cross-checking
 
-Generated 2026-11-01 by `build/review_packet.py` from the database built 2026-11-01: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
+Generated 2026-11-01 by `build/review_packet.py` from the database built 2026-11-02: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
+
+A previous review round was applied after re-verification; section 3's D-10 to D-13 and docs/decisions.md D7 say what changed. Fresh eyes on sections 4 and 5 are still the most useful.
 
 **ID prefixes**: M mechanics, MV moves, SP species, LG later-gen relatives, EV evolutions, D data findings, P/N progression, K trainer teams, L locations, SE special encounters, TM/TU machines and tutors, R randomizer, Q questions.
 
@@ -53,7 +55,9 @@ costs more than a missed one.
   Flying, Poison, Ground, Rock, Bug, Ghost and Steel moves are physical; Fire, Water, Grass,
   Electric, Psychic, Ice, Dragon and Dark moves are special. Status moves stay status whatever
   their type. So Crunch (Dark) is special and Shadow Ball (Ghost) is physical in Emerald; the
-  full list of moves whose category differs from modern games is MV-category.
+  full list of moves whose category differs from modern games is MV-category. Hidden Power (type
+  from IVs) and Weather Ball (type from weather) take their category from the type they have in
+  battle (`typeOverride` in `pokemon.c`), so their category is stored as `varies`.
 - **M-02** There are 17 types and **no Fairy type**. The `???` type exists only on Curse and has no
   matchups.
 - **M-03** `[decomp]` Type chart: the generated chart below lists every non-neutral matchup. Versus
@@ -72,10 +76,13 @@ costs more than a missed one.
   append the new one. Custom movesets are used as written.
 - **M-09** `[decomp]` **Trainer IVs**: a party entry stores one IV byte 0–255; all six IVs are
   `iv * 31 / 255` (integer division). E.g. byte 200 -> 24.
-- **M-10** `[pokeapi]` Encounter slot rates (generated below). Mirage Island's grass is stored as one
-  Wynaut slot at 100%, because every slot there is Wynaut.
+- **M-10** `[pokeapi]` Encounter slot rates (generated below): which slot an encounter uses once one
+  happens. How often an encounter happens is a separate per-map rate (the `rate=` of each table).
+  Mirage Island's grass is stored as one Wynaut slot at 100%, because every slot there is Wynaut.
 - **M-11** `[decomp]` Fishing: each map has one 10-slot fishing table split by rod: Old Rod slots 0–1,
-  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups).
+  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has 6 Feebas tiles
+  chosen from a save-specific seed; fishing on one gives Feebas 50% of the time, otherwise the normal
+  table (`wild_encounter.c`, `NUM_FEEBAS_SPOTS`).
 - **M-12** `[decomp]` Field-move badge requirements (an HM is usable outside battle only with the
   badge): Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat, Surf: Balance,
   Fly: Feather, Dive: Mind, Waterfall: Rain. Only Waterfall was checked in code
@@ -86,7 +93,12 @@ costs more than a missed one.
   fight is a multi battle with Steven as partner, set up by a map script; both opposing trainer
   structs say single.
 - **M-15** No Gen 4+ relatives exist: table LG lists the pre-evolutions and evolutions that were
-  removed, and table EV lists every Emerald evolution with its method.
+  removed, and table EV lists every Emerald evolution with its method. Friendship evolutions need 220
+  (`FRIENDSHIP_EVO_THRESHOLD`); Wurmple's branch depends on its personality value; Shedinja appears
+  when Nincada evolves with an empty party slot (no Poké Ball needed in Gen 3).
+- **M-16** `[decomp]` Story-trainer Pokémon always have their species' first ability:
+  `CreateNPCTrainerParty` gives them even personality values (0x80/0x78/0x88 plus `nameHash << 8`) and
+  the ability slot is `personality & 1`. Natures are fixed per trainer too, but not computed here.
 
 **M-03 type chart** (attacker -> defenders; unlisted pairs are 1x):
 
@@ -223,7 +235,8 @@ Every move whose Gen 3 type, power, accuracy or PP differs from modern PokeAPI. 
 **MV-category**: moves whose physical/special category differs from modern games because of M-01.
 
 - Special in Gen 3, physical now (28): Fire Punch (fire), Ice Punch (ice), Thunder Punch (electric), Vine Whip (grass), Bite (dark), Razor Leaf (grass), Waterfall (water), Clamp (water), Crabhammer (water), Thief (dark), Flame Wheel (fire), Feint Attack (dark), Outrage (dragon), Spark (electric), Sacred Fire (fire), Pursuit (dark), Crunch (dark), Beat Up (dark), Knock Off (dark), Dive (water), Blaze Kick (fire), Ice Ball (ice), Needle Arm (grass), Bullet Seed (grass), Icicle Spear (ice), Dragon Claw (dragon), Volt Tackle (electric), Leaf Blade (grass)
-- Physical in Gen 3, special now (26): Razor Wind (normal), Gust (flying), Sonic Boom (normal), Acid (poison), Hyper Beam (normal), Night Shade (ghost), Smog (poison), Sludge (poison), Swift (normal), Tri Attack (normal), Snore (normal), Aeroblast (flying), Sludge Bomb (poison), Mud-Slap (ground), Hidden Power (normal), Ancient Power (rock), Shadow Ball (ghost), Uproar (normal), Spit Up (normal), Hyper Voice (normal), Weather Ball (normal), Air Cutter (flying), Silver Wind (bug), Signal Beam (bug), Mud Shot (ground), Doom Desire (steel)
+- Physical in Gen 3, special now (24): Razor Wind (normal), Gust (flying), Sonic Boom (normal), Acid (poison), Hyper Beam (normal), Night Shade (ghost), Smog (poison), Sludge (poison), Swift (normal), Tri Attack (normal), Snore (normal), Aeroblast (flying), Sludge Bomb (poison), Mud-Slap (ground), Ancient Power (rock), Shadow Ball (ghost), Uproar (normal), Spit Up (normal), Hyper Voice (normal), Air Cutter (flying), Silver Wind (bug), Signal Beam (bug), Mud Shot (ground), Doom Desire (steel)
+- Category follows the in-battle type (M-01): Hidden Power (normal; now special), Weather Ball (normal; now special)
 
 **MV-accuracy**: 36 moves the ROM stores with accuracy 100 where PokeAPI uses null (can't miss, or no accuracy check): Whirlwind, Roar, Mimic, Bide, Soft-Boiled, Struggle, Spider Web, Mind Reader, Conversion 2, Foresight, Lock-On, Mean Look, Pain Split, Vital Throw, Follow Me, Charge, Helping Hand, Role Play, Wish, Assist, Ingrain, Magic Coat, Recycle, Yawn, Skill Swap, Imprison, Refresh, Grudge, Snatch, Camouflage, Tail Glow, Mud Sport, Slack Off, Odor Sleuth, Block, Water Sport.
 
@@ -451,7 +464,7 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-37 | Vulpix | Ninetales | use-item, item fire-stone |
 | EV-39 | Jigglypuff | Wigglytuff | use-item, item moon-stone |
 | EV-41 | Zubat | Golbat | level-up, level 22 |
-| EV-42 | Golbat | Crobat | level-up, friendship >= 160 |
+| EV-42 | Golbat | Crobat | level-up, friendship >= 220 |
 | EV-43 | Oddish | Gloom | level-up, level 21 |
 | EV-44 | Gloom | Vileplume | use-item, item leaf-stone |
 | EV-44 | Gloom | Bellossom | use-item, item sun-stone |
@@ -492,7 +505,7 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-104 | Cubone | Marowak | level-up, level 28 |
 | EV-109 | Koffing | Weezing | level-up, level 35 |
 | EV-111 | Rhyhorn | Rhydon | level-up, level 42 |
-| EV-113 | Chansey | Blissey | level-up, friendship >= 160 |
+| EV-113 | Chansey | Blissey | level-up, friendship >= 220 |
 | EV-116 | Horsea | Seadra | level-up, level 32 |
 | EV-117 | Seadra | Kingdra | trade, holding dragon-scale, trade |
 | EV-118 | Goldeen | Seaking | level-up, level 33 |
@@ -502,8 +515,8 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-133 | Eevee | Vaporeon | use-item, item water-stone |
 | EV-133 | Eevee | Jolteon | use-item, item thunder-stone |
 | EV-133 | Eevee | Flareon | use-item, item fire-stone |
-| EV-133 | Eevee | Espeon | level-up, friendship >= 160, day |
-| EV-133 | Eevee | Umbreon | level-up, friendship >= 160, night |
+| EV-133 | Eevee | Espeon | level-up, friendship >= 220, day |
+| EV-133 | Eevee | Umbreon | level-up, friendship >= 220, night |
 | EV-137 | Porygon | Porygon2 | trade, holding up-grade, trade |
 | EV-138 | Omanyte | Omastar | level-up, level 40 |
 | EV-140 | Kabuto | Kabutops | level-up, level 40 |
@@ -521,9 +534,9 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-167 | Spinarak | Ariados | level-up, level 22 |
 | EV-170 | Chinchou | Lanturn | level-up, level 27 |
 | EV-172 | Pichu | Pikachu | level-up, friendship >= 220 |
-| EV-173 | Cleffa | Clefairy | level-up, friendship >= 160 |
-| EV-174 | Igglybuff | Jigglypuff | level-up, friendship >= 160 |
-| EV-175 | Togepi | Togetic | level-up, friendship >= 160 |
+| EV-173 | Cleffa | Clefairy | level-up, friendship >= 220 |
+| EV-174 | Igglybuff | Jigglypuff | level-up, friendship >= 220 |
+| EV-175 | Togepi | Togetic | level-up, friendship >= 220 |
 | EV-177 | Natu | Xatu | level-up, level 25 |
 | EV-179 | Mareep | Flaaffy | level-up, level 15 |
 | EV-180 | Flaaffy | Ampharos | level-up, level 30 |
@@ -556,8 +569,8 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-259 | Marshtomp | Swampert | level-up, level 36 |
 | EV-261 | Poochyena | Mightyena | level-up, level 18 |
 | EV-263 | Zigzagoon | Linoone | level-up, level 20 |
-| EV-265 | Wurmple | Silcoon | level-up, level 7 |
-| EV-265 | Wurmple | Cascoon | level-up, level 7 |
+| EV-265 | Wurmple | Silcoon | level-up, level 7, only if (personality >> 16) % 10 <= 4 |
+| EV-265 | Wurmple | Cascoon | level-up, level 7, only if (personality >> 16) % 10 > 4 |
 | EV-266 | Silcoon | Beautifly | level-up, level 10 |
 | EV-268 | Cascoon | Dustox | level-up, level 10 |
 | EV-270 | Lotad | Lombre | level-up, level 14 |
@@ -573,11 +586,11 @@ Every species whose Gen 3 types, base stats or (non-hidden) abilities differ fro
 | EV-287 | Slakoth | Vigoroth | level-up, level 18 |
 | EV-288 | Vigoroth | Slaking | level-up, level 36 |
 | EV-290 | Nincada | Ninjask | level-up, level 20 |
-| EV-290 | Nincada | Shedinja | shed |
+| EV-290 | Nincada | Shedinja | shed, appears when Nincada evolves into Ninjask with an empty party slot (no Poke Ball needed in Gen 3) |
 | EV-293 | Whismur | Loudred | level-up, level 20 |
 | EV-294 | Loudred | Exploud | level-up, level 40 |
 | EV-296 | Makuhita | Hariyama | level-up, level 24 |
-| EV-298 | Azurill | Marill | level-up, friendship >= 160 |
+| EV-298 | Azurill | Marill | level-up, friendship >= 220 |
 | EV-300 | Skitty | Delcatty | use-item, item moon-stone |
 | EV-304 | Aron | Lairon | level-up, level 32 |
 | EV-305 | Lairon | Aggron | level-up, level 42 |
@@ -623,7 +636,11 @@ Copied from docs/decisions.md. PokeAPI was patched to the decomp for each of the
 - **D-6** **Emerald's Deoxys is the Speed Forme.** PokeAPI files its Emerald learnset under that form, and the ROM keeps Normal Forme base stats in its table and swaps in Speed Forme stats at runtime. The DB stores the table values. This is postgame and event-only, so out of scope, but worth knowing.
 - **D-7** **May's and Brendan's teams aren't always mirrors** (P-R5), and **the Space Center multi battle shows as two single battles** in the trainer structs, as PLAN anticipated.
 - **D-8** **Emerald has five rival fights**, two of them optional (Rustboro, Lilycove), not the three or four people usually remember.
-- **D-9** Apart from D-1 to D-6, PokeAPI agrees with the ROM on everything checked: types, stats, abilities (after the past-table corrections), all 386 level-up learnsets, all 184 evolutions, the full type chart and every wild table (216 of 219 location/method pairs match outright; the other three are explained by the `seaweed` method and Mirage Island living inside the Route 130 map).
+- **D-9** Apart from the other findings here, PokeAPI agrees with the ROM on everything checked: types, stats, abilities (after the past-table corrections), all 386 level-up learnsets, all 184 evolution pairs, the full type chart and every wild table (216 of 219 location/method pairs match outright; the other three are explained by the `seaweed` method and Mirage Island living inside the Route 130 map).
+- **D-10** **PokeAPI stores the Gen 8+ friendship threshold (160)** for eight of Emerald's nine friendship evolutions. Emerald's is 220 (`FRIENDSHIP_EVO_THRESHOLD` in `pokemon.c`). The original cross-check compared evolution pairs, not thresholds, so it missed this.
+- **D-11** **PokeAPI puts the Hall of Fame and TV-choice conditions on the roaming-grass rows only.** The roaming-water rows for the same Latias/Latios had none.
+- **D-12** **Hidden Power and Weather Ball have no fixed category.** Damage takes physical/special from the type the move has in battle (`typeOverride` in `pokemon.c`), so `damage_class` is `varies`.
+- **D-13** **Trainer Pokémon always have their first ability.** `CreateNPCTrainerParty` gives them even personality values, and the ability slot is `personality & 1`. `trainer_mons.ability` records it.
 
 What the build takes from the decomp instead of PokeAPI:
 
@@ -642,9 +659,11 @@ This is the most judgement-heavy section and the one we most want checked.
   block the story. Generic hideout grunts and route trainers are left out.
 - **P-R2** **Area rule**: each encounter area is listed (`areas_new`) at the first battle it can be
   reached before, having fought only the battles above it in this order. Detours that need no listed
-  battle count, so an area can open before the walkthrough visits it. "Reachable before X" is the
-  accumulation of `areas_new` up to and including X. Method gates still apply on top (Surf, rods,
-  Rock Smash, Dive for seaweed).
+  battle count, so an area can open before the walkthrough visits it. An area counts only once the
+  player can *stand* in it (riding Mr. Briney's boat across open water doesn't count). An entry can be
+  limited to some encounter methods, e.g. Route 115's beach opens for fishing before its grass.
+  "Reachable before X" is the accumulation of `areas_new` up to and including X. Item and HM gates
+  still apply on top (Surf, rods, Rock Smash, Dive for seaweed).
 - **P-R3** An HM counts as open (`hm_gates_open`) when the player holds it *and* has the badge that
   allows its field use (M-12), at the point the walkthrough hands it over.
 - **P-R4** `[decomp]` **Badge order is looser than this list.** Only Norman's gym checks earlier badges:
@@ -660,6 +679,10 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-R7** The **eight placements that were judgement calls** were checked against decomp event
   scripts and Bulbapedia on 2026-11-01; each battle's notes cite the evidence (variable and flag
   names are the decomp's). These are P-03, P-04, P-06, P-07, P-09, P-11, P-17/P-18 and P-26/P-27.
+  A first cross-check round then moved the open-water routes, Route 115's grass, the eastern sea,
+  Sootopolis and the Regi caves (D7).
+- **P-R8** Grunt fights outside the 32 battles are noted on the battle they precede (Mt. Chimney,
+  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants.
 
 ### Battles in order
 
@@ -677,8 +700,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-03** Rustboro Gym: Roxanne (`gym1_roxanne`, at `rustboro-city`): badges before: 0, single, required.
   - Trainers: TRAINER_ROXANNE_1 (teams: K-gym1_roxanne)
   - HMs usable: none; key items: none
-  - Areas newly reachable before this battle: rustboro-city, hoenn-route-116, rusturf-tunnel
-  - Notes: Route 116 and the west end of Rusturf Tunnel (Whismur) are open before the gym: nothing blocks Rustboro's east exit, and the Devon Goods theft only starts after this badge (RustboroCity_Gym sets VAR_RUSTBORO_CITY_STATE). The tunnel's far side stays behind Rock Smash boulders. Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade.
+  - Areas newly reachable before this battle: rustboro-city, hoenn-route-116, rusturf-tunnel, hoenn-route-115 (old-rod, good-rod, super-rod only)
+  - Notes: Route 116 and the west end of Rusturf Tunnel (Whismur) are open before the gym: nothing blocks Rustboro's east exit, and the Devon Goods theft only starts after this badge (RustboroCity_Gym sets VAR_RUSTBORO_CITY_STATE). The tunnel's far side stays behind Rock Smash boulders. North of Rustboro, Route 115's southern beach is open too: fishing only (Old Rod from Dewford), since the grass is in the Surf-only north. Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_2#Rustboro_Gym`
 - **P-04** Rusturf Tunnel: Team Aqua Grunt (Devon Goods) (`grunt_rusturf_tunnel`, at `rusturf-tunnel`): badges before: 1, single, required.
   - Trainers: TRAINER_GRUNT_RUSTURF_TUNNEL (teams: K-grunt_rusturf_tunnel)
@@ -695,8 +718,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-06** Dewford Gym: Brawly (`gym2_brawly`, at `dewford-town`): badges before: 1, single, required.
   - Trainers: TRAINER_BRAWLY_1 (teams: K-gym2_brawly)
   - HMs usable: cut; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-105, hoenn-route-106, dewford-town, granite-cave, hoenn-route-107, hoenn-route-108, hoenn-route-109, slateport-city
-  - Notes: Old Rod comes from the Dewford fisherman before the gym. Granite Cave is reachable via Route 106; Flash (from its Hiker) needs this badge. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Routes 107-109 open before Brawly. Brawly can even be deferred until Norman: no other event checks his badge.
+  - Areas newly reachable before this battle: hoenn-route-106, dewford-town, granite-cave, hoenn-route-109, slateport-city
+  - Notes: Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym`
 - **P-07** Oceanic Museum: Team Aqua Grunts (`grunts_oceanic_museum`, at `slateport-city`): badges before: 2, single, required.
   - Trainers: TRAINER_GRUNT_MUSEUM_1, TRAINER_GRUNT_MUSEUM_2 (teams: K-grunts_oceanic_museum)
@@ -724,8 +747,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-11** Mt. Chimney: Magma Admin Tabitha (`tabitha_mt_chimney`, at `mt-chimney`): badges before: 3, single, required.
   - Trainers: TRAINER_TABITHA_MT_CHIMNEY (teams: K-tabitha_mt_chimney)
   - HMs usable: cut, flash, rock-smash; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main, hoenn-route-115
-  - Notes: Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. Route 115 borders Rustboro, but from there you only reach a beach; its grass is reached through the Meteor Falls exit (Bulbapedia: Route 115). A rod works from the beach earlier. Meteor Falls' other rooms need Waterfall.
+  - Areas newly reachable before this battle: hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main
+  - Notes: Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. The Meteor Falls exit only reaches Route 115's middle section, which has no grass. Meteor Falls' other rooms need Waterfall. On the way up: two Magma Grunts (TRAINER_GRUNT_MT_CHIMNEY_1, TRAINER_GRUNT_MT_CHIMNEY_2), which the walkthrough fights before Tabitha.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!`
 - **P-12** Mt. Chimney: Magma Leader Maxie (`maxie_mt_chimney`, at `mt-chimney`): badges before: 3, single, required.
   - Trainers: TRAINER_MAXIE_MT_CHIMNEY (teams: K-maxie_mt_chimney)
@@ -748,8 +771,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-15** Weather Institute: Aqua Admin Shelly (`shelly_weather_institute`, at `hoenn-route-119`): badges before: 5, single, required.
   - Trainers: TRAINER_SHELLY_WEATHER_INSTITUTE (teams: K-shelly_weather_institute)
   - HMs usable: cut, flash, rock-smash, strength, surf; key items: old-rod, good-rod, go-goggles
-  - Areas newly reachable before this battle: abandoned-ship, new-mauville, hoenn-route-123, hoenn-route-119/main
-  - Notes: Surf (Wally's father, after Norman) opens the water on earlier routes too. Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 tile fishing.
+  - Areas newly reachable before this battle: hoenn-route-105, hoenn-route-107, hoenn-route-108, abandoned-ship, new-mauville, hoenn-route-123, hoenn-route-119/main, hoenn-route-115 (walk, surf only)
+  - Notes: Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has 6 Feebas tiles, chosen from a save-specific seed, and fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_10#Looking_for_Answers`
 - **P-16** Route 119: Rival (`rival4_route119`, at `hoenn-route-119`): badges before: 5, single, required.
   - Trainers: depend on starter and rival (teams: K-rival4_route119)
@@ -773,7 +796,7 @@ This is the most judgement-heavy section and the one we most want checked.
   - Trainers: TRAINER_TABITHA_MAGMA_HIDEOUT (teams: K-tabitha_magma_hideout)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope
   - Areas newly reachable before this battle: none
-  - Notes: The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass.
+  - Notes: The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha`
 - **P-20** Magma Hideout: Magma Leader Maxie (`maxie_magma_hideout`, at `magma-hideout`): badges before: 6, single, required.
   - Trainers: TRAINER_MAXIE_MAGMA_HIDEOUT (teams: K-maxie_magma_hideout)
@@ -790,8 +813,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-22** Mossdeep Gym: Tate & Liza (`gym7_tate_liza`, at `mossdeep-city`): badges before: 6, double, required.
   - Trainers: TRAINER_TATE_AND_LIZA_1 (teams: K-gym7_tate_liza)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
-  - Areas newly reachable before this battle: hoenn-route-124/main, mossdeep-city/main, hoenn-route-125, shoal-cave
-  - Notes: Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours.
+  - Areas newly reachable before this battle: hoenn-route-124/main, mossdeep-city/main, hoenn-route-125, shoal-cave, hoenn-route-126/main, hoenn-route-127, hoenn-route-128, hoenn-route-129, hoenn-route-130, mirage-island, hoenn-route-131, pacifidlog-town, hoenn-route-132, hoenn-route-133, hoenn-route-134
+  - Notes: Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym`
 - **P-23** Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven) (`space_center`, at `mossdeep-city`): badges before: 7, multi, required.
   - Trainers: TRAINER_MAXIE_MOSSDEEP, TRAINER_TABITHA_MOSSDEEP (teams: K-space_center)
@@ -803,8 +826,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-24** Seafloor Cavern: Aqua Admin Shelly (`shelly_seafloor_cavern`, at `seafloor-cavern`): badges before: 7, single, required.
   - Trainers: TRAINER_SHELLY_SEAFLOOR_CAVERN (teams: K-shelly_seafloor_cavern)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
-  - Areas newly reachable before this battle: hoenn-route-124/underwater, hoenn-route-126/main, hoenn-route-126/underwater, hoenn-route-127, hoenn-route-128, seafloor-cavern
-  - Notes: Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth.
+  - Areas newly reachable before this battle: hoenn-route-124/underwater, hoenn-route-126/underwater, seafloor-cavern, sootopolis-city, desert-ruins, island-cave, ancient-tomb
+  - Notes: Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) can be visited before Seafloor Cavern; its gym stays closed (walkthrough Part 16). The Regi caves open with no story gate: in the Sealed Chamber (underwater, Route 134) use Dig (FLAG_SYS_BRAILLE_DIG), then read the inner wall with Wailord first and Relicanth last in the party (CheckRelicanthWailord). Each Regi cave then has its own puzzle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_15#Room_7`
 - **P-25** Seafloor Cavern: Aqua Leader Archie (`archie_seafloor_cavern`, at `seafloor-cavern`): badges before: 7, single, required.
   - Trainers: TRAINER_ARCHIE (teams: K-archie_seafloor_cavern)
@@ -814,8 +837,8 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-26** Sootopolis Gym: Juan (`gym8_juan`, at `sootopolis-city`): badges before: 7, single, required.
   - Trainers: TRAINER_JUAN_1 (teams: K-gym8_juan)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope
-  - Areas newly reachable before this battle: sootopolis-city, cave-of-origin/entrance, cave-of-origin/1f, cave-of-origin/b1f, hoenn-route-129, hoenn-route-130, mirage-island, hoenn-route-131, pacifidlog-town, hoenn-route-132, hoenn-route-133, hoenn-route-134, sky-pillar/1f, sky-pillar/3f, sky-pillar/5f, sky-pillar/apex, desert-ruins, island-cave, ancient-tomb
-  - Notes: Juan is the 8th leader in Emerald (Wallace is Champion). Regirock/Regice/Registeel need the Sealed Chamber puzzle on Route 134 (Dig, then Wailord first and Relicanth last in the party). Mirage Island only appears some days. Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle.
+  - Areas newly reachable before this battle: cave-of-origin/entrance, cave-of-origin/1f, cave-of-origin/b1f, sky-pillar/1f, sky-pillar/3f, sky-pillar/5f, sky-pillar/apex
+  - Notes: Juan is the 8th leader in Emerald (Wallace is Champion). Cave of Origin is open only during the crisis: an Expert stands in front of its entrance, and the Sootopolis script moves him aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, before Sky Pillar). Catch there on the way to Wallace or not at all before the Champion. Sky Pillar opens when Wallace goes there (FLAG_WALLACE_GOES_TO_SKY_PILLAR). Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym`
 - **P-27** Victory Road: Wally (`wally_victory_road`, at `hoenn-victory-road`): badges before: 8, single, required.
   - Trainers: TRAINER_WALLY_VR_1 (teams: K-wally_victory_road)
@@ -930,8 +953,8 @@ This is the most judgement-heavy section and the one we most want checked.
 | SE-26 | rustboro-city | npc-trade | Seedot | 4-100 | trade-ralts |
 | SE-27 | roaming-hoenn/area | roaming-grass | Latias | 40 | story-progress-hall-of-fame, tv-option-red |
 | SE-28 | roaming-hoenn/area | roaming-grass | Latios | 40 | story-progress-hall-of-fame, tv-option-blue |
-| SE-29 | roaming-hoenn/area | roaming-water | Latias | 40 | — |
-| SE-30 | roaming-hoenn/area | roaming-water | Latios | 40 | — |
+| SE-29 | roaming-hoenn/area | roaming-water | Latias | 40 | story-progress-hall-of-fame, tv-option-red |
+| SE-30 | roaming-hoenn/area | roaming-water | Latios | 40 | story-progress-hall-of-fame, tv-option-blue |
 | SE-31 | ancient-tomb/area | static | Registeel | 40 | — |
 | SE-32 | birth-island/area | static | Deoxys | 30 | — |
 | SE-33 | desert-ruins/area | static | Regirock | 40 | — |
@@ -955,333 +978,333 @@ This is the most judgement-heavy section and the one we most want checked.
 ### K-rival1_route103: Route 103: Rival (first battle)
 
 - treecko player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_103_TREECKO`; bag: none
-  - Lv5 Torchic, IVs 0: Scratch / Growl (default)
+  - Lv5 Torchic, Blaze, IVs 0: Scratch / Growl (default)
 - treecko player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_103_TREECKO`; bag: none
-  - Lv5 Torchic, IVs 0: Scratch / Growl (default)
+  - Lv5 Torchic, Blaze, IVs 0: Scratch / Growl (default)
 - torchic player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_103_TORCHIC`; bag: none
-  - Lv5 Mudkip, IVs 0: Tackle / Growl (default)
+  - Lv5 Mudkip, Torrent, IVs 0: Tackle / Growl (default)
 - torchic player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_103_TORCHIC`; bag: none
-  - Lv5 Mudkip, IVs 0: Tackle / Growl (default)
+  - Lv5 Mudkip, Torrent, IVs 0: Tackle / Growl (default)
 - mudkip player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_103_MUDKIP`; bag: none
-  - Lv5 Treecko, IVs 0: Pound / Leer (default)
+  - Lv5 Treecko, Overgrow, IVs 0: Pound / Leer (default)
 - mudkip player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_103_MUDKIP`; bag: none
-  - Lv5 Treecko, IVs 0: Pound / Leer (default)
+  - Lv5 Treecko, Overgrow, IVs 0: Pound / Leer (default)
 
 ### K-grunt_petalburg_woods: Petalburg Woods: Team Aqua Grunt
 
 - **Team Aqua Grunt** `TRAINER_GRUNT_PETALBURG_WOODS`; bag: none
-  - Lv9 Poochyena, IVs 0: Tackle / Howl / Sand Attack (default)
+  - Lv9 Poochyena, Run Away, IVs 0: Tackle / Howl / Sand Attack (default)
 
 ### K-gym1_roxanne: Rustboro Gym: Roxanne
 
 - **Leader Roxanne** `TRAINER_ROXANNE_1`; bag: Potion, Potion
-  - Lv12 Geodude, IVs 12: Tackle / Defense Curl / Rock Throw / Rock Tomb (custom)
-  - Lv12 Geodude, IVs 12: Tackle / Defense Curl / Rock Throw / Rock Tomb (custom)
-  - Lv15 Nosepass @ Oran Berry, IVs 24: Block / Harden / Tackle / Rock Tomb (custom)
+  - Lv12 Geodude, Rock Head, IVs 12: Tackle / Defense Curl / Rock Throw / Rock Tomb (custom)
+  - Lv12 Geodude, Rock Head, IVs 12: Tackle / Defense Curl / Rock Throw / Rock Tomb (custom)
+  - Lv15 Nosepass @ Oran Berry, Sturdy, IVs 24: Block / Harden / Tackle / Rock Tomb (custom)
 
 ### K-grunt_rusturf_tunnel: Rusturf Tunnel: Team Aqua Grunt (Devon Goods)
 
 - **Team Aqua Grunt** `TRAINER_GRUNT_RUSTURF_TUNNEL`; bag: none
-  - Lv11 Poochyena, IVs 0: Tackle / Howl / Sand Attack (default)
+  - Lv11 Poochyena, Run Away, IVs 0: Tackle / Howl / Sand Attack (default)
 
 ### K-rival2_rustboro: Rustboro City: Rival (optional)
 
 - treecko player, rival may: **Pokémon Trainer May** `TRAINER_MAY_RUSTBORO_TREECKO`; bag: none
-  - Lv13 Lotad, IVs 3: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv15 Torchic, IVs 6: Scratch / Growl / Focus Energy / Ember (default)
+  - Lv13 Lotad, Swift Swim, IVs 3: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv15 Torchic, Blaze, IVs 6: Scratch / Growl / Focus Energy / Ember (default)
 - treecko player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_RUSTBORO_TREECKO`; bag: none
-  - Lv13 Lotad, IVs 3: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv15 Torchic, IVs 6: Scratch / Growl / Focus Energy / Ember (default)
+  - Lv13 Lotad, Swift Swim, IVs 3: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv15 Torchic, Blaze, IVs 6: Scratch / Growl / Focus Energy / Ember (default)
 - torchic player, rival may: **Pokémon Trainer May** `TRAINER_MAY_RUSTBORO_TORCHIC`; bag: none
-  - Lv13 Torkoal, IVs 3: Ember / Smog / Curse (default)
-  - Lv15 Mudkip, IVs 6: Growl / Mud-Slap / Water Gun / Bide (default)
+  - Lv13 Torkoal, White Smoke, IVs 3: Ember / Smog / Curse (default)
+  - Lv15 Mudkip, Torrent, IVs 6: Growl / Mud-Slap / Water Gun / Bide (default)
 - torchic player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_RUSTBORO_TORCHIC`; bag: none
-  - Lv13 Slugma, IVs 3: Yawn / Smog / Ember (default)
-  - Lv15 Mudkip, IVs 6: Growl / Mud-Slap / Water Gun / Bide (default)
+  - Lv13 Slugma, Magma Armor, IVs 3: Yawn / Smog / Ember (default)
+  - Lv15 Mudkip, Torrent, IVs 6: Growl / Mud-Slap / Water Gun / Bide (default)
 - mudkip player, rival may: **Pokémon Trainer May** `TRAINER_MAY_RUSTBORO_MUDKIP`; bag: none
-  - Lv13 Wingull, IVs 3: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv15 Treecko, IVs 6: Pound / Leer / Absorb / Quick Attack (default)
+  - Lv13 Wingull, Keen Eye, IVs 3: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv15 Treecko, Overgrow, IVs 6: Pound / Leer / Absorb / Quick Attack (default)
 - mudkip player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_RUSTBORO_MUDKIP`; bag: none
-  - Lv13 Wingull, IVs 3: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv15 Treecko, IVs 6: Pound / Leer / Absorb / Quick Attack (default)
+  - Lv13 Wingull, Keen Eye, IVs 3: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv15 Treecko, Overgrow, IVs 6: Pound / Leer / Absorb / Quick Attack (default)
 
 ### K-gym2_brawly: Dewford Gym: Brawly
 
 - **Leader Brawly** `TRAINER_BRAWLY_1`; bag: Super Potion, Super Potion
-  - Lv16 Machop, IVs 12: Karate Chop / Low Kick / Seismic Toss / Bulk Up (custom)
-  - Lv16 Meditite, IVs 12: Focus Punch / Light Screen / Reflect / Bulk Up (custom)
-  - Lv19 Makuhita @ Sitrus Berry, IVs 24: Arm Thrust / Vital Throw / Reversal / Bulk Up (custom)
+  - Lv16 Machop, Guts, IVs 12: Karate Chop / Low Kick / Seismic Toss / Bulk Up (custom)
+  - Lv16 Meditite, Pure Power, IVs 12: Focus Punch / Light Screen / Reflect / Bulk Up (custom)
+  - Lv19 Makuhita @ Sitrus Berry, Thick Fat, IVs 24: Arm Thrust / Vital Throw / Reversal / Bulk Up (custom)
 
 ### K-grunts_oceanic_museum: Oceanic Museum: Team Aqua Grunts
 
 - **Team Aqua Grunt** `TRAINER_GRUNT_MUSEUM_1`; bag: none
-  - Lv15 Carvanha, IVs 0: Leer / Bite / Rage / Focus Energy (default)
+  - Lv15 Carvanha, Rough Skin, IVs 0: Leer / Bite / Rage / Focus Energy (default)
 - **Team Aqua Grunt** `TRAINER_GRUNT_MUSEUM_2`; bag: none
-  - Lv14 Zubat, IVs 0: Leech Life / Supersonic / Astonish (default)
-  - Lv14 Carvanha, IVs 0: Leer / Bite / Rage / Focus Energy (default)
+  - Lv14 Zubat, Inner Focus, IVs 0: Leech Life / Supersonic / Astonish (default)
+  - Lv14 Carvanha, Rough Skin, IVs 0: Leer / Bite / Rage / Focus Energy (default)
 
 ### K-rival3_route110: Route 110: Rival
 
 - treecko player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_110_TREECKO`; bag: none
-  - Lv18 Wingull, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv18 Lombre, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv20 Combusken, IVs 12: Focus Energy / Ember / Double Kick / Peck (default)
+  - Lv18 Wingull, Keen Eye, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv18 Lombre, Swift Swim, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv20 Combusken, Blaze, IVs 12: Focus Energy / Ember / Double Kick / Peck (default)
 - treecko player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_110_TREECKO`; bag: none
-  - Lv18 Wingull, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv18 Lombre, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv20 Combusken, IVs 12: Focus Energy / Ember / Double Kick / Peck (default)
+  - Lv18 Wingull, Keen Eye, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv18 Lombre, Swift Swim, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv20 Combusken, Blaze, IVs 12: Focus Energy / Ember / Double Kick / Peck (default)
 - torchic player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_110_TORCHIC`; bag: none
-  - Lv18 Lombre, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv18 Slugma, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
-  - Lv20 Marshtomp, IVs 12: Water Gun / Bide / Mud Shot / Foresight (default)
+  - Lv18 Lombre, Swift Swim, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv18 Slugma, Magma Armor, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
+  - Lv20 Marshtomp, Torrent, IVs 12: Water Gun / Bide / Mud Shot / Foresight (default)
 - torchic player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_110_TORCHIC`; bag: none
-  - Lv18 Lombre, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv18 Slugma, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
-  - Lv20 Marshtomp, IVs 12: Water Gun / Bide / Mud Shot / Foresight (default)
+  - Lv18 Lombre, Swift Swim, IVs 6: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv18 Slugma, Magma Armor, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
+  - Lv20 Marshtomp, Torrent, IVs 12: Water Gun / Bide / Mud Shot / Foresight (default)
 - mudkip player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_110_MUDKIP`; bag: none
-  - Lv18 Wingull, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv18 Slugma, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
-  - Lv20 Grovyle, IVs 12: Absorb / Quick Attack / Fury Cutter / Pursuit (default)
+  - Lv18 Wingull, Keen Eye, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv18 Slugma, Magma Armor, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
+  - Lv20 Grovyle, Overgrow, IVs 12: Absorb / Quick Attack / Fury Cutter / Pursuit (default)
 - mudkip player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_110_MUDKIP`; bag: none
-  - Lv18 Slugma, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
-  - Lv18 Wingull, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
-  - Lv20 Grovyle, IVs 12: Absorb / Quick Attack / Fury Cutter / Pursuit (default)
+  - Lv18 Slugma, Magma Armor, IVs 6: Yawn / Smog / Ember / Rock Throw (default)
+  - Lv18 Wingull, Keen Eye, IVs 6: Growl / Water Gun / Supersonic / Wing Attack (default)
+  - Lv20 Grovyle, Overgrow, IVs 12: Absorb / Quick Attack / Fury Cutter / Pursuit (default)
 
 ### K-wally_mauville: Mauville City: Wally
 
 - **Pokémon Trainer Wally** `TRAINER_WALLY_MAUVILLE`; bag: none
-  - Lv16 Ralts, IVs 3: Growl / Confusion / Double Team / Teleport (default)
+  - Lv16 Ralts, Synchronize, IVs 3: Growl / Confusion / Double Team / Teleport (default)
 
 ### K-gym3_wattson: Mauville Gym: Wattson
 
 - **Leader Wattson** `TRAINER_WATTSON_1`; bag: Super Potion, Super Potion
-  - Lv20 Voltorb, IVs 24: Rollout / Spark / Self-Destruct / Shock Wave (custom)
-  - Lv20 Electrike, IVs 24: Shock Wave / Leer / Quick Attack / Howl (custom)
-  - Lv22 Magneton, IVs 26: Supersonic / Shock Wave / Thunder Wave / Sonic Boom (custom)
-  - Lv24 Manectric @ Sitrus Berry, IVs 30: Quick Attack / Thunder Wave / Shock Wave / Howl (custom)
+  - Lv20 Voltorb, Soundproof, IVs 24: Rollout / Spark / Self-Destruct / Shock Wave (custom)
+  - Lv20 Electrike, Static, IVs 24: Shock Wave / Leer / Quick Attack / Howl (custom)
+  - Lv22 Magneton, Magnet Pull, IVs 26: Supersonic / Shock Wave / Thunder Wave / Sonic Boom (custom)
+  - Lv24 Manectric @ Sitrus Berry, Static, IVs 30: Quick Attack / Thunder Wave / Shock Wave / Howl (custom)
 
 ### K-tabitha_mt_chimney: Mt. Chimney: Magma Admin Tabitha
 
 - **Magma Admin Tabitha** `TRAINER_TABITHA_MT_CHIMNEY`; bag: none
-  - Lv18 Numel, IVs 6: Growl / Tackle / Ember (default)
-  - Lv20 Poochyena, IVs 6: Howl / Sand Attack / Bite / Odor Sleuth (default)
-  - Lv22 Numel, IVs 6: Growl / Tackle / Ember / Magnitude (default)
-  - Lv22 Zubat, IVs 6: Supersonic / Astonish / Bite / Wing Attack (default)
+  - Lv18 Numel, Oblivious, IVs 6: Growl / Tackle / Ember (default)
+  - Lv20 Poochyena, Run Away, IVs 6: Howl / Sand Attack / Bite / Odor Sleuth (default)
+  - Lv22 Numel, Oblivious, IVs 6: Growl / Tackle / Ember / Magnitude (default)
+  - Lv22 Zubat, Inner Focus, IVs 6: Supersonic / Astonish / Bite / Wing Attack (default)
 
 ### K-maxie_mt_chimney: Mt. Chimney: Magma Leader Maxie
 
 - **Magma Leader Maxie** `TRAINER_MAXIE_MT_CHIMNEY`; bag: Super Potion, Super Potion
-  - Lv24 Mightyena, IVs 18: Sand Attack / Bite / Odor Sleuth / Roar (default)
-  - Lv24 Zubat, IVs 18: Supersonic / Astonish / Bite / Wing Attack (default)
-  - Lv25 Camerupt, IVs 18: Tackle / Ember / Magnitude / Focus Energy (default)
+  - Lv24 Mightyena, Intimidate, IVs 18: Sand Attack / Bite / Odor Sleuth / Roar (default)
+  - Lv24 Zubat, Inner Focus, IVs 18: Supersonic / Astonish / Bite / Wing Attack (default)
+  - Lv25 Camerupt, Magma Armor, IVs 18: Tackle / Ember / Magnitude / Focus Energy (default)
 
 ### K-gym4_flannery: Lavaridge Gym: Flannery
 
 - **Leader Flannery** `TRAINER_FLANNERY_1`; bag: Hyper Potion, Hyper Potion
-  - Lv24 Numel, IVs 24: Overheat / Take Down / Magnitude / Sunny Day (custom)
-  - Lv24 Slugma, IVs 24: Overheat / Smog / Light Screen / Sunny Day (custom)
-  - Lv26 Camerupt, IVs 30: Overheat / Tackle / Sunny Day / Attract (custom)
-  - Lv29 Torkoal @ White Herb, IVs 30: Overheat / Sunny Day / Body Slam / Attract (custom)
+  - Lv24 Numel, Oblivious, IVs 24: Overheat / Take Down / Magnitude / Sunny Day (custom)
+  - Lv24 Slugma, Magma Armor, IVs 24: Overheat / Smog / Light Screen / Sunny Day (custom)
+  - Lv26 Camerupt, Magma Armor, IVs 30: Overheat / Tackle / Sunny Day / Attract (custom)
+  - Lv29 Torkoal @ White Herb, White Smoke, IVs 30: Overheat / Sunny Day / Body Slam / Attract (custom)
 
 ### K-gym5_norman: Petalburg Gym: Norman
 
 - **Leader Norman** `TRAINER_NORMAN_1`; bag: Hyper Potion, Hyper Potion
-  - Lv27 Spinda, IVs 24: Teeter Dance / Psybeam / Facade / Encore (custom)
-  - Lv27 Vigoroth, IVs 24: Slash / Facade / Encore / Feint Attack (custom)
-  - Lv29 Linoone, IVs 24: Slash / Belly Drum / Facade / Headbutt (custom)
-  - Lv31 Slaking @ Sitrus Berry, IVs 30: Counter / Yawn / Facade / Feint Attack (custom)
+  - Lv27 Spinda, Own Tempo, IVs 24: Teeter Dance / Psybeam / Facade / Encore (custom)
+  - Lv27 Vigoroth, Vital Spirit, IVs 24: Slash / Facade / Encore / Feint Attack (custom)
+  - Lv29 Linoone, Pickup, IVs 24: Slash / Belly Drum / Facade / Headbutt (custom)
+  - Lv31 Slaking @ Sitrus Berry, Truant, IVs 30: Counter / Yawn / Facade / Feint Attack (custom)
 
 ### K-shelly_weather_institute: Weather Institute: Aqua Admin Shelly
 
 - **Aqua Admin Shelly** `TRAINER_SHELLY_WEATHER_INSTITUTE`; bag: none
-  - Lv28 Carvanha, IVs 6: Focus Energy / Scary Face / Crunch / Screech (default)
-  - Lv28 Mightyena, IVs 6: Bite / Odor Sleuth / Roar / Swagger (default)
+  - Lv28 Carvanha, Rough Skin, IVs 6: Focus Energy / Scary Face / Crunch / Screech (default)
+  - Lv28 Mightyena, Intimidate, IVs 6: Bite / Odor Sleuth / Roar / Swagger (default)
 
 ### K-rival4_route119: Route 119: Rival
 
 - treecko player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_119_TREECKO`; bag: none
-  - Lv29 Pelipper, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv29 Lombre, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
-  - Lv31 Combusken, IVs 18: Double Kick / Peck / Sand Attack / Bulk Up (default)
+  - Lv29 Pelipper, Keen Eye, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv29 Lombre, Swift Swim, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
+  - Lv31 Combusken, Blaze, IVs 18: Double Kick / Peck / Sand Attack / Bulk Up (default)
 - treecko player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_119_TREECKO`; bag: none
-  - Lv29 Pelipper, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv29 Lombre, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
-  - Lv31 Combusken, IVs 18: Double Kick / Peck / Sand Attack / Bulk Up (default)
+  - Lv29 Pelipper, Keen Eye, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv29 Lombre, Swift Swim, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
+  - Lv31 Combusken, Blaze, IVs 18: Double Kick / Peck / Sand Attack / Bulk Up (default)
 - torchic player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_119_TORCHIC`; bag: none
-  - Lv29 Lombre, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
-  - Lv29 Slugma, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv31 Marshtomp, IVs 18: Mud Shot / Foresight / Mud Sport / Take Down (default)
+  - Lv29 Lombre, Swift Swim, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
+  - Lv29 Slugma, Magma Armor, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv31 Marshtomp, Torrent, IVs 18: Mud Shot / Foresight / Mud Sport / Take Down (default)
 - torchic player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_119_TORCHIC`; bag: none
-  - Lv29 Lombre, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
-  - Lv29 Slugma, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv31 Marshtomp, IVs 18: Mud Shot / Foresight / Mud Sport / Take Down (default)
+  - Lv29 Lombre, Swift Swim, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
+  - Lv29 Slugma, Magma Armor, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv31 Marshtomp, Torrent, IVs 18: Mud Shot / Foresight / Mud Sport / Take Down (default)
 - mudkip player, rival may: **Pokémon Trainer May** `TRAINER_MAY_ROUTE_119_MUDKIP`; bag: none
-  - Lv29 Slugma, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv29 Lombre, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
-  - Lv31 Grovyle, IVs 18: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
+  - Lv29 Slugma, Magma Armor, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv29 Lombre, Swift Swim, IVs 12: Absorb / Nature Power / Fake Out / Fury Swipes (default)
+  - Lv31 Grovyle, Overgrow, IVs 18: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
 - mudkip player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_ROUTE_119_MUDKIP`; bag: none
-  - Lv29 Slugma, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv29 Pelipper, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv31 Grovyle, IVs 18: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
+  - Lv29 Slugma, Magma Armor, IVs 12: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv29 Pelipper, Keen Eye, IVs 12: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv31 Grovyle, Overgrow, IVs 18: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
 
 ### K-gym6_winona: Fortree Gym: Winona
 
 - **Leader Winona** `TRAINER_WINONA_1`; bag: Hyper Potion, Hyper Potion
-  - Lv29 Swablu, IVs 25: Perish Song / Mirror Move / Safeguard / Aerial Ace (custom)
-  - Lv29 Tropius, IVs 25: Sunny Day / Aerial Ace / Solar Beam / Synthesis (custom)
-  - Lv30 Pelipper, IVs 25: Water Gun / Supersonic / Protect / Aerial Ace (custom)
-  - Lv31 Skarmory, IVs 26: Sand Attack / Fury Attack / Steel Wing / Aerial Ace (custom)
-  - Lv33 Altaria @ Oran Berry, IVs 31: Earthquake / Dragon Breath / Dragon Dance / Aerial Ace (custom)
+  - Lv29 Swablu, Natural Cure, IVs 25: Perish Song / Mirror Move / Safeguard / Aerial Ace (custom)
+  - Lv29 Tropius, Chlorophyll, IVs 25: Sunny Day / Aerial Ace / Solar Beam / Synthesis (custom)
+  - Lv30 Pelipper, Keen Eye, IVs 25: Water Gun / Supersonic / Protect / Aerial Ace (custom)
+  - Lv31 Skarmory, Keen Eye, IVs 26: Sand Attack / Fury Attack / Steel Wing / Aerial Ace (custom)
+  - Lv33 Altaria @ Oran Berry, Natural Cure, IVs 31: Earthquake / Dragon Breath / Dragon Dance / Aerial Ace (custom)
 
 ### K-rival5_lilycove: Lilycove City: Rival (optional)
 
 - treecko player, rival may: **Pokémon Trainer May** `TRAINER_MAY_LILYCOVE_TREECKO`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Pelipper, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv32 Ludicolo, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv34 Combusken, IVs 24: Peck / Sand Attack / Bulk Up / Quick Attack (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Pelipper, Keen Eye, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv32 Ludicolo, Swift Swim, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv34 Combusken, Blaze, IVs 24: Peck / Sand Attack / Bulk Up / Quick Attack (default)
 - treecko player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_LILYCOVE_TREECKO`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Pelipper, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv32 Ludicolo, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv34 Combusken, IVs 24: Peck / Sand Attack / Bulk Up / Quick Attack (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Pelipper, Keen Eye, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv32 Ludicolo, Swift Swim, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv34 Combusken, Blaze, IVs 24: Peck / Sand Attack / Bulk Up / Quick Attack (default)
 - torchic player, rival may: **Pokémon Trainer May** `TRAINER_MAY_LILYCOVE_TORCHIC`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Ludicolo, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv32 Slugma, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv34 Marshtomp, IVs 24: Mud Shot / Foresight / Mud Sport / Take Down (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Ludicolo, Swift Swim, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv32 Slugma, Magma Armor, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv34 Marshtomp, Torrent, IVs 24: Mud Shot / Foresight / Mud Sport / Take Down (default)
 - torchic player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_LILYCOVE_TORCHIC`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Ludicolo, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
-  - Lv32 Slugma, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv34 Marshtomp, IVs 24: Mud Shot / Foresight / Mud Sport / Take Down (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Ludicolo, Swift Swim, IVs 18: Astonish / Growl / Absorb / Nature Power (default)
+  - Lv32 Slugma, Magma Armor, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv34 Marshtomp, Torrent, IVs 24: Mud Shot / Foresight / Mud Sport / Take Down (default)
 - mudkip player, rival may: **Pokémon Trainer May** `TRAINER_MAY_LILYCOVE_MUDKIP`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Slugma, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv32 Pelipper, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv34 Grovyle, IVs 24: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Slugma, Magma Armor, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv32 Pelipper, Keen Eye, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv34 Grovyle, Overgrow, IVs 24: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
 - mudkip player, rival brendan: **Pokémon Trainer Brendan** `TRAINER_BRENDAN_LILYCOVE_MUDKIP`; bag: none
-  - Lv31 Tropius, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
-  - Lv32 Slugma, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
-  - Lv32 Pelipper, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
-  - Lv34 Grovyle, IVs 24: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
+  - Lv31 Tropius, Chlorophyll, IVs 18: Stomp / Sweet Scent / Whirlwind / Magical Leaf (default)
+  - Lv32 Slugma, Magma Armor, IVs 18: Ember / Rock Throw / Harden / Amnesia (default)
+  - Lv32 Pelipper, Keen Eye, IVs 18: Wing Attack / Supersonic / Mist / Protect (default)
+  - Lv34 Grovyle, Overgrow, IVs 24: Fury Cutter / Pursuit / Screech / Leaf Blade (default)
 
 ### K-tabitha_magma_hideout: Magma Hideout: Magma Admin Tabitha
 
 - **Magma Admin Tabitha** `TRAINER_TABITHA_MAGMA_HIDEOUT`; bag: none
-  - Lv26 Numel, IVs 9: Tackle / Ember / Magnitude / Focus Energy (default)
-  - Lv28 Mightyena, IVs 9: Bite / Odor Sleuth / Roar / Swagger (default)
-  - Lv30 Zubat, IVs 9: Astonish / Bite / Wing Attack / Confuse Ray (default)
-  - Lv33 Camerupt, IVs 9: Focus Energy / Take Down / Amnesia / Rock Slide (default)
+  - Lv26 Numel, Oblivious, IVs 9: Tackle / Ember / Magnitude / Focus Energy (default)
+  - Lv28 Mightyena, Intimidate, IVs 9: Bite / Odor Sleuth / Roar / Swagger (default)
+  - Lv30 Zubat, Inner Focus, IVs 9: Astonish / Bite / Wing Attack / Confuse Ray (default)
+  - Lv33 Camerupt, Magma Armor, IVs 9: Focus Energy / Take Down / Amnesia / Rock Slide (default)
 
 ### K-maxie_magma_hideout: Magma Hideout: Magma Leader Maxie
 
 - **Magma Leader Maxie** `TRAINER_MAXIE_MAGMA_HIDEOUT`; bag: Super Potion, Super Potion
-  - Lv37 Mightyena, IVs 18: Roar / Swagger / Scary Face / Take Down (default)
-  - Lv38 Crobat, IVs 18: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
-  - Lv39 Camerupt, IVs 18: Take Down / Amnesia / Rock Slide / Earthquake (default)
+  - Lv37 Mightyena, Intimidate, IVs 18: Roar / Swagger / Scary Face / Take Down (default)
+  - Lv38 Crobat, Inner Focus, IVs 18: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
+  - Lv39 Camerupt, Magma Armor, IVs 18: Take Down / Amnesia / Rock Slide / Earthquake (default)
 
 ### K-matt_aqua_hideout: Aqua Hideout: Aqua Admin Matt
 
 - **Aqua Admin Matt** `TRAINER_MATT`; bag: Super Potion
-  - Lv34 Mightyena, IVs 6: Odor Sleuth / Roar / Swagger / Scary Face (default)
-  - Lv34 Golbat, IVs 6: Astonish / Bite / Wing Attack / Confuse Ray (default)
+  - Lv34 Mightyena, Intimidate, IVs 6: Odor Sleuth / Roar / Swagger / Scary Face (default)
+  - Lv34 Golbat, Inner Focus, IVs 6: Astonish / Bite / Wing Attack / Confuse Ray (default)
 
 ### K-gym7_tate_liza: Mossdeep Gym: Tate & Liza
 
 - **Leader Tate&Liza (double)** `TRAINER_TATE_AND_LIZA_1`; bag: Hyper Potion, Hyper Potion, Hyper Potion, Hyper Potion
-  - Lv41 Claydol, IVs 30: Earthquake / Ancient Power / Psychic / Light Screen (custom)
-  - Lv41 Xatu, IVs 30: Psychic / Sunny Day / Confuse Ray / Calm Mind (custom)
-  - Lv42 Lunatone @ Sitrus Berry, IVs 30: Light Screen / Psychic / Hypnosis / Calm Mind (custom)
-  - Lv42 Solrock @ Sitrus Berry, IVs 30: Sunny Day / Solar Beam / Psychic / Flamethrower (custom)
+  - Lv41 Claydol, Levitate, IVs 30: Earthquake / Ancient Power / Psychic / Light Screen (custom)
+  - Lv41 Xatu, Synchronize, IVs 30: Psychic / Sunny Day / Confuse Ray / Calm Mind (custom)
+  - Lv42 Lunatone @ Sitrus Berry, Levitate, IVs 30: Light Screen / Psychic / Hypnosis / Calm Mind (custom)
+  - Lv42 Solrock @ Sitrus Berry, Levitate, IVs 30: Sunny Day / Solar Beam / Psychic / Flamethrower (custom)
 
 ### K-space_center: Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)
 
 - **Magma Leader Maxie** `TRAINER_MAXIE_MOSSDEEP`; bag: none
-  - Lv42 Mightyena, IVs 18: Swagger / Scary Face / Take Down / Taunt (default)
-  - Lv43 Crobat, IVs 18: Wing Attack / Confuse Ray / Air Cutter / Mean Look (default)
-  - Lv44 Camerupt, IVs 18: Take Down / Amnesia / Rock Slide / Earthquake (default)
+  - Lv42 Mightyena, Intimidate, IVs 18: Swagger / Scary Face / Take Down / Taunt (default)
+  - Lv43 Crobat, Inner Focus, IVs 18: Wing Attack / Confuse Ray / Air Cutter / Mean Look (default)
+  - Lv44 Camerupt, Magma Armor, IVs 18: Take Down / Amnesia / Rock Slide / Earthquake (default)
 - **Magma Admin Tabitha** `TRAINER_TABITHA_MOSSDEEP`; bag: none
-  - Lv36 Camerupt, IVs 12: Focus Energy / Take Down / Amnesia / Rock Slide (default)
-  - Lv38 Mightyena, IVs 12: Roar / Swagger / Scary Face / Take Down (default)
-  - Lv40 Golbat, IVs 12: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
+  - Lv36 Camerupt, Magma Armor, IVs 12: Focus Energy / Take Down / Amnesia / Rock Slide (default)
+  - Lv38 Mightyena, Intimidate, IVs 12: Roar / Swagger / Scary Face / Take Down (default)
+  - Lv40 Golbat, Inner Focus, IVs 12: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
 
 ### K-shelly_seafloor_cavern: Seafloor Cavern: Aqua Admin Shelly
 
 - **Aqua Admin Shelly** `TRAINER_SHELLY_SEAFLOOR_CAVERN`; bag: none
-  - Lv37 Sharpedo, IVs 12: Scary Face / Crunch / Screech / Slash (default)
-  - Lv37 Mightyena, IVs 12: Roar / Swagger / Scary Face / Take Down (default)
+  - Lv37 Sharpedo, Rough Skin, IVs 12: Scary Face / Crunch / Screech / Slash (default)
+  - Lv37 Mightyena, Intimidate, IVs 12: Roar / Swagger / Scary Face / Take Down (default)
 
 ### K-archie_seafloor_cavern: Seafloor Cavern: Aqua Leader Archie
 
 - **Aqua Leader Archie** `TRAINER_ARCHIE`; bag: Super Potion, Super Potion
-  - Lv41 Mightyena, IVs 18: Roar / Swagger / Scary Face / Take Down (default)
-  - Lv41 Crobat, IVs 18: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
-  - Lv43 Sharpedo, IVs 18: Screech / Slash / Taunt / Swagger (default)
+  - Lv41 Mightyena, Intimidate, IVs 18: Roar / Swagger / Scary Face / Take Down (default)
+  - Lv41 Crobat, Inner Focus, IVs 18: Bite / Wing Attack / Confuse Ray / Air Cutter (default)
+  - Lv43 Sharpedo, Rough Skin, IVs 18: Screech / Slash / Taunt / Swagger (default)
 
 ### K-gym8_juan: Sootopolis Gym: Juan
 
 - **Leader Juan** `TRAINER_JUAN_1`; bag: Hyper Potion, Hyper Potion
-  - Lv41 Luvdisc, IVs 24: Water Pulse / Attract / Sweet Kiss / Flail (custom)
-  - Lv41 Whiscash, IVs 24: Rain Dance / Water Pulse / Amnesia / Earthquake (custom)
-  - Lv43 Sealeo, IVs 24: Encore / Body Slam / Aurora Beam / Water Pulse (custom)
-  - Lv43 Crawdaunt, IVs 24: Water Pulse / Crabhammer / Taunt / Leer (custom)
-  - Lv46 Kingdra @ Chesto Berry, IVs 30: Water Pulse / Double Team / Ice Beam / Rest (custom)
+  - Lv41 Luvdisc, Swift Swim, IVs 24: Water Pulse / Attract / Sweet Kiss / Flail (custom)
+  - Lv41 Whiscash, Oblivious, IVs 24: Rain Dance / Water Pulse / Amnesia / Earthquake (custom)
+  - Lv43 Sealeo, Thick Fat, IVs 24: Encore / Body Slam / Aurora Beam / Water Pulse (custom)
+  - Lv43 Crawdaunt, Hyper Cutter, IVs 24: Water Pulse / Crabhammer / Taunt / Leer (custom)
+  - Lv46 Kingdra @ Chesto Berry, Swift Swim, IVs 30: Water Pulse / Double Team / Ice Beam / Rest (custom)
 
 ### K-wally_victory_road: Victory Road: Wally
 
 - **Pokémon Trainer Wally** `TRAINER_WALLY_VR_1`; bag: Full Restore, Full Restore
-  - Lv44 Altaria, IVs 18: Aerial Ace / Safeguard / Dragon Breath / Dragon Dance (custom)
-  - Lv43 Delcatty, IVs 18: Sing / Assist / Charm / Feint Attack (custom)
-  - Lv44 Roselia, IVs 18: Magical Leaf / Leech Seed / Giga Drain / Toxic (custom)
-  - Lv41 Magneton, IVs 18: Supersonic / Thunderbolt / Tri Attack / Screech (custom)
-  - Lv45 Gardevoir, IVs 30: Double Team / Calm Mind / Psychic / Future Sight (custom)
+  - Lv44 Altaria, Natural Cure, IVs 18: Aerial Ace / Safeguard / Dragon Breath / Dragon Dance (custom)
+  - Lv43 Delcatty, Cute Charm, IVs 18: Sing / Assist / Charm / Feint Attack (custom)
+  - Lv44 Roselia, Natural Cure, IVs 18: Magical Leaf / Leech Seed / Giga Drain / Toxic (custom)
+  - Lv41 Magneton, Magnet Pull, IVs 18: Supersonic / Thunderbolt / Tri Attack / Screech (custom)
+  - Lv45 Gardevoir, Synchronize, IVs 30: Double Team / Calm Mind / Psychic / Future Sight (custom)
 
 ### K-e4_sidney: Elite Four: Sidney
 
 - **Elite Four Sidney** `TRAINER_SIDNEY`; bag: Full Restore, Full Restore
-  - Lv46 Mightyena, IVs 30: Roar / Double-Edge / Sand Attack / Crunch (custom)
-  - Lv48 Shiftry, IVs 30: Torment / Double Team / Swagger / Extrasensory (custom)
-  - Lv46 Cacturne, IVs 30: Leech Seed / Feint Attack / Needle Arm / Cotton Spore (custom)
-  - Lv48 Crawdaunt, IVs 30: Surf / Swords Dance / Strength / Facade (custom)
-  - Lv49 Absol @ Sitrus Berry, IVs 31: Aerial Ace / Rock Slide / Swords Dance / Slash (custom)
+  - Lv46 Mightyena, Intimidate, IVs 30: Roar / Double-Edge / Sand Attack / Crunch (custom)
+  - Lv48 Shiftry, Chlorophyll, IVs 30: Torment / Double Team / Swagger / Extrasensory (custom)
+  - Lv46 Cacturne, Sand Veil, IVs 30: Leech Seed / Feint Attack / Needle Arm / Cotton Spore (custom)
+  - Lv48 Crawdaunt, Hyper Cutter, IVs 30: Surf / Swords Dance / Strength / Facade (custom)
+  - Lv49 Absol @ Sitrus Berry, Pressure, IVs 31: Aerial Ace / Rock Slide / Swords Dance / Slash (custom)
 
 ### K-e4_phoebe: Elite Four: Phoebe
 
 - **Elite Four Phoebe** `TRAINER_PHOEBE`; bag: Full Restore, Full Restore
-  - Lv48 Dusclops, IVs 30: Shadow Punch / Confuse Ray / Curse / Protect (custom)
-  - Lv49 Banette, IVs 30: Shadow Ball / Grudge / Will-O-Wisp / Feint Attack (custom)
-  - Lv50 Sableye, IVs 30: Shadow Ball / Double Team / Night Shade / Feint Attack (custom)
-  - Lv49 Banette, IVs 30: Shadow Ball / Psychic / Thunderbolt / Facade (custom)
-  - Lv51 Dusclops @ Sitrus Berry, IVs 31: Shadow Ball / Ice Beam / Rock Slide / Earthquake (custom)
+  - Lv48 Dusclops, Pressure, IVs 30: Shadow Punch / Confuse Ray / Curse / Protect (custom)
+  - Lv49 Banette, Insomnia, IVs 30: Shadow Ball / Grudge / Will-O-Wisp / Feint Attack (custom)
+  - Lv50 Sableye, Keen Eye, IVs 30: Shadow Ball / Double Team / Night Shade / Feint Attack (custom)
+  - Lv49 Banette, Insomnia, IVs 30: Shadow Ball / Psychic / Thunderbolt / Facade (custom)
+  - Lv51 Dusclops @ Sitrus Berry, Pressure, IVs 31: Shadow Ball / Ice Beam / Rock Slide / Earthquake (custom)
 
 ### K-e4_glacia: Elite Four: Glacia
 
 - **Elite Four Glacia** `TRAINER_GLACIA`; bag: Full Restore, Full Restore
-  - Lv50 Sealeo, IVs 30: Encore / Body Slam / Hail / Ice Ball (custom)
-  - Lv50 Glalie, IVs 30: Light Screen / Crunch / Icy Wind / Ice Beam (custom)
-  - Lv52 Sealeo, IVs 30: Attract / Double-Edge / Hail / Blizzard (custom)
-  - Lv52 Glalie, IVs 30: Shadow Ball / Explosion / Hail / Ice Beam (custom)
-  - Lv53 Walrein @ Sitrus Berry, IVs 31: Surf / Body Slam / Ice Beam / Sheer Cold (custom)
+  - Lv50 Sealeo, Thick Fat, IVs 30: Encore / Body Slam / Hail / Ice Ball (custom)
+  - Lv50 Glalie, Inner Focus, IVs 30: Light Screen / Crunch / Icy Wind / Ice Beam (custom)
+  - Lv52 Sealeo, Thick Fat, IVs 30: Attract / Double-Edge / Hail / Blizzard (custom)
+  - Lv52 Glalie, Inner Focus, IVs 30: Shadow Ball / Explosion / Hail / Ice Beam (custom)
+  - Lv53 Walrein @ Sitrus Berry, Thick Fat, IVs 31: Surf / Body Slam / Ice Beam / Sheer Cold (custom)
 
 ### K-e4_drake: Elite Four: Drake
 
 - **Elite Four Drake** `TRAINER_DRAKE`; bag: Full Restore, Full Restore
-  - Lv52 Shelgon, IVs 30: Rock Tomb / Dragon Claw / Protect / Double-Edge (custom)
-  - Lv54 Altaria, IVs 30: Double-Edge / Dragon Breath / Dragon Dance / Aerial Ace (custom)
-  - Lv53 Kingdra, IVs 30: Smokescreen / Dragon Dance / Surf / Body Slam (custom)
-  - Lv53 Flygon, IVs 30: Flamethrower / Crunch / Dragon Breath / Earthquake (custom)
-  - Lv55 Salamence @ Sitrus Berry, IVs 31: Flamethrower / Dragon Claw / Rock Slide / Crunch (custom)
+  - Lv52 Shelgon, Rock Head, IVs 30: Rock Tomb / Dragon Claw / Protect / Double-Edge (custom)
+  - Lv54 Altaria, Natural Cure, IVs 30: Double-Edge / Dragon Breath / Dragon Dance / Aerial Ace (custom)
+  - Lv53 Kingdra, Swift Swim, IVs 30: Smokescreen / Dragon Dance / Surf / Body Slam (custom)
+  - Lv53 Flygon, Levitate, IVs 30: Flamethrower / Crunch / Dragon Breath / Earthquake (custom)
+  - Lv55 Salamence @ Sitrus Berry, Intimidate, IVs 31: Flamethrower / Dragon Claw / Rock Slide / Crunch (custom)
 
 ### K-champion_wallace: Champion: Wallace
 
 - **Champion Wallace** `TRAINER_WALLACE`; bag: Full Restore, Full Restore, Full Restore, Full Restore
-  - Lv57 Wailord, IVs 31: Rain Dance / Water Spout / Double-Edge / Blizzard (custom)
-  - Lv55 Tentacruel, IVs 31: Toxic / Hydro Pump / Sludge Bomb / Ice Beam (custom)
-  - Lv56 Ludicolo, IVs 31: Giga Drain / Surf / Leech Seed / Double Team (custom)
-  - Lv56 Whiscash, IVs 31: Earthquake / Surf / Amnesia / Hyper Beam (custom)
-  - Lv56 Gyarados, IVs 31: Dragon Dance / Earthquake / Hyper Beam / Surf (custom)
-  - Lv58 Milotic @ Sitrus Berry, IVs 31: Recover / Surf / Ice Beam / Toxic (custom)
+  - Lv57 Wailord, Water Veil, IVs 31: Rain Dance / Water Spout / Double-Edge / Blizzard (custom)
+  - Lv55 Tentacruel, Clear Body, IVs 31: Toxic / Hydro Pump / Sludge Bomb / Ice Beam (custom)
+  - Lv56 Ludicolo, Swift Swim, IVs 31: Giga Drain / Surf / Leech Seed / Double Team (custom)
+  - Lv56 Whiscash, Oblivious, IVs 31: Earthquake / Surf / Amnesia / Hyper Beam (custom)
+  - Lv56 Gyarados, Intimidate, IVs 31: Dragon Dance / Earthquake / Hyper Beam / Surf (custom)
+  - Lv58 Milotic @ Sitrus Berry, Marvel Scale, IVs 31: Recover / Surf / Ice Beam / Toxic (custom)
 
 ## 7. TM/HM sources and move tutors
 
@@ -1376,47 +1399,41 @@ Each Hoenn tutor teaches once in Emerald; the other tutors are at the postgame B
 
 ## 8. Randomizer log format (Universal Pokémon Randomizer ZX)
 
-The parser was written from a format description, **without a real log**, so these are the claims
-most likely to be wrong in detail.
+These formats were read from **UPR ZX's own logging code** (`Randomizer.java` log methods,
+`TrainerPokemon.toString`, `StaticEncounter.toString`, `Gen3RomHandler.java`), but no real Emerald log
+has been through the parser yet.
 
 - **R-01** Sections are headed `--Name--`: `--Wild Pokemon--`, `--Trainers Pokemon--`, `--TM Moves--`,
-  `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, a starters section, `--Static Pokemon--`,
-  and `--Move Tutors--`. A section appears only for what was randomized; anything missing falls back
-  to vanilla. Unknown sections are recorded, not parsed.
-- **R-02** Wild sets look like `Set #N - ROUTE 104 Grass/Cave (rate=20)` (methods: Grass/Cave, Surfing,
-  Rock Smash, Fishing), followed by one line per slot: `Species Lv4-5` or `Lv4`, optionally followed
-  by `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
-- **R-03** Set numbers follow the ROM's wild-header order (209 sets in Emerald), so set N maps to an
-  exact map even when several sets share a name (every Granite Cave floor is `GRANITE CAVE`).
+  `--Move Tutor Moves--`, `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, `--Static Pokemon--`,
+  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. A section
+  appears only for what was randomized; anything missing falls back to vanilla. Other sections are
+  recorded, not parsed.
+- **R-02** Wild sets: `Set #N - ROUTE 104 Grass/Cave (rate=20)`; Gen 3 labels are `Grass/Cave`, `Surfing`,
+  `Rock Smash`, `Fishing`. Then one line per slot: `Zigzagoon Lv2` or `Zigzagoon Lvs 2-4`, padded, then
+  `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
+- **R-03** Set numbers follow the ROM's wild-header order, grass/surf/rock smash/fishing per map. UPR skips
+  a table whose data pointer it has already seen; no two Emerald tables share one, so all 209 sets
+  appear and set N maps to an exact map even when several share a name (`GRANITE CAVE`).
 - **R-04** Fishing is one 10-slot set split Old 0–1, Good 2–4, Super 5–9 (M-11).
-- **R-05** Trainers: `#265 (ROXANNE) - Geodude Lv12, ...` (compact), or with moveset logging one line
-  per Pokémon (`Geodude Lv12 @ Item - MOVE, MOVE, ...`). `#N` is the decomp trainer id
-  (`TRAINER_ROXANNE_1 = 265` in `opponents.h`).
-- **R-06** `--TM Moves--` lines are `TM01 THUNDERBOLT`, using the ROM's move names (e.g. `FAINT ATTACK`
-  for Feint Attack).
-- **R-07** Evolutions: `RALTS -> KIRLIA`, branching as `WURMPLE -> SILCOON and CASCOON`.
-  Starters: `Set starter 1 to BAGON`.
+- **R-05** Trainers: `#265 (ROXANNE)@31F0C8 - Geodude Lv12, Nosepass@Oran Berry Lv15` (compact). With
+  moveset logging the header stands alone and each Pokémon has a line:
+  `Geodude@Oran Berry Lv12, Ability: STURDY - TACKLE, DEFENSE CURL`. Renamed trainers print `(OLD => NEW)`.
+  `#N` is the ROM trainer-table index, which equals the decomp id (`TRAINER_ROXANNE_1 = 265`).
+  Emerald logs add one pseudo-trainer after the last real one (#855): Steven's Space Center team.
+- **R-06** `--TM Moves--` lines are `TM01 THUNDERBOLT`; tutors are `OLDMOVE -> NEWMOVE`. Move names are the
+  ROM's (e.g. `FAINT ATTACK` for Feint Attack).
+- **R-07** Evolutions: `RALTS -> KIRLIA`, branching as `WURMPLE -> SILCOON and CASCOON`. Starters:
+  `Set starter 1 to BAGON`. Statics: `VOLTORB Lv25 => PIKACHU Lv25`, with `(2)` on repeats.
 - **R-08** A log that randomizes learnsets (`--Pokemon Movesets--`) isn't parsed; the agent says it can't
   answer movesets for that run.
 
 ## 9. Open questions
 
-- **Q-01** The walkthrough's order understated reachability five times (Route 116, Rusturf Tunnel,
-  Slateport, Lilycove, Rayquaza). Which other areas in section 4 are reachable *earlier* than listed,
-  under rule P-R2?
-- **Q-02** P-06 relies on reaching Steven in Granite Cave (to deliver the letter) before Brawly. Is that
-  possible without Flash, which needs Brawly's badge?
-- **Q-03** P-R4: is there any gate besides Norman's that forces Brawly, or Winona, earlier?
-- **Q-04** Route 115 (P-11): is any of its fishing water reachable from the Rustboro beach before the
-  Meteor Falls exit, and with which rods at that point?
-- **Q-05** Rayquaza (P-26): besides the Mach Bike for Sky Pillar's cracked floors, does anything else gate
-  catching it before Juan?
-- **Q-06** Lilycove before Winona (P-17): does the Devon Scope alone get you past Route 120's Kecleon to
-  Route 121, or does something else block the way?
-- **Q-07** Are the field-move badges in M-12 right for Emerald?
-- **Q-08** Is any battle missing that a Nuzlocke player would treat as a major fight (e.g. Mt. Pyre
-  summit, Weather Institute or Mt. Chimney grunts)?
-- **Q-09** Trainer Pokémon abilities aren't in the data. Which ability slot do Emerald trainer Pokémon
-  get, and is it predictable from the party data?
-- **Q-10** Do the randomizer format claims R-01 to R-08 match real UPR ZX logs for Emerald?
-- **Q-11** Do the encounter rates in M-10 and the rod split in M-11 match Emerald?
+- **Q-01** Under rule P-R2 (including "can stand there"), which areas in section 4 are still placed too
+  early or too late? Route 110's southern end below the Team Aqua line, and water reachable from
+  shorelines before Surf, are the cases we checked least.
+- **Q-02** Cave of Origin (P-26): is it really unenterable before the Champion except during the crisis?
+- **Q-03** Mirage Island (P-22): what decides on which days it appears in Emerald?
+- **Q-04** Are any forced battles still missing from the notes (P-R8)?
+- **Q-05** Does anything in R-01 to R-08 differ in UPR ZX versions people commonly use for Emerald
+  (4.6.x vs current master)?

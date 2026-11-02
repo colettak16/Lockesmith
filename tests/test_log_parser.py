@@ -2,11 +2,12 @@
 
 Two groups:
 - Fixture tests run against a real UPR ZX log in tests/fixtures/ (*.log or *.txt)
-  and are skipped until one is added. These are the ones that matter: the parser
-  was written from PLAN.md's description of the format, not from a real log.
-- Format tests use a small hand-written log built from the PLAN.md examples. They
-  pin the parser's logic (ROM-order set alignment, the fishing split, trainer id
-  join, overlays) but can't prove the real format matches.
+  and are skipped until one is added. These are the ones that matter: no real
+  Emerald log has been through the parser yet.
+- Format tests use a small hand-written log in the format UPR ZX's logging code
+  prints (Randomizer.java log* methods, TrainerPokemon/StaticEncounter.toString,
+  Gen3RomHandler set names). They pin the parser's logic (ROM-order set alignment,
+  the fishing split, trainer id join, overlays) but can't replace a real log.
 """
 
 from pathlib import Path
@@ -53,11 +54,12 @@ def test_fixture_trainer_ids_join_decomp(fixture_logs, con):
     for name, log in fixture_logs:
         if not log.trainers:
             continue
-        assert all(t.trainer_const for t in log.trainers.values()), name
+        trainers = [t for t in log.trainers.values() if not t.is_partner]  # Steven's Space Center team
+        assert all(t.trainer_const for t in trainers), name
         # PLAN.md: TRAINER_ROXANNE_1 = 265 <-> "#265 (ROXANNE)"
         assert "ROXANNE" in log.trainers[265].name.upper(), name
         sizes = dict(con.execute("SELECT trainer_id, party_size FROM trainers").fetchall())
-        wrong = [t.index for t in log.trainers.values() if len(t.mons) != sizes[t.index]]
+        wrong = [t.index for t in trainers if len(t.mons) != sizes[t.index]]
         assert wrong == [], (name, wrong[:10])
 
 
@@ -131,16 +133,16 @@ Torchic        Lv3
 
 ROUTE_102_FISHING = """\
 Set #4 - ROUTE 102 Fishing (rate=30)
-Magikarp       Lv5-10
-Goldeen        Lv5-10
-Magikarp       Lv10-30
-Goldeen        Lv10-30
-Corphish       Lv10-30
-Feebas         Lv20-25
-Corphish       Lv20-30
-Corphish       Lv20-30
-Barboach       Lv20-25
-Whiscash       Lv35-40
+Magikarp Lvs 5-10        HP 20  ATK 10  DEF 55  SPATK 15  SPDEF 20  SPEED 80
+Goldeen Lvs 5-10         HP 45  ATK 67  DEF 60  SPATK 35  SPDEF 50  SPEED 63
+Magikarp Lvs 10-30       HP 20  ATK 10  DEF 55  SPATK 15  SPDEF 20  SPEED 80
+Goldeen Lvs 10-30        HP 45  ATK 67  DEF 60  SPATK 35  SPDEF 50  SPEED 63
+Corphish Lvs 10-30       HP 43  ATK 80  DEF 65  SPATK 50  SPDEF 35  SPEED 35
+Feebas Lvs 20-25         HP 20  ATK 15  DEF 20  SPATK 10  SPDEF 55  SPEED 80
+Corphish Lvs 20-30       HP 43  ATK 80  DEF 65  SPATK 50  SPDEF 35  SPEED 35
+Corphish Lvs 20-30       HP 43  ATK 80  DEF 65  SPATK 50  SPDEF 35  SPEED 35
+Barboach Lvs 20-25       HP 50  ATK 48  DEF 43  SPATK 46  SPDEF 41  SPEED 60
+Whiscash Lvs 35-40       HP 110 ATK 78  DEF 73  SPATK 76  SPDEF 71  SPEED 60
 """
 
 SAMPLE = f"""\
@@ -155,8 +157,13 @@ Set #210 - NOWHERE Grass/Cave (rate=10)
 Zigzagoon      Lv2
 
 --Trainers Pokemon--
-#265 (ROXANNE) - Geodude Lv12, Geodude Lv12, Nosepass Lv15
-#266 (BRAWLY) - Machop Lv16, Meditite Lv16, Makuhita Lv19
+#265 (ROXANNE)@31F0C8 - Geodude Lv12, Geodude Lv12, Nosepass@Oran Berry Lv15
+#266 (BRAWLY)@31F0F0 - Machop Lv16, Meditite Lv16, Makuhita@Sitrus Berry Lv19
+#855 (STEVEN)@5DD6D0 - Metang Lv42, Skarmory Lv43, Aggron Lv44
+
+--Static Pokemon--
+VOLTORB Lv25 => PIKACHU Lv25
+VOLTORB Lv25(2) => ELECTRODE Lv25
 
 --TM Moves--
 TM01 THUNDERBOLT
@@ -216,7 +223,20 @@ def test_trainers_join_on_decomp_id(sample):
     roxanne = sample.trainers[265]
     assert roxanne.trainer_const == "TRAINER_ROXANNE_1"
     assert [(m.species, m.level) for m in roxanne.mons] == [("geodude", 12), ("geodude", 12), ("nosepass", 15)]
+    assert roxanne.mons[2].held_item == "Oran Berry"  # TrainerPokemon.toString: Name@Item LvN
     assert roxanne.mons[0].moves is None  # compact form carries no movesets
+
+
+def test_steven_partner_entry(sample):
+    """Gen3RomHandler appends Steven's Space Center team after the last real trainer."""
+    steven = sample.trainers[855]
+    assert steven.is_partner and steven.trainer_const is None
+    assert [m.species for m in steven.mons] == ["metang", "skarmory", "aggron"]
+    assert not any("#855" in w for w in sample.warnings)
+
+
+def test_statics_strip_levels_and_repeat_counts(sample):
+    assert sample.statics == [("voltorb", "pikachu"), ("voltorb", "electrode")]
 
 
 def test_tm_moves_use_rom_names(sample):
@@ -229,14 +249,20 @@ def test_evolutions_and_starters(sample):
 
 
 def test_moveset_logging_form(con, index):
+    """With moveset logging the header stands alone and each Pokemon gets a line."""
     log = parse_log(
-        "--Trainers Pokemon--\n#265 (ROXANNE) -\nGeodude Lv12 @ Oran Berry - TACKLE, DEFENSE CURL, ROCK THROW, ROCK TOMB\n",
+        "--Trainers Pokemon--\n"
+        "#265 (ROXANNE)@31F0C8\n"
+        "Geodude@Oran Berry Lv12, Ability: STURDY - TACKLE, DEFENSE CURL, ROCK THROW, ROCK TOMB\n"
+        "Nosepass Lv15, Ability: STURDY - TACKLE, HARDEN, ROCK TOMB, BLOCK\n",
         con,
         index,
     )
-    mon = log.trainers[265].mons[0]
-    assert (mon.species, mon.level, mon.held_item) == ("geodude", 12, "Oran Berry")
-    assert mon.moves == ["tackle", "defense-curl", "rock-throw", "rock-tomb"]
+    first, second = log.trainers[265].mons
+    assert (first.species, first.level, first.held_item, first.ability) == ("geodude", 12, "Oran Berry", "STURDY")
+    assert first.moves == ["tackle", "defense-curl", "rock-throw", "rock-tomb"]
+    assert (second.species, second.held_item, second.moves[-1]) == ("nosepass", None, "block")
+    assert log.warnings == []
 
 
 def test_overlay_tables(con, sample):

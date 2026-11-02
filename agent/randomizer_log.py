@@ -1,8 +1,9 @@
 """Parse a Universal Pokemon Randomizer ZX spoiler log for Emerald (PLAN.md section 4.5).
 
-Written against the format described in PLAN.md and not yet checked against a real
-log (tests/fixtures/ is empty), so each section parser is tolerant and records
-anything it can't read in `warnings` instead of failing.
+The line formats follow UPR ZX's own logging code (Randomizer.java's log* methods,
+TrainerPokemon.toString, StaticEncounter.toString and Gen3RomHandler's set names),
+but no real Emerald log has been run through it yet (tests/fixtures/ is empty), so
+each section parser is tolerant and records anything it can't read in `warnings`.
 
 A log only has sections for what was randomized; missing sections mean "use the
 vanilla tables". `load_overlay` writes what was parsed into per-session tables
@@ -24,11 +25,15 @@ from agent.entities import EntityIndex
 SECTION_RE = re.compile(r"^--\s*(.+?)\s*--\s*$")
 WILD_SET_RE = re.compile(r"^Set #(\d+)\s*-\s*(.+?)\s+(Grass/Cave|Surfing|Rock Smash|Fishing)\s*\(rate=(\d+)\)\s*$")
 WILD_MON_RE = re.compile(r"^(?P<species>\S.*?)\s+Lvs?\s*(?P<min>\d+)(?:\s*-\s*(?P<max>\d+))?(?:\s+HP\b.*)?\s*$")
-TRAINER_RE = re.compile(r"^#(\d+)\s*\((.*?)\)\s*(?:@[0-9A-Fa-f]+)?\s*-\s*(.*)$")
+# "#265 (ROXANNE)@31F0C8 - Geodude Lv12, ..." (compact), or the header alone on its line
+# when moveset logging is on. Renamed trainers print "(OLD => NEW)".
+TRAINER_RE = re.compile(r"^#(\d+)\s*(?:\((.*?)\))?\s*(?:@[0-9A-Fa-f]+)?\s*(?:-\s*(.*))?$")
+# "Nosepass@Oran Berry Lv15", plus ", Ability: STURDY - TACKLE, ROCK THROW" with moveset logging
 TRAINER_MON_RE = re.compile(
-    r"^(?P<species>[^@]+?)(?:\s*@\s*(?P<item>[^@]+?))?\s+Lv\s*(?P<level>\d+)(?:\s*@\s*(?P<item2>[^-]+?))?"
-    r"(?:\s*\((?P<ability>[^)]*)\))?(?:\s*-\s*(?P<moves>.*))?$"
+    r"^(?P<species>[^@]+?)(?:@(?P<item>.+?))?\s+Lv\s*(?P<level>\d+)"
+    r"(?:\s*,\s*Ability:\s*(?P<ability>.+?))?(?:\s+-\s+(?P<moves>.*))?$"
 )
+STATIC_SUFFIX_RE = re.compile(r"(?:\s+\(egg\))?(?:\(\d+\))?(?:\s+Lv\s*\d+(?:-\d+)?.*)?$")
 TM_RE = re.compile(r"^((?:TM|HM)\d{2})\s*[-:]?\s*(.+)$")
 STARTER_RE = re.compile(r"starter\s*(\d)\s*to\s*(.+)$", re.I)
 ARROW_RE = re.compile(r"^(.+?)\s*(?:=>|->)\s*(.+)$")
@@ -88,6 +93,7 @@ class TrainerEntry:
     name: str
     trainer_const: str | None
     mons: list[TrainerMon] = field(default_factory=list)
+    is_partner: bool = False  # UPR's extra Emerald entry: Steven's Space Center team
 
 
 @dataclass
@@ -144,6 +150,8 @@ class LogParser:
         ).fetchall():
             self.section_location.setdefault(name.upper(), []).append((location, area))
         self.trainer_names = dict(con.execute("SELECT trainer_id, trainer_const FROM trainers").fetchall())
+        # Gen3RomHandler appends Steven's multi-battle team after the last trainer (index = count)
+        self.partner_index = max(self.trainer_names) + 1
         self.tm_labels = {r[0] for r in con.execute("SELECT label FROM machines").fetchall()}
 
     def species(self, raw: str, log: RandomizerLog) -> str | None:
@@ -244,11 +252,13 @@ class LogParser:
             m = TRAINER_RE.match(s)
             if m:
                 idx = int(m.group(1))
-                current = TrainerEntry(idx, m.group(2).strip(), self.trainer_names.get(idx))
-                if current.trainer_const is None:
+                current = TrainerEntry(idx, (m.group(2) or "").strip(), self.trainer_names.get(idx))
+                if idx == self.partner_index:
+                    current.is_partner, current.name = True, current.name or "STEVEN"
+                elif current.trainer_const is None:
                     log.warnings.append(f"trainers: #{idx} is not a known trainer id")
                 log.trainers[idx] = current
-                rest = m.group(3).strip()
+                rest = (m.group(3) or "").strip()
                 if rest:  # compact form: "Geodude Lv12, Geodude Lv12, Nosepass Lv15"
                     for part in re.split(r",\s*(?=[^,]+\bLv\s*\d)", rest):
                         self._trainer_mon(part, current, log)
@@ -265,11 +275,12 @@ class LogParser:
             return
         moves = None
         if m.group("moves"):
-            moves = [self.move(x, log) for x in re.split(r"\s*[,/]\s*", m.group("moves")) if x.strip() and x.strip() != "-"]
-        item = (m.group("item") or m.group("item2") or "").strip() or None
+            moves = [self.move(x, log) for x in re.split(r"\s*,\s*", m.group("moves")) if x.strip()]
+        item = (m.group("item") or "").strip() or None
+        ability = (m.group("ability") or "").strip() or None
         trainer.mons.append(
             TrainerMon(len(trainer.mons) + 1, self.species(m.group("species"), log), m.group("species").strip(),
-                       int(m.group("level")), item, (m.group("ability") or None), moves)
+                       int(m.group("level")), item, ability, moves)
         )
 
     def _tm_moves(self, lines: list[str], log: RandomizerLog) -> None:
@@ -330,9 +341,9 @@ class LogParser:
     def _statics(self, lines: list[str], log: RandomizerLog) -> None:
         for line in lines:
             m = ARROW_RE.match(line.strip())
-            if m:
-                old = self.species(re.sub(r"\s+Lv\s*\d+.*$", "", m.group(1)), log)
-                new = self.species(re.sub(r"\s+Lv\s*\d+.*$", "", m.group(2)), log)
+            if m:  # "VOLTORB Lv25(2) => PIKACHU Lv25": optional level, egg tag and repeat count
+                old = self.species(STATIC_SUFFIX_RE.sub("", m.group(1).strip()), log)
+                new = self.species(STATIC_SUFFIX_RE.sub("", m.group(2).strip()), log)
                 if old and new:
                     log.statics.append((old, new))
 
@@ -362,7 +373,7 @@ def load_overlay(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str
         "overlay_encounters": "log_id VARCHAR, set_no INTEGER, location VARCHAR, area VARCHAR, rom_map VARCHAR, "
         "method VARCHAR, slot INTEGER, species_id INTEGER, min_level INTEGER, max_level INTEGER, source_id VARCHAR",
         "overlay_trainer_mons": "log_id VARCHAR, trainer_id INTEGER, trainer_const VARCHAR, slot INTEGER, species_id INTEGER, "
-        "level INTEGER, held_item VARCHAR, moves VARCHAR[], source_id VARCHAR",
+        "level INTEGER, held_item VARCHAR, ability VARCHAR, moves VARCHAR[], source_id VARCHAR",
         "overlay_tm_moves": "log_id VARCHAR, label VARCHAR, move_id INTEGER, source_id VARCHAR",
         "overlay_species": "log_id VARCHAR, species_id INTEGER, type1 VARCHAR, type2 VARCHAR, hp INTEGER, attack INTEGER, "
         "defense INTEGER, sp_attack INTEGER, sp_defense INTEGER, speed INTEGER, ability1 VARCHAR, ability2 VARCHAR, source_id VARCHAR",
@@ -391,8 +402,8 @@ def load_overlay(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str
     insert(
         "overlay_trainer_mons",
         [
-            (log_id, t.index, t.trainer_const, mon.slot, ids[mon.species], mon.level, mon.held_item, mon.moves,
-             f"log:trainers#{t.index}")
+            (log_id, t.index, t.trainer_const, mon.slot, ids[mon.species], mon.level, mon.held_item, mon.ability,
+             mon.moves, f"log:trainers#{t.index}")
             for t in log.trainers.values() for mon in t.mons if mon.species
         ],
     )

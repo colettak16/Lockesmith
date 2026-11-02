@@ -125,4 +125,41 @@ Surprises in the data, kept here for the README's data section:
 6. **Emerald's Deoxys is the Speed Forme.** PokeAPI files its Emerald learnset under that form, and the ROM keeps Normal Forme base stats in its table and swaps in Speed Forme stats at runtime. The DB stores the table values. This is postgame and event-only, so out of scope, but worth knowing.
 7. **May's and Brendan's teams aren't always mirrors** (D5), and **the Space Center multi battle shows as two single battles** in the trainer structs, as PLAN anticipated.
 8. **Emerald has five rival fights**, two of them optional (Rustboro, Lilycove), not the three or four people usually remember.
-9. Apart from 1–6, PokeAPI agrees with the ROM on everything checked: types, stats, abilities (after the past-table corrections), all 386 level-up learnsets, all 184 evolutions, the full type chart and every wild table (216 of 219 location/method pairs match outright; the other three are explained by the `seaweed` method and Mirage Island living inside the Route 130 map).
+9. Apart from the other findings here, PokeAPI agrees with the ROM on everything checked: types, stats, abilities (after the past-table corrections), all 386 level-up learnsets, all 184 evolution pairs, the full type chart and every wild table (216 of 219 location/method pairs match outright; the other three are explained by the `seaweed` method and Mirage Island living inside the Route 130 map).
+10. **PokeAPI stores the Gen 8+ friendship threshold (160)** for eight of Emerald's nine friendship evolutions. Emerald's is 220 (`FRIENDSHIP_EVO_THRESHOLD` in `pokemon.c`). The original cross-check compared evolution pairs, not thresholds, so it missed this.
+11. **PokeAPI puts the Hall of Fame and TV-choice conditions on the roaming-grass rows only.** The roaming-water rows for the same Latias/Latios had none.
+12. **Hidden Power and Weather Ball have no fixed category.** Damage takes physical/special from the type the move has in battle (`typeOverride` in `pokemon.c`), so `damage_class` is `varies`.
+13. **Trainer Pokémon always have their first ability.** `CreateNPCTrainerParty` gives them even personality values, and the ability slot is `personality & 1`. `trainer_mons.ability` records it.
+
+## D7. Second-model cross-check (2026-11-01)
+
+The review packet (`docs/review_packet.md`) went to GPT. Before changing anything, each of its claims was re-checked in the decomp, Bulbapedia, or UPR ZX's own source.
+
+**Confirmed and applied:**
+- Findings 10–13.
+- Wurmple's and Shedinja's evolution conditions.
+- Feebas's 6 tiles and 50% roll (`wild_encounter.c`).
+- The grunt fights at Mt. Chimney, the Weather Institute and Mt. Pyre, added as notes.
+- Progression:
+  - Routes 105/107/108 need Surf, because Briney's boat ride is a cutscene.
+  - Route 115's grass is in its Surf-only north. My earlier reading that the Meteor Falls exit reaches it was wrong.
+  - The eastern sea opens by Surf after the Aqua Hideout.
+  - Sootopolis and the Regi caves open with Dive.
+
+  To express Route 115 properly, the progression schema gained method-limited area specs.
+
+**Partly right:** the randomizer format. UPR's source (`Randomizer.java`, `Gen3RomHandler.java`) shows:
+- Trainer Pokémon print as `Name@Item LvN`.
+- Moveset logging puts the header on its own line and adds `, Ability: X`.
+- Statics carry `(2)` repeat counts.
+
+GPT's sample log was from Pokémon X, though. Its "Surf/Old Rod" set labels don't apply: Gen 3 prints `Grass/Cave`, `Surfing`, `Rock Smash` and `Fishing`. The parser now follows the source.
+
+**Unverified in its report but now settled:**
+- UPR numbers trainers by ROM table index, which matches the decomp IDs.
+- UPR numbers wild sets in ROM header order. No two Emerald sets share a table, so none are skipped.
+
+**Found while verifying, not in its report:**
+- UPR adds Steven's Space Center team as pseudo-trainer #855. The parser marks it as a partner.
+- Cave of Origin is enterable only during the crisis: an Expert blocks it unless `VAR_SOOTOPOLIS_CITY_STATE` is 2–3.
+- Routes 132–134 only flow west (Bulbapedia), so they can't be reached from Slateport before the eastern sea opens.

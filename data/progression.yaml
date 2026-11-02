@@ -435,7 +435,7 @@ battles:
       - hoenn-route-132
       - hoenn-route-133
       - hoenn-route-134
-    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days."
+    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
 
   - id: space_center

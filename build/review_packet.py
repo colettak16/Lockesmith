@@ -127,7 +127,9 @@ MECHANICS = """\
   Flying, Poison, Ground, Rock, Bug, Ghost and Steel moves are physical; Fire, Water, Grass,
   Electric, Psychic, Ice, Dragon and Dark moves are special. Status moves stay status whatever
   their type. So Crunch (Dark) is special and Shadow Ball (Ghost) is physical in Emerald; the
-  full list of moves whose category differs from modern games is MV-category.
+  full list of moves whose category differs from modern games is MV-category. Hidden Power (type
+  from IVs) and Weather Ball (type from weather) take their category from the type they have in
+  battle (`typeOverride` in `pokemon.c`), so their category is stored as `varies`.
 - **M-02** There are 17 types and **no Fairy type**. The `???` type exists only on Curse and has no
   matchups.
 - **M-03** `[decomp]` Type chart: the generated chart below lists every non-neutral matchup. Versus
@@ -146,10 +148,13 @@ MECHANICS = """\
   append the new one. Custom movesets are used as written.
 - **M-09** `[decomp]` **Trainer IVs**: a party entry stores one IV byte 0–255; all six IVs are
   `iv * 31 / 255` (integer division). E.g. byte 200 -> 24.
-- **M-10** `[pokeapi]` Encounter slot rates (generated below). Mirage Island's grass is stored as one
-  Wynaut slot at 100%, because every slot there is Wynaut.
+- **M-10** `[pokeapi]` Encounter slot rates (generated below): which slot an encounter uses once one
+  happens. How often an encounter happens is a separate per-map rate (the `rate=` of each table).
+  Mirage Island's grass is stored as one Wynaut slot at 100%, because every slot there is Wynaut.
 - **M-11** `[decomp]` Fishing: each map has one 10-slot fishing table split by rod: Old Rod slots 0–1,
-  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups).
+  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has 6 Feebas tiles
+  chosen from a save-specific seed; fishing on one gives Feebas 50% of the time, otherwise the normal
+  table (`wild_encounter.c`, `NUM_FEEBAS_SPOTS`).
 - **M-12** `[decomp]` Field-move badge requirements (an HM is usable outside battle only with the
   badge): Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat, Surf: Balance,
   Fly: Feather, Dive: Mind, Waterfall: Rain. Only Waterfall was checked in code
@@ -160,7 +165,12 @@ MECHANICS = """\
   fight is a multi battle with Steven as partner, set up by a map script; both opposing trainer
   structs say single.
 - **M-15** No Gen 4+ relatives exist: table LG lists the pre-evolutions and evolutions that were
-  removed, and table EV lists every Emerald evolution with its method.
+  removed, and table EV lists every Emerald evolution with its method. Friendship evolutions need 220
+  (`FRIENDSHIP_EVO_THRESHOLD`); Wurmple's branch depends on its personality value; Shedinja appears
+  when Nincada evolves with an empty party slot (no Poké Ball needed in Gen 3).
+- **M-16** `[decomp]` Story-trainer Pokémon always have their species' first ability:
+  `CreateNPCTrainerParty` gives them even personality values (0x80/0x78/0x88 plus `nameHash << 8`) and
+  the ability slot is `personality & 1`. Natures are fixed per trainer too, but not computed here.
 """
 
 LOCATIONS = """\
@@ -199,9 +209,11 @@ This is the most judgement-heavy section and the one we most want checked.
   block the story. Generic hideout grunts and route trainers are left out.
 - **P-R2** **Area rule**: each encounter area is listed (`areas_new`) at the first battle it can be
   reached before, having fought only the battles above it in this order. Detours that need no listed
-  battle count, so an area can open before the walkthrough visits it. "Reachable before X" is the
-  accumulation of `areas_new` up to and including X. Method gates still apply on top (Surf, rods,
-  Rock Smash, Dive for seaweed).
+  battle count, so an area can open before the walkthrough visits it. An area counts only once the
+  player can *stand* in it (riding Mr. Briney's boat across open water doesn't count). An entry can be
+  limited to some encounter methods, e.g. Route 115's beach opens for fishing before its grass.
+  "Reachable before X" is the accumulation of `areas_new` up to and including X. Item and HM gates
+  still apply on top (Surf, rods, Rock Smash, Dive for seaweed).
 - **P-R3** An HM counts as open (`hm_gates_open`) when the player holds it *and* has the badge that
   allows its field use (M-12), at the point the walkthrough hands it over.
 - **P-R4** `[decomp]` **Badge order is looser than this list.** Only Norman's gym checks earlier badges:
@@ -217,31 +229,40 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-R7** The **eight placements that were judgement calls** were checked against decomp event
   scripts and Bulbapedia on 2026-11-01; each battle's notes cite the evidence (variable and flag
   names are the decomp's). These are P-03, P-04, P-06, P-07, P-09, P-11, P-17/P-18 and P-26/P-27.
+  A first cross-check round then moved the open-water routes, Route 115's grass, the eastern sea,
+  Sootopolis and the Regi caves (D7).
+- **P-R8** Grunt fights outside the 32 battles are noted on the battle they precede (Mt. Chimney,
+  Weather Institute, Mt. Pyre summit, Space Center) with their trainer constants.
 """
 
 RANDOMIZER = """\
 ## 8. Randomizer log format (Universal Pokémon Randomizer ZX)
 
-The parser was written from a format description, **without a real log**, so these are the claims
-most likely to be wrong in detail.
+These formats were read from **UPR ZX's own logging code** (`Randomizer.java` log methods,
+`TrainerPokemon.toString`, `StaticEncounter.toString`, `Gen3RomHandler.java`), but no real Emerald log
+has been through the parser yet.
 
 - **R-01** Sections are headed `--Name--`: `--Wild Pokemon--`, `--Trainers Pokemon--`, `--TM Moves--`,
-  `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, a starters section, `--Static Pokemon--`,
-  and `--Move Tutors--`. A section appears only for what was randomized; anything missing falls back
-  to vanilla. Unknown sections are recorded, not parsed.
-- **R-02** Wild sets look like `Set #N - ROUTE 104 Grass/Cave (rate=20)` (methods: Grass/Cave, Surfing,
-  Rock Smash, Fishing), followed by one line per slot: `Species Lv4-5` or `Lv4`, optionally followed
-  by `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
-- **R-03** Set numbers follow the ROM's wild-header order (209 sets in Emerald), so set N maps to an
-  exact map even when several sets share a name (every Granite Cave floor is `GRANITE CAVE`).
+  `--Move Tutor Moves--`, `--Pokemon Base Stats & Types--`, `--Randomized Evolutions--`, `--Static Pokemon--`,
+  and one of `--Custom Starters--` / `--Random Starters--` / `--Random 2-Evolution Starters--`. A section
+  appears only for what was randomized; anything missing falls back to vanilla. Other sections are
+  recorded, not parsed.
+- **R-02** Wild sets: `Set #N - ROUTE 104 Grass/Cave (rate=20)`; Gen 3 labels are `Grass/Cave`, `Surfing`,
+  `Rock Smash`, `Fishing`. Then one line per slot: `Zigzagoon Lv2` or `Zigzagoon Lvs 2-4`, padded, then
+  `HP .. ATK .. DEF .. SPATK .. SPDEF .. SPEED ..`.
+- **R-03** Set numbers follow the ROM's wild-header order, grass/surf/rock smash/fishing per map. UPR skips
+  a table whose data pointer it has already seen; no two Emerald tables share one, so all 209 sets
+  appear and set N maps to an exact map even when several share a name (`GRANITE CAVE`).
 - **R-04** Fishing is one 10-slot set split Old 0–1, Good 2–4, Super 5–9 (M-11).
-- **R-05** Trainers: `#265 (ROXANNE) - Geodude Lv12, ...` (compact), or with moveset logging one line
-  per Pokémon (`Geodude Lv12 @ Item - MOVE, MOVE, ...`). `#N` is the decomp trainer id
-  (`TRAINER_ROXANNE_1 = 265` in `opponents.h`).
-- **R-06** `--TM Moves--` lines are `TM01 THUNDERBOLT`, using the ROM's move names (e.g. `FAINT ATTACK`
-  for Feint Attack).
-- **R-07** Evolutions: `RALTS -> KIRLIA`, branching as `WURMPLE -> SILCOON and CASCOON`.
-  Starters: `Set starter 1 to BAGON`.
+- **R-05** Trainers: `#265 (ROXANNE)@31F0C8 - Geodude Lv12, Nosepass@Oran Berry Lv15` (compact). With
+  moveset logging the header stands alone and each Pokémon has a line:
+  `Geodude@Oran Berry Lv12, Ability: STURDY - TACKLE, DEFENSE CURL`. Renamed trainers print `(OLD => NEW)`.
+  `#N` is the ROM trainer-table index, which equals the decomp id (`TRAINER_ROXANNE_1 = 265`).
+  Emerald logs add one pseudo-trainer after the last real one (#855): Steven's Space Center team.
+- **R-06** `--TM Moves--` lines are `TM01 THUNDERBOLT`; tutors are `OLDMOVE -> NEWMOVE`. Move names are the
+  ROM's (e.g. `FAINT ATTACK` for Feint Attack).
+- **R-07** Evolutions: `RALTS -> KIRLIA`, branching as `WURMPLE -> SILCOON and CASCOON`. Starters:
+  `Set starter 1 to BAGON`. Statics: `VOLTORB Lv25 => PIKACHU Lv25`, with `(2)` on repeats.
 - **R-08** A log that randomizes learnsets (`--Pokemon Movesets--`) isn't parsed; the agent says it can't
   answer movesets for that run.
 """
@@ -249,25 +270,14 @@ most likely to be wrong in detail.
 QUESTIONS = """\
 ## 9. Open questions
 
-- **Q-01** The walkthrough's order understated reachability five times (Route 116, Rusturf Tunnel,
-  Slateport, Lilycove, Rayquaza). Which other areas in section 4 are reachable *earlier* than listed,
-  under rule P-R2?
-- **Q-02** P-06 relies on reaching Steven in Granite Cave (to deliver the letter) before Brawly. Is that
-  possible without Flash, which needs Brawly's badge?
-- **Q-03** P-R4: is there any gate besides Norman's that forces Brawly, or Winona, earlier?
-- **Q-04** Route 115 (P-11): is any of its fishing water reachable from the Rustboro beach before the
-  Meteor Falls exit, and with which rods at that point?
-- **Q-05** Rayquaza (P-26): besides the Mach Bike for Sky Pillar's cracked floors, does anything else gate
-  catching it before Juan?
-- **Q-06** Lilycove before Winona (P-17): does the Devon Scope alone get you past Route 120's Kecleon to
-  Route 121, or does something else block the way?
-- **Q-07** Are the field-move badges in M-12 right for Emerald?
-- **Q-08** Is any battle missing that a Nuzlocke player would treat as a major fight (e.g. Mt. Pyre
-  summit, Weather Institute or Mt. Chimney grunts)?
-- **Q-09** Trainer Pokémon abilities aren't in the data. Which ability slot do Emerald trainer Pokémon
-  get, and is it predictable from the party data?
-- **Q-10** Do the randomizer format claims R-01 to R-08 match real UPR ZX logs for Emerald?
-- **Q-11** Do the encounter rates in M-10 and the rod split in M-11 match Emerald?
+- **Q-01** Under rule P-R2 (including "can stand there"), which areas in section 4 are still placed too
+  early or too late? Route 110's southern end below the Team Aqua line, and water reachable from
+  shorelines before Surf, are the cases we checked least.
+- **Q-02** Cave of Origin (P-26): is it really unenterable before the Champion except during the crisis?
+- **Q-03** Mirage Island (P-22): what decides on which days it appears in Emerald?
+- **Q-04** Are any forced battles still missing from the notes (P-R8)?
+- **Q-05** Does anything in R-01 to R-08 differ in UPR ZX versions people commonly use for Emerald
+  (4.6.x vs current master)?
 """
 
 
@@ -281,6 +291,8 @@ def header(con) -> str:
         f"Generated {date.today().isoformat()} by `build/review_packet.py` from the database built "
         f"{info['built_at'][:10]}: pokeemerald `{info['pokeemerald_sha'][:12]}`, PokeAPI "
         f"`{info['pokeapi_sha'][:12]}`. Bulbapedia text is CC BY-NC-SA 2.5.\n\n"
+        "A previous review round was applied after re-verification; section 3's D-10 to D-13 and "
+        "docs/decisions.md D7 say what changed. Fresh eyes on sections 4 and 5 are still the most useful.\n\n"
         "**ID prefixes**: M mechanics, MV moves, SP species, LG later-gen relatives, EV evolutions, "
         "D data findings, P/N progression, K trainer teams, L locations, SE special encounters, "
         "TM/TU machines and tutors, R randomizer, Q questions.\n"
@@ -333,10 +345,10 @@ def move_diffs(con) -> str:
         ORDER BY g.move_id
         """
     ).fetchall()
-    changed, category, never_miss = [], {"special": [], "physical": []}, []
+    changed, category, never_miss = [], {"special": [], "physical": [], "varies": []}, []
     for mid, name, typ, m_typ, cls, m_cls, pw, m_pw, acc, m_acc, pp, m_pp, patched in rows:
         if cls != m_cls and "status" not in (cls, m_cls):
-            category[cls].append(f"{name} ({typ})")
+            category[cls].append(f"{name} ({typ}; now {m_cls})" if cls == "varies" else f"{name} ({typ})")
         diffs = []
         if typ != m_typ:
             diffs.append(f"type {typ} (now {m_typ})")
@@ -362,7 +374,8 @@ def move_diffs(con) -> str:
         f"M-01.\n\n- Special in Gen 3, physical now ({len(category['special'])}): "
         + ", ".join(category["special"])
         + f"\n- Physical in Gen 3, special now ({len(category['physical'])}): "
-        + ", ".join(category["physical"]),
+        + ", ".join(category["physical"])
+        + "\n- Category follows the in-battle type (M-01): " + ", ".join(category["varies"]),
         f"**MV-accuracy**: {len(never_miss)} moves the ROM stores with accuracy 100 where PokeAPI uses "
         "null (can't miss, or no accuracy check): " + ", ".join(never_miss) + ".",
     ])
@@ -440,7 +453,7 @@ def evolutions(con) -> str:
     rows = con.execute(
         """
         SELECT f.species_id, f.name, t.name, ev.trigger, ev.min_level, ev.item, ev.held_item,
-               ev.min_happiness, ev.min_beauty, ev.time_of_day, ev.relative_physical_stats, ev.needs_trade
+               ev.min_happiness, ev.min_beauty, ev.time_of_day, ev.relative_physical_stats, ev.needs_trade, ev.note
         FROM e.evolutions ev
         JOIN e.species f ON f.species_id = ev.from_species_id
         JOIN e.species t ON t.species_id = ev.to_species_id
@@ -449,7 +462,7 @@ def evolutions(con) -> str:
     ).fetchall()
     rel = {1: "Atk > Def", 0: "Atk = Def", -1: "Atk < Def"}
     out = []
-    for sid, frm, to, trig, lvl, item, held, happy, beauty, tod, phys, trade in rows:
+    for sid, frm, to, trig, lvl, item, held, happy, beauty, tod, phys, trade, note in rows:
         parts = [trig]
         if lvl is not None:
             parts.append(f"level {lvl}")
@@ -467,6 +480,8 @@ def evolutions(con) -> str:
             parts.append(rel[phys])
         if trade:
             parts.append("trade")
+        if note:
+            parts.append(note)
         out.append([f"EV-{sid}", frm, to, ", ".join(parts)])
     return f"### Evolutions (EV), all {len(out)}\n\n" + table(["ID", "From", "To", "Method"], out)
 
@@ -475,7 +490,7 @@ def data_findings() -> str:
     text = DECISIONS.read_text(encoding="utf-8")
     findings = text.split("## Data findings", 1)[1]
     # decisions.md cross-references, rewritten to this packet's IDs
-    refs = {"finding 1 below": "D-1", "(D5)": "(P-R5)", "Apart from 1–6": "Apart from D-1 to D-6"}
+    refs = {"finding 1 below": "D-1", "(D5)": "(P-R5)"}
 
     def relink(s: str) -> str:
         for old, new in refs.items():
@@ -508,7 +523,8 @@ def progression(con) -> str:
             out.append(f"  - Partner: {p['name']}, " + ", ".join(f"{title(s)} Lv{lv}" for s, lv in p["team"]))
         out.append(f"  - HMs usable: {', '.join(b.get('hm_gates_open') or []) or 'none'}; "
                    f"key items: {', '.join(b.get('key_items') or []) or 'none'}")
-        out.append(f"  - Areas newly reachable before this battle: {', '.join(b.get('areas_new') or []) or 'none'}")
+        areas = [a if isinstance(a, str) else f"{a['area']} ({', '.join(a['methods'])} only)" for a in b.get("areas_new") or []]
+        out.append(f"  - Areas newly reachable before this battle: {', '.join(areas) or 'none'}")
         if b.get("notes"):
             out.append(f"  - Notes: {b['notes']}")
         out.append(f"  - Source: `{b['source']}`")
@@ -535,17 +551,17 @@ def trainer_teams(con) -> str:
                 "SELECT class_name, name, is_double, items FROM e.trainers WHERE trainer_const = ?", [const]
             ).fetchone()
             mons = con.execute(
-                "SELECT level, species, held_item, moves, moves_source, iv_value FROM e.trainer_mons "
+                "SELECT level, species, held_item, moves, moves_source, iv_value, ability FROM e.trainer_mons "
                 "WHERE trainer_const = ? ORDER BY slot", [const]
             ).fetchall()
             bag = ", ".join(title(i) for i in (t[3] or [])) or "none"
             label = f"{t[0]} {t[1]}" + (" (double)" if t[2] else "")
             prefix = f"{variant}: " if variant else ""
             out.append(f"- {prefix}**{label}** `{const}`; bag: {bag}")
-            for lvl, sp, held, moves, src, iv in mons:
+            for lvl, sp, held, moves, src, iv, ability in mons:
                 item = f" @ {title(held)}" if held else ""
                 ms = " / ".join(move_names.get(m, m) for m in moves)
-                out.append(f"  - Lv{lvl} {species_names.get(sp, sp)}{item}, IVs {iv}: {ms} ({src})")
+                out.append(f"  - Lv{lvl} {species_names.get(sp, sp)}{item}, {title(ability)}, IVs {iv}: {ms} ({src})")
         out.append("")
     return "\n".join(out)
 
