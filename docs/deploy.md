@@ -56,7 +56,7 @@ From then on, every push to `main` builds and rolls out a new revision.
 
 `/chat` calls Gemini on Vertex AI. The deployed service needs three things in the console:
 
-1. **Let the service call Vertex AI.** Go to IAM & Admin → IAM → **Grant access**. Set the principal to the service's runtime account, `816944548222-compute@developer.gserviceaccount.com` (or the one shown under the service's Security tab). Give it the role **Vertex AI User** (`roles/aiplatform.user`). No API key is involved.
+1. **Let the service call Vertex AI.** Go to IAM & Admin → IAM → **Grant access**. Set the principal to the service's runtime account, `816944548222-compute@developer.gserviceaccount.com` (or the one shown under the service's Security tab). Give it the role **Agent Platform User** (formerly Vertex AI User; search for `roles/aiplatform.user`). Not "Vertex AI Service Agent", which is meant for Google's own internal service accounts and grants far more. No API key is involved.
 2. **Turn on session affinity.** Go to Cloud Run → `lockesmith` → **Edit & deploy new revision** → Networking (or the Container tab, depending on the console version) → check **Session affinity**. Conversations, learned rules and rejected picks live in one instance's memory, so follow-up messages must reach the same instance.
 3. **Environment variables** (optional; the defaults are below). Set them on the same Edit screen, under Variables & Secrets:
    - `VERTEXAI_PROJECT` (default `lockesmith`) and `VERTEXAI_LOCATION` (default `global`; the current Gemini models answer only on `global`, and `us-east4` returns 404).
