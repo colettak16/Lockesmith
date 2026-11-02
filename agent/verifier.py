@@ -24,13 +24,13 @@ CODES = {
     "EVOLUTION_NOT_REACHABLE": "relies on an evolution not achievable in time",
     "EVOLUTION_ITEM_UNVERIFIED": "relies on an evolution item whose availability isn't checked",
     "MOVE_NOT_LEARNABLE": "relies on a move not learnable by then",
-    "MOVE_UNVERIFIABLE": "relies on a move whose learnability the randomizer log changed in a part Lockesmith can't read",
+    "MOVE_UNVERIFIABLE": "relies on a move whose learnability the randomizer log changed in a part LockeSmith can't read",
     "GEN3_SPLIT_MISMATCH": "the move's category doesn't suit the Pokémon's stronger attacking stat",
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
     "TYPE_CLAIM_WRONG": "states a type matchup for the pick that the Gen III type chart contradicts",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
     "NUZLOCKE_DUPE": "the dupes clause forbids it",
-    "RULESET_TYPE_VIOLATION": "breaks the single-type rule",
+    "RULESET_TYPE_VIOLATION": "breaks the player's allowed or banned types",
     "RULESET_BANNED": "the player banned it",
     "RULESET_REJECTED": "the player rejected it this session",
     "RULESET_NO_LEGENDARIES": "legendary or mythical, which the player's rules forbid",
@@ -156,12 +156,10 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
         add("RULESET_REJECTED", f"the player rejected {sp['name']} earlier in this session")
     if rules.no_legendaries and (sp["is_legendary"] or sp["is_mythical"]):
         add("RULESET_NO_LEGENDARIES", f"{sp['name']} is legendary or mythical")
-    if rules.monotype:
-        mono = rules.monotype.lower()
-        if mono not in (sp["type1"], sp["type2"]):
-            add("RULESET_TYPE_VIOLATION", f"{sp['name']} isn't {mono}-type")
-        elif form is not sp and mono not in (form["type1"], form["type2"]):
-            add("RULESET_TYPE_VIOLATION", f"{form['name']} loses the {mono} type")
+    if why := rules.type_problem([sp["type1"], sp["type2"]]):
+        add("RULESET_TYPE_VIOLATION", f"{sp['name']} is {why}")
+    elif form is not sp and (why := rules.type_problem([form["type1"], form["type2"]])):
+        add("RULESET_TYPE_VIOLATION", f"{form['name']}, its evolution, is {why}")
     party_ids = [ctx.index.resolve(m.species, "species", cutoff=80) for m in ctx.state.party]
     party_ids = [p.id for p in party_ids if p]
     in_party = sp["identifier"] in party_ids

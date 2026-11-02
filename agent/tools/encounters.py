@@ -63,13 +63,11 @@ def rule_filter(ctx: RequestContext, cur):
                 f"SELECT evolution_chain_id FROM species WHERE identifier IN ({', '.join('?' * len(ids))})", ids
             ).fetchall()
         }
-    mono = rules.monotype.lower() if rules.monotype else None
-
     def check(r: dict) -> str | None:
         if r["identifier"] in banned:
             return "banned or rejected by the player"
-        if mono and mono not in (r["type1"], r["type2"]):
-            return f"not {mono}-type"
+        if why := rules.type_problem([r["type1"], r["type2"]]):
+            return why
         if rules.no_legendaries and (r["is_legendary"] or r["is_mythical"]):
             return "legendary/mythical"
         if rules.wild_only and r["method"] in NOT_WILD:

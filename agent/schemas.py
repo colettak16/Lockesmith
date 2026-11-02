@@ -40,10 +40,11 @@ class RuleUpdate(BaseModel):
     dupes_clause: bool | None
     level_caps: bool | None
     level_cap_offset: int | None
-    monotype: str | None
+    allowed_types: list[str] | None
     no_legendaries: bool | None
     wild_only: bool | None
     add_banned_species: list[str]
+    add_banned_types: list[str]
     add_used_routes: list[str]
     add_notes: list[str]
 

@@ -256,7 +256,7 @@ def trace_tags(session: Session) -> list[str]:
     tags = ["randomized" if session.randomizer else "vanilla"]
     if rules.nuzlocke:
         tags.append("nuzlocke")
-    if rules.monotype or rules.no_legendaries or rules.wild_only or rules.banned_species or rules.notes:
+    if rules.allowed_types or rules.banned_types or rules.no_legendaries or rules.wild_only or rules.banned_species or rules.notes:
         tags.append("custom-rules")
     return tags
 

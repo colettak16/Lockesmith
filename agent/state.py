@@ -8,7 +8,7 @@ turns that into the battles already behind the player and the ones still ahead.
 from dataclasses import dataclass, field
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from agent.progression import RIVALS, STARTERS, Battle, Progression
 
@@ -63,11 +63,36 @@ class Ruleset(BaseModel):
     dupes_clause: bool = False
     level_caps: bool = False
     level_cap_offset: int = Field(default=0, description="Cap = the next boss's highest level plus this (e.g. -1)")
-    monotype: str | None = Field(default=None, description="Every Pokémon must have this type (dual types count)")
+    allowed_types: list[str] = Field(
+        default_factory=list, description="Every Pokémon must have at least one of these types (dual types count); empty allows all"
+    )
+    banned_types: list[str] = Field(default_factory=list, description="No Pokémon may have any of these types")
     no_legendaries: bool = False
     banned_species: list[str] = Field(default_factory=list)
     wild_only: bool = Field(default=False, description="No gifts, static encounters or in-game trades")
     notes: list[str] = Field(default_factory=list, description="Free-text rules the agents follow but code can't check")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _monotype(cls, data):
+        """The single `monotype` field this replaced still works: it means one allowed type."""
+        if isinstance(data, dict) and data.get("monotype"):
+            data = {**data, "allowed_types": [*data.get("allowed_types", []), data["monotype"]]}
+        return data
+
+    @field_validator("allowed_types", "banned_types", mode="after")
+    @classmethod
+    def _types(cls, v: list[str]) -> list[str]:
+        return list(dict.fromkeys(t.strip().lower() for t in v if t and t.strip()))
+
+    def type_problem(self, types: list[str | None]) -> str | None:
+        """Why a Pokémon with these types breaks the type rules, or None."""
+        have = {t for t in types if t}
+        if self.allowed_types and not have & set(self.allowed_types):
+            return "not " + " or ".join(t.title() for t in self.allowed_types) + "-type"
+        if bad := sorted(have & set(self.banned_types)):
+            return "/".join(t.title() for t in bad) + "-type, which is banned"
+        return None
 
     def describe(self) -> list[str]:
         out = []
@@ -84,8 +109,10 @@ class Ruleset(BaseModel):
         if self.level_caps:
             offset = f" {self.level_cap_offset:+d}" if self.level_cap_offset else ""
             out.append(f"level caps: stay at or below the next boss's highest level{offset}")
-        if self.monotype:
-            out.append(f"{self.monotype}-type only")
+        if self.allowed_types:
+            out.append("only " + " or ".join(t.title() for t in self.allowed_types) + " types")
+        if self.banned_types:
+            out.append("no " + " or ".join(t.title() for t in self.banned_types) + " types")
         if self.no_legendaries:
             out.append("no legendary or mythical Pokémon")
         if self.banned_species:

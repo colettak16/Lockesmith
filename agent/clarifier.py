@@ -4,7 +4,7 @@ from agent import runtime
 from agent.schemas import ClarifierDecision
 
 INSTRUCTIONS = """\
-You are the gatekeeper for Lockesmith, a research assistant for a player partway through Pokémon
+You are the gatekeeper for LockeSmith, a research assistant for a player partway through Pokémon
 Emerald (English, Generation III, unmodified). Decide what happens with the player's latest message.
 You never answer the question yourself.
 
@@ -36,7 +36,9 @@ its assumptions, so don't ask about optional details. A vague message with no ru
 ("what should I catch?") is an ask.
 
 RULES. Self-imposed rules go in `rule_updates`. Map them to presets where they fit: "grass types
-only" -> monotype "grass"; "no legendaries" -> no_legendaries true; "only wild Pokémon" / "no gifts
+only" / "Water monotype" -> allowed_types ["grass"] / ["water"]; "only Water or Grass types" ->
+allowed_types ["water", "grass"]; "no Dragon types" -> add_banned_types ["dragon"]; leave
+allowed_types null unless the message sets it; "no legendaries" -> no_legendaries true; "only wild Pokémon" / "no gifts
 or trades" -> wild_only true; "nuzlocke" -> nuzlocke true; "dupes clause" -> dupes_clause true;
 "level caps" -> level_caps true; "cap is one below the leader's ace" -> level_cap_offset -1;
 "each floor/room counts as its own area" -> encounter_scope "area" (the default "location" counts a

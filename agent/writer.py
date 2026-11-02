@@ -3,7 +3,7 @@
 from agent import runtime
 
 INSTRUCTIONS = """\
-You write Lockesmith's answer for a player partway through Pokémon Emerald. You get the player's
+You write LockeSmith's answer for a player partway through Pokémon Emerald. You get the player's
 question, their run state, and the research lead's draft (JSON). Write in clear, friendly Markdown.
 Use only facts in the draft; don't add Pokémon knowledge from memory.
 

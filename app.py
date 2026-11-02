@@ -1,4 +1,4 @@
-"""Lockesmith FastAPI entry point.
+"""LockeSmith FastAPI entry point.
 
 /chat runs the agent pipeline (agent/pipeline.py) and returns the response shape fixed in
 PLAN.md §8; /chat/stream is the same turn as server-sent events, so the front end (static/)
@@ -27,7 +27,7 @@ STATIC = Path(__file__).resolve().parent / "static"
 KEEPALIVE_S = 15  # a comment line this often keeps proxies from closing a quiet stream
 
 # Warnings and errors from every library (the LangFuse exporter included) reach Cloud Run's logs,
-# plus Lockesmith's own per-turn and fallback lines
+# plus LockeSmith's own per-turn and fallback lines
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
 logging.getLogger("lockesmith").setLevel(logging.INFO)
 
@@ -35,7 +35,7 @@ logging.getLogger("lockesmith").setLevel(logging.INFO)
 # each request's `traceparent` header the parent of everything the request does. Cloud Run's front
 # end sends that header, usually marked "not sampled", so most turns recorded nothing at all
 # (docs/decisions.md D12). LangFuse traces the agents; HTTP spans aren't wanted.
-app = FastAPI(title="Lockesmith", telemetry={"tracing": False, "metrics": False, "logs": False})
+app = FastAPI(title="LockeSmith", telemetry={"tracing": False, "metrics": False, "logs": False})
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
@@ -134,8 +134,9 @@ async def chat_stream(req: ChatRequest, request: Request) -> StreamingResponse:
 
 @app.get("/catalog")
 def catalog() -> dict:
-    """Species, moves, battles, badges, types and Nuzlocke places for the run-state form."""
-    return build_catalog()
+    """Species, moves, battles, badges, types and Nuzlocke places for the run-state form, and
+    whether a banner video (static/media/banner.mp4) is there to replace the still banner art."""
+    return {**build_catalog(), "banner_video": (STATIC / "media" / "banner.mp4").exists()}
 
 
 @app.get("/examples")

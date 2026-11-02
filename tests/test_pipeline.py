@@ -13,8 +13,8 @@ from agent.state import RunState
 
 NO_STATE = StateUpdate(starter=None, badges=None, rival=None, last_battle=None, party=None)
 NO_RULES = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
-                      level_caps=None, level_cap_offset=None, monotype=None, no_legendaries=None, wild_only=None,
-                      add_banned_species=[], add_used_routes=[], add_notes=[])
+                      level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None, wild_only=None,
+                      add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])
 CITED = ["progression:gym7_tate_liza"]
 STATE = RunState(starter="mudkip", badges=["stone", "knuckle", "dynamo", "heat", "balance", "feather"])
 
@@ -143,7 +143,8 @@ def test_unfixable_pick_is_dropped_with_a_reason(models):
 def test_rules_and_rejections_persist_across_turns(models):
     calls, script = models
     script["clarifier"] = decision(
-        intent="revision", rule_updates=NO_RULES.model_copy(update={"monotype": "Grass", "add_notes": ["no items in battle"]}),
+        intent="revision", rule_updates=NO_RULES.model_copy(update={"allowed_types": ["Grass"], "add_banned_types": ["Poison"],
+                                                 "add_notes": ["no items in battle"]}),
         reject_species=["Sharpedo"], revision_feedback="wants grass types",
     )
     script["lead"] = DRAFT
@@ -153,9 +154,10 @@ def test_rules_and_rejections_persist_across_turns(models):
     script["clarifier"] = decision()
     chat("and now?", "p-rules", form)  # the form doesn't know the rule; the session does
     session = SESSIONS.get("p-rules")
-    assert session.state.ruleset.monotype == "grass" and "no items in battle" in session.state.ruleset.notes
+    rules = session.state.ruleset
+    assert rules.allowed_types == ["grass"] and rules.banned_types == ["poison"] and "no items in battle" in rules.notes
     answer = SESSIONS.get("p-rules").history[-1]["content"]
-    assert "- grass-type only (checked by the Verifier)" in answer
+    assert "- only Grass types (checked by the Verifier)" in answer and "- no Poison types (checked by the Verifier)" in answer
     assert "- no items in battle (followed, not checked automatically)" in answer
     assert "sharpedo" in session.excluded
 
@@ -177,7 +179,7 @@ def test_trace_tags_and_pseudonymous_users():
     from agent.state import Ruleset
 
     session = SESSIONS.get("p-tags")
-    session.state = RunState(starter="mudkip", badges=[], ruleset=Ruleset(nuzlocke=True, monotype="water"))
+    session.state = RunState(starter="mudkip", badges=[], ruleset=Ruleset(nuzlocke=True, allowed_types=["water"]))
     assert pipeline.trace_tags(session) == ["vanilla", "nuzlocke", "custom-rules"]
     uid = observability.user_id("accounts.google.com:1234567890")
     assert uid == observability.user_id("accounts.google.com:1234567890") and "1234567890" not in uid

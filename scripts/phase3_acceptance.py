@@ -72,7 +72,7 @@ def check(name: str, session_id: str, body: dict) -> list[str]:
         problems.append(f"{failed} agent run(s) failed")
     if name == "custom_rules":
         rules = SESSIONS.get(session_id).state.ruleset
-        if rules.monotype != "water" or not rules.no_legendaries:
+        if rules.allowed_types != ["water"] or not rules.no_legendaries:
             problems.append(f"rules not learned from the message: {rules.describe()}")
     if name == "randomizer":
         scouted = " ".join(str(c["result"]) for c in calls if c["name"] in ("scout_battle", "get_trainer_team", "threat_matrix"))

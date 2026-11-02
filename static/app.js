@@ -1,4 +1,4 @@
-/* Lockesmith front end: the run-state form, one-click examples, streaming answers with live
+/* LockeSmith front end: the run-state form, one-click examples, streaming answers with live
    researcher lanes, cited answers with pick cards and a coverage chart, and the research trace.
    Talks to app.py: /catalog, /examples, /chat/stream (falls back to /chat), /upload_log,
    /clear_log, /run_state, /history, /clear. */
@@ -22,7 +22,10 @@ const ui = {
   log: null,
   busy: false,
   entryCount: 0,
+  options: {}, // kind -> Map(lowercased id or name -> {id, name}) for the pickers
+  pickers: {},
 };
+const cap = (t) => t[0].toUpperCase() + t.slice(1);
 
 /* ---- API --------------------------------------------------------------------------- */
 
@@ -45,6 +48,75 @@ function newSessionId() {
   return id;
 }
 
+/* ---- pick-from-list chips ------------------------------------------------------------------ */
+
+function optionMap(items) {
+  const map = new Map();
+  for (const o of items) { map.set(String(o.id).toLowerCase(), o); map.set(o.name.toLowerCase(), o); }
+  return map;
+}
+
+/* An input with a datalist that only accepts listed values, each shown as a removable chip.
+   Typing filters the list; picking an entry (or Enter on an exact name) adds it. */
+function tagPicker({ listId, options, max = Infinity, placeholder, more = "Add another", chipClass = () => "", values = [] }) {
+  const el = document.createElement("div");
+  el.className = "tagpick";
+  const chips = document.createElement("span");
+  chips.className = "tagpick-chips";
+  chips.style.display = "contents";
+  const input = document.createElement("input");
+  input.setAttribute("list", listId);
+  input.setAttribute("aria-label", placeholder);
+  el.append(chips, input);
+  let picked = [];
+  const changed = () => el.dispatchEvent(new Event("change", { bubbles: true }));
+  const render = () => {
+    chips.innerHTML = picked.map((o, i) => `<span class="tag ${chipClass(o)}">${esc(o.name)}<button type="button" data-i="${i}" aria-label="Remove ${esc(o.name)}">×</button></span>`).join("");
+    input.hidden = picked.length >= max;
+    input.placeholder = picked.length ? more : placeholder;
+  };
+  const add = (text) => {
+    const o = options.get(text.trim().toLowerCase());
+    if (!o) { input.classList.toggle("invalid", !!text.trim()); return; }
+    if (!picked.some((x) => x.id === o.id) && picked.length < max) picked.push(o);
+    input.value = "";
+    input.classList.remove("invalid");
+    render();
+    changed();
+  };
+  input.addEventListener("input", (e) => {
+    input.classList.remove("invalid");
+    // A datalist pick arrives as a replacement, not typing
+    if (e.inputType === "insertReplacementText" || e.inputType === undefined) add(input.value);
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); add(input.value); }
+    else if (e.key === "Backspace" && !input.value && picked.length) { picked.pop(); render(); changed(); }
+  });
+  input.addEventListener("change", () => { if (input.value) add(input.value); });
+  chips.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-i]");
+    if (!b) return;
+    picked.splice(Number(b.dataset.i), 1);
+    render();
+    changed();
+    input.focus();
+  });
+  el.addEventListener("click", (e) => { if (e.target === el) input.focus(); });
+  el.getValues = () => picked.map((o) => o.name);
+  el.setValues = (vals) => {
+    picked = [];
+    for (const v of vals || []) {
+      const o = options.get(String(v).toLowerCase());
+      if (o && !picked.some((x) => x.id === o.id) && picked.length < max) picked.push(o);
+    }
+    input.value = "";
+    render();
+  };
+  el.setValues(values);
+  return el;
+}
+
 /* ---- the run form ---------------------------------------------------------------------- */
 
 function buildForm() {
@@ -60,7 +132,18 @@ function buildForm() {
       <span class="b-name">${esc(name)}</span><span class="b-leader">${esc(leader)}</span></button>`;
   }).join("");
   $("#last-battle").insertAdjacentHTML("beforeend", c.battles.map((b) => `<option value="${b.id}">${esc(b.label)}</option>`).join(""));
-  $("#r-monotype").insertAdjacentHTML("beforeend", c.types.map((t) => `<option value="${t}">${t[0].toUpperCase() + t.slice(1)}</option>`).join(""));
+  $("#move-list").innerHTML = c.moves.map((m) => `<option value="${esc(m.name)}">`).join("");
+  $("#type-list").innerHTML = c.types.map((t) => `<option value="${cap(t)}">`).join("");
+  ui.options.species = optionMap(c.species);
+  ui.options.moves = optionMap(c.moves);
+  ui.options.types = optionMap(c.types.map((t) => ({ id: t, name: cap(t) })));
+  const typeChip = (o) => `type ${o.id}`;
+  ui.pickers.allowedTypes = tagPicker({ listId: "type-list", options: ui.options.types, placeholder: "Empty: every type is allowed", more: "Add a type", chipClass: typeChip });
+  ui.pickers.bannedTypes = tagPicker({ listId: "type-list", options: ui.options.types, placeholder: "Empty: no type is banned", more: "Add a type", chipClass: typeChip });
+  ui.pickers.bannedSpecies = tagPicker({ listId: "species-list", options: ui.options.species, placeholder: "e.g. Gyarados", more: "Add a Pokémon" });
+  $("#r-allowed-types").appendChild(ui.pickers.allowedTypes);
+  $("#r-banned-types").appendChild(ui.pickers.bannedTypes);
+  $("#r-banned").appendChild(ui.pickers.bannedSpecies);
   renderUsedList();
 
   $("#badges").addEventListener("click", (e) => {
@@ -121,9 +204,12 @@ function addMember(m = {}) {
   row.innerHTML = `
     <input class="species" list="species-list" placeholder="Species" aria-label="Species" value="${esc(m.species || "")}">
     <input class="level" type="number" min="1" max="100" placeholder="Lv" aria-label="Level" value="${esc(m.level || "")}">
-    <button type="button" class="rm" aria-label="Remove">×</button>
-    <input class="moves" placeholder="Moves, if you know them (comma-separated)" aria-label="Moves" value="${esc((m.moves || []).join(", "))}">`;
-  row.querySelector(".rm").addEventListener("click", () => { row.remove(); updateStatus(); });
+    <button type="button" class="rm" aria-label="Remove">×</button>`;
+  const moves = tagPicker({ listId: "move-list", options: ui.options.moves, max: 4, placeholder: "Moves, if you know them (up to 4)",
+                            more: "Add a move", values: m.moves || [] });
+  moves.classList.add("moves");
+  row.appendChild(moves);
+  row.querySelector(".rm").addEventListener("click", () => { row.remove(); $("#add-member").hidden = false; updateStatus(); });
   row.querySelector(".species").addEventListener("change", (e) => {
     e.target.style.borderColor = e.target.value && !ui.speciesByName.has(e.target.value.trim().toLowerCase()) ? "var(--rust)" : "";
   });
@@ -137,9 +223,8 @@ function readForm() {
   const party = [...document.querySelectorAll(".member")].map((row) => ({
     species: row.querySelector(".species").value.trim(),
     level: parseInt(row.querySelector(".level").value, 10),
-    moves: row.querySelector(".moves").value.split(",").map((s) => s.trim()).filter(Boolean),
+    moves: row.querySelector(".moves").getValues(),
   })).filter((m) => m.species && m.level >= 1 && m.level <= 100);
-  const split = (s) => s.split(",").map((x) => x.trim()).filter(Boolean);
   return {
     starter, rival,
     badges: ui.badgesSet ? ui.catalog.badges.map((b) => b.id).filter((b) => ui.badges.has(b)) : null,
@@ -153,10 +238,11 @@ function readForm() {
       used_routes: $("#r-nuzlocke").checked ? [...ui.used] : [],
       level_caps: $("#r-caps").checked,
       level_cap_offset: parseInt($("#r-offset").value, 10) || 0,
-      monotype: $("#r-monotype").value || null,
+      allowed_types: ui.pickers.allowedTypes.getValues(),
+      banned_types: ui.pickers.bannedTypes.getValues(),
       no_legendaries: $("#r-nolegends").checked,
       wild_only: $("#r-wild").checked,
-      banned_species: split($("#r-banned").value),
+      banned_species: ui.pickers.bannedSpecies.getValues(),
       notes: $("#r-notes").value.split("\n").map((s) => s.trim()).filter(Boolean),
     },
   };
@@ -181,12 +267,14 @@ function fillForm(rs = {}, { highlight = false } = {}) {
   ui.used = new Set(r.used_routes || []);
   $("#r-caps").checked = !!r.level_caps;
   $("#r-offset").value = r.level_cap_offset || 0;
-  $("#r-monotype").value = r.monotype || "";
+  ui.pickers.allowedTypes.setValues(r.allowed_types || (r.monotype ? [r.monotype] : []));
+  ui.pickers.bannedTypes.setValues(r.banned_types || []);
   $("#r-nolegends").checked = !!r.no_legendaries;
   $("#r-wild").checked = !!r.wild_only;
-  $("#r-banned").value = (r.banned_species || []).join(", ");
+  ui.pickers.bannedSpecies.setValues(r.banned_species || []);
   $("#r-notes").value = (r.notes || []).join("\n");
-  const anyRule = r.nuzlocke || r.level_caps || r.monotype || r.no_legendaries || r.wild_only || (r.banned_species || []).length || (r.notes || []).length;
+  const anyRule = r.nuzlocke || r.level_caps || r.no_legendaries || r.wild_only
+    || [r.allowed_types, r.banned_types, r.banned_species, r.notes].some((xs) => (xs || []).length);
   $("#rules").open = !!anyRule;
   renderUsedList();
   paintBadges();
@@ -205,7 +293,8 @@ function updateStatus() {
   status.textContent = missing.length ? `Needs: ${missing.join(", ")}` : `${rs.badges.length} badge${rs.badges.length === 1 ? "" : "s"} · ${rs.party.length || "no"} party`;
   status.className = "run-status" + (missing.length ? "" : " ready");
   const r = rs.ruleset;
-  const n = [r.nuzlocke, r.level_caps, r.monotype, r.no_legendaries, r.wild_only].filter(Boolean).length + r.banned_species.length + r.notes.length;
+  const n = [r.nuzlocke, r.level_caps, r.no_legendaries, r.wild_only, r.allowed_types.length, r.banned_types.length].filter(Boolean).length
+    + r.banned_species.length + r.notes.length;
   $("#rules-count").textContent = n ? `${n} on` : "";
 }
 
@@ -261,23 +350,23 @@ function renderLog() {
 /* ---- examples ------------------------------------------------------------------------ */
 
 function renderExamples() {
-  $("#examples").innerHTML = ui.examples.map((ex) => `
-    <button type="button" class="example${ex.readme ? " featured" : ""}" data-id="${esc(ex.id)}">
-      ${ex.readme ? `<span class="ex-star">README sample</span>` : ""}
+  // Small bubbles under the question box; hovering (or focusing) one shows what it is
+  $("#examples").insertAdjacentHTML("beforeend", ui.examples.map((ex, i) => `
+    <button type="button" class="ex-bubble${ex.readme ? " featured" : ""}" data-id="${esc(ex.id)}" aria-describedby="tip-${esc(ex.id)}">Example ${i + 1}<span class="ex-tip" role="tooltip" id="tip-${esc(ex.id)}">
       <span class="ex-tag">${esc(ex.tag)}</span>
       <span class="ex-title">${esc(ex.title)}</span>
       <span class="ex-blurb">${esc(ex.blurb)}</span>
       <span class="ex-q">“${esc(ex.message)}”</span>
-    </button>`).join("");
+      ${ex.readme ? `<span class="ex-readme">★ README sample</span>` : ""}</span></button>`).join(""));
   $("#examples").addEventListener("click", (e) => {
-    const btn = e.target.closest(".example");
+    const btn = e.target.closest(".ex-bubble");
     if (btn) useExample(ui.examples.find((x) => x.id === btn.dataset.id), btn);
   });
 }
 
 async function useExample(ex, btn) {
   if (ui.busy) return;
-  for (const b of document.querySelectorAll(".example")) b.classList.toggle("active", b === btn);
+  for (const b of document.querySelectorAll(".ex-bubble")) b.classList.toggle("active", b === btn);
   if (ui.entryCount) resetConversation(); // each example is its own fresh run
   ui.log = null;
   renderLog();
@@ -625,7 +714,7 @@ function resetConversation() {
   if (old) api("/clear", { session_id: old }).catch(() => {});
   newSessionId();
   ui.entryCount = 0;
-  $("#entries").innerHTML = `<div class="empty" id="empty"><p class="empty-title">A fresh page.</p><p>Ask about your run, or try an example above.</p></div>`;
+  $("#entries").innerHTML = `<div class="empty" id="empty"><p class="empty-title">A fresh page.</p><p>Ask about your run, or pick one of the examples under the question box.</p></div>`;
 }
 
 function startOver() {
@@ -633,7 +722,7 @@ function startOver() {
   ui.log = null;
   renderLog();
   fillForm({});
-  for (const b of document.querySelectorAll(".example")) b.classList.remove("active");
+  for (const b of document.querySelectorAll(".ex-bubble")) b.classList.remove("active");
   $("#question").value = "";
 }
 
@@ -655,6 +744,32 @@ async function restore() {
   } catch { /* a new server: nothing to restore */ }
 }
 
+/* ---- banner and about drawer ------------------------------------------------------------------ */
+
+function playBannerVideo() {
+  // static/media/banner.mp4, when present, replaces the still banner art
+  const video = document.createElement("video");
+  Object.assign(video, { src: "/static/media/banner.mp4", autoplay: true, muted: true, loop: true, playsInline: true });
+  video.className = "hero-video";
+  video.setAttribute("aria-hidden", "true");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.autoplay = false;
+  video.addEventListener("loadeddata", () => $("#hero").classList.add("has-video"), { once: true });
+  $(".hero-art").after(video);
+}
+
+function setUpAbout() {
+  const panel = $("#about"), backdrop = $("#about-backdrop"), opener = $("#about-open");
+  const show = (open) => {
+    panel.hidden = backdrop.hidden = !open;
+    opener.setAttribute("aria-expanded", String(open));
+    (open ? $("#about-close") : opener).focus();
+  };
+  opener.addEventListener("click", () => show(panel.hidden));
+  $("#about-close").addEventListener("click", () => show(false));
+  backdrop.addEventListener("click", () => show(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) show(false); });
+}
+
 /* ---- start ---------------------------------------------------------------------------------- */
 
 async function init() {
@@ -665,6 +780,8 @@ async function init() {
   [ui.catalog, ui.examples] = await Promise.all([api("/catalog"), api("/examples")]);
   buildForm();
   renderExamples();
+  setUpAbout();
+  if (ui.catalog.banner_video) playBannerVideo();
   fillForm({});
   await restore();
 
@@ -676,5 +793,5 @@ async function init() {
 }
 
 init().catch((err) => {
-  document.body.insertAdjacentHTML("afterbegin", `<p class="error-note" style="padding:12px 24px">Lockesmith couldn't start: ${esc(err.message)}</p>`);
+  document.body.insertAdjacentHTML("afterbegin", `<p class="error-note" style="padding:12px 24px">LockeSmith couldn't start: ${esc(err.message)}</p>`);
 });

@@ -117,7 +117,7 @@ def test_bagon_needs_waterfall(con):
 
 
 def test_rules_filter_candidates(con):
-    rules = Ruleset(monotype="grass", no_legendaries=True, banned_species=["Lotad"])
+    rules = Ruleset(allowed_types=["grass"], no_legendaries=True, banned_species=["Lotad"])
     ctx = ctx_for(con, starter="treecko", badges=["stone", "knuckle", "dynamo", "heat", "balance"], ruleset=rules)
     r = encounters.catchable(ctx, "gym6_winona")
     assert r["species"] and all("grass" in s["types"] for s in r["species"])

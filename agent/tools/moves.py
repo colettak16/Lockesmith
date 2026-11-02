@@ -105,7 +105,7 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
         "tm_hm": [{k: r[k] for k in ("label", "name", "type", "damage_class", "power", "source_id")} for r in machines],
         "hoenn_tutors": tutors,
     }
-    # A randomized run whose log changed parts Lockesmith doesn't read: say so instead of answering from vanilla
+    # A randomized run whose log changed parts LockeSmith doesn't read: say so instead of answering from vanilla
     unknown = {}
     for kind, keys in (("movesets", ("level_up", "next_level_up", "default_moveset_at_level")),
                        ("tm_compatibility", ("tm_hm",)), ("tutor_compatibility", ("hoenn_tutors",))):

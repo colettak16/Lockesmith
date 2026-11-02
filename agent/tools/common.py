@@ -74,12 +74,12 @@ def guarded(fn):
 
 def unread(ctx: RequestContext, kind: str) -> str | None:
     """Why the tools can't answer `kind` (e.g. "movesets") from their tables in this run, or None.
-    Set when the session's randomizer log changed that kind and Lockesmith doesn't read it."""
+    Set when the session's randomizer log changed that kind and LockeSmith doesn't read it."""
     status = ctx.log_changes.get(kind, "unchanged")
     if status == "metronome-only":
         return f"in this randomized run every Pokémon's {UNREAD_KINDS.get(kind, kind)} are Metronome only"
     if status == "unparsed":
-        return (f"this run's randomizer log changed {UNREAD_KINDS.get(kind, kind)}, and Lockesmith can't read "
+        return (f"this run's randomizer log changed {UNREAD_KINDS.get(kind, kind)}, and LockeSmith can't read "
                 "that part of the log, so the vanilla data would be wrong here")
     return None
 

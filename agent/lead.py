@@ -50,7 +50,7 @@ async def dispatch_researchers(ctx: RunContextWrapper[RequestContext], tasks: li
 
 
 INSTRUCTIONS = f"""\
-You lead Lockesmith's research for a player partway through Pokémon Emerald (Gen III). You plan the
+You lead LockeSmith's research for a player partway through Pokémon Emerald (Gen III). You plan the
 research, send it to researchers, then draft the answer as structured data for the writer. You
 never state facts from memory: every fact in your draft must come from a researcher finding, with
 its source ids copied exactly.

@@ -1,4 +1,4 @@
-"""The only module that knows which agent framework and models Lockesmith uses (PLAN.md §0).
+"""The only module that knows which agent framework and models LockeSmith uses (PLAN.md §0).
 
 Agents are built with `make_agent` and run with `run`. Swapping the OpenAI Agents SDK
 for another framework touches this file only; swapping Gemini for Claude is an env var
@@ -36,7 +36,7 @@ from agent.pricing import cost_usd
 load_dotenv()  # local settings and keys (.env is gitignored); Cloud Run sets real environment variables
 os.environ.setdefault("VERTEXAI_PROJECT", "lockesmith")
 os.environ.setdefault("VERTEXAI_LOCATION", "global")
-# The SDK's built-in tracer exports to OpenAI's servers; Lockesmith never sends data there.
+# The SDK's built-in tracer exports to OpenAI's servers; LockeSmith never sends data there.
 set_tracing_disabled(True)
 observability.setup()  # with LangFuse keys set, tracing comes back on, exporting to LangFuse only
 

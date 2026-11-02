@@ -95,9 +95,12 @@ def test_nuzlocke_used_area_and_dupes(con):
 
 
 def test_single_type_rule(con):
-    assert "RULESET_TYPE_VIOLATION" in found(ctx_for(con, ruleset=Ruleset(monotype="grass")), pick("Absol"))
+    assert "RULESET_TYPE_VIOLATION" in found(ctx_for(con, ruleset=Ruleset(allowed_types=["grass"])), pick("Absol"))
     # Nincada is Bug/Ground; Ninjask drops Ground
-    assert "RULESET_TYPE_VIOLATION" in found(ctx_for(con, ruleset=Ruleset(monotype="ground")), pick("Nincada", evolve_to="Ninjask"))
+    assert "RULESET_TYPE_VIOLATION" in found(ctx_for(con, ruleset=Ruleset(allowed_types=["ground"])), pick("Nincada", evolve_to="Ninjask"))
+    # Several allowed types: any one is enough. Banned types: none may appear.
+    assert "RULESET_TYPE_VIOLATION" not in found(ctx_for(con, ruleset=Ruleset(allowed_types=["grass", "dark"])), pick("Absol"))
+    assert "RULESET_TYPE_VIOLATION" in found(ctx_for(con, ruleset=Ruleset(banned_types=["dark"])), pick("Absol"))
 
 
 def test_bans_rejections_legendaries_wild_only(con):

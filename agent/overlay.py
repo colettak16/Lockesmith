@@ -257,7 +257,7 @@ def install_chains(con: duckdb.DuckDBPyConnection, evolutions: list[dict], speci
 
 SHADOW_NAMES = ("encounters", "trainer_mons", "species", "machines", "move_tutors", "learnsets", "evolutions",
                 "log_species", "log_chains", "log_remap", "log_move_remap")
-# What a log can change that Lockesmith doesn't read; tools refuse these (agent/tools/common.py `unread`)
+# What a log can change that LockeSmith doesn't read; tools refuse these (agent/tools/common.py `unread`)
 UNREAD_KINDS = {
     "movesets": "level-up movesets",
     "tm_compatibility": "TM/HM compatibility",

@@ -1,5 +1,5 @@
 """A loaded randomizer log as session views (agent/overlay.py, D11): the unchanged tools read
-the randomized game, other sessions keep vanilla, and what the log changed but Lockesmith
+the randomized game, other sessions keep vanilla, and what the log changed but LockeSmith
 can't read is refused rather than answered from vanilla. Uses the hand-written logs in
 test_log_parser.py (no real UPR log is in tests/fixtures/ yet)."""
 

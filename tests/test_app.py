@@ -111,7 +111,7 @@ def test_post_run_state_and_clear_log():
 
 def test_index_page_is_served():
     r = client.get("/")
-    assert r.status_code == 200 and "Lockesmith" in r.text
+    assert r.status_code == 200 and "LockeSmith" in r.text
 
 
 def test_fastapi_telemetry_is_off():

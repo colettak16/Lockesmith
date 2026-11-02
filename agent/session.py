@@ -34,11 +34,12 @@ class Session:
 def apply_rules(rules: Ruleset, u: RuleUpdate) -> Ruleset:
     data = rules.model_dump()
     for key in ("nuzlocke", "encounter_scope", "gifts_count_as_encounter", "dupes_clause", "level_caps",
-                "level_cap_offset", "monotype", "no_legendaries", "wild_only"):
+                "level_cap_offset", "allowed_types", "no_legendaries", "wild_only"):
         value = getattr(u, key)
         if value is not None:
             data[key] = value.lower() if isinstance(value, str) else value
-    for key, add in (("banned_species", u.add_banned_species), ("used_routes", u.add_used_routes), ("notes", u.add_notes)):
+    for key, add in (("banned_species", u.add_banned_species), ("banned_types", u.add_banned_types),
+                     ("used_routes", u.add_used_routes), ("notes", u.add_notes)):
         data[key] = list(dict.fromkeys([*data[key], *add]))
     return Ruleset(**data)
 

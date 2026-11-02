@@ -1,4 +1,4 @@
-# Lockesmith
+# LockeSmith
 
 **A deep research agent for Pokémon Emerald runs.** Tell it where you are in the game and it researches what to catch next, what to do next, or how to get through the rest of the game. It checks every recommendation against the game's own data and cites it.
 
@@ -17,11 +17,11 @@ Base models know Pokémon broadly and get the specifics wrong:
 - There's no Fairy type.
 - Exact encounter tables, which areas a Nuzlocke has left, and anything in a randomized game.
 
-Lockesmith answers from the data instead.
+LockeSmith answers from the data instead.
 
 ## How to use it
 
-1. Open the site. Fill in **Your run** on the left (starter and badges are required; party, rival, rules and a randomizer log are optional), or click one of the **examples**. One click fills in both the question and the run it needs.
+1. Open the site. Fill in **Your run** on the left (starter and badges are required; party, rival, rules and a randomizer log are optional), or click one of the **Example** bubbles under the question box (hover one to see what it asks). One click fills in both the question and the run it needs. **What is this?** on the banner opens a short explainer.
 2. Press **Ask**. Live progress shows each researcher working in its own lane. A catch plan takes about a minute.
 3. Read the answer:
    - pick cards (core vs. for-this-fight, where, when, backups)
@@ -85,10 +85,10 @@ Built offline into `data/emerald.duckdb` (about 7 MB, committed) by `uv run pyth
 
 ## Sample queries
 
-Each sample is one click on the site (the buttons marked *README sample*): the click fills in the question **and** the run state. For each sample, the table below gives:
+Each sample is one click on the site: **Examples 1, 2 and 3** (marked ★) under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. For each sample, the table below gives:
 - the **expected answer**, generated from the database by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md))
 - the **baseline**: Gemini 3.1 Pro, the Lead's model, with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py), full answers in [docs/baseline/](docs/baseline/))
-- **Lockesmith's answer** ([`scripts/run_samples.py`](scripts/run_samples.py), full answers and traces in [docs/samples/](docs/samples/))
+- **LockeSmith's answer** ([`scripts/run_samples.py`](scripts/run_samples.py), full answers and traces in [docs/samples/](docs/samples/))
 
 ### 1. Mid-game catch plan (vanilla)
 
@@ -99,7 +99,7 @@ Each sample is one click on the site (the buttons marked *README sample*): the c
 |---|---|
 | **Expected** (`trainer_mons`, `type_efficacy`, `encounters` via `get_catchable`) | A **double battle** against Claydol 41, Xatu 41, Lunatone 42 and Solrock 42 (both rock/psychic ones holding Sitrus Berries). Ghost and Dark hit all four super-effectively, Water three. Obtainable before the gym: Carvanha/Sharpedo (Super Rod: Routes 118, 119, 122, …), Shuppet (Mt. Pyre 1F–3F, 100%), Absol (Route 120 grass, 8%), Staryu (Lilycove, Super Rod 15%). |
 | **Baseline** ([full](docs/baseline/tate-liza.md)), 48 s, $0.04 | **Good.** Sharpedo, Banette/Dusclops with TM30 Shadow Ball from Mt. Pyre, Absol (8% on Route 120). It knows the Gen III physical/special split and the team's moves. Every specific fact I checked against the data was right. No sources. |
-| **Lockesmith** ([full](docs/samples/tate-liza.md)), 79 s, $0.25 | **Sharpedo** (Route 122 Super Rod, Lv30–35, 40%) and **Shuppet → Banette** (Mt. Pyre 1F–3F, 100%), with backups Staryu and Absol. It flags that Surf and Crunch are special in Gen III, against Sharpedo's higher Attack. Battle notes: all four foes are immune to Ground, Solrock's sun-boosted Solar Beam does 4× to Swampert, and Psychic does 2× to Breloom. 18 cited sources plus a coverage chart for the rest of the run. |
+| **LockeSmith** ([full](docs/samples/tate-liza.md)), 79 s, $0.25 | **Sharpedo** (Route 122 Super Rod, Lv30–35, 40%) and **Shuppet → Banette** (Mt. Pyre 1F–3F, 100%), with backups Staryu and Absol. It flags that Surf and Crunch are special in Gen III, against Sharpedo's higher Attack. Battle notes: all four foes are immune to Ground, Solrock's sun-boosted Solar Beam does 4× to Swampert, and Psychic does 2× to Breloom. 18 cited sources plus a coverage chart for the rest of the run. |
 
 ### 2. Nuzlocke into Juan
 
@@ -110,7 +110,7 @@ Each sample is one click on the site (the buttons marked *README sample*): the c
 |---|---|
 | **Expected** | Juan: Luvdisc 41, Whiscash 41, Sealeo 43, Crawdaunt 43, **Kingdra 46** (Water Pulse, Double Team, Ice Beam, Rest; Chesto Berry). That makes the **level cap 46**. Grass hits 4 of 5 super-effectively, Electric 3. Still catchable in unused areas: Magnemite/Voltorb (New Mauville, 50%), Chinchou (Route 124 seaweed, 30%), Oddish (Route 123), Lileep (fossil gift). |
 | **Baseline** ([full](docs/baseline/nuzlocke-juan.md)), 51 s, $0.04 | Reasonable picks (Magneton, Walrein, Staryu, Tentacruel) and a good Double Team warning, but **three facts the data contradicts**: Kingdra is given a fifth move (Sleep Talk), Shock Wave is called **TM39** (it's TM34; TM39 is Rock Tomb), and Magneton is said to **resist Water** (it's neutral). Used areas are taken on trust; it can't check them. |
-| **Lockesmith** ([full](docs/samples/nuzlocke-juan.md)), 76 s, $0.19 | **Magnemite → Magneton** (New Mauville, 50%), **Chinchou → Lanturn** (Route 124/126 seaweed, 30%; resists Water and Ice), **Spheal → Walrein** (Shoal Cave, 50%; Walrein arrives at Lv44, under the cap). Each place was checked against the 23 used areas, the dupes clause and the cap. It notes that Whiscash's Earthquake threatens Manectric. A "Rules I followed" section lists what the Verifier checked. |
+| **LockeSmith** ([full](docs/samples/nuzlocke-juan.md)), 76 s, $0.19 | **Magnemite → Magneton** (New Mauville, 50%), **Chinchou → Lanturn** (Route 124/126 seaweed, 30%; resists Water and Ice), **Spheal → Walrein** (Shoal Cave, 50%; Walrein arrives at Lv44, under the cap). Each place was checked against the 23 used areas, the dupes clause and the cap. It notes that Whiscash's Earthquake threatens Manectric. A "Rules I followed" section lists what the Verifier checked. |
 
 ### 3. Randomized gym
 
@@ -120,10 +120,10 @@ Each sample is one click on the site (the buttons marked *README sample*): the c
 | | |
 |---|---|
 | **Expected** (`trainer_mons` is now a session view over the log) | Camerupt 41, Torkoal 41, Magcargo 42 and Houndoom 42 (Sitrus Berries on the last two). Water and Ground hit all four super-effectively. Wild Pokémon are vanilla in this log: Carvanha/Sharpedo, Barboach (Super Rod: Routes 111, 114, 120), Spheal and others. |
-| **Baseline** ([full](docs/baseline/randomizer-tate-liza.md)), 61 s, $0.05 | **Good here, because the log is five lines and fits in the prompt.** It recommends a "double Surf" with Spheal, Tentacruel, Starmie or Pelipper, and its type math is right. Item locations it gives (Mystic Water, Sea Incense) aren't in Lockesmith's data, so they're unchecked. A real UPR log is 1–2 MB covering 855 trainers and every wild table, which can't usefully be pasted into a chat. |
-| **Lockesmith** ([full](docs/samples/randomizer-tate-liza.md)), 94 s, $0.21 | It reads the team from the log (cited as "Your randomizer log: Leader Tate&Liza's team") and recommends **Sharpedo** (Super Rod, Routes 103/118/122) and **Barboach → Whiscash** (Super Rod, Routes 111/114/120). **The gap loop at work:** the Lead first proposed Whiscash itself, which the Verifier rejected because wild Whiscash only appear in Victory Road and Meteor Falls' inner rooms. The Lead was sent back once and returned Barboach. |
+| **Baseline** ([full](docs/baseline/randomizer-tate-liza.md)), 61 s, $0.05 | **Good here, because the log is five lines and fits in the prompt.** It recommends a "double Surf" with Spheal, Tentacruel, Starmie or Pelipper, and its type math is right. Item locations it gives (Mystic Water, Sea Incense) aren't in LockeSmith's data, so they're unchecked. A real UPR log is 1–2 MB covering 855 trainers and every wild table, which can't usefully be pasted into a chat. |
+| **LockeSmith** ([full](docs/samples/randomizer-tate-liza.md)), 94 s, $0.21 | It reads the team from the log (cited as "Your randomizer log: Leader Tate&Liza's team") and recommends **Sharpedo** (Super Rod, Routes 103/118/122) and **Barboach → Whiscash** (Super Rod, Routes 111/114/120). **The gap loop at work:** the Lead first proposed Whiscash itself, which the Verifier rejected because wild Whiscash only appear in Victory Road and Meteor Falls' inner rooms. The Lead was sent back once and returned Barboach. |
 
-**What the comparison shows.** Gemini 3.1 Pro knows Emerald's well-known fights well, so the baseline is a strong opponent. Lockesmith adds:
+**What the comparison shows.** Gemini 3.1 Pro knows Emerald's well-known fights well, so the baseline is a strong opponent. LockeSmith adds:
 - every specific claim checked against the data and cited (the baseline's Nuzlocke answer had three errors the data catches)
 - challenge rules applied by code, not trust
 - randomized games at real-log scale
@@ -131,7 +131,7 @@ Each sample is one click on the site (the buttons marked *README sample*): the c
 
 It costs about 4–5× as much ($0.19–0.25 vs $0.04–0.05 per question) and takes 76–94 s against 48–61 s.
 
-**How these answers got here.** Earlier runs of the same samples turned up errors in Lockesmith's own answers:
+**How these answers got here.** Earlier runs of the same samples turned up errors in LockeSmith's own answers:
 - a Good Rod rate given as the Super Rod's
 - a "4× weak" that was 2×
 - Lanturn "double-resisting" Water
@@ -151,7 +151,7 @@ It says so instead of guessing:
 
 Each answer's trace panel shows the model calls, tokens and cost for that question, from `agent/pricing.py`: Vertex AI list prices read from Google's pricing page on 2026-11-01. Per sample question:
 
-| | Lockesmith | Baseline (Gemini 3.1 Pro, no tools) |
+| | LockeSmith | Baseline (Gemini 3.1 Pro, no tools) |
 |---|---|---|
 | Time | 76–94 s | 48–61 s |
 | Model calls | 14–19 (Clarifier, Lead ×2–3, 3–4 researchers ×2–5, Writer) | 1 |
@@ -177,7 +177,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 
 **One real question on the deployed site**, *"what should I try and catch next with my Nuzlocke rules?"* (production environment, tagged `vanilla`, `nuzlocke`):
 
-![LangFuse timeline of one Lockesmith question](docs/images/langfuse-timeline.png)
+![LangFuse timeline of one LockeSmith question](docs/images/langfuse-timeline.png)
 
 *Timeline.* The whole turn took 2 min 10 s and cost $0.23 across 19 model calls. The Clarifier took 2.8 s. The Lead's `dispatch_researchers` ran four researchers at once; three finished in 11.5–21.9 s, but the round took 78 s because one of the story researcher's model calls stalled for 68 s. Its other calls took 2–3 s. That trace is why every model call now has a time limit (25 s for Flash, 60 s for Pro), after which it goes to the fallback model ([D12](docs/decisions.md)).
 
