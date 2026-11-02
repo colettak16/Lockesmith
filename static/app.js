@@ -58,26 +58,46 @@ function optionMap(items) {
 
 /* An input with a datalist that only accepts listed values, each shown as a removable chip.
    Typing filters the list; picking an entry (or Enter on an exact name) adds it. */
-function tagPicker({ listId, options, max = Infinity, placeholder, more = "Add another", chipClass = () => "", values = [] }) {
+let pickerCount = 0;
+
+/* `listId` shares a page-wide datalist (moves: one list for every party row). With `items`, the
+   picker keeps its own list, offering only what isn't picked here or taken by `excluded()`. */
+function tagPicker({ listId, items, options, max = Infinity, placeholder, more = "Add another", chipClass = () => "",
+                     values = [], excluded = () => new Set() }) {
   const el = document.createElement("div");
   el.className = "tagpick";
   const chips = document.createElement("span");
   chips.className = "tagpick-chips";
   chips.style.display = "contents";
   const input = document.createElement("input");
-  input.setAttribute("list", listId);
   input.setAttribute("aria-label", placeholder);
+  let list = null;
+  if (items) {
+    list = document.createElement("datalist");
+    list.id = `pick-list-${++pickerCount}`;
+    el.append(list);
+    input.setAttribute("list", list.id);
+  } else {
+    input.setAttribute("list", listId);
+  }
   el.append(chips, input);
   let picked = [];
   const changed = () => el.dispatchEvent(new Event("change", { bubbles: true }));
+  const refresh = () => {
+    if (!list) return;
+    const taken = excluded();
+    list.innerHTML = items.filter((o) => !taken.has(o.id) && !picked.some((x) => x.id === o.id))
+      .map((o) => `<option value="${esc(o.name)}">`).join("");
+  };
   const render = () => {
     chips.innerHTML = picked.map((o, i) => `<span class="tag ${chipClass(o)}">${esc(o.name)}<button type="button" data-i="${i}" aria-label="Remove ${esc(o.name)}">×</button></span>`).join("");
     input.hidden = picked.length >= max;
     input.placeholder = picked.length ? more : placeholder;
+    refresh();
   };
   const add = (text) => {
     const o = options.get(text.trim().toLowerCase());
-    if (!o) { input.classList.toggle("invalid", !!text.trim()); return; }
+    if (!o || excluded().has(o.id)) { input.classList.toggle("invalid", !!text.trim()); return; }
     if (!picked.some((x) => x.id === o.id) && picked.length < max) picked.push(o);
     input.value = "";
     input.classList.remove("invalid");
@@ -104,11 +124,14 @@ function tagPicker({ listId, options, max = Infinity, placeholder, more = "Add a
   });
   el.addEventListener("click", (e) => { if (e.target === el) input.focus(); });
   el.getValues = () => picked.map((o) => o.name);
+  el.getIds = () => new Set(picked.map((o) => o.id));
+  el.refresh = refresh;
   el.setValues = (vals) => {
     picked = [];
+    const taken = excluded();
     for (const v of vals || []) {
       const o = options.get(String(v).toLowerCase());
-      if (o && !picked.some((x) => x.id === o.id) && picked.length < max) picked.push(o);
+      if (o && !taken.has(o.id) && !picked.some((x) => x.id === o.id) && picked.length < max) picked.push(o);
     }
     input.value = "";
     render();
@@ -133,13 +156,19 @@ function buildForm() {
   }).join("");
   $("#last-battle").insertAdjacentHTML("beforeend", c.battles.map((b) => `<option value="${b.id}">${esc(b.label)}</option>`).join(""));
   $("#move-list").innerHTML = c.moves.map((m) => `<option value="${esc(m.name)}">`).join("");
-  $("#type-list").innerHTML = c.types.map((t) => `<option value="${cap(t)}">`).join("");
   ui.options.species = optionMap(c.species);
   ui.options.moves = optionMap(c.moves);
   ui.options.types = optionMap(c.types.map((t) => ({ id: t, name: cap(t) })));
   const typeChip = (o) => `type ${o.id}`;
-  ui.pickers.allowedTypes = tagPicker({ listId: "type-list", options: ui.options.types, placeholder: "Empty: every type is allowed", more: "Add a type", chipClass: typeChip });
-  ui.pickers.bannedTypes = tagPicker({ listId: "type-list", options: ui.options.types, placeholder: "Empty: no type is banned", more: "Add a type", chipClass: typeChip });
+  const typeItems = c.types.map((t) => ({ id: t, name: cap(t) }));
+  // A type can be allowed or banned, not both: each box hides and refuses the other's types
+  ui.pickers.allowedTypes = tagPicker({ items: typeItems, options: ui.options.types, placeholder: "Empty: every type is allowed",
+    more: "Add a type", chipClass: typeChip, excluded: () => ui.pickers.bannedTypes?.getIds() ?? new Set() });
+  ui.pickers.bannedTypes = tagPicker({ items: typeItems, options: ui.options.types, placeholder: "Empty: no type is banned",
+    more: "Add a type", chipClass: typeChip, excluded: () => ui.pickers.allowedTypes.getIds() });
+  ui.pickers.allowedTypes.addEventListener("change", () => ui.pickers.bannedTypes.refresh());
+  ui.pickers.bannedTypes.addEventListener("change", () => ui.pickers.allowedTypes.refresh());
+  ui.pickers.allowedTypes.refresh();
   ui.pickers.bannedSpecies = tagPicker({ listId: "species-list", options: ui.options.species, placeholder: "e.g. Gyarados", more: "Add a Pokémon" });
   $("#r-allowed-types").appendChild(ui.pickers.allowedTypes);
   $("#r-banned-types").appendChild(ui.pickers.bannedTypes);
@@ -747,14 +776,22 @@ async function restore() {
 /* ---- banner and about drawer ------------------------------------------------------------------ */
 
 function playBannerVideo() {
-  // static/media/banner.mp4, when present, replaces the still banner art
-  const video = document.createElement("video");
-  Object.assign(video, { src: "/static/media/banner.mp4", autoplay: true, muted: true, loop: true, playsInline: true });
-  video.className = "hero-video";
-  video.setAttribute("aria-hidden", "true");
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.autoplay = false;
-  video.addEventListener("loadeddata", () => $("#hero").classList.add("has-video"), { once: true });
-  $(".hero-art").after(video);
+  // static/media/banner.mp4, when present, replaces the still banner art: a crisp copy in the
+  // middle and a blurred copy filling the sides (see .hero in style.css)
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const make = (cls) => {
+    const v = document.createElement("video");
+    Object.assign(v, { src: "/static/media/banner.mp4", poster: "/static/media/banner-poster.jpg",
+                       muted: true, loop: true, playsInline: true, autoplay: !still, preload: "auto" });
+    v.setAttribute("muted", "");
+    v.setAttribute("aria-hidden", "true");
+    v.className = cls;
+    return v;
+  };
+  const fill = make("hero-fill"), main = make("hero-video");
+  main.addEventListener("loadeddata", () => $("#hero").classList.add("has-video"), { once: true });
+  $("img.hero-fill").after(fill);
+  $("img.hero-art").after(main);
 }
 
 function setUpAbout() {
