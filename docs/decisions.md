@@ -109,7 +109,33 @@ PokeAPI stays the primary source for everything else (encounter slots and rariti
 - The build runs in memory and copies the final tables out, so the file doesn't carry dropped staging pages.
 - `agent/db.py` `connect_session()` attaches the shipped DB read-only and keeps randomizer overlays in memory per session.
 - Cloud Run region `us-east4` (as deployed), 600 s request timeout, max 3 instances (docs/deploy.md).
-- Not started, by design (Phase 2): `agent/runtime.py`, `agent/state.py`, tools, agents.
+
+## D8. Phase 2 scope and design (agreed 2026-11-01)
+
+These widen PLAN.md §1, §6 and §9. They were agreed in conversation before Phase 2 started.
+
+- **Models:** Gemini on Vertex, location `global`.
+  - `gemini-3.5-flash` for the Clarifier and researchers; `gemini-3.1-pro-preview` for the Lead and Writer.
+  - Model names live only in env vars (`LOCKESMITH_FAST_MODEL`, `LOCKESMITH_STRONG_MODEL`).
+  - **Claude Sonnet/Opus must stay a one-setting switch.** In Project 1, Gemini Flash gave poor results, so prompts and tool schemas must not depend on Gemini quirks.
+- **Framework:** OpenAI Agents SDK through LiteLLM, behind `agent/runtime.py`. The SDK's own tracing is disabled, so nothing goes to OpenAI.
+- **Run state:**
+  - Required: which gym badges you hold (a list, so a deferred Brawly works) and your starter.
+  - Optional: rival (May/Brendan), last major battle, current party.
+  - The Clarifier asks up front only when an answer can't be given without the missing piece. Otherwise the answer states its assumptions and lists follow-up questions the researchers raised.
+- **Question types:** catch recommendations, what to do next in the story, a longer plan to the Champion, and specific lookups. The Clarifier labels the type, and the Lead dispatches only the researchers it needs.
+  - A fourth researcher, **Story**, works from the progression file, the walkthrough and the TM sources.
+  - The Writer formats each answer to its question type.
+- **Self-imposed rules:**
+  - Presets: single type, no legendaries/mythicals, banned species, Nuzlocke + dupes clause, level caps, allowed obtain methods.
+  - Free-text rules map to presets where possible. Anything else becomes a note the agents follow and the answer marks as not checked automatically.
+  - Single type counts dual types and warns when an evolution drops the type.
+- **Backup plans and revisions:**
+  - Every recommendation carries one or two runner-ups that passed the same checks.
+  - Sessions keep the last plan, its evidence, rejected picks and rules learned in conversation.
+  - A specific objection becomes a session rule. A vague one gets a genuinely different plan plus a short "what didn't work?".
+  - Hard enforcement of exclusions comes with the Verifier (Phase 3).
+- **Deploy:** sessions live in memory, so Cloud Run needs session affinity once `/chat` is wired up.
 
 ---
 

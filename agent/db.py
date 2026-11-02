@@ -17,8 +17,19 @@ def connect_readonly() -> duckdb.DuckDBPyConnection:
     return duckdb.connect(str(DB_PATH), read_only=True)
 
 
+SEARCH_PATH = "SET search_path = 'memory.main,base.main'"
+
+
 def connect_session() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
     con.execute(f"ATTACH '{DB_PATH.as_posix()}' AS base (READ_ONLY)")
-    con.execute("SET search_path = 'memory.main,base.main'")
+    con.execute(SEARCH_PATH)
     return con
+
+
+def session_cursor(con: duckdb.DuckDBPyConnection) -> duckdb.DuckDBPyConnection:
+    """A cursor on a session connection. Cursors share the database (and its overlays)
+    but not settings, so the search path is set again."""
+    cur = con.cursor()
+    cur.execute(SEARCH_PATH)
+    return cur
