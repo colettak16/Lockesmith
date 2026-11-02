@@ -170,3 +170,16 @@ def test_stated_progress_updates_the_session(models):
     chat("I picked Torchic and beat Brawly", "p-state")
     state = SESSIONS.get("p-state").state
     assert state.starter == "torchic" and state.badges == ["stone", "knuckle"] and state.last_battle is None
+
+
+def test_trace_tags_and_pseudonymous_users():
+    from agent import observability
+    from agent.state import Ruleset
+
+    session = SESSIONS.get("p-tags")
+    session.state = RunState(starter="mudkip", badges=[], ruleset=Ruleset(nuzlocke=True, monotype="water"))
+    assert pipeline.trace_tags(session) == ["vanilla", "nuzlocke", "custom-rules"]
+    uid = observability.user_id("accounts.google.com:1234567890")
+    assert uid == observability.user_id("accounts.google.com:1234567890") and "1234567890" not in uid
+    assert observability.user_id(None) is None
+    assert observability.workflow_name("catch_researcher") == "research-catches"

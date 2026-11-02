@@ -86,7 +86,7 @@ Each `/chat` turn becomes one LangFuse trace: every agent run, model call (with 
    - Add `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_BASE_URL` as plain environment variables.
    - Add the secret key through Secret Manager: **Reference a secret** → **Create new secret**, named `langfuse-secret-key`, with the `sk-lf-…` value. Expose it as the environment variable `LANGFUSE_SECRET_KEY`, version `latest`. If the console asks, grant the runtime service account (`816944548222-compute@developer.gserviceaccount.com`) **Secret Manager Secret Accessor** on that secret.
    - Deploy.
-5. **Check.** Ask the deployed site anything. Within a minute, a trace named `lockesmith chat` appears under Tracing in LangFuse, with the researchers nested under the Lead's `dispatch_researchers` call.
+5. **Check.** Ask the deployed site anything. Within a minute, a trace named `lockesmith-chat` appears under Tracing in LangFuse, in the `production` environment (local runs are tagged `development`), with the researchers nested under the Lead's `dispatch_researchers` call.
 
 ## Checking a failed deploy
 

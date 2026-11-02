@@ -24,7 +24,7 @@ from typing import Any
 import litellm
 from dotenv import load_dotenv
 
-from agents import Agent, ModelSettings, RunHooks, Runner, set_tracing_disabled
+from agents import Agent, ModelSettings, RunConfig, RunHooks, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
 from agents.retry import ModelRetrySettings, retry_policies
 from agents.run_error_handlers import RunErrorHandlerInput, RunErrorHandlerResult
@@ -151,7 +151,8 @@ async def finish_at_turn_limit(data: RunErrorHandlerInput):
     )
     closer = agent.clone(model_settings=agent.model_settings.resolve(ModelSettings(tool_choice="none")))
     history = list(data.run_data.history) + [{"role": "user", "content": WRAP_UP}]
-    result = await Runner.run(closer, history, context=ctx, hooks=RECORDER, max_turns=1)
+    result = await Runner.run(closer, history, context=ctx, hooks=RECORDER, max_turns=1,
+                              run_config=RunConfig(workflow_name="wrap-up"))
     return RunErrorHandlerResult(final_output=result.final_output, include_in_history=False)
 
 
@@ -162,5 +163,6 @@ async def run(agent: Agent, input: str, context, max_turns: int = 8):
     result = await Runner.run(
         agent, input, context=context, hooks=RECORDER, max_turns=max_turns,
         error_handlers={"max_turns": finish_at_turn_limit},
+        run_config=RunConfig(workflow_name=observability.workflow_name(agent.name)),  # the step's name in traces
     )
     return result.final_output

@@ -15,7 +15,7 @@ client = TestClient(app_module.app)
 
 @pytest.fixture(autouse=True)
 def stub_pipeline(monkeypatch):
-    async def fake_chat(message, session_id=None, run_state=None, listener=None):
+    async def fake_chat(message, session_id=None, run_state=None, listener=None, user=None):
         if listener:
             listener({"type": "agent_start", "agent": "clarifier", "round": 0, "t": 0.1})
         session = SESSIONS.get(session_id)

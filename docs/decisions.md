@@ -246,7 +246,16 @@ Design choices:
 - **The `chart` is built in code** (`agent/chart.py`), not by the model. It's a Vega-Lite heatmap of how many of each remaining major battle's team the party's and the picks' STAB types hit super-effectively. It reads the session's tables, so it follows a loaded log.
 - **The form follows the conversation.** After every answer the page reloads `/run_state` and flashes the panel if the Clarifier learned something ("I just beat Juan"). The form's next submission then doesn't undo it.
 - **Readable citations.** Cited database rows get plain labels ("PokeAPI: Spheal at Shoal Cave (walk)"), computed only for ids the answer actually cites.
-- **LangFuse through OpenInference.** With keys set, the Agents SDK's tracing is switched on with OpenInference's processor as its only processor (exclusive mode), so spans reach LangFuse and never OpenAI. Each turn is one trace, grouped by session. Checked with an in-memory exporter on a real run: 63 spans in 1 trace, the 3 researchers nested under `dispatch_researchers`, and every model call with its model name and tokens.
+- **LangFuse through OpenInference.** With keys set, the Agents SDK's tracing is switched on with OpenInference's processor as its only processor (exclusive mode), so spans reach LangFuse and never OpenAI.
+  - Audited the way LangFuse's agent skill prescribes: run a real request, fetch the trace back through the API, and check it against their best-practices page, read fresh on 2026-11-02.
+  - The first trace had model, tokens and cost on every generation and correct nesting. Its gaps: generic names ("chat", six "Agent workflow" spans), JSON blobs as the root's input and output, no tags or environment, and the Verifier invisible.
+  - Fixed:
+    - Each agent run gets a verb-first workflow name (`classify-request`, `lead-research`, `research-catches`, `write-answer`, `wrap-up`) under one `run-agents` workflow and an `answer-question` root.
+    - The root's input and output are the question and the answer; intent, picks, cost and rules go in metadata.
+    - Tags are set at creation from the run state (`vanilla`/`randomized`, `nuzlocke`, `custom-rules`). Environment is `production` on Cloud Run and `development` locally.
+    - The Verifier's steps are observations: `verify-picks`, `correct-places` and `check-citations` as evaluators, `promote-backups` as a span, errors at level ERROR.
+    - The user id is a hash of IAP's opaque user id, so no email reaches LangFuse.
+  - Left as is: OpenInference's own `turn` and `generation` span names (generic but stable; the step above each says what it is). Gemini's thinking isn't captured, because thought summaries are off and turning them on means more output tokens per call.
 - **Cost.** LangFuse's built-in prices don't match LiteLLM's `vertex_ai/` names or these Gemini versions. Prices live in `agent/pricing.py`, read from Google's pricing page on 2026-11-01:
   - 3.5 Flash: $1.50 / $9.00 per 1M input / output tokens
   - 3.1 Pro: $2.00 / $12.00

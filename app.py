@@ -11,12 +11,12 @@ import json
 import os
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from agent import pipeline
+from agent import observability, pipeline
 from agent.catalog import catalog as build_catalog
 from agent.examples import EXAMPLES
 from agent.session import SESSIONS
@@ -72,13 +72,18 @@ def health() -> dict:
     return {"status": "ok", "revision": os.environ.get("K_REVISION", "local")}
 
 
+def traced_user(request: Request) -> str | None:
+    """IAP's id for the signed-in user, pseudonymized for tracing (agent/observability.py)."""
+    return observability.user_id(request.headers.get("x-goog-authenticated-user-id"))
+
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat(req: ChatRequest) -> ChatResponse:
-    return ChatResponse(**await pipeline.chat(req.message, req.session_id, req.run_state))
+async def chat(req: ChatRequest, request: Request) -> ChatResponse:
+    return ChatResponse(**await pipeline.chat(req.message, req.session_id, req.run_state, user=traced_user(request)))
 
 
 @app.post("/chat/stream")
-async def chat_stream(req: ChatRequest) -> StreamingResponse:
+async def chat_stream(req: ChatRequest, request: Request) -> StreamingResponse:
     """The /chat turn as server-sent events: `agent_start`, `tool_start` and `tool_call` events
     while it runs, then `done` with the /chat response as `body` (and per-call `usage`)."""
     queue: asyncio.Queue = asyncio.Queue()
@@ -93,7 +98,7 @@ async def chat_stream(req: ChatRequest) -> StreamingResponse:
 
     async def work() -> None:
         try:
-            body = await pipeline.chat(req.message, req.session_id, req.run_state, listener=listener)
+            body = await pipeline.chat(req.message, req.session_id, req.run_state, listener=listener, user=traced_user(request))
             await asyncio.sleep(0)  # let events scheduled from worker threads land before `done`
             await queue.put({"type": "done", "body": ChatResponse(**body).model_dump(), "usage": body.get("usage", [])})
         except Exception as e:  # noqa: BLE001 - pipeline.chat already turns agent failures into a reply

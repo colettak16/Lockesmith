@@ -63,6 +63,7 @@ def record(ctx: RequestContext, agent: str, name: str, args: dict, result) -> No
     ctx.tool_calls.append(
         {"agent": agent, "name": name, "args": args, "result": runtime.preview(result), "round": ctx.research_round, "t": ctx.elapsed()}
     )
+    observability.step(name, args, result)
 
 
 def sanitize_citations(ctx: RequestContext, draft: LeadDraft) -> LeadDraft:
@@ -151,10 +152,11 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     ctx.state, ctx.excluded_species = session.state, set(session.excluded)
 
     if decision.action == "decline":
-        return {"response": decision.reply, "plan": None}
+        return {"response": decision.reply, "plan": None, "intent": "declined"}
     missing = session.state.missing_required()
     if decision.action == "ask" or (missing and decision.intent != "lookup"):
-        return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing), "plan": None}
+        return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing),
+                "plan": None, "intent": "clarify"}
 
     lead_input = (
         f"PLAYER QUESTION\n{message}\n\nINTENT: {decision.intent}\nGATEKEEPER BRIEF: {decision.research_brief}\n\n"
@@ -200,7 +202,7 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     if problems:
         plan["citation_warnings"] = problems
     session.last_plan = plan
-    return {"response": text, "citations": citations, "plan": plan, "chart": chart_or_none(ctx, plan)}
+    return {"response": text, "citations": citations, "plan": plan, "chart": chart_or_none(ctx, plan), "intent": decision.intent}
 
 
 def chart_or_none(ctx: RequestContext, plan: dict) -> dict | None:
@@ -246,15 +248,27 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
     return {"session_id": session.id, **session.randomizer}
 
 
+def trace_tags(session: Session) -> list[str]:
+    """What kind of run this is, known before the turn starts (LangFuse tags are fixed at creation)."""
+    rules = session.state.ruleset
+    tags = ["randomized" if session.randomizer else "vanilla"]
+    if rules.nuzlocke:
+        tags.append("nuzlocke")
+    if rules.monotype or rules.no_legendaries or rules.wild_only or rules.banned_species or rules.notes:
+        tags.append("custom-rules")
+    return tags
+
+
 async def chat(message: str, session_id: str | None = None, run_state: RunState | None = None,
-               listener=None) -> dict:
-    """One /chat turn. `listener`, if given, gets progress events as agents start and tools run."""
+               listener=None, user: str | None = None) -> dict:
+    """One /chat turn. `listener`, if given, gets progress events as agents start and tools run;
+    `user` is a pseudonymous id for tracing."""
     session = SESSIONS.get(session_id)
     if run_state is not None:
         apply_form_state(session, run_state)
     ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded),
                          randomizer=session.randomizer, listener=listener)
-    with observability.chat_trace(session.id, message) as finish:
+    with observability.chat_trace(session.id, message, user=user, tags=trace_tags(session)) as finish:
         try:
             result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
         except TimeoutError:
@@ -262,8 +276,15 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
         except Exception as e:  # noqa: BLE001 - the player gets a message, the trace keeps the details
             record(ctx, "pipeline", "error", {}, f"{type(e).__name__}: {e}")
             result = {"response": "Sorry, something went wrong while researching that. Please try again.", "plan": None}
-        finish({"response": result["response"], "picks": [r["species"] for r in (result.get("plan") or {}).get("recommendations", [])],
-                "seconds": ctx.elapsed(), "model_calls": len(ctx.usage)})
+        finish(result["response"], {
+            "intent": result.get("intent"),
+            "picks": [r["species"] for r in (result.get("plan") or {}).get("recommendations", [])],
+            "seconds": ctx.elapsed(), "model_calls": len(ctx.usage),
+            "cost_usd": round(sum(u.get("cost_usd") or 0 for u in ctx.usage), 4),
+            "citations": len(result.get("citations", [])),
+            "randomizer_log": session.randomizer["log_id"] if session.randomizer else None,
+            "rules": session.state.ruleset.describe(),
+        })
     await asyncio.to_thread(observability.flush)
     session.history += [{"role": "user", "content": message}, {"role": "assistant", "content": result["response"]}]
     return {

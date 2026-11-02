@@ -158,7 +158,22 @@ Each answer's trace panel shows the model calls, tokens and cost for that questi
 | Tokens | 61k–83k | 3k–4k |
 | Cost | $0.19–0.25 | $0.04–0.05 |
 
-With LangFuse keys set (see [docs/deploy.md](docs/deploy.md)), every `/chat` turn is also a LangFuse trace. It shows the agent tree (the researchers nested under the Lead's `dispatch_researchers` call, running at the same time), each model call with its tokens and cost, and each tool call with its input and output, grouped by session. This goes through OpenInference's OpenAI Agents SDK instrumentation (`agent/observability.py`), and nothing is sent to OpenAI.
+With LangFuse keys set (see [docs/deploy.md](docs/deploy.md)), every `/chat` turn is also a LangFuse trace (`agent/observability.py`, through OpenInference's OpenAI Agents SDK instrumentation; nothing is sent to OpenAI). Each trace is grouped by session and tagged `vanilla`/`randomized`, `nuzlocke` or `custom-rules`:
+
+```
+answer-question                   input: the question · output: the answer · metadata: intent, picks, cost, rules
+├─ run-agents
+│  ├─ classify-request › clarifier › generation
+│  ├─ lead-research › lead › generation, dispatch_researchers (tool)
+│  │     ├─ research-battles › battle_researcher › generation, scout_battle, gauntlet_overview …
+│  │     ├─ research-catches › catch_researcher › generation, get_catchable, assess_candidates …   (in parallel)
+│  │     └─ research-moves   › moves_researcher › generation, moves_outlook, get_tm_availability …
+│  └─ write-answer › writer › generation
+├─ verify-picks · correct-places · check-citations   (evaluators: the Verifier, in code)
+└─ promote-backups                                    (when a backup replaced a failing pick)
+```
+
+Every generation carries its model, token usage and cost. The prices are registered in LangFuse by `scripts/langfuse_prices.py` from `agent/pricing.py`.
 
 <!-- LangFuse screenshots: docs/images/langfuse-trace.png and docs/images/langfuse-sessions.png, added after the deploy -->
 
