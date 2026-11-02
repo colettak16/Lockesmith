@@ -95,8 +95,12 @@ class Progression:
         """
         return any(area_matches(spec, location, area, method) for spec in self.areas_reachable(battle_id))
 
-    def never_reason(self, location: str, area: str | None) -> str | None:
-        return next((reason for spec, reason in self.never_reachable if area_matches(spec, location, area)), None)
+    def never_reason(self, location: str, area: str | None, method: str | None = None) -> str | None:
+        """Why an encounter can't be had before the Champion, or None. Entries limited to some
+        methods (Littleroot's gift) only answer for those methods, or for any method if none is given."""
+        return next(
+            (reason for spec, reason in self.never_reachable if area_matches(spec, location, area, method)), None
+        )
 
     def remaining(self, badges: int, include_optional: bool = True) -> list[Battle]:
         """Battles not yet fought for a player holding `badges` badges.
@@ -134,5 +138,8 @@ def _battle(raw: dict) -> Battle:
 def load(path: Path = PATH) -> Progression:
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     battles = sorted((_battle(b) for b in data["battles"]), key=lambda b: b.order)
-    never = [(parse_area(n["area"]), n["reason"]) for n in data.get("never_reachable") or []]
+    never = [
+        (parse_area({"area": n["area"], "methods": n["methods"]} if "methods" in n else n["area"]), n["reason"])
+        for n in data.get("never_reachable") or []
+    ]
     return Progression(battles, never)

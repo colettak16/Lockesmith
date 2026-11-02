@@ -36,7 +36,7 @@
 #   location          PokeAPI location slug of the battle
 #   hm_gates_open     HMs usable in the field when the fight starts
 #   key_items         encounter-gating items held: rods (fishing methods), devon-scope
-#                     (Kecleon), go-goggles (Route 111 desert)
+#                     (Kecleon), go-goggles (Route 111 desert), pokeblock-case (Safari Zone)
 #   areas_new         encounter areas that became reachable since the previous battle.
 #                     `location` means every area of it; `location/area` one PokeAPI
 #                     area; `location/main` the location's unnamed main area. A mapping
@@ -152,8 +152,14 @@ battles:
     location: dewford-town
     hm_gates_open: [cut]
     key_items: [old-rod]
-    areas_new: [hoenn-route-106, dewford-town, granite-cave, hoenn-route-109, slateport-city]
-    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge."
+    areas_new:
+      - hoenn-route-106
+      - dewford-town
+      - granite-cave
+      - hoenn-route-109
+      - slateport-city
+      - {area: hoenn-route-110, methods: [walk]}
+    notes: "Route 110's first grass patch, just north of Slateport, sits south of the Team Aqua line (grunts at y=83, Route 103 junction at y=60-80), so its grass opens with Slateport (Bulbapedia: Route 110). Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym"
 
   - id: grunts_oceanic_museum
@@ -185,8 +191,9 @@ battles:
     location: hoenn-route-110
     hm_gates_open: [cut, flash]
     key_items: [old-rod]
-    areas_new: [hoenn-route-110]
-    notes: "Mudkip players: same team for both rivals, but May leads with Wingull and Brendan with Slugma."
+    areas_new:
+      - {area: hoenn-route-110, methods: [surf, old-rod, good-rod, super-rod]}
+    notes: "Mudkip players: same team for both rivals, but May leads with Wingull and Brendan with Slugma. North of the Team Aqua line the route's water opens (the grass table is the same one opened before Brawly)."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_4#Rival_Battle_3"
 
   - id: wally_mauville
@@ -200,8 +207,11 @@ battles:
     location: mauville-city
     hm_gates_open: [cut, flash]
     key_items: [old-rod]
-    areas_new: [hoenn-route-117, hoenn-route-118]
-    notes: "Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Bikes from Rydel's Cycles are available in Mauville before this."
+    areas_new:
+      - hoenn-route-117
+      - hoenn-route-118
+      - {area: hoenn-route-111, methods: [old-rod, good-rod, super-rod, surf, rock-smash]}
+    notes: "Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Route 111's southern segment is open too: its pond (the route's only water) can be fished now, and its crumbling rocks are Rock Smash encounters once Rock Smash works; its grass is all in the desert (Bulbapedia: Route 111). Optional hazard there: the Winstrate family, four battles back to back with no healing (Route111_EventScript_BattleWinstrates: Victor, Victoria, Vivi, Vicky); Victoria gives a Macho Brace. Bikes from Rydel's Cycles are available in Mauville before this."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_5#Wally's_Challenge"
 
   - id: gym3_wattson
@@ -274,7 +284,7 @@ battles:
     location: petalburg-city
     hm_gates_open: [cut, flash, rock-smash, strength]
     key_items: [old-rod, go-goggles]
-    areas_new: [hoenn-route-111, mirage-tower]
+    areas_new: [{area: hoenn-route-111, methods: [walk]}, mirage-tower]
     notes: "Go-Goggles from the rival after Flannery open the Route 111 desert. Mirage Tower (fossil choice) needs the Mach Bike and Rock Smash."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_8#Petalburg_Gym"
 
@@ -329,7 +339,7 @@ battles:
     optional: false
     location: fortree-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new:
       - fortree-city
       - hoenn-route-120
@@ -342,7 +352,7 @@ battles:
       - hoenn-safari-zone/nwmach-bike-area
       - hoenn-safari-zone/neacro-bike-area
       - magma-hideout
-    notes: "Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's bike areas each need one bike (swap at Rydel's); its two expansion areas are postgame."
+    notes: "Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's entrance checks for the Pokéblock Case (Route121_SafariZoneEntrance), which the Lilycove Contest Hall gives out (contest_hall.inc); its bike areas each need one bike (swap at Rydel's), and its two expansion areas are postgame."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym"
 
   - id: rival5_lilycove
@@ -358,7 +368,7 @@ battles:
     optional: true
     location: lilycove-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     notes: "The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)"
@@ -373,9 +383,9 @@ battles:
     optional: false
     location: magma-hideout
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
-    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle."
+    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle. Inside the hideout, more Magma grunts stand along the way; which can't be avoided hasn't been checked."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha"
 
   - id: maxie_magma_hideout
@@ -388,7 +398,7 @@ battles:
     optional: false
     location: magma-hideout
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     notes: "Straight after Tabitha."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Maxie"
@@ -403,9 +413,9 @@ battles:
     optional: false
     location: team-aqua-hideout
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: [team-aqua-hideout]
-    notes: "The hideout's two Electrode are disguised as items."
+    notes: "The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Submarine_room_2"
 
   - id: gym7_tate_liza
@@ -418,7 +428,7 @@ battles:
     optional: false
     location: mossdeep-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new:
       - hoenn-route-124/main
       - mossdeep-city/main
@@ -435,7 +445,7 @@ battles:
       - hoenn-route-132
       - hoenn-route-133
       - hoenn-route-134
-    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days."
+    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) appears only on days when the daily value matches the low 16 bits of a party Pokémon's personality value (time_events.c IsMirageIslandPresent), so swapping party members can change it; the old man in Pacifidlog says whether it's visible."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
 
   - id: space_center
@@ -449,7 +459,7 @@ battles:
     optional: false
     location: mossdeep-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     notes: "Two-on-two with Steven as partner; the map script sets it up and both trainer structs say single. Before it: four Magma Grunts on 1F, then three on 2F fought one after another with no break."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_14#VS_Maxie,_Tabitha"
@@ -464,7 +474,7 @@ battles:
     optional: false
     location: seafloor-cavern
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new:
       - hoenn-route-124/underwater
       - hoenn-route-126/underwater
@@ -486,7 +496,7 @@ battles:
     optional: false
     location: seafloor-cavern
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     source: "guide:Walkthrough:Pokemon_Emerald/Part_15#VS_Archie"
 
@@ -500,7 +510,7 @@ battles:
     optional: false
     location: sootopolis-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new:
       - cave-of-origin/entrance
       - cave-of-origin/1f
@@ -522,7 +532,7 @@ battles:
     optional: false
     location: hoenn-victory-road
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: [ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room]
     notes: "Bagon is only in Meteor Falls' back small room (B1F 2R). Every Meteor Falls room past 1F 1R needs Waterfall: Bulbapedia marks all B1F items and trainers 'requires Surf and Waterfall'. PokeAPI areas: main = 1F 1R, back / b1f = 1F 2R / B1F 1R (identical tables), backsmall-room = B1F 2R."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_18#VS_Wally"
@@ -537,7 +547,7 @@ battles:
     optional: false
     location: ever-grande-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     notes: "The Elite Four and Champion are a gauntlet: no Pokémon Center and no catching between these five fights. Bag items still work."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_1:_Sidney"
@@ -552,7 +562,7 @@ battles:
     optional: false
     location: ever-grande-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_2:_Phoebe"
 
@@ -566,7 +576,7 @@ battles:
     optional: false
     location: ever-grande-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_3:_Glacia"
 
@@ -580,7 +590,7 @@ battles:
     optional: false
     location: ever-grande-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Battle_4:_Drake"
 
@@ -594,16 +604,18 @@ battles:
     optional: false
     location: ever-grande-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
-    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
+    key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
     notes: "Emerald's Champion is Wallace (Steven is Champion in Ruby/Sapphire)."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Champion"
 
-# Areas with Emerald encounters that are never reachable before the Champion. Tools
-# should say "postgame" or "event only" rather than "not in the data".
+# Encounters that can't be had before the Champion. Tools should say "postgame" or
+# "event only" rather than "not in the data". This is about the encounter, not the
+# place: an entry with `methods` blocks only those methods (Littleroot itself is where
+# you start; only its gift is postgame).
 never_reachable:
-  - {area: littleroot-town, reason: "Johto starters from Birch after completing the Hoenn Pokédex (postgame)"}
-  - {area: mossdeep-city/stevens-house, reason: "Beldum in Steven's house after the Hall of Fame"}
+  - {area: littleroot-town, methods: [gift], reason: "the town is where you start; only Birch's Johto starter gift is postgame (after completing the Hoenn Pokédex)"}
+  - {area: mossdeep-city/stevens-house, methods: [gift], reason: "you visit Steven's house for HM08 Dive before the Champion; only the Beldum gift comes after the Hall of Fame"}
   - {area: hoenn-safari-zone/expansion-north, reason: "Safari Zone expansion opens after the Hall of Fame"}
   - {area: hoenn-safari-zone/expansion-south, reason: "Safari Zone expansion opens after the Hall of Fame"}
   - {area: cave-of-origin/b2f, reason: "unused Ruby/Sapphire map in Emerald (PokeAPI still lists encounters)"}

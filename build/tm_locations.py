@@ -9,9 +9,10 @@ Five kinds of source, all machine-readable in the decomp:
 
 Each row is tied to a map and, through its region map section, to a PokeAPI
 location slug, so get_tm_availability can join it to progression.yaml. Gym TMs
-are tagged with the leader they're awarded for. Other story gates (HM gifts after
-a story beat, the Trick House) are not machine-readable and are listed for review
-in docs/decisions.md.
+are tagged with the leader they're awarded for. Gates map data can't show (an HM
+to reach the item, a key, a side quest, a party condition) are in REQUIRES, each
+checked against the decomp scripts or Bulbapedia (docs/decisions.md D1, D7).
+HM gifts after a story beat are covered by progression.yaml's hm_gates_open.
 """
 
 import re
@@ -20,6 +21,36 @@ from pathlib import Path
 import duckdb
 
 from build import decomp
+
+
+SLATEPORT_TM_SALESMAN = (
+    "the Slateport TM salesman appears only after Route 111's Secret Power man gives you TM43 "
+    "(secret_power_tm.inc clears FLAG_HIDE_SLATEPORT_CITY_TM_SALESMAN)"
+)
+PACIFIDLOG_FAN_CLUB = (
+    "once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 "
+    "Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK)"
+)
+# (label, method, map folder) -> what else the source needs beyond reaching the map
+REQUIRES = {
+    ("TM02", "item-ball", "MeteorFalls_B1F_2R"): "Waterfall (Rain Badge) to reach Meteor Falls' back rooms",
+    ("TM06", "item-ball", "FieryPath"): "Strength (Heat Badge) to move the boulders in front of it (Bulbapedia: Fiery Path)",
+    ("TM07", "item-ball", "ShoalCave_LowTideIceRoom"): "Shoal Cave at low tide (the tide changes every six hours)",
+    ("TM10", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN,
+    ("TM11", "item-ball", "ScorchedSlab"): "Surf to reach Scorched Slab on Route 120",
+    ("TM12", "gift", "Route110_TrickHouseEnd"): "a Trick House puzzle prize",
+    ("TM12", "gift", "Route110_TrickHouseEntrance"): "a Trick House puzzle prize",
+    ("TM13", "item-ball", "AbandonedShip_Room_B1F"): "the Storage Key from the Captain's Office unlocks this room (FLAG_USED_STORAGE_KEY)",
+    ("TM18", "item-ball", "AbandonedShip_HiddenFloorRooms"): "Dive to reach the Abandoned Ship's hidden floor",
+    ("TM19", "gift", "Route123"): "a Grass-type Pokemon in the party (IsGrassTypeInParty)",
+    ("TM21", "gift", "PacifidlogTown_House2"): PACIFIDLOG_FAN_CLUB,
+    ("TM24", "gift", "MauvilleCity"): "Wattson gives it after you finish New Mauville with his Basement Key",
+    ("TM26", "item-ball", "SeafloorCavern_Room9"): "inside Seafloor Cavern (Dive)",
+    ("TM27", "gift", "FallarborTown_CozmosHouse"): "Professor Cozmo gives it once you hand over the Meteorite (from Mt. Chimney)",
+    ("TM27", "gift", "PacifidlogTown_House2"): PACIFIDLOG_FAN_CLUB,
+    ("TM43", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN,
+    ("TM49", "gift", "SSTidalRooms"): "postgame: the S.S. Ticket comes after the Hall of Fame (hall_of_fame.inc)",
+}
 
 
 def item_aliases(decomp_dir: Path) -> dict[str, str]:
@@ -62,28 +93,35 @@ def extract(decomp_dir: Path) -> list[dict]:
             if bg.get("type") == "hidden_item" and bg.get("item") in aliases:
                 add(aliases[bg["item"]], "hidden-item", map_id, bg.get("flag"))
 
-    # Scripts shared across maps (data/scripts/*.inc) are attributed to the maps that call them.
+    # Scripts shared across maps (data/scripts/*.inc) are attributed to every map that refers to
+    # a label in the same file, from its scripts.inc or its map.json events. Route 111's Secret
+    # Power man is an object event whose script lives in secret_power_tm.inc.
     map_texts = {}
     for folder, map_id in folder_to_map.items():
         path = Path(decomp_dir) / "data" / "maps" / folder / "scripts.inc"
         if path.exists():
             map_texts[map_id] = path.read_text(encoding="utf-8")
-    shared = {}
+    shared = []  # (labels defined in the file, TM/HM labels it gives, file name)
     for path in (Path(decomp_dir) / "data" / "scripts").glob("*.inc"):
         if path.name == "item_ball_scripts.inc":
             continue
-        for name, body in labelled_blocks(path.read_text(encoding="utf-8")).items():
-            for item in re.findall(r"giveitem\s+(ITEM_(?:TM|HM)\w+)", body):
-                if item in aliases:
-                    shared[name] = aliases[item]
+        text = path.read_text(encoding="utf-8")
+        given = {aliases[i] for i in re.findall(r"giveitem\s+(ITEM_(?:TM|HM)\w+)", text) if i in aliases}
+        if given:
+            shared.append((set(labelled_blocks(text)), given, path.name))
 
-    for map_id, text in map_texts.items():
+    for map_id, m in maps.items():
+        text = map_texts.get(map_id, "")
         for item in re.findall(r"giveitem\s+(ITEM_(?:TM|HM)\w+)", text):
             if item in aliases:
                 add(aliases[item], "gift", map_id)
-        for name, label in shared.items():
-            if re.search(rf"\b{name}\b", text):
-                add(label, "gift", map_id, detail=f"shared script {name}")
+        refs = set(re.findall(r"\w+", text)) | {
+            e.get("script") for key in ("object_events", "coord_events", "bg_events") for e in m.get(key) or []
+        }
+        for labels, given, file_name in shared:
+            if refs & labels:
+                for label in sorted(given):
+                    add(label, "gift", map_id, detail=f"shared script {file_name}")
         for mart in re.findall(r"pokemart\s+(\w+)", text):
             body = labelled_blocks(text).get(mart, "")
             for item in re.findall(r"\.2byte\s+(ITEM_\w+)", body):
@@ -130,18 +168,21 @@ def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path) -> None:
         rows.append(
             (
                 r["label"], r["method"], r["map"], m["folder"], mapsec, mapsec_location.get(mapsec), r["flag"],
-                r["detail"], f"decomp:data/maps/{m['folder']}#{r['label']}",
+                r["detail"], REQUIRES.get((r["label"], r["method"], m["folder"])),
+                f"decomp:data/maps/{m['folder']}#{r['label']}",
             )
         )
+    unmatched = set(REQUIRES) - {(r[0], r[1], r[3]) for r in rows}
+    assert not unmatched, f"REQUIRES entries with no extracted source: {sorted(unmatched)}"
     con.execute(
         """
         CREATE TABLE tm_locations (
             label VARCHAR, method VARCHAR, map VARCHAR, map_folder VARCHAR, mapsec VARCHAR,
-            location VARCHAR, flag VARCHAR, detail VARCHAR, source_id VARCHAR
+            location VARCHAR, flag VARCHAR, detail VARCHAR, requires VARCHAR, source_id VARCHAR
         )
         """
     )
-    con.executemany("INSERT INTO tm_locations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", rows)
+    con.executemany("INSERT INTO tm_locations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", rows)
 
     folders = {m["folder"]: map_id for map_id, m in maps.items()}
     move_ids = decomp.move_ids(decomp_dir)

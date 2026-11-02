@@ -444,6 +444,55 @@ def reconcile_moves_with_rom(con, decomp_dir: Path) -> None:
     con.execute(f"UPDATE moves SET damage_class = 'varies' WHERE identifier IN {tuple(DYNAMIC_TYPE_MOVES)}")
 
 
+# Encounter conditions PokeAPI doesn't model: condition -> (decomp flag/var it rests on, description).
+# Rows get them through ROM_CONDITION_ROWS: (location, method, species or None for every species).
+ROM_CONDITIONS = {
+    "sealed-chamber-opened": (
+        "FLAG_REGI_DOORS_OPENED",
+        "Sealed Chamber (underwater, Route 134): use Dig on the outer wall, then read the inner wall with "
+        "Wailord first and Relicanth last in the party",
+    ),
+    "regirock-puzzle": ("FLAG_SYS_REGIROCK_PUZZLE_COMPLETED", "Desert Ruins: use Rock Smash where the braille says"),
+    "regice-puzzle": ("FLAG_SYS_BRAILLE_REGICE_COMPLETED", "Island Cave: walk the route the braille describes"),
+    "registeel-puzzle": ("FLAG_SYS_REGISTEEL_PUZZLE_COMPLETED", "Ancient Tomb: use Flash where the braille says"),
+    "rayquaza-returned": (
+        "VAR_SKY_PILLAR_STATE",
+        "Rayquaza is back at Sky Pillar's apex after calming Groudon and Kyogre (state >= 2); the cracked "
+        "floors need the Mach Bike",
+    ),
+    "mirage-island-visible": (
+        "IsMirageIslandPresent",
+        "Mirage Island shows on Route 130 only on days when the daily value matches the low 16 bits of a "
+        "party Pokemon's personality value (time_events.c)",
+    ),
+}
+ROM_CONDITION_ROWS = {
+    ("desert-ruins", "static", "regirock"): ["sealed-chamber-opened", "regirock-puzzle"],
+    ("island-cave", "static", "regice"): ["sealed-chamber-opened", "regice-puzzle"],
+    ("ancient-tomb", "static", "registeel"): ["sealed-chamber-opened", "registeel-puzzle"],
+    ("sky-pillar", "static", "rayquaza"): ["rayquaza-returned"],
+    ("mirage-island", "walk", None): ["mirage-island-visible"],
+}
+
+
+def add_rom_conditions(con, decomp_dir: Path) -> None:
+    """Attach the ROM_CONDITIONS gates to their encounter rows and describe them in `rom_conditions`."""
+    constants = decomp.read(decomp_dir, "include/constants/flags.h") + decomp.read(decomp_dir, "include/constants/vars.h")
+    for name, (symbol, _) in ROM_CONDITIONS.items():
+        assert symbol in constants or not symbol.isupper(), f"{name}: {symbol} not in the decomp's flags/vars"
+    for (location, method, species), conditions in ROM_CONDITION_ROWS.items():
+        n = con.execute(
+            "UPDATE encounters SET conditions = list_concat(conditions, ?) WHERE location = ? AND method = ? "
+            "AND (? IS NULL OR species_id = (SELECT species_id FROM species WHERE identifier = ?))",
+            [conditions, location, method, species, species],
+        ).fetchone()[0]
+        assert n > 0, f"no encounter rows for {location} {method} {species}"
+    con.execute("CREATE TABLE rom_conditions (condition VARCHAR PRIMARY KEY, decomp_symbol VARCHAR, description VARCHAR)")
+    con.executemany(
+        "INSERT INTO rom_conditions VALUES (?, ?, ?)", [(k, s, d) for k, (s, d) in ROM_CONDITIONS.items()]
+    )
+
+
 def reconcile_evolutions_with_rom(con, decomp_dir: Path) -> None:
     """Friendship thresholds and the evolution conditions PokeAPI's columns can't express.
 

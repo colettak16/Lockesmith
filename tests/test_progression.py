@@ -129,12 +129,12 @@ def test_every_encounter_area_is_placed(prog, db):
     rows = db.execute("SELECT DISTINCT location, area, method FROM encounters").fetchall()
     unplaced = [
         (loc, area, method) for loc, area, method in rows
-        if not prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area) is None
+        if not prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method) is None
     ]
     assert unplaced == []
     overlap = [
-        (loc, area) for loc, area, _ in rows
-        if prog.is_reachable("champion_wallace", loc, area) and prog.never_reason(loc, area)
+        (loc, area, method) for loc, area, method in rows
+        if prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method)
     ]
     assert overlap == []
 
@@ -176,7 +176,7 @@ def test_resolved_review_placements(prog):
     assert prog.is_reachable("gym1_roxanne", "rusturf-tunnel", None)
     # Briney sails to Slateport once Steven has the letter; Aqua grunts hold Route 110 until the museum
     assert prog.is_reachable("gym2_brawly", "slateport-city", None)
-    assert not prog.is_reachable("grunts_oceanic_museum", "hoenn-route-110", None)
+    assert not prog.is_reachable("grunts_oceanic_museum", "hoenn-route-110", None, "surf")  # north of the line
     # Mauville's side routes are open before Wally; Route 115's grass isn't reached via Meteor Falls
     assert prog.is_reachable("wally_mauville", "hoenn-route-117", None)
     assert not prog.is_reachable("maxie_mt_chimney", "hoenn-route-115", None, "walk")
@@ -206,3 +206,20 @@ def test_cross_check_placements(prog):
     for loc in ("sootopolis-city", "desert-ruins", "island-cave", "ancient-tomb"):
         assert prog.is_reachable("shelly_seafloor_cavern", loc, None)
         assert not prog.is_reachable("space_center", loc, None)
+
+
+def test_second_cross_check_placements(prog):
+    """Round two: routes with several unlock points, and postgame gifts in reachable places."""
+    # Route 110's first grass is south of the Team Aqua line, so it opens with Slateport
+    assert prog.is_reachable("gym2_brawly", "hoenn-route-110", None, "walk")
+    assert not prog.is_reachable("grunts_oceanic_museum", "hoenn-route-110", None, "super-rod")
+    assert prog.is_reachable("rival3_route110", "hoenn-route-110", None, "super-rod")
+    # Route 111: pond fishing and Rock Smash from Mauville, desert grass after the Go-Goggles
+    assert prog.is_reachable("wally_mauville", "hoenn-route-111", None, "old-rod")
+    assert prog.is_reachable("wally_mauville", "hoenn-route-111", None, "rock-smash")
+    assert not prog.is_reachable("gym4_flannery", "hoenn-route-111", None, "walk")
+    assert prog.is_reachable("gym5_norman", "hoenn-route-111", None, "walk")
+    # Postgame gifts don't make their places unreachable
+    assert prog.never_reason("littleroot-town", None, "gift")
+    assert prog.never_reason("mossdeep-city", "stevens-house", "gift")
+    assert "pokeblock-case" in prog.get("gym6_winona").key_items

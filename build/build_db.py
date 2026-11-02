@@ -131,6 +131,7 @@ def main() -> None:
     build_map_sections(con)
     gen3_corrections.reconcile_statics_with_rom(con, DECOMP_DIR)
     gen3_corrections.reconcile_evolutions_with_rom(con, DECOMP_DIR)
+    gen3_corrections.add_rom_conditions(con, DECOMP_DIR)
     add_rom_names(con)
     build_wild_headers(con)
     parse_decomp_trainers.build(con, DECOMP_DIR)
