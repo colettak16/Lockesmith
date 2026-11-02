@@ -8,6 +8,7 @@ chatbot conventions.
 
 import asyncio
 import json
+import logging
 import os
 from pathlib import Path
 
@@ -24,6 +25,11 @@ from agent.state import RunState
 
 STATIC = Path(__file__).resolve().parent / "static"
 KEEPALIVE_S = 15  # a comment line this often keeps proxies from closing a quiet stream
+
+# Warnings and errors from every library (the LangFuse exporter included) reach Cloud Run's logs,
+# plus Lockesmith's own per-turn and fallback lines
+logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+logging.getLogger("lockesmith").setLevel(logging.INFO)
 
 app = FastAPI(title="Lockesmith")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")

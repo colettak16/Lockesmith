@@ -100,6 +100,15 @@ def chat_trace(session_id: str, message: str, *, user: str | None = None,
                 yield lambda answer, metadata: root.update(output=answer, metadata=metadata)
 
 
+def current_trace_id() -> str | None:
+    """The LangFuse trace id of the turn in progress, for the request's log line."""
+    if not _enabled:
+        return None
+    from langfuse import get_client
+
+    return get_client().get_current_trace_id()
+
+
 def step(name: str, args: dict, result) -> None:
     """A pipeline step done in code (the Verifier's checks, errors) as its own observation."""
     if not _enabled or name not in STEPS:

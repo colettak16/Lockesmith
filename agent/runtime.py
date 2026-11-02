@@ -75,7 +75,7 @@ class FallbackModel(LitellmModel):
         except (RateLimitError, Timeout) as e:
             if self.fallback is None:
                 raise
-            log.info("%s on %s; using %s", type(e).__name__, self.model, self.fallback.model)
+            log.warning("%s on %s; using %s", type(e).__name__, self.model, self.fallback.model)
             response = await self.fallback.get_response(*args, **kwargs)
             response.lockesmith_fallback = self.fallback.model  # surfaced by ToolCallRecorder.on_llm_end
             return response

@@ -574,7 +574,7 @@ function traceSection(calls, usage) {
   const cost = priced.reduce((s, u) => s + u.cost_usd, 0);
   return `<details class="box trace"><summary>Research trace: how it got here (${calls.length} steps)</summary>
     ${parts}${verifierSection(calls)}
-    ${n ? `<p class="usage">${n} model calls · ${tokens.toLocaleString()} tokens${priced.length === n ? ` · about $${cost.toFixed(3)} at Vertex AI list prices` : ""}${fallback ? ` · ${fallback} served by the fallback model after a rate limit` : ""}</p>` : ""}</details>`;
+    ${n ? `<p class="usage">${n} model calls · ${tokens.toLocaleString()} tokens${priced.length === n ? ` · about $${cost.toFixed(3)} at Vertex AI list prices` : ""}${fallback ? ` · ${fallback} answered by the fallback model (rate limit or a stalled call)` : ""}</p>` : ""}</details>`;
 }
 
 function renderAnswer(entry, body, usage, seconds) {

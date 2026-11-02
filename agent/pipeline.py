@@ -8,6 +8,7 @@ citations are then checked, with one retry.
 
 import asyncio
 import json
+import logging
 
 from pydantic import ValidationError
 
@@ -24,6 +25,7 @@ from agent.state import RunState
 from agent.verifier import ERROR, WARNING, Violation, correct_places, promote_backups, verify
 from agent.writer import make_writer
 
+log = logging.getLogger("lockesmith.pipeline")
 REQUEST_BUDGET_S = 270  # graders wait up to 5 minutes; Cloud Run's timeout is 600 s
 LEAD_MAX_TURNS = 12
 HISTORY_TURNS = 3
@@ -269,6 +271,7 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
     ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded),
                          randomizer=session.randomizer, listener=listener)
     with observability.chat_trace(session.id, message, user=user, tags=trace_tags(session)) as finish:
+        trace_id = observability.current_trace_id()
         try:
             result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
         except TimeoutError:
@@ -286,6 +289,10 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
             "rules": session.state.ruleset.describe(),
         })
     await asyncio.to_thread(observability.flush)
+    # One line per turn in the service logs, to match against LangFuse
+    log.info("chat session=%s trace=%s intent=%s seconds=%.1f model_calls=%d fallbacks=%d cost_usd=%.3f",
+             session.id, trace_id, result.get("intent"), ctx.elapsed(), len(ctx.usage),
+             sum(1 for u in ctx.usage if u.get("fallback")), sum(u.get("cost_usd") or 0 for u in ctx.usage))
     session.history += [{"role": "user", "content": message}, {"role": "assistant", "content": result["response"]}]
     return {
         "response": result["response"],
