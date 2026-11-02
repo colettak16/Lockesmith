@@ -21,7 +21,7 @@ import logging
 import os
 from typing import Any
 
-import litellm
+from litellm.exceptions import RateLimitError, Timeout
 from dotenv import load_dotenv
 
 from agents import Agent, ModelSettings, RunConfig, RunHooks, Runner, set_tracing_disabled
@@ -48,6 +48,10 @@ RETRY = ModelRetrySettings(
     backoff={"initial_delay": 1.0, "multiplier": 2.0, "max_delay": 4.0, "jitter": True},
     policy=retry_policies.any(retry_policies.http_status([429, 500, 503]), retry_policies.network_error()),
 )
+# Per-call limits. In LangFuse traces a normal Flash call finished within 15 s even writing 2,800
+# tokens, and Pro within 35 s; slower ones had stalled (68 s for a 76-token reply), holding up the
+# whole parallel round. A call past its limit goes to the fallback model instead (docs/decisions.md D12).
+CALL_TIMEOUT_S = {"fast": 25, "strong": 60}
 
 
 def model_name(tier: str) -> str:
@@ -59,7 +63,7 @@ def model_name(tier: str) -> str:
 
 
 class FallbackModel(LitellmModel):
-    """A LiteLLM model that sends a rate-limited call to a second model instead of waiting."""
+    """A LiteLLM model that sends a rate-limited or stalled call to a second model instead of waiting."""
 
     def __init__(self, model: str, fallback: str | None):
         super().__init__(model=model)
@@ -68,10 +72,10 @@ class FallbackModel(LitellmModel):
     async def get_response(self, *args, **kwargs):
         try:
             return await super().get_response(*args, **kwargs)
-        except litellm.RateLimitError:
+        except (RateLimitError, Timeout) as e:
             if self.fallback is None:
                 raise
-            log.info("rate-limited on %s; using %s", self.model, self.fallback.model)
+            log.info("%s on %s; using %s", type(e).__name__, self.model, self.fallback.model)
             response = await self.fallback.get_response(*args, **kwargs)
             response.lockesmith_fallback = self.fallback.model  # surfaced by ToolCallRecorder.on_llm_end
             return response
@@ -84,7 +88,8 @@ def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=No
         name=name,
         instructions=instructions,
         model=FallbackModel(model_name(tier), model_name("fallback")),
-        model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY),
+        model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY,
+                                     extra_args={"timeout": CALL_TIMEOUT_S.get(tier, 60)}),
         tools=list(tools),
         output_type=output_type,
     )

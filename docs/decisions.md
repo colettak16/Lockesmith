@@ -255,6 +255,11 @@ Design choices:
     - Tags are set at creation from the run state (`vanilla`/`randomized`, `nuzlocke`, `custom-rules`). Environment is `production` on Cloud Run and `development` locally.
     - The Verifier's steps are observations: `verify-picks`, `correct-places` and `check-citations` as evaluators, `promote-backups` as a span, errors at level ERROR.
     - The user id is a hash of IAP's opaque user id, so no email reaches LangFuse.
+  - **What the first production trace showed.** A Nuzlocke question took 2 min 10 s. Three researchers finished in 11.5–21.9 s, but the story researcher took 78 s, because its first model call stalled for 68 s on a 76-token reply; its other four calls took 2–3 s. Across all 46 traced calls so far:
+    - Flash: median 3.7 s, slowest normal call 14.6 s (even with 2,800 output tokens); the two outliers (68 s, 29 s) were tiny replies, i.e. stalls.
+    - Pro: up to 33 s.
+
+    So every call now has a time limit (`CALL_TIMEOUT_S`: 25 s for Flash, 60 s for Pro), and a call that hits it goes to the fallback model, as a rate-limited one already did. That turns a 68 s stall into about 25 s plus one fallback call.
   - Left as is: OpenInference's own `turn` and `generation` span names (generic but stable; the step above each says what it is). Gemini's thinking isn't captured, because thought summaries are off and turning them on means more output tokens per call.
 - **Cost.** LangFuse's built-in prices don't match LiteLLM's `vertex_ai/` names or these Gemini versions. Prices live in `agent/pricing.py`, read from Google's pricing page on 2026-11-01:
   - 3.5 Flash: $1.50 / $9.00 per 1M input / output tokens

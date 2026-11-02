@@ -175,7 +175,20 @@ answer-question                   input: the question · output: the answer · m
 
 Every generation carries its model, token usage and cost. The prices are registered in LangFuse by `scripts/langfuse_prices.py` from `agent/pricing.py`.
 
-<!-- LangFuse screenshots: docs/images/langfuse-trace.png and docs/images/langfuse-sessions.png, added after the deploy -->
+**One real question on the deployed site**, *"what should I try and catch next with my Nuzlocke rules?"* (production environment, tagged `vanilla`, `nuzlocke`):
+
+![LangFuse timeline of one Lockesmith question](docs/images/langfuse-timeline.png)
+
+*Timeline.* The whole turn took 2 min 10 s and cost $0.23 across 19 model calls. The Clarifier took 2.8 s. The Lead's `dispatch_researchers` ran four researchers at once; three finished in 11.5–21.9 s, but the round took 78 s because one of the story researcher's model calls stalled for 68 s. Its other calls took 2–3 s. That trace is why every model call now has a time limit (25 s for Flash, 60 s for Pro), after which it goes to the fallback model ([D12](docs/decisions.md)).
+
+![LangFuse agent graph of the same question](docs/images/langfuse-agent-graph.png)
+
+*Agent graph* of the same trace, expanded:
+- `answer-question` → `run-agents` → `classify-request` → `lead-research`
+- the Lead fans out to `research-catches`, `research-moves`, `research-battles` and `research-story`, each with its own turns and tools
+- then `write-answer`
+- the Verifier's `verify-picks` and `check-citations` run in code alongside
+- two researchers that used up their tool budget show their `wrap-up` turn
 
 ## Running it locally
 
