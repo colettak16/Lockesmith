@@ -2,6 +2,12 @@
 
 from agent.context import RequestContext
 
+# What a log can randomize, in words, for saying what it left alone
+VANILLA_KINDS = {
+    "wild": "wild Pokémon", "trainers": "trainer teams", "statics": "static and gift Pokémon", "starters": "starters",
+    "tm_moves": "TM moves", "base_stats": "stats and types", "evolutions": "evolutions", "movesets": "movesets",
+}
+
 
 def state_brief(ctx: RequestContext) -> str:
     s = ctx.state
@@ -31,6 +37,9 @@ def state_brief(ctx: RequestContext) -> str:
         r = ctx.randomizer
         lines.append("Randomized run (the player's UPR log is loaded): tools read the log for "
                      + (", ".join(r["shadowed"]) or "nothing yet") + "; trust them over the walkthrough or memory.")
+        same = [label for kind, label in VANILLA_KINDS.items() if r["changes"].get(kind, "unchanged") == "unchanged"]
+        if same:
+            lines.append("The log left these as in the normal game (don't ask the player about them): " + ", ".join(same) + ".")
         if r["starters"] and s.starter in r["starters"]:
             lines.append(f"The player's starter slot ({s.starter}) is {r['starters'][s.starter]} in this run.")
         if r["unread"]:

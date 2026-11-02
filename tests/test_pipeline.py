@@ -154,6 +154,9 @@ def test_rules_and_rejections_persist_across_turns(models):
     chat("and now?", "p-rules", form)  # the form doesn't know the rule; the session does
     session = SESSIONS.get("p-rules")
     assert session.state.ruleset.monotype == "grass" and "no items in battle" in session.state.ruleset.notes
+    answer = SESSIONS.get("p-rules").history[-1]["content"]
+    assert "- grass-type only (checked by the Verifier)" in answer
+    assert "- no items in battle (followed, not checked automatically)" in answer
     assert "sharpedo" in session.excluded
 
 

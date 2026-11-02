@@ -234,6 +234,35 @@ Limits: wild sets from the log map to whole locations, not rooms (the vanilla ta
 - Randomized Tate & Liza from an uploaded log (a Fire-type team): 61 s, 14 calls. The answer named the log's team, recommended Water and Ground types, and cited `log:trainers#271`.
 - A first run, before the town fix, also exercised the repair round: 118 s, with one Lead repair. The gap loop costs about 40 s when a repair is needed, and nothing when a backup is promoted.
 
+## D12. Phase 4: front end, tracing and the baseline (2026-11-01)
+
+Agreed with the user:
+- **Field-journal look** (paper, emerald, pick cards) over a retro GBA style. The user liked GBA, but long cited answers must stay readable. The live-progress box borrows a GBA text-box frame as a nod.
+- **One-click examples are required**, at least three. The user lost points in Project 1 without them. Each example fills both the question and the run state it needs, and the randomizer one loads the sample log too. `agent/examples.py` is the single list behind the buttons, `scripts/run_samples.py`, `scripts/baseline.py` and the README. The three README samples are marked on the page.
+- **The fuller synthetic randomizer log is backlogged** until the professor answers about real logs. The demo uses the small hand-made Tate & Liza log, labeled as such in its header.
+
+Design choices:
+- **Live progress without changing `/chat`.** `POST /chat/stream` sends server-sent events (`agent_start`, `tool_start`, `tool_call`), then the unchanged `/chat` body. Events come from the run hooks and from `tool_calls` itself, which is a list that reports each append. The page draws one lane per agent, so the parallel researchers fill in side by side. It falls back to `/chat` if the stream won't open, and waits on `/history` if the stream drops midway.
+- **The `chart` is built in code** (`agent/chart.py`), not by the model. It's a Vega-Lite heatmap of how many of each remaining major battle's team the party's and the picks' STAB types hit super-effectively. It reads the session's tables, so it follows a loaded log.
+- **The form follows the conversation.** After every answer the page reloads `/run_state` and flashes the panel if the Clarifier learned something ("I just beat Juan"). The form's next submission then doesn't undo it.
+- **Readable citations.** Cited database rows get plain labels ("PokeAPI: Spheal at Shoal Cave (walk)"), computed only for ids the answer actually cites.
+- **LangFuse through OpenInference.** With keys set, the Agents SDK's tracing is switched on with OpenInference's processor as its only processor (exclusive mode), so spans reach LangFuse and never OpenAI. Each turn is one trace, grouped by session. Checked with an in-memory exporter on a real run: 63 spans in 1 trace, the 3 researchers nested under `dispatch_researchers`, and every model call with its model name and tokens.
+- **Cost.** LangFuse's built-in prices don't match LiteLLM's `vertex_ai/` names or these Gemini versions. Prices live in `agent/pricing.py`, read from Google's pricing page on 2026-11-01:
+  - 3.5 Flash: $1.50 / $9.00 per 1M input / output tokens
+  - 3.1 Pro: $2.00 / $12.00
+  - 3.8 Flash: $0.75 / $3.75 introductory through 2026, then $1.50 / $7.50
+
+  Each usage entry records its cost, and `scripts/langfuse_prices.py` registers the same prices in LangFuse. Third-party pages disagreed on the newer Flash prices; the page renders its tables with JavaScript, so they were read with headless Edge.
+- **Baseline.** Gemini 3.1 Pro, the Lead's model and the strongest in the pipeline, with no system prompt and no tools. The run state is written out in words, and the randomizer sample pastes in the log.
+
+**Found by checking the README sample answers against the data** (agent and baseline alike):
+- **A wrong "where" passed the Verifier.** The Lead wrote "Route 119, Good Rod … 100%" for Carvanha. That's the Super Rod's rate; the Good Rod's is 20%. The pick was obtainable, so no check failed, but the place line is the answer's core claim. New step, `correct_places` (code, after the gap loop): parse each pick's and backup's `where` for place names, method words and percentages, compare them with the encounter rows before the battle under the player's rules, and rewrite a wrong line from the data with that row cited. Picks already in the party are skipped.
+- **"Rules I followed" was written by the Writer**, which marked the Nuzlocke rules and level caps "not checked automatically" although the Verifier checks them. It is now written in code from the ruleset: "(checked by the Verifier)" for rules with checks, "(not checked automatically)" for free-text notes.
+- **Type multipliers made up in prose.** A battle note said "Psychic does 4x to Breloom" (it's 2x). After the first fixes, a rerun had picks claiming that Lanturn "double-resists Water" (0.5x) and that Lileep is "neutral to Ice" (Ice does 2x to Rock/Grass). The Lead and Writer are now told to take multipliers from the tools. A new check, `TYPE_CLAIM_WRONG`, reads each pick's and backup's text for matchups it states *about the pick*: "resists", "double-resists", "immune to", "neutral to", "weak to", "4x weak", "1/4x from". It checks each against the Gen III chart for the pick and the form it evolves into, and skips sentences about the opponents. A wrong claim goes to the Writer as a correction to fix or drop. Battle notes, whose subjects vary, still aren't checked in code.
+- **A where line naming an extra place.** A backup said Voltorb is in "New Mauville or Team Aqua Hideout"; the hideout has Electrode, not Voltorb. `correct_places` now also flags any location name in the line where the species can't be had before the battle.
+- **The randomized-run brief now says what the log left vanilla** (wild Pokémon, statics, TMs and so on). An answer had asked the player whether wild Pokémon were randomized, which the log already answers.
+- **The baseline knows Emerald's well-known fights well.** Every checked fact in its Tate & Liza answer matched the data. In the Nuzlocke answer it gave Kingdra a fifth move (Sleep Talk), called Shock Wave TM39 (TM39 is Rock Tomb; Shock Wave is TM34), and said Magneton resists Water (it's neutral).
+
 ---
 
 ## Data findings

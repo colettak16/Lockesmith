@@ -1,0 +1,184 @@
+# Lockesmith
+
+**A deep research agent for Pokémon Emerald runs.** Tell it where you are in the game and it researches what to catch next, what to do next, or how to get through the rest of the game. It checks every recommendation against the game's own data and cites it.
+
+**Live:** https://lockesmith-816944548222.us-east4.run.app (Columbia accounts, through IAP) · **Course:** IEOR E4570 Agentic AI, Project 2, Deep Research path
+
+## Who it's for
+
+Players partway through Emerald, especially challenge runs:
+- **Normal runs:** "What should I catch to get through Tate & Liza?"
+- **Nuzlocke and custom rules:** one encounter per area, dupes clause, level caps, single-type runs, no legendaries, or any rule you type in plain words.
+- **Randomized runs:** upload your Universal Pokémon Randomizer ZX spoiler log, and every answer uses *your* game's teams, encounters, TMs and evolutions.
+
+Base models know Pokémon broadly and get the specifics wrong:
+- Emerald's teams and levels differ from Ruby/Sapphire's, and Juan, not Wallace, is the eighth gym leader.
+- Gen III decides physical vs special by a move's *type*, so Crunch is special and Sharpedo's 120 Attack can't use its own STAB.
+- There's no Fairy type.
+- Exact encounter tables, which areas a Nuzlocke has left, and anything in a randomized game.
+
+Lockesmith answers from the data instead.
+
+## How to use it
+
+1. Open the site. Fill in **Your run** on the left (starter and badges are required; party, rival, rules and a randomizer log are optional), or click one of the **examples**. One click fills in both the question and the run it needs.
+2. Press **Ask**. Live progress shows each researcher working in its own lane. A catch plan takes about a minute.
+3. Read the answer:
+   - pick cards (core vs. for-this-fight, where, when, backups)
+   - the cited write-up, with `[n]` linking to its source
+   - a type-coverage chart against every remaining major battle
+   - the **research trace**: each round, the researchers side by side, and what the Verifier checked and changed
+4. Follow up in the same conversation: "different picks, please", "I just beat Juan", "no Water types". The run panel updates with what the agent learned.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    U["Player message + run state"] --> C["Clarifier (Gemini Flash)<br/>scope, intent, learns state and rules"]
+    C -- "vague, missing state or out of scope" --> Q["Clarifying question / decline"]
+    C --> L["Lead (Gemini Pro)<br/>plans research, drafts structured picks"]
+    L -- "dispatch_researchers: one call, asyncio.gather" --> R1["Battle researcher"]
+    L --> R2["Catch researcher"]
+    L --> R3["Moves researcher"]
+    L --> R4["Story researcher"]
+    R1 & R2 & R3 & R4 -- "findings + source ids<br/>(fresh contexts, in parallel)" --> L
+    L --> V["Verifier (code, no LLM)<br/>obtainable in time? evolves in time? moves learnable?<br/>rules, Gen III facts, citations"]
+    V -- "failing pick: promote its backup,<br/>else one targeted repair round" --> L
+    V --> W["Writer (Gemini Flash)<br/>cited Markdown"]
+    W --> CC["Citation check (code)<br/>unknown ids or uncited picks: one rewrite"]
+    CC --> OUT["/chat: response, tool_calls (agent-tagged), citations, plan, chart"]
+```
+
+| Agent | Model | Job |
+|---|---|---|
+| Clarifier | Gemini 3.5 Flash | Gatekeeper. Declines out-of-scope questions, asks for missing starter or badges, classifies intent (catch, next steps, long plan, lookup, revision), and pulls state and rules out of the message ("I'm doing a Water monotype"). |
+| Lead | Gemini 3.1 Pro | Plans the research. Sends 1–4 researchers out **in one call, in parallel, each in a fresh context**, reads their findings, may run a second round for gaps, and drafts structured picks with backups and source ids. |
+| Researchers ×4 | Gemini 3.5 Flash | **Battle:** teams, threats, coverage across the rest of the run. **Catch:** what's obtainable before a battle under the player's rules, and long-term value. **Moves:** learnsets, TMs obtainable in time, evolution timing. **Story:** next steps, the road to the Champion, walkthrough passages. |
+| Verifier | code | Checks every pick and backup against the data. A failing pick is swapped for a passing backup, or sent back to the Lead once with the errors (the gap loop, 3 rounds max). Picks that still fail are dropped with the reason shown. It also rewrites any "where to catch it" line that disagrees with the encounter tables (place, method, odds) from the data, and flags type-matchup claims about a pick that the Gen III chart contradicts ("double-resists Water") for the Writer to fix. |
+| Writer | Gemini 3.5 Flash | Turns the verified draft into a cited answer; citations are then checked in code, with one retry. |
+
+Researchers use **composite tools** (`scout_battle`, `get_catchable`, `moves_outlook`, `assess_candidates`, `gauntlet_overview`, …). Code does the arithmetic (type charts, encounter odds, story gates); the agents decide what to investigate. Every tool result carries source ids, and only ids that a tool actually returned can be cited. Design decisions and their reasons are in [docs/decisions.md](docs/decisions.md).
+
+**Show its work:** `/chat` keeps the Project 1 response shape. Sub-agent tool calls appear in `tool_calls` with an `agent` field: `clarifier`, `lead`, `battle_researcher`, …, `verifier`. `POST /chat/stream` streams the same turn as server-sent events for the progress view.
+
+## Data
+
+Built offline into `data/emerald.duckdb` (about 7 MB, committed) by `uv run python build/build_db.py`. It fetches the sources at pinned commits (`data/sources.lock.json`).
+
+| Source | What it gives | Version / license |
+|---|---|---|
+| [pret/pokeemerald](https://github.com/pret/pokeemerald) decompilation | Ground truth for Emerald: every trainer team (levels, held items, custom moves, AI), wild encounter tables and their ROM order, TM/HM and move-tutor locations with what each needs (HMs, keys, side quests), static-encounter conditions, the friendship threshold | commit `731ad5bf`; decompiled game code, used as reference data |
+| [PokeAPI](https://github.com/PokeAPI/pokeapi) CSVs | Species, moves, Gen III learnsets, evolutions, encounter rows, the type chart | commit `6b8db7f3`; BSD-3-Clause, data from the games |
+| [Bulbapedia's Emerald walkthrough](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald) | 400 passages for story steps and route context, searched with BM25 | CC BY-NC-SA 2.5, attributed in every citation |
+| `data/progression.yaml` (hand-built, reviewed) | The 32 story battles in order, what each opens (areas, HMs, key items, encounter methods) and Emerald quirks (deferred gyms, double battles, rival variants) | cites the decomp and walkthrough per entry |
+| Your randomizer log (optional upload) | Randomized wild sets, trainer teams, TM and tutor moves, stats and types, evolutions, starters, statics | parsed per session into views over the vanilla tables (`agent/overlay.py`) |
+
+**PokeAPI is corrected to Gen III where it reflects later games** (`build/gen3_corrections.py`, tested in `tests/test_gen3_facts.py`), with the decomp as ground truth:
+- past types, stats and abilities
+- move power, PP, accuracy and type as of Gen III, with the category taken from the type
+- no Fairy type
+- the 220 friendship threshold, not 160
+- regional and Gen IV evolutions removed
+- PokeAPI's wrong Emerald static encounters fixed
+
+[docs/decisions.md](docs/decisions.md) ("Data findings") lists what the cross-checks found. To load the data yourself: `uv sync`, then open `data/emerald.duckdb` in DuckDB (`duckdb data/emerald.duckdb`) or rebuild it with the command above.
+
+## Sample queries
+
+Each sample is one click on the site (the buttons marked *README sample*): the click fills in the question **and** the run state. For each sample, the table below gives:
+- the **expected answer**, generated from the database by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md))
+- the **baseline**: Gemini 3.1 Pro, the Lead's model, with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py), full answers in [docs/baseline/](docs/baseline/))
+- **Lockesmith's answer** ([`scripts/run_samples.py`](scripts/run_samples.py), full answers and traces in [docs/samples/](docs/samples/))
+
+### 1. Mid-game catch plan (vanilla)
+
+> **Run:** Mudkip, rival May, 6 badges; party Marshtomp 33, Breloom 30, Swellow 31, Manectric 30.
+> **Question:** *What should I catch to get through Tate & Liza?*
+
+| | |
+|---|---|
+| **Expected** (`trainer_mons`, `type_efficacy`, `encounters` via `get_catchable`) | A **double battle** against Claydol 41, Xatu 41, Lunatone 42 and Solrock 42 (both rock/psychic ones holding Sitrus Berries). Ghost and Dark hit all four super-effectively, Water three. Obtainable before the gym: Carvanha/Sharpedo (Super Rod: Routes 118, 119, 122, …), Shuppet (Mt. Pyre 1F–3F, 100%), Absol (Route 120 grass, 8%), Staryu (Lilycove, Super Rod 15%). |
+| **Baseline** ([full](docs/baseline/tate-liza.md)), 48 s, $0.04 | **Good.** Sharpedo, Banette/Dusclops with TM30 Shadow Ball from Mt. Pyre, Absol (8% on Route 120). It knows the Gen III physical/special split and the team's moves. Every specific fact I checked against the data was right. No sources. |
+| **Lockesmith** ([full](docs/samples/tate-liza.md)), 79 s, $0.25 | **Sharpedo** (Route 122 Super Rod, Lv30–35, 40%) and **Shuppet → Banette** (Mt. Pyre 1F–3F, 100%), with backups Staryu and Absol. It flags that Surf and Crunch are special in Gen III, against Sharpedo's higher Attack. Battle notes: all four foes are immune to Ground, Solrock's sun-boosted Solar Beam does 4× to Swampert, and Psychic does 2× to Breloom. 18 cited sources plus a coverage chart for the rest of the run. |
+
+### 2. Nuzlocke into Juan
+
+> **Run:** 7 badges; party Swampert 42, Breloom 40, Swellow 40, Manectric 39; **Nuzlocke, dupes clause, level caps**, with 23 areas already used.
+> **Question:** *Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch?*
+
+| | |
+|---|---|
+| **Expected** | Juan: Luvdisc 41, Whiscash 41, Sealeo 43, Crawdaunt 43, **Kingdra 46** (Water Pulse, Double Team, Ice Beam, Rest; Chesto Berry). That makes the **level cap 46**. Grass hits 4 of 5 super-effectively, Electric 3. Still catchable in unused areas: Magnemite/Voltorb (New Mauville, 50%), Chinchou (Route 124 seaweed, 30%), Oddish (Route 123), Lileep (fossil gift). |
+| **Baseline** ([full](docs/baseline/nuzlocke-juan.md)), 51 s, $0.04 | Reasonable picks (Magneton, Walrein, Staryu, Tentacruel) and a good Double Team warning, but **three facts the data contradicts**: Kingdra is given a fifth move (Sleep Talk), Shock Wave is called **TM39** (it's TM34; TM39 is Rock Tomb), and Magneton is said to **resist Water** (it's neutral). Used areas are taken on trust; it can't check them. |
+| **Lockesmith** ([full](docs/samples/nuzlocke-juan.md)), 76 s, $0.19 | **Magnemite → Magneton** (New Mauville, 50%), **Chinchou → Lanturn** (Route 124/126 seaweed, 30%; resists Water and Ice), **Spheal → Walrein** (Shoal Cave, 50%; Walrein arrives at Lv44, under the cap). Each place was checked against the 23 used areas, the dupes clause and the cap. It notes that Whiscash's Earthquake threatens Manectric. A "Rules I followed" section lists what the Verifier checked. |
+
+### 3. Randomized gym
+
+> **Run:** as in sample 1, plus the uploaded **sample randomizer log** ([static/samples/fire-tate-liza.log](static/samples/fire-tate-liza.log)), in which Tate & Liza use Fire types.
+> **Question:** *What should I catch to get through Tate & Liza?*
+
+| | |
+|---|---|
+| **Expected** (`trainer_mons` is now a session view over the log) | Camerupt 41, Torkoal 41, Magcargo 42 and Houndoom 42 (Sitrus Berries on the last two). Water and Ground hit all four super-effectively. Wild Pokémon are vanilla in this log: Carvanha/Sharpedo, Barboach (Super Rod: Routes 111, 114, 120), Spheal and others. |
+| **Baseline** ([full](docs/baseline/randomizer-tate-liza.md)), 61 s, $0.05 | **Good here, because the log is five lines and fits in the prompt.** It recommends a "double Surf" with Spheal, Tentacruel, Starmie or Pelipper, and its type math is right. Item locations it gives (Mystic Water, Sea Incense) aren't in Lockesmith's data, so they're unchecked. A real UPR log is 1–2 MB covering 855 trainers and every wild table, which can't usefully be pasted into a chat. |
+| **Lockesmith** ([full](docs/samples/randomizer-tate-liza.md)), 94 s, $0.21 | It reads the team from the log (cited as "Your randomizer log: Leader Tate&Liza's team") and recommends **Sharpedo** (Super Rod, Routes 103/118/122) and **Barboach → Whiscash** (Super Rod, Routes 111/114/120). **The gap loop at work:** the Lead first proposed Whiscash itself, which the Verifier rejected because wild Whiscash only appear in Victory Road and Meteor Falls' inner rooms. The Lead was sent back once and returned Barboach. |
+
+**What the comparison shows.** Gemini 3.1 Pro knows Emerald's well-known fights well, so the baseline is a strong opponent. Lockesmith adds:
+- every specific claim checked against the data and cited (the baseline's Nuzlocke answer had three errors the data catches)
+- challenge rules applied by code, not trust
+- randomized games at real-log scale
+- a whole-run view (the coverage chart and "long run" notes)
+
+It costs about 4–5× as much ($0.19–0.25 vs $0.04–0.05 per question) and takes 76–94 s against 48–61 s.
+
+**How these answers got here.** Earlier runs of the same samples turned up errors in Lockesmith's own answers:
+- a Good Rod rate given as the Super Rod's
+- a "4× weak" that was 2×
+- Lanturn "double-resisting" Water
+- a Voltorb location that only has Electrode
+
+Each became a new code check: `correct_places` rewrites wrong "where" lines from the encounter data, and `TYPE_CLAIM_WRONG` catches matchup claims the type chart contradicts. Details are in [docs/decisions.md](docs/decisions.md) D11–D12.
+
+## What it can't answer
+
+It says so instead of guessing:
+- **Other games, ROM hacks, the postgame and Battle Frontier.** "What's the best EV spread for Garchomp in Sword?" is declined, with what it does cover.
+- **Exact damage.** Matchups use the type chart and levels, not the damage formula, so "does X one-shot Y?" can only get a type-and-level answer.
+- **Randomizer data it can't read yet.** If a log randomized level-up movesets, TM compatibility or move data, those tools refuse rather than answer from the vanilla game, the Verifier marks the affected moves as unverifiable, and the answer says what's unknown. Its parser follows UPR ZX's source code; no real Emerald log has been through it yet, so the sample log is hand-made in that format.
+- **Vague questions without a run.** "What should I catch?" with no starter or badges gets a question back, not a guess.
+
+## Tracing and cost
+
+Each answer's trace panel shows the model calls, tokens and cost for that question, from `agent/pricing.py`: Vertex AI list prices read from Google's pricing page on 2026-11-01. Per sample question:
+
+| | Lockesmith | Baseline (Gemini 3.1 Pro, no tools) |
+|---|---|---|
+| Time | 76–94 s | 48–61 s |
+| Model calls | 14–19 (Clarifier, Lead ×2–3, 3–4 researchers ×2–5, Writer) | 1 |
+| Tokens | 61k–83k | 3k–4k |
+| Cost | $0.19–0.25 | $0.04–0.05 |
+
+With LangFuse keys set (see [docs/deploy.md](docs/deploy.md)), every `/chat` turn is also a LangFuse trace. It shows the agent tree (the researchers nested under the Lead's `dispatch_researchers` call, running at the same time), each model call with its tokens and cost, and each tool call with its input and output, grouped by session. This goes through OpenInference's OpenAI Agents SDK instrumentation (`agent/observability.py`), and nothing is sent to OpenAI.
+
+<!-- LangFuse screenshots: docs/images/langfuse-trace.png and docs/images/langfuse-sessions.png, added after the deploy -->
+
+## Running it locally
+
+```bash
+uv sync
+gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
+uv run uvicorn app:app --reload         # http://127.0.0.1:8000
+uv run pytest                           # 213 tests (5 wait for a real randomizer log), no model calls
+```
+
+Scripts:
+- `scripts/run_samples.py`: the agent on the README samples, saving full traces to `docs/samples/`
+- `scripts/baseline.py`: the no-tools baseline, saved to `docs/baseline/`
+- `scripts/expected_answers.py`: expected answers from the data
+- `scripts/phase2_acceptance.py`, `scripts/phase3_acceptance.py`: live acceptance scenarios
+
+Deployment (Cloud Run, continuous deploy from GitHub, IAP, Vertex AI permissions, LangFuse) is in [docs/deploy.md](docs/deploy.md).
+
+## Credits
+
+Built by kc3936 for IEOR E4570, with Claude Code. Pokémon and Pokémon Emerald are © Nintendo, Game Freak and Creatures. This is a non-commercial course project. Walkthrough text is from Bulbapedia (CC BY-NC-SA 2.5); species and move data are from PokeAPI; game data is from the pret/pokeemerald decompilation.

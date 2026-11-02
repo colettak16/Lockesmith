@@ -11,7 +11,7 @@ import json
 
 from pydantic import ValidationError
 
-from agent import overlay, runtime
+from agent import observability, overlay, runtime
 from agent.brief import state_brief
 from agent.chart import coverage_chart
 from agent.clarifier import make_clarifier, missing_question
@@ -21,7 +21,7 @@ from agent.randomizer_log import load_overlay, parse_log
 from agent.schemas import ClarifierDecision, LeadDraft, StateUpdate
 from agent.session import SESSIONS, Session, apply_rules
 from agent.state import RunState
-from agent.verifier import ERROR, WARNING, Violation, promote_backups, verify
+from agent.verifier import ERROR, WARNING, Violation, correct_places, promote_backups, verify
 from agent.writer import make_writer
 
 REQUEST_BUDGET_S = 270  # graders wait up to 5 minutes; Cloud Run's timeout is 600 s
@@ -105,6 +105,9 @@ async def verify_and_repair(ctx: RequestContext, draft: LeadDraft, lead_input: s
             actions.append("dropped " + ", ".join(d.species for d in dropped) + " after the repair round")
         if actions:
             record(ctx, "verifier", "promote_backups", {"after": "repair"}, actions)
+    draft, fixes = correct_places(ctx, draft)
+    if fixes:
+        record(ctx, "verifier", "correct_where", {}, fixes)
     return sanitize_citations(ctx, draft), [v for v in violations if v.severity == WARNING]
 
 
@@ -165,12 +168,16 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     lead_draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
     draft, warnings = await verify_and_repair(ctx, lead_draft, lead_input)
     draft = picks_changed(lead_draft, draft)
+    corrections = [f"{w.species}: {w.detail}" for w in warnings if w.code == "TYPE_CLAIM_WRONG"]
+    warnings = [w for w in warnings if w.code != "TYPE_CLAIM_WRONG"]
 
     writer_input = (
         f"PLAYER QUESTION\n{message}\n\nRUN STATE\n{state_brief(ctx)}\n\n"
         f"PLAYER RULES\n{json.dumps(session.state.ruleset.describe())}\n\n"
         f"REVISION FEEDBACK: {decision.revision_feedback or 'none'}\n\n"
         f"VERIFIER WARNINGS (mention briefly where they matter)\n{json.dumps([f'{w.species}: {w.detail}' for w in warnings])}\n\n"
+        f"VERIFIER CORRECTIONS (the draft states these matchups wrongly: write the correct one, or leave the claim out)\n"
+        f"{json.dumps(corrections)}\n\n"
         f"DRAFT (JSON)\n{draft.model_dump_json()}"
     )
     markdown = await runtime.run(make_writer(), writer_input, ctx, max_turns=2)
@@ -184,6 +191,10 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
         markdown = await runtime.run(make_writer(), retry_input, ctx, max_turns=2)
         problems = citation_problems(ctx, markdown, draft)
         record(ctx, "verifier", "citation_check", {"after": "retry"}, problems or "all citations resolve")
+    rules = session.state.ruleset.describe()
+    if rules:  # written in code, so "checked by the Verifier" vs "not checked" is always right
+        markdown += "\n\n### Rules I followed\n" + "\n".join(
+            f"- {r}" + ("" if "not checked" in r else " (checked by the Verifier)") for r in rules)
     text, citations, _ = ctx.ledger.cite(markdown)
     plan = draft.model_dump()
     if problems:
@@ -243,13 +254,17 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
         apply_form_state(session, run_state)
     ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded),
                          randomizer=session.randomizer, listener=listener)
-    try:
-        result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
-    except TimeoutError:
-        result = {"response": "Sorry, that took longer than my time budget. Try a narrower question.", "plan": None}
-    except Exception as e:  # noqa: BLE001 - the player gets a message, the trace keeps the details
-        record(ctx, "pipeline", "error", {}, f"{type(e).__name__}: {e}")
-        result = {"response": "Sorry, something went wrong while researching that. Please try again.", "plan": None}
+    with observability.chat_trace(session.id, message) as finish:
+        try:
+            result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
+        except TimeoutError:
+            result = {"response": "Sorry, that took longer than my time budget. Try a narrower question.", "plan": None}
+        except Exception as e:  # noqa: BLE001 - the player gets a message, the trace keeps the details
+            record(ctx, "pipeline", "error", {}, f"{type(e).__name__}: {e}")
+            result = {"response": "Sorry, something went wrong while researching that. Please try again.", "plan": None}
+        finish({"response": result["response"], "picks": [r["species"] for r in (result.get("plan") or {}).get("recommendations", [])],
+                "seconds": ctx.elapsed(), "model_calls": len(ctx.usage)})
+    await asyncio.to_thread(observability.flush)
     session.history += [{"role": "user", "content": message}, {"role": "assistant", "content": result["response"]}]
     return {
         "response": result["response"],

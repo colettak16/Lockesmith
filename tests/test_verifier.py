@@ -6,7 +6,7 @@ from agent.context import RequestContext
 from agent.db import connect_session, session_cursor
 from agent.schemas import Alternative, LeadDraft, Recommendation
 from agent.state import PartyMember, RunState, Ruleset
-from agent.verifier import CODES, ERROR, WARNING, check_pick, promote_backups, verify
+from agent.verifier import CODES, ERROR, WARNING, check_pick, correct_places, promote_backups, verify
 
 SIX_BADGES = ["stone", "knuckle", "dynamo", "heat", "balance", "feather"]
 CITED = ["progression:gym7_tate_liza"]
@@ -128,6 +128,19 @@ def test_move_unverifiable_when_the_log_hides_movesets(con):
     assert "MOVE_UNVERIFIABLE" in codes and "MOVE_NOT_LEARNABLE" not in codes
 
 
+def test_wrong_type_claims_are_flagged(con):
+    """From live answers: Lanturn doesn't double-resist Water, and Ice hits Lileep's Rock/Grass for 2x."""
+    ctx = ctx_for(con, badges=SIX_BADGES + ["mind"])
+    lanturn = pick("Chinchou", "gym8_juan", evolve_to="Lanturn",
+                   why="Its Water/Electric typing resists Ice (x0.5) and double-resists Water (x0.25).")
+    details = [v.detail for v in check_pick(ctx, lanturn, "gym8_juan", 0, None) if v.code == "TYPE_CLAIM_WRONG"]
+    covered.add("TYPE_CLAIM_WRONG")
+    assert details == ['says Lanturn "double-resists Water", but Water does 0.5x to Water/Electric in Gen III']
+    right = pick("Spheal", "gym8_juan", evolve_to="Walrein", why="It tanks Kingdra, resisting Water and taking 1/4x damage from Ice. "
+                 "Their team is weak to Grass.")
+    assert "TYPE_CLAIM_WRONG" not in found(ctx, right)
+
+
 def test_every_code_is_exercised():
     """Runs last in this module: each code in CODES came up in at least one test above."""
     assert set(CODES) - covered == set()
@@ -155,3 +168,37 @@ def test_failed_pick_without_a_backup_is_left_for_repair(con):
     draft = draft_with(pick("Absol"), pick("Bagon", "gym7_tate_liza"))
     new, _, unfixed = promote_backups(draft, verify(ctx, draft))
     assert unfixed == [1] and [r.species for r in new.recommendations] == ["Absol", "Bagon"]
+
+
+# --- where to catch it ---------------------------------------------------------------------
+
+
+def test_wrong_where_is_rewritten_from_the_data(con):
+    """A live run said Carvanha was 100% by Good Rod on Route 119; that's the Super Rod (Good Rod: 20%)."""
+    ctx = ctx_for(con)
+    wrong = pick("Carvanha").model_copy(update={"where": "Route 119, Good Rod, Lv15-25 (100% odds)"})
+    right = pick("Shuppet").model_copy(update={"where": "Mt. Pyre (1F-3F), Walking, Lv22-29 (100% odds)"})
+    lost = pick("Absol").model_copy(update={"where": "Route 101 grass"}, deep=True)
+    new, actions = correct_places(ctx, draft_with(wrong, right, lost))
+    carvanha, shuppet, absol = new.recommendations
+    assert "Super Rod" in carvanha.where and "100%" in carvanha.where and "Good Rod (Lv10-30, 20%)" in carvanha.where
+    assert any(s.startswith("pokeapi:encounters#") and s in ctx.ledger for s in carvanha.source_ids)
+    assert shuppet.where == right.where
+    assert absol.where.startswith("Route 120: walking") and len(actions) == 2
+
+
+def test_party_members_and_backups(con):
+    ctx = ctx_for(con, party=[PartyMember(species="Carvanha", level=30)])
+    rec = pick("Carvanha", alts=[alt("Absol")]).model_copy(update={"where": "already have it"})
+    rec.alternatives[0] = rec.alternatives[0].model_copy(update={"where": "Route 999"})
+    new, _ = correct_places(ctx, draft_with(rec))
+    assert new.recommendations[0].where == "already have it"  # in the party: nothing to correct
+    assert new.recommendations[0].alternatives[0].where.startswith("Route 120")
+
+
+def test_where_naming_a_place_without_the_species(con):
+    ctx = ctx_for(con, badges=SIX_BADGES + ["mind"])
+    voltorb = pick("Voltorb", "gym8_juan").model_copy(update={"where": "New Mauville or Team Aqua Hideout"})
+    new, actions = correct_places(ctx, draft_with(voltorb))
+    assert "Team Aqua Hideout" not in new.recommendations[0].where and "New Mauville" in new.recommendations[0].where
+    assert "not found at Team Aqua Hideout" in actions[0]

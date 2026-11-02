@@ -22,6 +22,7 @@ import os
 from typing import Any
 
 import litellm
+from dotenv import load_dotenv
 
 from agents import Agent, ModelSettings, RunHooks, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
@@ -29,10 +30,15 @@ from agents.retry import ModelRetrySettings, retry_policies
 from agents.run_error_handlers import RunErrorHandlerInput, RunErrorHandlerResult
 from openai.types.shared import Reasoning
 
+from agent import observability
+from agent.pricing import cost_usd
+
+load_dotenv()  # local settings and keys (.env is gitignored); Cloud Run sets real environment variables
 os.environ.setdefault("VERTEXAI_PROJECT", "lockesmith")
 os.environ.setdefault("VERTEXAI_LOCATION", "global")
 # The SDK's built-in tracer exports to OpenAI's servers; Lockesmith never sends data there.
 set_tracing_disabled(True)
+observability.setup()  # with LangFuse keys set, tracing comes back on, exporting to LangFuse only
 
 RESULT_PREVIEW_CHARS = 1200
 log = logging.getLogger("lockesmith.runtime")
@@ -121,9 +127,12 @@ class ToolCallRecorder(RunHooks):
     async def on_llm_end(self, context, agent, response) -> None:
         usage = getattr(response, "usage", None)
         if usage is not None:
+            fallback = getattr(response, "lockesmith_fallback", None)
+            model = fallback or getattr(agent.model, "model", str(agent.model))
             context.context.usage.append(
-                {"agent": agent.name, "input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens,
-                 "t": context.context.elapsed(), "fallback": getattr(response, "lockesmith_fallback", None)}
+                {"agent": agent.name, "model": model, "input_tokens": usage.input_tokens,
+                 "output_tokens": usage.output_tokens, "cost_usd": cost_usd(model, usage.input_tokens, usage.output_tokens),
+                 "t": context.context.elapsed(), "fallback": fallback}
             )
 
 

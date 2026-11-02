@@ -3,7 +3,8 @@
 Every recommendation and every backup is checked against the data: obtainable before its
 battle, evolution reachable in time, key moves learnable by then, the player's rules, Gen III
 facts, and citations. Errors send the pick back (a passing backup is promoted, otherwise the
-Lead gets one repair round); warnings go to the Writer.
+Lead gets one repair round); warnings go to the Writer. Finally `correct_places` rewrites any
+"where" line (place, method, odds) that disagrees with the encounter data.
 """
 
 import re
@@ -11,11 +12,11 @@ from dataclasses import asdict, dataclass
 
 from agent.context import RequestContext
 from agent.schemas import Alternative, LeadDraft, Recommendation
-from agent.tools.common import NOT_WILD, ToolError, battle, rows, unread
+from agent.tools.common import NOT_WILD, ToolError, battle, effectiveness, rows, unread
 from agent.tools.battles import team
 from agent.tools.encounters import _norm, area_used, available_rows
 from agent.tools.moves import location_reachable
-from agent.tools.outlook import final_forms
+from agent.tools.outlook import TYPES, final_forms
 
 ERROR, WARNING = "error", "warning"
 CODES = {
@@ -26,6 +27,7 @@ CODES = {
     "MOVE_UNVERIFIABLE": "relies on a move whose learnability the randomizer log changed in a part Lockesmith can't read",
     "GEN3_SPLIT_MISMATCH": "the move's category doesn't suit the Pokémon's stronger attacking stat",
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
+    "TYPE_CLAIM_WRONG": "states a type matchup for the pick that the Gen III type chart contradicts",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
     "NUZLOCKE_DUPE": "the dupes clause forbids it",
     "RULESET_TYPE_VIOLATION": "breaks the single-type rule",
@@ -221,12 +223,61 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
                     f"{m['name']} is {m['damage_class']} in Gen III ({m['type']}), but {form['name']} has Attack {atk} and Sp. Atk {spa}",
                     WARNING)
 
+    # --- type matchups it states ----------------------------------------------------------
+    forms = [[t for t in (sp["type1"], sp["type2"]) if t], [t for t in (form["type1"], form["type2"]) if t]]
+    for word, kind, attack in type_claims(text, {sp["name"], form["name"]}):
+        actual = [effectiveness(attack, types) for types in forms]
+        if not any(CLAIM_OK[kind](m) for m in actual):
+            add("TYPE_CLAIM_WRONG", f"says {form['name']} \"{word} {attack.title()}\", but {attack.title()} does "
+                f"{actual[-1]:g}x to {'/'.join(forms[-1]).title()} in Gen III", WARNING)
+
     # --- citations -------------------------------------------------------------------
     if not pick.source_ids:
         add("UNCITED_CLAIM", "the pick has no source ids")
     missing = [s for s in pick.source_ids if s not in ctx.ledger]
     if missing:
         add("CITATION_NOT_IN_EVIDENCE", f"no tool returned {', '.join(missing[:3])}")
+    return out
+
+
+TYPE_RE = "|".join(TYPES)
+# "resists Ice", "double-resists Water", "immune to Ground", "neutral to both Ice and Water", "4x weak
+# to Grass", "taking 1/4x damage from Ice": the claim's word, then the one or two types it's about.
+CLAIM_RE = re.compile(
+    r"(?P<word>double[- ]resists?|resists?|resisting|immune to|immunity to|neutral to|neutral against|"
+    r"4x weak(?:ness)? to|quadruple weak(?:ness)? to|weak(?:ness)? to|(?:1/4x?|x?0\.25x?|a quarter)(?: damage)? from)"
+    rf"\s+(?:both\s+|all\s+)?(?P<t1>{TYPE_RE})(?:[- ]type)?(?:\s*(?:,|and|&|/|or)\s*(?P<t2>{TYPE_RE}))?",
+    re.I,
+)
+CLAIM_OK = {
+    "quarter": lambda m: m == 0.25, "immune": lambda m: m == 0, "neutral": lambda m: m == 1,
+    "resist": lambda m: m < 1, "4x": lambda m: m == 4, "weak": lambda m: m >= 2,
+}
+NOT_ABOUT_PICK = re.compile(r"\b(their|they|team|opponents?|enemy|foes?)\b", re.I)
+
+
+def claim_kind(word: str) -> str:
+    w = word.lower()
+    for prefix, kind in (("double", "quarter"), ("1/4", "quarter"), ("x0.25", "quarter"), ("0.25", "quarter"),
+                         ("a quarter", "quarter"), ("immun", "immune"), ("neutral", "neutral"), ("resist", "resist"),
+                         ("4x", "4x"), ("quadruple", "4x")):
+        if w.startswith(prefix):
+            return kind
+    return "weak"
+
+
+def type_claims(text: str, names: set[str]) -> list[tuple[str, str, str]]:
+    """(claim word, kind, attacking type) for each matchup the text states about the pick itself.
+    The sentence has to be about it (its name, "it", "its", "typing") and not about the
+    opponents ("their team is weak to ...")."""
+    subject = re.compile(r"\b(it|its|it's|typing|" + "|".join(re.escape(n) for n in names) + r")\b", re.I)
+    out = []
+    for sentence in re.split(r"(?<=[.;!?])\s+", text):
+        for m in CLAIM_RE.finditer(sentence):
+            before = sentence[: m.start()]
+            if not subject.search(before) or NOT_ABOUT_PICK.search(before):
+                continue
+            out += [(m["word"].lower(), claim_kind(m["word"]), t.lower()) for t in (m["t1"], m["t2"]) if t]
     return out
 
 
@@ -281,3 +332,100 @@ def promote_backups(draft: LeadDraft, violations: list[Violation]) -> tuple[Lead
             unfixed.append(len(recs) - 1)
             actions.append(f"{rec.species} failed with no valid backup ({reason})")
     return draft.model_copy(update={"recommendations": recs}), actions, unfixed
+
+
+# --- where to catch it ---------------------------------------------------------------------
+
+METHOD_WORDS = {  # how a `where` line names an encounter method
+    "old-rod": r"old rod", "good-rod": r"good rod", "super-rod": r"super rod", "surf": r"surf",
+    "rock-smash": r"rock smash", "seaweed": r"seaweed|underwater|\bdiv(?:e|ing)\b",
+    "walk": r"\bwalk|grass|\bcave\b|floor|\bin the\b", "gift": r"\bgift", "static": r"static|stationary",
+}
+METHOD_LABEL = {"old-rod": "Old Rod", "good-rod": "Good Rod", "super-rod": "Super Rod", "surf": "Surfing",
+                "rock-smash": "Rock Smash", "seaweed": "Dive (seaweed)", "walk": "walking"}
+
+
+def places_for(ctx: RequestContext, species: str, battle_id: str) -> dict[tuple[str, str], dict]:
+    """(location name, method) -> best rate, levels and a source id, before the battle, under the rules."""
+    found, _, _ = available_rows(ctx, ctx.prog.get(battle_id), species, apply_rules=True)
+    out: dict[tuple[str, str], dict] = {}
+    by_area: dict[tuple[str, str, str | None], dict] = {}
+    for r in found:
+        a = by_area.setdefault((r["location_name"] or r["location"], r["method"], r["area"]),
+                               {"rate": 0, "lv": [r["min_level"], r["max_level"]], "source_id": r["source_id"]})
+        a["rate"] += r["rarity"] or 0
+        a["lv"] = [min(a["lv"][0], r["min_level"]), max(a["lv"][1], r["max_level"])]
+    for (loc, method, _), a in by_area.items():
+        p = out.setdefault((loc, method), {"rates": set(), "lv": a["lv"], "source_id": a["source_id"]})
+        p["rates"].add(min(a["rate"], 100))
+        p["lv"] = [min(p["lv"][0], a["lv"][0]), max(p["lv"][1], a["lv"][1])]
+    return out
+
+
+def describe_places(places: dict[tuple[str, str], dict], prefer: set[str]) -> str:
+    """"Route 119: Super Rod (Lv20-45, 100%) or Good Rod (Lv10-30, 20%)" for the places to name."""
+    chosen = [k for k in places if k[0] in prefer] or sorted(places, key=lambda k: -max(places[k]["rates"]))[:2]
+    parts: dict[str, list[str]] = {}
+    for loc, method in sorted(chosen, key=lambda k: -max(places[k]["rates"])):
+        p = places[(loc, method)]
+        rate = f", {max(p['rates'])}%" if method in METHOD_LABEL else ""
+        parts.setdefault(loc, []).append(f"{METHOD_LABEL.get(method, method)} (Lv{p['lv'][0]}-{p['lv'][1]}{rate})")
+    return "; ".join(f"{loc}: {' or '.join(ms)}" for loc, ms in parts.items())
+
+
+def where_problem(where: str, places: dict[tuple[str, str], dict], all_places=()) -> tuple[str, set[str]] | None:
+    """Why a `where` line disagrees with the encounter data (and the places it names), or None.
+    `all_places` (every location name) catches a line that also names a place without it."""
+    text = where.lower()
+    named = {loc for loc, _ in places if loc.lower() in text}
+    if not named:
+        return "names no place where it's available", named
+    elsewhere = sorted(p for p in all_places if p not in named and not any(p.lower() in n.lower() for n in named)
+                       and re.search(rf"\b{re.escape(p.lower())}\b", text))
+    if elsewhere:
+        return f"not found at {', '.join(elsewhere)} before that battle", named
+    methods = {m for m, pattern in METHOD_WORDS.items() if re.search(pattern, text)}
+    here = {m for loc, m in places if loc in named}
+    if methods and not methods & here:
+        return f"not by {', '.join(sorted(methods))} there", named
+    stated = {int(x) for x in re.findall(r"(\d{1,3})\s*%", text)}
+    rates = set().union(*(p["rates"] for (loc, m), p in places.items() if loc in named and (not methods or m in methods)))
+    if stated and rates and not stated & rates:
+        return f"the odds there are {', '.join(f'{r}%' for r in sorted(rates))}, not {', '.join(f'{s}%' for s in sorted(stated))}", named
+    return None
+
+
+def correct_places(ctx: RequestContext, draft: LeadDraft) -> tuple[LeadDraft, list[str]]:
+    """Rewrite any pick's or backup's `where` that disagrees with the encounter data, from the
+    data itself (no model call), and cite the row it now comes from."""
+    actions: list[str] = []
+    party = {p.id for p in (ctx.index.resolve(m.species, "species", cutoff=80) for m in ctx.state.party) if p}
+    all_places = [n for (n,) in ctx.cursor().execute("SELECT DISTINCT name FROM locations WHERE name IS NOT NULL").fetchall()]
+
+    def fix(item, battle_id: str):
+        match = ctx.index.resolve(item.species, "species", cutoff=88)
+        if match is None or match.id in party:
+            return item
+        places = places_for(ctx, match.id, battle_id)
+        if not places:
+            return item
+        problem = where_problem(item.where, places, all_places)
+        if problem is None:
+            return item
+        why, named = problem
+        new = describe_places(places, named)
+        sources = [places[k]["source_id"] for k in places if k[0] in (named or {k[0] for k in places})][:3]
+        for s in sources:
+            ctx.ledger.add(s)
+        actions.append(f"corrected where for {item.species} ({why}): {item.where!r} -> {new!r}")
+        return item.model_copy(update={"where": new, "source_ids": list(dict.fromkeys([*item.source_ids, *sources]))})
+
+    recs = []
+    for rec in draft.recommendations:
+        try:
+            battle_id = battle(ctx, rec.before_battle or None).id
+        except ToolError:
+            battle_id = battle(ctx, None).id
+        rec = fix(rec, battle_id)
+        recs.append(rec.model_copy(update={"alternatives": [fix(a, battle_id) for a in rec.alternatives]}))
+    return draft.model_copy(update={"recommendations": recs}), actions

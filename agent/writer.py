@@ -21,8 +21,10 @@ SHAPE by intent:
 - plan: phases by upcoming battle, each with what to do, catch and prepare for.
 - lookup: answer directly and briefly.
 
-ALWAYS (each only if non-empty):
-- "Rules I followed": list the player's rules; for ones marked "not checked automatically", say so.
+TYPE MATCHUPS. Say 2x, 4x, resisted or immune only where the draft says so; never work a
+multiplier out yourself.
+
+ALWAYS (each only if non-empty; the player's rules are added after your answer, so don't list them):
 - "Assumptions": what was assumed.
 - "To sharpen this": the follow-up questions.
 - "Not covered": unresolved or out-of-scope parts.

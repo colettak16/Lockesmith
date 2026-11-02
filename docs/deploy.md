@@ -69,6 +69,25 @@ From then on, every push to `main` builds and rolls out a new revision.
 Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full catch plan takes about 50 seconds; clarifying questions come back in about 2. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/phase2_acceptance.py` runs the acceptance scenarios.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 
+## Tracing with LangFuse (Phase 4)
+
+Each `/chat` turn becomes one LangFuse trace: every agent run, model call (with tokens and cost) and tool call, grouped by session. Tracing stays off until the keys below are set (`agent/observability.py`). Spans go only to LangFuse, never to OpenAI.
+
+1. **Create a project.** Sign up at https://us.cloud.langfuse.com (the US region; EU is https://cloud.langfuse.com). Create an organization, then a project named `lockesmith`. The free Hobby plan is enough.
+2. **Make API keys.** In the project, go to Settings → API Keys → **Create new API keys**. Copy the public key (`pk-lf-…`) and the secret key (`sk-lf-…`). The secret key is shown only once.
+3. **Local.** Create a file named `.env` in the repo root (it's gitignored) with:
+   ```
+   LANGFUSE_PUBLIC_KEY=pk-lf-...
+   LANGFUSE_SECRET_KEY=sk-lf-...
+   LANGFUSE_BASE_URL=https://us.cloud.langfuse.com
+   ```
+   Then run `uv run python scripts/langfuse_prices.py` once. It registers the Gemini prices from `agent/pricing.py`, so traces show cost: LangFuse's built-in price list doesn't match LiteLLM's `vertex_ai/` model names.
+4. **Cloud Run.** Go to Cloud Run → `lockesmith` → **Edit & deploy new revision** → Variables & Secrets.
+   - Add `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_BASE_URL` as plain environment variables.
+   - Add the secret key through Secret Manager: **Reference a secret** → **Create new secret**, named `langfuse-secret-key`, with the `sk-lf-…` value. Expose it as the environment variable `LANGFUSE_SECRET_KEY`, version `latest`. If the console asks, grant the runtime service account (`816944548222-compute@developer.gserviceaccount.com`) **Secret Manager Secret Accessor** on that secret.
+   - Deploy.
+5. **Check.** Ask the deployed site anything. Within a minute, a trace named `lockesmith chat` appears under Tracing in LangFuse, with the researchers nested under the Lead's `dispatch_researchers` call.
+
 ## Checking a failed deploy
 
 - First build fails with `Permission 'developerconnect.gitRepositoryLinks.fetchReadToken' denied`: the new Developer Connect link was still being provisioned. Wait a minute, then Cloud Build → History → the failed build → **Rebuild**.

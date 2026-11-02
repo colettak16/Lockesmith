@@ -327,6 +327,7 @@ function describeTool(name, a = {}) {
     case "query_db": return "queried the database";
     case "verify": return a.after === "repair" ? "re-checked the repaired picks" : `checked ${(a.picks || []).length} pick${(a.picks || []).length === 1 ? "" : "s"} against the data`;
     case "promote_backups": return "swapped failing picks for their backups";
+    case "correct_where": return "corrected where to catch a pick, from the encounter data";
     case "citation_check": return a.after === "retry" ? "re-checked the citations" : "checked every citation";
     case "turn_limit_wrap_up": return "hit its tool budget and wrapped up";
     case "error": return "ran into an error";
@@ -569,9 +570,11 @@ function traceSection(calls, usage) {
   const n = usage?.length || 0;
   const tokens = (usage || []).reduce((s, u) => s + (u.input_tokens || 0) + (u.output_tokens || 0), 0);
   const fallback = (usage || []).filter((u) => u.fallback).length;
+  const priced = (usage || []).filter((u) => typeof u.cost_usd === "number");
+  const cost = priced.reduce((s, u) => s + u.cost_usd, 0);
   return `<details class="box trace"><summary>Research trace: how it got here (${calls.length} steps)</summary>
     ${parts}${verifierSection(calls)}
-    ${n ? `<p class="usage">${n} model calls · ${tokens.toLocaleString()} tokens${fallback ? ` · ${fallback} served by the fallback model after a rate limit` : ""}</p>` : ""}</details>`;
+    ${n ? `<p class="usage">${n} model calls · ${tokens.toLocaleString()} tokens${priced.length === n ? ` · about $${cost.toFixed(3)} at Vertex AI list prices` : ""}${fallback ? ` · ${fallback} served by the fallback model after a rate limit` : ""}</p>` : ""}</details>`;
 }
 
 function renderAnswer(entry, body, usage, seconds) {

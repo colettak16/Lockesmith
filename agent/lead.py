@@ -96,7 +96,8 @@ obtainable before before_battle, evolution reachable in time (no trade evolution
 learnable by then, the player's rules, Gen III facts, and that every source id came from a tool.
 - steps: for next_steps/plan, ordered steps with detail and source_ids. For lookups, put the answer
   in steps.
-- battle_notes: per relevant battle, the threat and how to handle it, with source_ids.
+- battle_notes: per relevant battle, the threat and how to handle it, with source_ids. Take type
+  multipliers (2x, 4x, immune) from the battle finding's matchups; don't work them out yourself.
 - assumptions: what you assumed (from researcher findings and the run state).
 - follow_up_questions: at most 3, from researchers' open questions, that would sharpen the answer.
 - unresolved: anything the data couldn't answer, or out-of-scope parts of the question.

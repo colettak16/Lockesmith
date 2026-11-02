@@ -1,0 +1,1202 @@
+{
+  "response": "To counter Tate & Liza's double battle strategy, catch a Sharpedo or Shuppet to exploit their Psychic typing with special Dark or physical Ghost attacks [1][2][3][4].\n\n### Top picks\n\n#### Sharpedo (core)\n* **Where:** Route 122 (Super Rod, levels 30-35, 40% odds) [5][6].\n* **When:** Available on the water route just before Mt. Pyre [5].\n* **Why it helps now:** Its Water/Dark typing gives it STAB moves (Surf and Crunch) that deal super-effective special damage to all of Tate & Liza's Pokémon, bypassing their defensive setups [1][7][3][4]. *Note: In Gen III, Surf (Water) and Crunch (Dark) are both special moves, meaning they use Sharpedo's lower Sp. Atk (95) rather than its massive Attack (120).*\n* **Long run:** Incredibly strong against Phoebe's Ghost types in the Elite Four, though its paper-thin defenses make it high-risk for taking direct hits [1].\n* **Backup:** **Staryu** (Lilycove City, Super Rod, 15% odds) [8]. It can evolve into Starmie with a Water Stone to hit their Rock/Ground types with Surf [9], making it a premier utility sweeper later [9]. *Note: Make sure you can obtain a Water Stone before Mossdeep Gym.*\n\n#### Shuppet (core)\n* **Where:** Mt. Pyre 1F-3F (Walking, levels 22-29, 100% odds) [10].\n* **When:** Inside Mt. Pyre on Route 122 before reaching Lilycove City [10].\n* **Why it helps now:** Since Ghost moves are physical in Gen III, Shuppet's evolution, Banette, uses its massive base 115 Attack to hit Tate & Liza's Psychic types incredibly hard with Shadow Ball [11][2][12][3][4].\n* **Long run:** Remains a powerful physical attacker against Phoebe's Ghost-type team in the Elite Four and provides strong neutral physical damage [11][2].\n* **Backup:** **Absol** (Route 120, tall grass) [13]. Uses its high Attack stat with physical moves like Slash and TM30 Shadow Ball to hit Psychic types incredibly hard [14][12][4].\n\n---\n\n### Key Battle Notes\n\n#### Mossdeep Gym: Tate & Liza\nTate & Liza use a highly synergistic double battle strategy [15]. \n* Their entire team (Claydol, Xatu, Lunatone, Solrock) is immune to Ground moves [15][16][17][18], allowing Claydol to safely spam Earthquake (dealing 2x damage to your Manectric) [15].\n* Solrock sets up Sunny Day to fire off instantaneous Solar Beams (dealing 4x damage to Marshtomp/Swampert) and boosted Flamethrowers (dealing 2x damage to Breloom) [18].\n* All four of their Pokémon carry Psychic, which deals 2x damage to Breloom [15][16][17][18].\n\n---\n\n### Assumptions\n* You will train Marshtomp to level 36 so it evolves into Swampert before the Gym battle.\n* Your party will be leveled up to roughly level 41-42 to match Tate & Liza.\n\n### To sharpen this\n* Do you prefer a bulky, defensive Ghost-type option like Dusclops, or a fast, offensive physical sweeper like Banette?\n* Have you already used TM30 Shadow Ball from Mt. Pyre, or is it available for Banette or Absol?\n\n### Not covered\n* Whether you currently have access to a Water Stone (e.g., from the Abandoned Ship or trading Blue Shards) to evolve Staryu into Starmie.",
+  "session_id": "sample-tate-liza",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What should I catch to get through Tate & Liza?"
+      },
+      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"Identify the best encounter recommendations to prepare for and defeat the Mossdeep Gym Leaders Tate & Liza, based on the player's current progression stage (6 badges).\", \"state_updates\": {\"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": null, \"level_caps\": null, \"level_cap_offset\": null, \"monotype\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 2.21
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "scout_battle",
+      "args": {
+        "battle": "gym7_tate_liza"
+      },
+      "result": "{\"battle_id\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"format\": \"double\", \"location\": \"mossdeep-city\", \"partner\": null, \"notes\": \"Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. Those currents run west only, so you can't Surf in from Slateport earlier (Bulbapedia: Route 134). No map script on those routes checks a badge. Mirage Island (on Route 130) appears only on days when the daily value matches the low 16 bits of a party Pokémon's personality value (time_events.c IsMirageIslandPresent), so swapping party members can change it; the old man in Pacifidlog says whether it's visible.\", \"team_note\": null, \"teams\": [{\"trainer\": \"Leader Tate&Liza\", \"trainer_const\": \"TRAINER_TATE_AND_LIZA_1\", \"pokemon\": [{\"species\": \"Claydol\", \"types\": [\"ground\", \"psychic\"], \"level\": 41, \"held_item\": null, \"ability\": \"levitate\", \"iv\": 30, \"moves_source\": \"cu... [3754 more characters]",
+      "round": 1,
+      "t": 16.56
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "gauntlet_overview",
+      "args": {},
+      "result": "{\"opponents_remaining\": 64, \"battles\": [{\"battle_id\": \"rival5_lilycove\", \"battle\": \"Lilycove City: Rival (optional)\", \"levels\": [31, 34], \"types\": {\"grass\": 2, \"flying\": 2, \"fire\": 1, \"water\": 1}, \"attack_types\": {\"grass\": 2, \"normal\": 1, \"fire\": 1, \"rock\": 1}}, {\"battle_id\": \"tabitha_magma_hideout\", \"battle\": \"Magma Hideout: Magma Admin Tabitha\", \"levels\": [26, 33], \"types\": {\"fire\": 2, \"ground\": 2, \"dark\": 1, \"poison\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 2, \"fire\": 1, \"flying\": 1}}, {\"battle_id\": \"maxie_magma_hideout\", \"battle\": \"Magma Hideout: Magma Leader Maxie\", \"levels\": [37, 39], \"types\": {\"dark\": 1, \"poison\": 1, \"flying\": 1, \"fire\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 1, \"flying\": 1, \"ground\": 1}}, {\"battle_id\": \"matt_aqua_hideout\", \"battle\": \"Aqua Hideout: Aqua Admin Matt\", \"levels\": [34, 34], \"types\": {\"dark\": 1, \"poison\": 1, \"flying\": 1}, \"attack_types\": {\"dark\": 1, \"flying\": 1, \"ghost\": 1}}, {\"battle_id\": \"gym7_tate_liza\", \"battle\": \"Mossdeep Gym: Tate & Liza\", \"levels\": [41, 42], \"types\": {\"psychic\": 4, \"rock\": 2, \"ground\": 1, \"flying\": 1}, \"attack_types\": {\"psychic\": 4, \"ground\": 1, \"rock\": 1, \"fire\": 1}}, {\"battle_id\": \"space_center\", \"battle\": \"Mossdeep ... [3503 more characters]",
+      "round": 1,
+      "t": 16.59
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Mt. Pyre Safari Zone Route 121 Lilycove Mossdeep"
+      },
+      "result": "{\"query\": \"Mt. Pyre Safari Zone Route 121 Lilycove Mossdeep\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_13#Pokémon_Contest_Hall\", \"page\": \"Walkthrough:Pokémon Emerald/Part 13\", \"section\": \"Lilycove City > Pokémon Contest Hall\", \"text\": \"The Contest Hall stands on the south side of town. This building hosts all four Contest levels—Normal Rank, Super Rank, Hyper Rank, and Master Rank. A receptionist will give you a Pokéblock Case, which lets you enter the Hoenn north of Route 121, if you talk to her. Several powerful Pokémon, such as Girafarig, Pinsir, and Heracross, are found in the Safari Zone and nowhere else.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_122\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 122\", \"text\": \"Route 122 is a short, simple ocean route stretching between Routes 121 and 123, with Mt. Pyre standing tall in the center.\\n\\nWalkthroughprevnext\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#A_Sighting\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 121 > A Sighting\", \"text\": \"It's not long before you catch a glimpse of Team Aqua. These Grunts are in a rush to reach M... [932 more characters]",
+      "round": 1,
+      "t": 16.79
+    },
+    {
+      "agent": "story_researcher",
+      "name": "get_next_steps",
+      "args": {},
+      "result": "{\"next\": {\"battle_id\": \"rival5_lilycove\", \"label\": \"Lilycove City: Rival (optional)\", \"location\": \"lilycove-city\", \"optional\": true, \"format\": \"single\", \"highest_level\": 34, \"new_hms_usable\": [\"fly\"], \"new_key_items\": [], \"areas_opened_before_it\": [], \"notes\": \"The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout.\", \"source_ids\": [\"progression:rival5_lilycove\", \"guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)\"]}, \"then\": [{\"battle_id\": \"tabitha_magma_hideout\", \"label\": \"Magma Hideout: Magma Admin Tabitha\", \"location\": \"magma-hideout\", \"optional\": false, \"format\": \"single\", \"highest_level\": 33, \"new_hms_usable\": [], \"new_key_items\": [], \"areas_opened_before_it\": [], \"notes\": \"The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears th... [758 more characters]",
+      "round": 1,
+      "t": 16.81
+    },
+    {
+      "agent": "story_researcher",
+      "name": "get_story_outline",
+      "args": {},
+      "result": "{\"remaining\": [{\"battle_id\": \"rival5_lilycove\", \"label\": \"Lilycove City: Rival (optional)\", \"location\": \"lilycove-city\", \"optional\": true, \"format\": \"single\", \"highest_level\": 34, \"new_hms_usable\": [\"fly\"], \"new_key_items\": [], \"notes\": \"The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no b\", \"source_ids\": [\"progression:rival5_lilycove\", \"guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)\"], \"areas_opened_count\": 0}, {\"battle_id\": \"tabitha_magma_hideout\", \"label\": \"Magma Hideout: Magma Admin Tabitha\", \"location\": \"magma-hideout\", \"optional\": false, \"format\": \"single\", \"highest_level\": 33, \"new_hms_usable\": [], \"new_key_items\": [], \"notes\": \"The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears \", \"source_ids\": [\"progression:tabitha_magma_hideout\", \"guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha\"], \"areas_opened_count\": 0}, {\"battle_id\": \"maxie_magma_hideout\", \"label\": \"Magma Hideout: Magma Leader Maxie\", \"location\": \"magma-hideout\", \"optional\": false... [5715 more characters]",
+      "round": 1,
+      "t": 16.86
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "species": null,
+        "before_battle": "gym7_tate_liza",
+        "types": [
+          "dark",
+          "ghost",
+          "water",
+          "bug"
+        ]
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 40, \"species\": [{\"species\": \"Barboach\", \"types\": [\"water\", \"ground\"], \"places\": [{\"where\": \"Route 111\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29712\"}, {\"where\": \"Route 114\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29768\"}, {\"where\": \"Route 120\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#30542\"}], \"wild\": true}, {\"species\": \"Carvanha\", \"types\": [\"water\", \"dark\"], \"places\": [{\"where\": \"Route 119\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#30515\"}, {\"where\": \"Route 118\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 60, \"source_id\": \"pokeapi:encounters#29835\"}, {\"where\": \"Route 118\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29831\"}], \"wild\": true}, {\"species\": \"Corphish\", \"types\": [\"wate... [9859 more characters]",
+      "round": 1,
+      "t": 17.69
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "moves_outlook",
+      "args": {
+        "level": 42,
+        "before_battle": "gym7_tate_liza",
+        "species": [
+          "Marshtomp",
+          "Sharpedo",
+          "Absol",
+          "Banette",
+          "Dusclops"
+        ]
+      },
+      "result": "{\"before_battle\": \"gym7_tate_liza\", \"label\": \"Mossdeep Gym: Tate & Liza\", \"species\": [{\"species\": \"Marshtomp\", \"types\": [\"water\", \"ground\"], \"at_level\": 42, \"default_moveset\": [\"Mud Sport\", \"Take Down\", \"Muddy Water\", \"Protect\"], \"best_level_up_attacks\": [\"Muddy Water (water, special, 95) Lv37\", \"Take Down (normal, physical, 90) Lv31\", \"Mud Shot (ground, physical, 55) Lv16\", \"Water Gun (water, special, 40) Lv1\"], \"next_level_up\": [\"Earthquake Lv46\", \"Endeavor Lv53\"], \"evolves\": [\"Swampert: level-up, level 36\"], \"tms_obtainable_before\": [\"TM14 Blizzard (ice, 120) at lilycove-city\", \"TM23 Iron Tail (steel, 100) at meteor-falls\", \"TM13 Ice Beam (ice, 95) at mauville-city\", \"TM13 Ice Beam (ice, 95) at abandoned-ship [requires: the Storage Key from the Captain's Office unlocks this room (FLAG_USED_STORAGE_KEY)]\"], \"source_ids\": [\"pokeapi:pokemon_moves#259/330/level-up/37\", \"pokeapi:pokemon_moves#259/36/level-up/31\", \"pokeapi:pokemon_moves#259/341/level-up/16\", \"pokeapi:pokemon_moves#259/55/level-up/1\", \"decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14\", \"decomp:data/maps/MeteorFalls_1F_1R#TM23\", \"decomp:data/maps/MauvilleCity_GameCorner#TM13\", \"decomp:data/maps/AbandonedShip_Room_B... [4325 more characters]",
+      "round": 1,
+      "t": 17.92
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Route 121 Route 122 Route 124 Lilycove Mossdeep walkthrough"
+      },
+      "result": "{\"query\": \"Route 121 Route 122 Route 124 Lilycove Mossdeep walkthrough\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_121\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 121\", \"text\": \"Compared to its neighbor to the west, Route 121 is smaller and more straightforward. Route 122 runs off to the south, while Lilycove City lies to the east. The north side of the route is home to the Hoenn, a park that attracts Trainers from across the region.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_122\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 122\", \"text\": \"Route 122 is a short, simple ocean route stretching between Routes 121 and 123, with Mt. Pyre standing tall in the center.\\n\\nWalkthroughprevnext\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_14#Route_124\", \"page\": \"Walkthrough:Pokémon Emerald/Part 14\", \"section\": \"Route 124\", \"text\": \"Route 124 holds all sorts of treasure, but most lie on the ocean floor far below. It's not possible to fully explore the area without Dive, so for now the route simply serves as a connector between Lilycove City to the west, Route 126 to the south, and Mo... [981 more characters]",
+      "round": 1,
+      "t": 18.55
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Route 120 Route 121 walkthrough"
+      },
+      "result": "{\"query\": \"Route 120 Route 121 walkthrough\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_120\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 120\", \"text\": \"The lengthy Route 120 runs southeast from Fortree City to Route 121. The long grass makes great cover for Pokémon capable of camouflaging themselves. In this route in some areas the weather is raining constantly.  Two separate ruins, Scorched Slab and the Ancient Tomb, are located here.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_121\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 121\", \"text\": \"Compared to its neighbor to the west, Route 121 is smaller and more straightforward. Route 122 runs off to the south, while Lilycove City lies to the east. The north side of the route is home to the Hoenn, a park that attracts Trainers from across the region.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_11#Route_122\", \"page\": \"Walkthrough:Pokémon Emerald/Part 11\", \"section\": \"Route 122\", \"text\": \"Route 122 is a short, simple ocean route stretching between Routes 121 and 123, with Mt. Pyre standing tall in the center.\\n\\nWalkthroughprev... [363 more characters]",
+      "round": 1,
+      "t": 20.14
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT machines.label, moves.name, moves.type, moves.damage_class, moves.power, tm_locations.location, tm_locations.requires\nFROM machines\nJOIN moves USING (move_id)\nLEFT JOIN tm_locations ON machines.label = tm_locations.label\nWHERE machines.label IN ('HM03', 'HM04', 'HM05', 'HM06', 'HM07', 'HM08', 'TM30', 'TM26', 'TM19', 'TM36')\n"
+      },
+      "result": "{\"columns\": [\"label\", \"name\", \"type\", \"damage_class\", \"power\", \"location\", \"requires\"], \"rows\": [[\"HM03\", \"Surf\", \"water\", \"special\", 95, \"petalburg-city\", null], [\"HM04\", \"Strength\", \"normal\", \"physical\", 80, \"rusturf-tunnel\", null], [\"HM05\", \"Flash\", \"normal\", \"status\", null, \"granite-cave\", null], [\"HM06\", \"Rock Smash\", \"fighting\", \"physical\", 20, \"mauville-city\", null], [\"HM07\", \"Waterfall\", \"water\", \"special\", 80, \"sootopolis-city\", null], [\"HM08\", \"Dive\", \"water\", \"special\", 60, \"mossdeep-city\", null], [\"TM19\", \"Giga Drain\", \"grass\", \"special\", 60, \"hoenn-route-123\", \"a Grass-type Pokemon in the party (IsGrassTypeInParty)\"], [\"TM26\", \"Earthquake\", \"ground\", \"physical\", 100, \"seafloor-cavern\", \"inside Seafloor Cavern (Dive)\"], [\"TM30\", \"Shadow Ball\", \"ghost\", \"physical\", 80, \"mt-pyre\", null], [\"TM36\", \"Sludge Bomb\", \"poison\", \"physical\", 90, \"dewford-town\", null]], \"source_id\": \"sql:6005a6e2e2\"}",
+      "round": 1,
+      "t": 20.88
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "assess_candidates",
+      "args": {
+        "species": [
+          "Spheal",
+          "Sharpedo",
+          "Shuppet",
+          "Duskull",
+          "Staryu",
+          "Pinsir"
+        ]
+      },
+      "result": "{\"candidates\": [{\"candidate\": \"Spheal\", \"final_form\": \"Walrein\", \"final_types\": [\"ice\", \"water\"], \"final_bst\": 530, \"final_stats\": {\"hp\": 110, \"attack\": 80, \"defense\": 90, \"sp_attack\": 95, \"sp_defense\": 90, \"speed\": 65}, \"abilities\": [\"thick-fat\"], \"evolution_path\": [\"Sealeo: level-up, level 32\", \"Walrein: level-up, level 44\"], \"needs_trade\": false, \"legendary\": false, \"remaining_opponents_hit_super_effectively\": 26, \"of_remaining_opponents\": 64, \"new_coverage_vs_party\": 5, \"shares_types_with_party\": [\"water\"], \"strongest_into\": [\"Mossdeep Gym: Tate & Liza\", \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"Elite Four: Drake\", \"Lilycove City: Rival (optional)\"], \"most_threatened_by\": [\"Lilycove City: Rival (optional)\", \"Mossdeep Gym: Tate & Liza\", \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\"], \"source_ids\": [\"pokeapi:pokemon_species#363\", \"pokeapi:pokemon_species#365\", \"rules:gen3_type_chart\", \"pokeapi:pokemon_evolution#184\", \"pokeapi:pokemon_evolution#185\"]}, {\"candidate\": \"Sharpedo\", \"final_form\": \"Sharpedo\", \"final_types\": [\"water\", \"dark\"], \"final_bst\": 460, \"final_stats\": {\"hp\": 70, \"attack\": 120, \"defense\": 40, \"sp_attack\": 95, \"sp_d... [4309 more characters]",
+      "round": 1,
+      "t": 22.16
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT s.name AS species, m.label, mv.name AS move_name\nFROM species s\nCROSS JOIN machines m\nJOIN moves mv ON m.move_id = mv.move_id\nJOIN learnsets l ON s.species_id = l.species_id AND l.move_id = mv.move_id\nWHERE s.name IN ('Marshtomp', 'Swampert', 'Sharpedo', 'Absol', 'Banette', 'Dusclops')\n  AND m.label IN ('HM03', 'TM30', 'TM26')\n  AND l.method = 'machine'\nORDER BY species, label;"
+      },
+      "result": "{\"columns\": [\"species\", \"label\", \"move_name\"], \"rows\": [[\"Absol\", \"TM30\", \"Shadow Ball\"], [\"Banette\", \"TM30\", \"Shadow Ball\"], [\"Dusclops\", \"TM26\", \"Earthquake\"], [\"Dusclops\", \"TM30\", \"Shadow Ball\"], [\"Marshtomp\", \"HM03\", \"Surf\"], [\"Marshtomp\", \"TM26\", \"Earthquake\"], [\"Sharpedo\", \"HM03\", \"Surf\"], [\"Sharpedo\", \"TM26\", \"Earthquake\"], [\"Swampert\", \"HM03\", \"Surf\"], [\"Swampert\", \"TM26\", \"Earthquake\"]], \"source_id\": \"sql:e8f9d1adfd\"}",
+      "round": 1,
+      "t": 23.23
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Wailmer Lilycove block clear"
+      },
+      "result": "{\"query\": \"Wailmer Lilycove block clear\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Petalburg_Woods\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Petalburg Woods\", \"text\": \"The tall trees of Petalburg Woods block much of the sun's rays, leaving the interior cool and dark. Smaller trees restrict travel to the western side for now.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Cutter's_House\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Rustboro City > Cutter's House\", \"text\": \"Stop by the Cutter's house next to the Pokémon Center. When the city was expanding, he taught his Pokémon a move to help clear the surrounding land of trees. He no longer needs his 01, and gives it to you. In the field, Cut may be used to clear away small trees and tall grass.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_5#Reunion\", \"page\": \"Walkthrough:Pokémon Emerald/Part 5\", \"section\": \"Rusturf Tunnel > Reunion\", \"text\": \"Enter the cave through either Route 116 or Verdanturf Town. With the Dynamo, you can finally use Rock Smash to clear a path through Rusturf Tunnel. Step inside and go northwest to reach a group of cracked rocks... [541 more characters]",
+      "round": 1,
+      "t": 24.6
+    },
+    {
+      "agent": "story_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 24.6
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT s.name AS species, e.to_species_id, s2.name, e.trigger, e.min_level FROM evolutions e JOIN species s ON e.from_species_id = s.species_id JOIN species s2 ON e.to_species_id = s2.species_id WHERE s.name IN ('Marshtomp', 'Carvanha', 'Shuppet', 'Duskull');"
+      },
+      "result": "{\"columns\": [\"species\", \"to_species_id\", \"name\", \"trigger\", \"min_level\"], \"rows\": [[\"Marshtomp\", 260, \"Swampert\", \"level-up\", 36], [\"Carvanha\", 319, \"Sharpedo\", \"level-up\", 30], [\"Shuppet\", 354, \"Banette\", \"level-up\", 37], [\"Duskull\", 356, \"Dusclops\", \"level-up\", 37]], \"source_id\": \"sql:df73c3cdc5\"}",
+      "round": 1,
+      "t": 27.53
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 27.53
+    },
+    {
+      "agent": "lead",
+      "name": "dispatch_researchers",
+      "args": {
+        "tasks": [
+          {
+            "task": "Analyze the gym7_tate_liza battle. Identify their team, movesets, double battle strategy, and key weaknesses or threats to a party of Marshtomp, Breloom, Swellow, and Manectric.",
+            "researcher": "battle"
+          },
+          {
+            "task": "Recommend encounters available before gym7_tate_liza to help against Tate & Liza. Consider Dark, Ghost, Water, and Bug types. Assess their long-term value through the Elite Four. Focus on Mt. Pyre, Route 120-124, Safari Zone, or Shoal Cave.",
+            "researcher": "catch"
+          },
+          {
+            "researcher": "moves",
+            "task": "Provide evolution timing and key moves learnable before gym7_tate_liza (approx level 42) for Marshtomp, as well as likely candidates like Sharpedo, Absol, Banette, and Dusclops. Include Surf and other HMs/TMs available by Mossdeep."
+          },
+          {
+            "researcher": "story",
+            "task": "Outline the route and key locations from Lilycove/Route 120 to Mossdeep City. Mention when Mt. Pyre and the Safari Zone become accessible."
+          }
+        ]
+      },
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Analyze the gym7_tate_liza battle. Identify their team, movesets, double battle strategy, and key weaknesses or threats to a party of Marshtomp, Breloom, Swellow, and Manectric.\", \"finding\": {\"summary\": \"Tate & Liza utilize a highly synergistic double battle strategy using Levitate and Flying types to freely spam Claydol's Earthquake while setting up Sunny Day for Solrock's Solar Beam and Flamethrower. Your current party is severely underleveled (averaging level 31 against their level 41-42 team) and highly vulnerable to their Psychic, Ground, and Grass coverage.\", \"claims\": [{\"text\": \"Tate & Liza's team consists of Claydol (Lv41), Xatu (Lv41), Lunatone (Lv42), and Solrock (Lv42).\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_TateAndLiza1/1\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/2\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/3\", \"decomp:trainer_parties.h#sParty_TateAndLiza1/4\"]}, {\"text\": \"Every opposing Pokémon is immune to Ground-type moves due to Levitate or Flying-typing, rendering Marshtomp's Ground moves useless and allowing Claydol to use Earthquake without damaging its partners.\", \"source_ids\": [\"dec... [10772 more characters]",
+      "round": 1,
+      "t": 34.82
+    },
+    {
+      "agent": "verifier",
+      "name": "verify",
+      "args": {
+        "picks": [
+          "Sharpedo",
+          "Shuppet"
+        ]
+      },
+      "result": "[{\"code\": \"GEN3_SPLIT_MISMATCH\", \"severity\": \"warning\", \"species\": \"Sharpedo\", \"detail\": \"Surf is special in Gen III (water), but Sharpedo has Attack 120 and Sp. Atk 95\", \"rec\": 0, \"alt\": null}, {\"code\": \"GEN3_SPLIT_MISMATCH\", \"severity\": \"warning\", \"species\": \"Sharpedo\", \"detail\": \"Crunch is special in Gen III (dark), but Sharpedo has Attack 120 and Sp. Atk 95\", \"rec\": 0, \"alt\": null}, {\"code\": \"EVOLUTION_ITEM_UNVERIFIED\", \"severity\": \"warning\", \"species\": \"Staryu\", \"detail\": \"Starmie needs a water-stone; make sure you can get one before Mossdeep Gym: Tate & Liza\", \"rec\": 0, \"alt\": 0}]",
+      "round": 1,
+      "t": 74.11
+    },
+    {
+      "agent": "verifier",
+      "name": "citation_check",
+      "args": {},
+      "result": "all citations resolve",
+      "round": 1,
+      "t": 78.8
+    }
+  ],
+  "citations": [
+    {
+      "n": 1,
+      "source_id": "pokeapi:pokemon_species#319",
+      "label": "PokeAPI: Sharpedo (species data)",
+      "url": null
+    },
+    {
+      "n": 2,
+      "source_id": "pokeapi:pokemon_species#354",
+      "label": "PokeAPI: Banette (species data)",
+      "url": null
+    },
+    {
+      "n": 3,
+      "source_id": "sql:df73c3cdc5",
+      "label": "database query df73c3cdc5",
+      "url": null
+    },
+    {
+      "n": 4,
+      "source_id": "sql:e8f9d1adfd",
+      "label": "database query e8f9d1adfd",
+      "url": null
+    },
+    {
+      "n": 5,
+      "source_id": "pokeapi:encounters#29835",
+      "label": "PokeAPI: Carvanha at Route 118 (super-rod)",
+      "url": null
+    },
+    {
+      "n": 6,
+      "source_id": "pokeapi:encounters#30596",
+      "label": "PokeAPI: Sharpedo at Route 122 (super-rod)",
+      "url": null
+    },
+    {
+      "n": 7,
+      "source_id": "pokeapi:pokemon_moves#319/242/level-up/22",
+      "label": "PokeAPI: Sharpedo learns Crunch (level-up)",
+      "url": null
+    },
+    {
+      "n": 8,
+      "source_id": "pokeapi:encounters#30913",
+      "label": "PokeAPI: Staryu at Lilycove City (super-rod)",
+      "url": null
+    },
+    {
+      "n": 9,
+      "source_id": "pokeapi:pokemon_evolution#70",
+      "label": "PokeAPI: Staryu evolves into Starmie",
+      "url": null
+    },
+    {
+      "n": 10,
+      "source_id": "pokeapi:encounters#29953",
+      "label": "PokeAPI: Shuppet at Mt. Pyre (walk)",
+      "url": null
+    },
+    {
+      "n": 11,
+      "source_id": "pokeapi:pokemon_evolution#180",
+      "label": "PokeAPI: Shuppet evolves into Banette",
+      "url": null
+    },
+    {
+      "n": 12,
+      "source_id": "sql:6005a6e2e2",
+      "label": "database query 6005a6e2e2",
+      "url": null
+    },
+    {
+      "n": 13,
+      "source_id": "pokeapi:pokemon_species#359",
+      "label": "PokeAPI: Absol (species data)",
+      "url": null
+    },
+    {
+      "n": 14,
+      "source_id": "pokeapi:pokemon_moves#359/163/level-up/36",
+      "label": "PokeAPI: Absol learns Slash (level-up)",
+      "url": null
+    },
+    {
+      "n": 15,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/1",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/1)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 16,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/2",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/2)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 17,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/3",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/3)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 18,
+      "source_id": "decomp:trainer_parties.h#sParty_TateAndLiza1/4",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/4)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    }
+  ],
+  "plan": {
+    "intent": "catch",
+    "headline": "To counter Tate & Liza's double battle strategy, catch a Sharpedo or Shuppet to exploit their Psychic typing with special Dark or physical Ghost attacks.",
+    "recommendations": [
+      {
+        "species": "Sharpedo",
+        "role": "Fast Special Attacker",
+        "horizon": "core",
+        "before_battle": "gym7_tate_liza",
+        "where": "Route 122 (Super Rod, levels 30-35, 40% odds)",
+        "when": "Available on the water route just before Mt. Pyre.",
+        "why": "Its Water/Dark typing gives it STAB moves (Surf and Crunch) that deal super-effective special damage to all of Tate & Liza's Pokémon, bypassing their defensive setups.",
+        "long_term": "Incredibly strong against Phoebe's Ghost types in the Elite Four, though its paper-thin defenses make it high-risk for taking direct hits.",
+        "evolve_to": "",
+        "key_moves": [
+          "Surf",
+          "Crunch"
+        ],
+        "source_ids": [
+          "pokeapi:encounters#30596",
+          "pokeapi:encounters#29835",
+          "pokeapi:pokemon_species#319",
+          "pokeapi:pokemon_moves#319/242/level-up/22",
+          "sql:df73c3cdc5",
+          "sql:e8f9d1adfd"
+        ],
+        "alternatives": [
+          {
+            "species": "Staryu",
+            "horizon": "core",
+            "where": "Lilycove City (Super Rod, levels 25-30, 15% odds)",
+            "why": "Evolves immediately into Starmie with a Water Stone, giving you a very fast and powerful Water sweeper to hit Tate & Liza's Rock/Ground types with Surf.",
+            "long_term": "One of the best utility sweepers in Hoenn. Can learn Ice Beam, Thunderbolt, and Psychic for unmatched coverage against the Elite Four.",
+            "evolve_to": "Starmie",
+            "key_moves": [
+              "Surf"
+            ],
+            "source_ids": [
+              "pokeapi:encounters#30913",
+              "pokeapi:pokemon_evolution#70"
+            ]
+          }
+        ]
+      },
+      {
+        "species": "Shuppet",
+        "role": "Physical Ghost Sweeper",
+        "horizon": "core",
+        "before_battle": "gym7_tate_liza",
+        "where": "Mt. Pyre 1F-3F (Walking, levels 22-29, 100% odds)",
+        "when": "Available inside Mt. Pyre on Route 122 before reaching Lilycove City.",
+        "why": "Since Ghost moves are physical in Gen III, Shuppet's evolution, Banette, uses its massive base 115 Attack to hit Tate & Liza's Psychic types incredibly hard with Shadow Ball.",
+        "long_term": "Remains a powerful physical attacker against Phoebe's Ghost-type team in the Elite Four and provides strong neutral physical damage.",
+        "evolve_to": "Banette",
+        "key_moves": [
+          "Shadow Ball"
+        ],
+        "source_ids": [
+          "pokeapi:encounters#29953",
+          "pokeapi:pokemon_evolution#180",
+          "pokeapi:pokemon_species#354",
+          "sql:6005a6e2e2",
+          "sql:df73c3cdc5",
+          "sql:e8f9d1adfd"
+        ],
+        "alternatives": [
+          {
+            "species": "Absol",
+            "horizon": "core",
+            "where": "Route 120 (tall grass)",
+            "why": "Its extremely high Attack stat makes physical moves like Slash and the Ghost-type TM30 Shadow Ball hit the Gym's Psychic types incredibly hard.",
+            "long_term": "A great physical attacker with access to Swords Dance at level 40 to sweep through Elite Four teams.",
+            "evolve_to": "",
+            "key_moves": [
+              "Shadow Ball",
+              "Slash",
+              "Swords Dance"
+            ],
+            "source_ids": [
+              "pokeapi:pokemon_moves#359/163/level-up/36",
+              "pokeapi:pokemon_species#359",
+              "sql:6005a6e2e2",
+              "sql:e8f9d1adfd"
+            ]
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "title": "Head to Route 121",
+        "detail": "Travel east from Fortree City across Route 120 to reach Route 121.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_Emerald/Part_11#Route_120",
+          "guide:Walkthrough:Pokemon_Emerald/Part_11#Route_121"
+        ]
+      },
+      {
+        "title": "Explore Mt. Pyre",
+        "detail": "Surf south from Route 121 onto Route 122 to enter Mt. Pyre. This is where you can catch Shuppet and find TM30 Shadow Ball.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_Emerald/Part_11#Route_122",
+          "sql:6005a6e2e2"
+        ]
+      },
+      {
+        "title": "Proceed to Lilycove City and Mossdeep",
+        "detail": "Continue east on Route 121 into Lilycove City. From there, surf east across Route 124 to reach Mossdeep City for your Gym battle.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_Emerald/Part_11#Route_121",
+          "guide:Walkthrough:Pokemon_Emerald/Part_14#Route_124"
+        ]
+      }
+    ],
+    "battle_notes": [
+      {
+        "battle_id": "gym7_tate_liza",
+        "note": "Tate & Liza use a highly synergistic double battle strategy. Their entire team (Claydol, Xatu, Lunatone, Solrock) is immune to Ground moves via Flying-typing or Levitate, meaning Claydol can safely spam Earthquake (2x damage to Manectric). Solrock sets up Sunny Day to fire off instantaneous Solar Beams (4x damage to Marshtomp/Swampert) and boosted Flamethrowers (2x damage to Breloom). Furthermore, all four Pokémon carry Psychic, dealing 2x damage to Breloom.",
+        "source_ids": [
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/1",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/2",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/3",
+          "decomp:trainer_parties.h#sParty_TateAndLiza1/4"
+        ]
+      }
+    ],
+    "assumptions": [
+      "You will train Marshtomp to level 36 so it evolves into Swampert before the Gym battle.",
+      "Your party will be leveled up to roughly level 41-42 to match Tate & Liza."
+    ],
+    "follow_up_questions": [
+      "Do you prefer a bulky, defensive Ghost-type option like Dusclops, or a fast, offensive physical sweeper like Banette?",
+      "Have you already used TM30 Shadow Ball from Mt. Pyre, or is it available for Banette or Absol?"
+    ],
+    "unresolved": [
+      "Whether you have access to a Water Stone (e.g., from the Abandoned Ship or Blue Shards) to evolve Staryu into Starmie."
+    ]
+  },
+  "chart": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": {
+      "text": "Type coverage over the rest of the run",
+      "subtitle": "Share of each battle's team your STAB types hit super-effectively (type chart only, no damage rolls)"
+    },
+    "data": {
+      "values": [
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 3,
+          "threats": 1,
+          "team_size": 4,
+          "share": 0.75
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 3,
+          "threats": 4,
+          "team_size": 4,
+          "share": 0.75
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 1,
+          "threats": 1,
+          "team_size": 4,
+          "share": 0.25
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 4,
+          "share": 1.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Tate & Liza",
+          "order": 22,
+          "hits": 4,
+          "threats": 0,
+          "team_size": 4,
+          "share": 1.0
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 4,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 3,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Juan",
+          "order": 26,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 5,
+          "threats": 2,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 2,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.4
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Sidney",
+          "order": 28,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Phoebe",
+          "order": 29,
+          "hits": 4,
+          "threats": 5,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 5,
+          "threats": 5,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 0,
+          "threats": 5,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 3,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Glacia",
+          "order": 30,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Drake",
+          "order": 31,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Marshtomp (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 1,
+          "threats": 1,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 3,
+          "threats": 3,
+          "team_size": 6,
+          "share": 0.5
+        },
+        {
+          "member": "Swellow (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 1,
+          "threats": 3,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 4,
+          "threats": 2,
+          "team_size": 6,
+          "share": 0.67
+        },
+        {
+          "member": "Sharpedo (pick)",
+          "kind": "pick",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 6,
+          "share": 0.0
+        },
+        {
+          "member": "Shuppet → Banette (pick)",
+          "kind": "pick",
+          "battle": "Wallace",
+          "order": 32,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 6,
+          "share": 0.0
+        }
+      ]
+    },
+    "width": {
+      "step": 46
+    },
+    "height": {
+      "step": 30
+    },
+    "encoding": {
+      "x": {
+        "field": "battle",
+        "type": "ordinal",
+        "sort": {
+          "field": "order"
+        },
+        "title": null,
+        "axis": {
+          "labelAngle": -40,
+          "labelLimit": 120
+        }
+      },
+      "y": {
+        "field": "member",
+        "type": "nominal",
+        "title": null,
+        "sort": [
+          "Marshtomp (party)",
+          "Breloom (party)",
+          "Swellow (party)",
+          "Manectric (party)",
+          "Sharpedo (pick)",
+          "Shuppet → Banette (pick)"
+        ],
+        "axis": {
+          "labelLimit": 220
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rect",
+          "stroke": "#fffdf6",
+          "strokeWidth": 2,
+          "cornerRadius": 3
+        },
+        "encoding": {
+          "color": {
+            "field": "share",
+            "type": "quantitative",
+            "title": "Hit super-effectively",
+            "scale": {
+              "domain": [
+                0,
+                1
+              ],
+              "scheme": "greens"
+            },
+            "legend": {
+              "format": ".0%"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "member"
+            },
+            {
+              "field": "battle"
+            },
+            {
+              "field": "hits",
+              "title": "opponents hit super-effectively"
+            },
+            {
+              "field": "threats",
+              "title": "opponents with a super-effective move on it"
+            },
+            {
+              "field": "team_size",
+              "title": "team size"
+            }
+          ]
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 11
+        },
+        "encoding": {
+          "text": {
+            "field": "hits"
+          },
+          "color": {
+            "condition": {
+              "test": "datum.share > 0.6",
+              "value": "#ffffff"
+            },
+            "value": "#2b2a26"
+          }
+        }
+      }
+    ],
+    "config": {
+      "view": {
+        "stroke": null
+      },
+      "axis": {
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "usermeta": {
+      "source": "emerald.duckdb trainer teams (or the loaded randomizer log) and the Gen 3 type chart"
+    }
+  },
+  "usage": [
+    {
+      "agent": "clarifier",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2469,
+      "output_tokens": 172,
+      "cost_usd": 0.005252,
+      "t": 2.2,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 2495,
+      "output_tokens": 569,
+      "cost_usd": 0.011818,
+      "t": 14.27,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1207,
+      "output_tokens": 99,
+      "cost_usd": 0.002701,
+      "t": 16.5,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1351,
+      "output_tokens": 145,
+      "cost_usd": 0.003331,
+      "t": 16.77,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1656,
+      "output_tokens": 149,
+      "cost_usd": 0.003825,
+      "t": 17.66,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1818,
+      "output_tokens": 215,
+      "cost_usd": 0.004662,
+      "t": 17.8,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4129,
+      "output_tokens": 111,
+      "cost_usd": 0.007193,
+      "t": 18.55,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4796,
+      "output_tokens": 60,
+      "cost_usd": 0.007734,
+      "t": 20.14,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3824,
+      "output_tokens": 224,
+      "cost_usd": 0.007752,
+      "t": 20.88,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4499,
+      "output_tokens": 468,
+      "cost_usd": 0.01096,
+      "t": 22.05,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4240,
+      "output_tokens": 205,
+      "cost_usd": 0.008205,
+      "t": 23.23,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 5241,
+      "output_tokens": 497,
+      "cost_usd": 0.012334,
+      "t": 24.6,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3414,
+      "output_tokens": 2126,
+      "cost_usd": 0.024255,
+      "t": 26.98,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 5132,
+      "output_tokens": 526,
+      "cost_usd": 0.012432,
+      "t": 27.0,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4538,
+      "output_tokens": 315,
+      "cost_usd": 0.009642,
+      "t": 27.52,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 6241,
+      "output_tokens": 1689,
+      "cost_usd": 0.024563,
+      "t": 30.74,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3686,
+      "output_tokens": 1335,
+      "cost_usd": 0.017544,
+      "t": 34.82,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 6222,
+      "output_tokens": 3743,
+      "cost_usd": 0.05736,
+      "t": 74.0,
+      "fallback": null
+    },
+    {
+      "agent": "writer",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2240,
+      "output_tokens": 1332,
+      "cost_usd": 0.015348,
+      "t": 78.74,
+      "fallback": null
+    }
+  ],
+  "seconds": 79.1
+}
