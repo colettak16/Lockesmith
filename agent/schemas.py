@@ -69,6 +69,7 @@ class Candidate(BaseModel):
     where: str
     when: str
     why: str
+    long_term: str
     source_ids: list[str]
 
 
@@ -97,9 +98,11 @@ class Alternative(BaseModel):
 class Recommendation(BaseModel):
     species: str
     role: str
+    horizon: Literal["core", "situational"]  # a keeper through the Champion, or an answer to one fight
     where: str
     when: str
     why: str
+    long_term: str
     source_ids: list[str]
     alternatives: list[Alternative]
 

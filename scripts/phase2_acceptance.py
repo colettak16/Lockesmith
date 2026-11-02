@@ -88,6 +88,8 @@ async def run(name: str) -> bool:
         n, lo, hi, out = llm.get(u["agent"], (0, u["t"], u["t"], 0))
         llm[u["agent"]] = (n + 1, min(lo, u["t"]), max(hi, u["t"]), out + u["output_tokens"])
     print("LLM calls (n, first-last s, output tokens):", {a: f"{n}, {lo}-{hi}, {out}" for a, (n, lo, hi, out) in llm.items()})
+    usage = body.get("usage", [])
+    print(f"model calls: {len(usage)}; served by the fallback model after a 429: {sum(1 for u in usage if u.get('fallback'))}")
     print(f"citations: {len(body['citations'])}; unverified: {(body['plan'] or {}).get('unverified_source_ids', [])}")
     print(body["response"][:900] + ("..." if len(body["response"]) > 900 else ""))
     return not problems

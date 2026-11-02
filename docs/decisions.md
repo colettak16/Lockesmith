@@ -146,7 +146,31 @@ Measured with `scripts/phase2_acceptance.py`; the outputs are in `docs/phase2_ru
 - **Thinking effort is low for the Lead and Writer.** At default effort the Lead spent around 8k tokens and a minute or more per request; low effort kept the picks specific and cited.
 - **Research rounds are capped at 2** until Phase 3's Verifier drives the gap loop. The Lead repeated answered tasks when allowed 3.
 - **Tools default to the next *required* battle,** not an optional rival fight. Raw SQL is removed from the Catch researcher, because raw encounter rows skip the reachability and HM gates.
-- **Typical times:** vague and out-of-scope questions take 3–4 s; next steps about 60 s; catch and revision questions 100–240 s. The request budget is 270 s, inside the graders' 5 minutes.
+- **Typical times:** vague and out-of-scope questions take 3–4 s; next steps about 60 s; catch and revision questions 100–240 s. The request budget is 270 s, inside the graders' 5 minutes. (Superseded by D10.)
+
+## D10. Faster research without handing researchers the answers, and long-term value (2026-11-01)
+
+The user judged 100–240 s unacceptable; even a minute is long. We considered computing everything in code and handing researchers a fact sheet, but that would turn them into summarizers. It would also weaken the deep-research story: researchers exploring in parallel, and a Lead that goes back for gaps. The line we drew instead: **code does the arithmetic, agents decide what to investigate.**
+
+- **Composite tools.** One call answers a whole investigative step, so researchers make one or two rounds of calls instead of nine small ones:
+  - `scout_battle`: team plus matchups and level gap.
+  - `get_catchable` with several types at once.
+  - `moves_outlook`: several species in one call.
+  - `assess_candidates` and `gauntlet_overview`: long-term value (below).
+
+  Researchers still choose which battle to scout, which types to hunt and which candidates to assess.
+- **Long-term value (user requirement).** Picks are judged over the whole remaining run, not just the next battle.
+  - `gauntlet_overview` profiles every remaining battle through the Champion.
+  - `assess_candidates` gives a species' final form, its evolution path (trade evolutions are flagged as impossible solo), final stats, coverage against every remaining opponent, and overlap with the party.
+  - Each recommendation has a `horizon` ("core" through the Champion, or "situational" for one fight) and a `long_term` line. In live runs Absol was correctly called situational: Dark moves are special in Gen III, so its 130 Attack is wasted on its own STAB.
+- **No waiting out rate limits.** A 429 goes straight to a fallback Gemini model (`LOCKESMITH_FALLBACK_MODEL`, default `gemini-3.8-flash`) with its own capacity. Only after that does a short retry (1–4 s, 2 tries) kick in. With fewer calls, the last runs saw no 429s at all.
+- **Thinking effort was the biggest cost.** At default effort, Flash spent about 20 s thinking per researcher turn. At low effort the same battle task took about 9 s, with identical tool calls. Researchers, the Clarifier, the Lead and the Writer all run at low effort.
+- **Other changes:**
+  - The Writer moved to Flash: formatting and citing take about 4 s.
+  - The researcher turn cap is 4, still with the forced wrap-up.
+  - The Battle researcher lost `search_guide`, which it used to wander.
+- **The Lead stays on Pro.** On Flash it saved only about 5 s (46 s vs 51 s), but it dispatched an unneeded fourth researcher, ignoring the instructions.
+- **Result** (`scripts/phase2_acceptance.py`): catch plan 51 s with 14 model calls (down from about 31); revision 51 s; next steps 39 s; vague and out-of-scope 2 s. All five scenarios pass. Phase 4's front end will stream progress so the wait is visible.
 
 ---
 

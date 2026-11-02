@@ -23,8 +23,9 @@ def decision(**kw) -> ClarifierDecision:
 
 DRAFT = LeadDraft(
     intent="catch", headline="Catch Sharpedo.",
-    recommendations=[Recommendation(species="Sharpedo", role="special attacker", where="Route 118, Super Rod",
+    recommendations=[Recommendation(species="Sharpedo", role="special attacker", horizon="core", where="Route 118, Super Rod",
                                     when="before gym7_tate_liza", why="Dark beats Psychic",
+                                    long_term="Water/Dark stays useful against Phoebe and Wallace",
                                     source_ids=["progression:gym7_tate_liza"], alternatives=[])],
     steps=[], battle_notes=[], assumptions=[], follow_up_questions=[], unresolved=[],
 )

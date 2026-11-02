@@ -4,16 +4,24 @@ Agents are built with `make_agent` and run with `run`. Swapping the OpenAI Agent
 for another framework touches this file only; swapping Gemini for Claude is an env var
 (docs/decisions.md D8):
 
-    LOCKESMITH_FAST_MODEL    Clarifier and researchers   (default vertex_ai/gemini-3.5-flash)
-    LOCKESMITH_STRONG_MODEL  Lead and Writer             (default vertex_ai/gemini-3.1-pro-preview)
+    LOCKESMITH_FAST_MODEL      Clarifier, researchers, Writer  (default vertex_ai/gemini-3.5-flash)
+    LOCKESMITH_STRONG_MODEL    Lead                            (default vertex_ai/gemini-3.1-pro-preview)
+    LOCKESMITH_FALLBACK_MODEL  used when either is rate-limited (default vertex_ai/gemini-3.8-flash)
 
 Any LiteLLM model string works. Vertex calls use Application Default Credentials and
 VERTEXAI_PROJECT / VERTEXAI_LOCATION (defaults: lockesmith, global).
+
+Rate limits: Vertex serves these models from shared capacity, so bursts of parallel
+researchers get "429 Resource exhausted". Rather than wait that out, a rate-limited call
+goes straight to the fallback model, which has its own capacity (docs/decisions.md D10).
 """
 
 import json
+import logging
 import os
 from typing import Any
+
+import litellm
 
 from agents import Agent, ModelSettings, RunHooks, Runner, set_tracing_disabled
 from agents.extensions.models.litellm_model import LitellmModel
@@ -27,11 +35,11 @@ os.environ.setdefault("VERTEXAI_LOCATION", "global")
 set_tracing_disabled(True)
 
 RESULT_PREVIEW_CHARS = 1200
-# Parallel researchers can trip Vertex's quota ("429 Resource exhausted"); the runner retries
-# those, server errors and network errors with exponential backoff and jitter.
+log = logging.getLogger("lockesmith.runtime")
+# Last resort after the fallback model: short retries for 429s, server and network errors.
 RETRY = ModelRetrySettings(
-    max_retries=5,
-    backoff={"initial_delay": 2.0, "multiplier": 2.0, "max_delay": 20.0, "jitter": True},
+    max_retries=2,
+    backoff={"initial_delay": 1.0, "multiplier": 2.0, "max_delay": 4.0, "jitter": True},
     policy=retry_policies.any(retry_policies.http_status([429, 500, 503]), retry_policies.network_error()),
 )
 
@@ -39,7 +47,28 @@ RETRY = ModelRetrySettings(
 def model_name(tier: str) -> str:
     if tier == "fast":
         return os.environ.get("LOCKESMITH_FAST_MODEL", "vertex_ai/gemini-3.5-flash")
+    if tier == "fallback":
+        return os.environ.get("LOCKESMITH_FALLBACK_MODEL", "vertex_ai/gemini-3.8-flash")
     return os.environ.get("LOCKESMITH_STRONG_MODEL", "vertex_ai/gemini-3.1-pro-preview")
+
+
+class FallbackModel(LitellmModel):
+    """A LiteLLM model that sends a rate-limited call to a second model instead of waiting."""
+
+    def __init__(self, model: str, fallback: str | None):
+        super().__init__(model=model)
+        self.fallback = LitellmModel(model=fallback) if fallback and fallback != model else None
+
+    async def get_response(self, *args, **kwargs):
+        try:
+            return await super().get_response(*args, **kwargs)
+        except litellm.RateLimitError:
+            if self.fallback is None:
+                raise
+            log.info("rate-limited on %s; using %s", self.model, self.fallback.model)
+            response = await self.fallback.get_response(*args, **kwargs)
+            response.lockesmith_fallback = self.fallback.model  # surfaced by ToolCallRecorder.on_llm_end
+            return response
 
 
 def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=None, effort: str | None = None) -> Agent:
@@ -48,7 +77,7 @@ def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=No
     return Agent(
         name=name,
         instructions=instructions,
-        model=LitellmModel(model=model_name(tier)),
+        model=FallbackModel(model_name(tier), model_name("fallback")),
         model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY),
         tools=list(tools),
         output_type=output_type,
@@ -83,7 +112,7 @@ class ToolCallRecorder(RunHooks):
         if usage is not None:
             context.context.usage.append(
                 {"agent": agent.name, "input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens,
-                 "t": context.context.elapsed()}
+                 "t": context.context.elapsed(), "fallback": getattr(response, "lockesmith_fallback", None)}
             )
 
 

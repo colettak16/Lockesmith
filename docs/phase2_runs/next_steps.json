@@ -1,5 +1,5 @@
 {
-  "response": "1. **Rescue Peeko and recover the Devon Goods**\n   Head east from Rustboro City to Route 116 and enter Rusturf Tunnel [1][2][3]. Defeat the Team Aqua Grunt to rescue Mr. Briney's Wingull, Peeko, and recover the stolen Devon Goods [1][2][3]. The Grunt has a single Level 11 Poochyena, so it shouldn't be much of a threat [4].\n2. **Visit the Devon Corporation**\n   Return to Rustboro City and meet the Devon Researcher on the east side [5][6]. He will reward you with a Great Ball and escort you to the Devon Corporation [5][6]. On the third floor, Mr. Stone will give you a PokéNav and ask you to deliver a Letter to Steven in Dewford Town and the Devon Goods to Captain Stern in Slateport [5][6].\n3. **Sail to Dewford Town**\n   Travel south through Petalburg Woods to reach Mr. Briney's cottage on the south side of Route 104 [7][5][8]. Speak to Mr. Briney to board his boat and sail to Dewford Town [7][5][8].\n\n**Looking ahead to Brawly:** Brawly uses Fighting-types (Lv 16 Machop, Lv 16 Meditite, Lv 19 Makuhita) that use Bulk Up [9][10][11]. Since you chose Treecko, you might want to catch a Flying-type like Taillow or Wingull before challenging him [9][10][11].\n\n### Assumptions\n* You have already defeated Roxanne and obtained the Stone Badge.\n\n### To sharpen this\n* Do you want to stop by Cutter's House in Rustboro to retrieve HM01 (Cut) before heading to Dewford?\n* What is your current party lineup and their levels?",
+  "response": "1. **Head East to Route 116 and Rusturf Tunnel**: Pursue the fleeing Team Aqua Grunt east from Rustboro City to Route 116, which leads into Rusturf Tunnel [1][2].\n2. **Defeat the Team Aqua Grunt**: Beat the Grunt inside the tunnel to rescue Mr. Briney's Wingull, Peeko, and retrieve the stolen Devon Goods [2]. This will prompt Mr. Briney to return to his cottage on Route 104 [2].\n3. **Return to Rustboro City**: Head back to Rustboro City, where a Devon employee will greet you, give you a Great Ball, and escort you to the Devon Corporation president, Mr. Stone [3].\n4. **Receive the PokéNav and Deliveries**: Mr. Stone will reward you with the PokéNav and assign you to deliver a Letter to Steven in Dewford Town and take the Devon Goods to Captain Stern in Slateport City [3].\n5. **Set Sail for Dewford Town**: Travel south through Petalburg Woods to Mr. Briney's cottage on the south side of Route 104 [4][5]. He will ferry you across Routes 105 and 106 to Dewford Town, where you can challenge Brawly at the Dewford Gym [5][6][7].\n\n### Assumptions\n* You have not already defeated the Aqua Grunt in Rusturf Tunnel.\n* Your Treecko is adequately leveled from the Rustboro Gym battle to handle the Grunt.\n\n### To sharpen this\n* Would you like details on Brawly's team composition, levels, or weaknesses?\n* Do you want to know where to find Steven in Granite Cave or how to navigate the cave without Flash?",
   "session_id": "session-next",
   "tool_calls": [
     {
@@ -8,9 +8,19 @@
       "args": {
         "message": "What should I do next?"
       },
-      "result": "{\"action\": \"proceed\", \"intent\": \"next_steps\", \"reply\": \"\", \"research_brief\": \"The player has the Stone Badge and chose Treecko. Explain the next steps in the Pok\\u00e9mon Emerald main story, from Rustboro City to Dewford Town.\", \"state_updates\": {\"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"dupes_clause\": null, \"level_caps\": null, \"monotype\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "result": "{\"action\": \"proceed\", \"intent\": \"next_steps\", \"reply\": \"\", \"research_brief\": \"The player is asking what to do next in the story after obtaining the Stone Badge with a Treecko starter.\", \"state_updates\": {\"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"dupes_clause\": null, \"level_caps\": null, \"monotype\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
       "round": 0,
-      "t": 4.83
+      "t": 1.41
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Rusturf Tunnel Devon Goods Brawly Dewford"
+      },
+      "result": "{\"query\": \"Rusturf Tunnel Devon Goods Brawly Dewford\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_5#Route_116\", \"page\": \"Walkthrough:Pokémon Emerald/Part 5\", \"section\": \"Rusturf Tunnel > Route 116\", \"text\": \"If you leave the tunnel through the middle exit, then you enter a new area on Route 116. You can pick up a Black Glasses and HP Up here. Additionally, you can talk to a Devon Corporation employee anytime after delivering the Devon Goods, and he will give you a free Repeat Ball and allow you to buy more Repeat Balls and Timer Balls at Rustboro City.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Rusturf Tunnel > The Take-Down\", \"text\": \"The tunnel is fairly small, so you will find the thief and his hostage shortly after you step inside. Defeat him, and he gives up the Devon Goods before fleeing. The old man rushes in to check on his Peeko, and introduces himself as Mr. Briney before the pair leaves for his cottage near Petalburg Woods.\\n\\nWalkthroughprevnext\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Rusturf_Tunnel\", \"page\": \"Walkthrough:Pokémon Emerald/P... [882 more characters]",
+      "round": 1,
+      "t": 9.66
     },
     {
       "agent": "story_researcher",
@@ -18,173 +28,35 @@
       "args": {},
       "result": "{\"next\": {\"battle_id\": \"grunt_rusturf_tunnel\", \"label\": \"Rusturf Tunnel: Team Aqua Grunt (Devon Goods)\", \"location\": \"rusturf-tunnel\", \"optional\": false, \"format\": \"single\", \"highest_level\": 11, \"new_hms_usable\": [\"cut\"], \"new_key_items\": [], \"areas_opened_before_it\": [], \"notes\": \"The tunnel itself opened before Roxanne; this is the Devon Goods chase.\", \"source_ids\": [\"progression:grunt_rusturf_tunnel\", \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\"]}, \"then\": [{\"battle_id\": \"rival2_rustboro\", \"label\": \"Rustboro City: Rival (optional)\", \"location\": \"rustboro-city\", \"optional\": true, \"format\": \"single\", \"highest_level\": 15, \"new_hms_usable\": [], \"new_key_items\": [], \"areas_opened_before_it\": [], \"notes\": \"Torchic players: May leads with Torkoal, Brendan with Slugma. Other variants are the same for both rivals.\", \"source_ids\": [\"progression:rival2_rustboro\", \"guide:Walkthrough:Pokemon_Emerald/Part_3#Rival_Battle_2_(optional)\"]}, {\"battle_id\": \"gym2_brawly\", \"label\": \"Dewford Gym: Brawly\", \"location\": \"dewford-town\", \"optional\": false, \"format\": \"single\", \"highest_level\": 19, \"new_hms_usable\": [], \"new_key_items\": [\"old-rod\"], \"areas_opened_before_it\": [\"hoenn-route-106\", \"... [1083 more characters]",
       "round": 1,
-      "t": 13.24
+      "t": 9.68
     },
     {
-      "agent": "battle_researcher",
-      "name": "get_remaining_battles",
+      "agent": "story_researcher",
+      "name": "get_story_outline",
       "args": {},
-      "result": "{\"next_battle\": \"grunt_rusturf_tunnel\", \"battles\": [{\"battle_id\": \"grunt_rusturf_tunnel\", \"label\": \"Rusturf Tunnel: Team Aqua Grunt (Devon Goods)\", \"order\": 4, \"badges_before\": 1, \"format\": \"single\", \"optional\": false, \"deferred\": false, \"location\": \"rusturf-tunnel\", \"highest_level\": 11, \"source_id\": \"progression:grunt_rusturf_tunnel\"}, {\"battle_id\": \"rival2_rustboro\", \"label\": \"Rustboro City: Rival (optional)\", \"order\": 5, \"badges_before\": 1, \"format\": \"single\", \"optional\": true, \"deferred\": false, \"location\": \"rustboro-city\", \"highest_level\": 15, \"source_id\": \"progression:rival2_rustboro\"}, {\"battle_id\": \"gym2_brawly\", \"label\": \"Dewford Gym: Brawly\", \"order\": 6, \"badges_before\": 1, \"format\": \"single\", \"optional\": false, \"deferred\": false, \"location\": \"dewford-town\", \"highest_level\": 19, \"source_id\": \"progression:gym2_brawly\"}, {\"battle_id\": \"grunts_oceanic_museum\", \"label\": \"Oceanic Museum: Team Aqua Grunts\", \"order\": 7, \"badges_before\": 2, \"format\": \"single\", \"optional\": false, \"deferred\": false, \"location\": \"slateport-city\", \"highest_level\": 15, \"source_id\": \"progression:grunts_oceanic_museum\"}, {\"battle_id\": \"rival3_route110\", \"label\": \"Route 110: Rival\", \"order\": 8, \"badges_b... [6493 more characters]",
+      "result": "{\"remaining\": [{\"battle_id\": \"grunt_rusturf_tunnel\", \"label\": \"Rusturf Tunnel: Team Aqua Grunt (Devon Goods)\", \"location\": \"rusturf-tunnel\", \"optional\": false, \"format\": \"single\", \"highest_level\": 11, \"new_hms_usable\": [\"cut\"], \"new_key_items\": [], \"notes\": \"The tunnel itself opened before Roxanne; this is the Devon Goods chase.\", \"source_ids\": [\"progression:grunt_rusturf_tunnel\", \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\"], \"areas_opened_count\": 0}, {\"battle_id\": \"rival2_rustboro\", \"label\": \"Rustboro City: Rival (optional)\", \"location\": \"rustboro-city\", \"optional\": true, \"format\": \"single\", \"highest_level\": 15, \"new_hms_usable\": [], \"new_key_items\": [], \"notes\": \"Torchic players: May leads with Torkoal, Brendan with Slugma. Other variants are the same for both rivals.\", \"source_ids\": [\"progression:rival2_rustboro\", \"guide:Walkthrough:Pokemon_Emerald/Part_3#Rival_Battle_2_(optional)\"], \"areas_opened_count\": 0}, {\"battle_id\": \"gym2_brawly\", \"label\": \"Dewford Gym: Brawly\", \"location\": \"dewford-town\", \"optional\": false, \"format\": \"single\", \"highest_level\": 19, \"new_hms_usable\": [], \"new_key_items\": [\"old-rod\"], \"notes\": \"Route 110's first grass patch, just north of Slate... [12475 more characters]",
       "round": 1,
-      "t": 14.13
+      "t": 9.84
     },
     {
       "agent": "story_researcher",
       "name": "search_guide",
       "args": {
-        "query": "Rusturf Tunnel Devon Goods Peeko"
+        "query": "Rustboro Devon Goods Mr Stone Letter Briney"
       },
-      "result": "{\"query\": \"Rusturf Tunnel Devon Goods Peeko\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Rusturf Tunnel > The Take-Down\", \"text\": \"The tunnel is fairly small, so you will find the thief and his hostage shortly after you step inside. Defeat him, and he gives up the Devon Goods before fleeing. The old man rushes in to check on his Peeko, and introduces himself as Mr. Briney before the pair leaves for his cottage near Petalburg Woods.\\n\\nWalkthroughprevnext\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_5#Route_116\", \"page\": \"Walkthrough:Pokémon Emerald/Part 5\", \"section\": \"Rusturf Tunnel > Route 116\", \"text\": \"If you leave the tunnel through the middle exit, then you enter a new area on Route 116. You can pick up a Black Glasses and HP Up here. Additionally, you can talk to a Devon Corporation employee anytime after delivering the Devon Goods, and he will give you a free Repeat Ball and allow you to buy more Repeat Balls and Timer Balls at Rustboro City.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Rusturf_Tunnel\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"... [795 more characters]",
+      "result": "{\"query\": \"Rustboro Devon Goods Mr Stone Letter Briney\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Dewford Town\", \"text\": \"Mr. Stone still needs you to deliver the Devon Goods to Captain Stern. Talk to Mr. Briney on the pier to inform him of your successful delivery, and the two of you, along with Peeko, set sail at once. Sail directly to Slateport City, or briefly backtrack to receive thanks for delivering the Letter.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Rustboro City > Devon Corporation\", \"text\": \"Now that you have reclaimed the Devon Goods, head back to the Devon Corporation building in Rustboro City's northwest corner. The grateful Devon researcher is waiting on the city's east side, and hands you a Great Ball before escorting you inside to meet his boss.\\n\\nOn the third floor, the company president introduces himself as Mr. Stone. He thanks you for reclaiming the stolen parts, then asks for another favor. He doesn't expect you to work for free, of course, and rewards you with yo... [1196 more characters]",
       "round": 1,
-      "t": 14.53
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "get_trainer_team",
-      "args": {
-        "battle": "grunt_rusturf_tunnel"
-      },
-      "result": "{\"battle_id\": \"grunt_rusturf_tunnel\", \"label\": \"Rusturf Tunnel: Team Aqua Grunt (Devon Goods)\", \"format\": \"single\", \"location\": \"rusturf-tunnel\", \"partner\": null, \"notes\": \"The tunnel itself opened before Roxanne; this is the Devon Goods chase.\", \"rival_note\": null, \"teams\": [{\"trainer\": \"Team Aqua Grunt\", \"trainer_const\": \"TRAINER_GRUNT_RUSTURF_TUNNEL\", \"pokemon\": [{\"species\": \"Poochyena\", \"types\": [\"dark\"], \"level\": 11, \"held_item\": null, \"ability\": \"run-away\", \"iv\": 0, \"moves_source\": \"default\", \"moves\": [\"Tackle (normal, physical, power 35)\", \"Howl (normal, status, power None)\", \"Sand Attack (ground, status, power None)\"], \"source_id\": \"decomp:trainer_parties.h#sParty_GruntRusturfTunnel/1\"}]}], \"source_ids\": [\"progression:grunt_rusturf_tunnel\"]}",
-      "round": 1,
-      "t": 15.25
+      "t": 11.69
     },
     {
       "agent": "story_researcher",
       "name": "search_guide",
       "args": {
-        "query": "Route 116"
+        "query": "Mr Briney cottage Route 104 Dewford Town"
       },
-      "result": "{\"query\": \"Route 116\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Route_116\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Route 116\", \"text\": \"Route 116 runs east from Rustboro City. The well-traveled path is used by the workers tasked with construction of Rusturf Tunnel, a project that is now abandoned.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_5#Route_116\", \"page\": \"Walkthrough:Pokémon Emerald/Part 5\", \"section\": \"Rusturf Tunnel > Route 116\", \"text\": \"If you leave the tunnel through the middle exit, then you enter a new area on Route 116. You can pick up a Black Glasses and HP Up here. Additionally, you can talk to a Devon Corporation employee anytime after delivering the Devon Goods, and he will give you a free Repeat Ball and allow you to buy more Repeat Balls and Timer Balls at Rustboro City.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Kidnap!\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Route 116 > Kidnap!\", \"text\": \"When you reach the entrance to Rusturf Tunnel, you find old Mr. Briney standing there. It seems that the thief has added kidnapping to his list of charges, as he has also made of... [459 more characters]",
+      "result": "{\"query\": \"Mr Briney cottage Route 104 Dewford Town\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Route_104_(south)\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Route 104 (south)\", \"text\": \"The southern half of Route 104 connects Petalburg City with Petalburg Woods to the north and Route 105 to the south. A cottage belonging to Mr. Briney is located on the south side. This route is a good place to catch a Marill, which can learn any four of the five HM moves that will be required to finish this game. It will be very useful if you cannot or do not want to teach those HM moves to the Pokémon that you use in battle.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Checking_In\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Routes 105 and 106 > Checking In\", \"text\": \"As you sail with Mr. Briney through Route 105, you receive a call on your PokéNav. It's Dad; he heard from Mr. Stone about you getting the device and just wanted to check in. After the brief conversation, the ship makes landfall in Dewford Town.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2\", \"page\": \"Walkthrough:Pokémon Emerald/Part ... [1430 more characters]",
       "round": 1,
-      "t": 15.62
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "get_trainer_team",
-      "args": {
-        "battle": "gym2_brawly"
-      },
-      "result": "{\"battle_id\": \"gym2_brawly\", \"label\": \"Dewford Gym: Brawly\", \"format\": \"single\", \"location\": \"dewford-town\", \"partner\": null, \"notes\": \"Route 110's first grass patch, just north of Slateport, sits south of the Team Aqua line (grunts at y=83, Route 103 junction at y=60-80), so its grass opens with Slateport (Bulbapedia: Route 110). Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge.\", \"rival_note\": null, \"teams\": [{\"trainer\": \"Leader Brawly\", \"trainer_const\": \"TRAINER_BRAWLY_1\", \"pokemon\": [{\"species\": \"Machop\", \"types\": [\"fighting\"], \"level\": 16, \"held_item\": null, \"ability\": \"guts\", \"iv\": 12, \"moves_source\": \"custom\", \"moves\": [\"Karate Chop (fighting, physical, power 50)\", \"Low Kick (fighting, physical... [1006 more characters]",
-      "round": 1,
-      "t": 16.53
-    },
-    {
-      "agent": "story_researcher",
-      "name": "search_guide",
-      "args": {
-        "query": "Devon Corporation Mr. Stone Letter"
-      },
-      "result": "{\"query\": \"Devon Corporation Mr. Stone Letter\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Rustboro_City_(optional)\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Rustboro City (optional)\", \"text\": \"You can now return to Rustboro City to receive an Exp. Share from Mr. Stone at Devon Corporation.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Rustboro City > Devon Corporation\", \"text\": \"Now that you have reclaimed the Devon Goods, head back to the Devon Corporation building in Rustboro City's northwest corner. The grateful Devon researcher is waiting on the city's east side, and hands you a Great Ball before escorting you inside to meet his boss.\\n\\nOn the third floor, the company president introduces himself as Mr. Stone. He thanks you for reclaiming the stolen parts, then asks for another favor. He doesn't expect you to work for free, of course, and rewards you with your very own PokéNav! In return, he asks that you deliver a Letter to a man named Steven in Dewford Town. To reach Dewford, you will need to cross the sea, so Mr. Stone suggests booking pass... [1219 more characters]",
-      "round": 1,
-      "t": 16.9
-    },
-    {
-      "agent": "story_researcher",
-      "name": "search_guide",
-      "args": {
-        "query": "Mr. Briney route 104 cabin boat"
-      },
-      "result": "{\"query\": \"Mr. Briney route 104 cabin boat\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Route_104_(south)\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Route 104 (south)\", \"text\": \"The southern half of Route 104 connects Petalburg City with Petalburg Woods to the north and Route 105 to the south. A cottage belonging to Mr. Briney is located on the south side. This route is a good place to catch a Marill, which can learn any four of the five HM moves that will be required to finish this game. It will be very useful if you cannot or do not want to teach those HM moves to the Pokémon that you use in battle.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Kidnap!\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Route 116 > Kidnap!\", \"text\": \"When you reach the entrance to Rusturf Tunnel, you find old Mr. Briney standing there. It seems that the thief has added kidnapping to his list of charges, as he has also made off with Mr. Briney's beloved Wingull, Peeko!\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_3#Checking_In\", \"page\": \"Walkthrough:Pokémon Emerald/Part 3\", \"section\": \"Routes 105 and 106 > Checking In\", \"t... [1309 more characters]",
-      "round": 1,
-      "t": 18.14
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "threat_matrix",
-      "args": {
-        "battle": "grunt_rusturf_tunnel"
-      },
-      "result": "{\"error\": \"no party in the run state; ask the player for their party or skip the matchup check\"}",
-      "round": 1,
-      "t": 18.5
-    },
-    {
-      "agent": "story_researcher",
-      "name": "get_tm_availability",
-      "args": {
-        "before_battle": "grunt_rusturf_tunnel",
-        "species": "treecko"
-      },
-      "result": "{\"before_battle\": \"grunt_rusturf_tunnel\", \"label\": \"Rusturf Tunnel: Team Aqua Grunt (Devon Goods)\", \"available\": [{\"label\": \"TM01\", \"move\": \"Focus Punch\", \"type\": \"fighting\", \"damage_class\": \"physical\", \"power\": 150, \"method\": \"item-ball\", \"location\": \"hoenn-route-115\", \"source_id\": \"decomp:data/maps/Route115#TM01\"}, {\"label\": \"TM09\", \"move\": \"Bullet Seed\", \"type\": \"grass\", \"damage_class\": \"special\", \"power\": 10, \"method\": \"gift\", \"location\": \"hoenn-route-104\", \"source_id\": \"decomp:data/maps/Route104#TM09\"}, {\"label\": \"TM39\", \"move\": \"Rock Tomb\", \"type\": \"rock\", \"damage_class\": \"physical\", \"power\": 50, \"method\": \"gift\", \"location\": \"rustboro-city\", \"detail\": \"after defeating TRAINER_ROXANNE_1\", \"source_id\": \"decomp:data/maps/RustboroCity_Gym#TM39\"}, {\"label\": \"HM01\", \"move\": \"Cut\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 50, \"method\": \"gift\", \"location\": \"rustboro-city\", \"source_id\": \"decomp:data/maps/RustboroCity_CuttersHouse#HM01\"}, {\"label\": \"HM04\", \"move\": \"Strength\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 80, \"method\": \"gift\", \"location\": \"rusturf-tunnel\", \"source_id\": \"decomp:data/maps/RusturfTunnel#HM04\"}], \"not_yet_available\": 24, \"note\": \"`re... [153 more characters]",
-      "round": 1,
-      "t": 19.51
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "species_info",
-      "args": {
-        "name": "Poochyena"
-      },
-      "result": "{\"species\": \"Poochyena\", \"types\": [\"dark\"], \"base_stats\": {\"hp\": 35, \"attack\": 55, \"defense\": 35, \"sp_attack\": 30, \"sp_defense\": 30, \"speed\": 35, \"bst\": 220}, \"abilities\": [\"run-away\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium\", \"evolutions\": [{\"from\": \"Poochyena\", \"to\": \"Mightyena\", \"how\": \"level-up, level 18\", \"source_id\": \"pokeapi:pokemon_evolution#136\"}], \"source_id\": \"pokeapi:pokemon_species#261\"}",
-      "round": 1,
-      "t": 19.77
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "species_info",
-      "args": {
-        "name": "Machop"
-      },
-      "result": "{\"species\": \"Machop\", \"types\": [\"fighting\"], \"base_stats\": {\"hp\": 70, \"attack\": 80, \"defense\": 50, \"sp_attack\": 35, \"sp_defense\": 35, \"speed\": 35, \"bst\": 305}, \"abilities\": [\"guts\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium-slow\", \"evolutions\": [{\"from\": \"Machop\", \"to\": \"Machoke\", \"how\": \"level-up, level 28\", \"source_id\": \"pokeapi:pokemon_evolution#42\"}], \"source_id\": \"pokeapi:pokemon_species#66\"}",
-      "round": 1,
-      "t": 20.72
-    },
-    {
-      "agent": "story_researcher",
-      "name": "search_guide",
-      "args": {
-        "query": "Strength Rusturf Tunnel HM04"
-      },
-      "result": "{\"query\": \"Strength Rusturf Tunnel HM04\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_5#Reunion\", \"page\": \"Walkthrough:Pokémon Emerald/Part 5\", \"section\": \"Rusturf Tunnel > Reunion\", \"text\": \"Enter the cave through either Route 116 or Verdanturf Town. With the Dynamo, you can finally use Rock Smash to clear a path through Rusturf Tunnel. Step inside and go northwest to reach a group of cracked rocks. Clear the debris to open the tunnel and reunite Wanda with her hardworking boyfriend. As thanks, he gives you 04!\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Rusturf_Tunnel\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"section\": \"Rusturf Tunnel\", \"text\": \"Rusturf Tunnel was a construction project by Devon Corporation that aimed to link Rustboro City and western Hoenn to the rest of the region. The tunnel was nearly complete when Devon's president, Mr. Stone, realized that the work was disturbing the local Whismur population. The project was canceled, though only a small bit of debris, Rock Smash, remained to hinder travel.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_2#Route_116\", \"page\": \"Walkthrough:Pokémon Emerald/Part 2\", \"sectio... [695 more characters]",
-      "round": 1,
-      "t": 21.02
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "species_info",
-      "args": {
-        "name": "Meditite"
-      },
-      "result": "{\"species\": \"Meditite\", \"types\": [\"fighting\", \"psychic\"], \"base_stats\": {\"hp\": 30, \"attack\": 40, \"defense\": 55, \"sp_attack\": 40, \"sp_defense\": 55, \"speed\": 60, \"bst\": 280}, \"abilities\": [\"pure-power\"], \"legendary_or_mythical\": false, \"growth_rate\": \"medium\", \"evolutions\": [{\"from\": \"Meditite\", \"to\": \"Medicham\", \"how\": \"level-up, level 37\", \"source_id\": \"pokeapi:pokemon_evolution#162\"}], \"source_id\": \"pokeapi:pokemon_species#307\"}",
-      "round": 1,
-      "t": 21.75
-    },
-    {
-      "agent": "story_researcher",
-      "name": "get_tm_availability",
-      "args": {
-        "species": "treecko",
-        "before_battle": "gym2_brawly"
-      },
-      "result": "{\"before_battle\": \"gym2_brawly\", \"label\": \"Dewford Gym: Brawly\", \"available\": [{\"label\": \"TM01\", \"move\": \"Focus Punch\", \"type\": \"fighting\", \"damage_class\": \"physical\", \"power\": 150, \"method\": \"item-ball\", \"location\": \"hoenn-route-115\", \"source_id\": \"decomp:data/maps/Route115#TM01\"}, {\"label\": \"TM09\", \"move\": \"Bullet Seed\", \"type\": \"grass\", \"damage_class\": \"special\", \"power\": 10, \"method\": \"gift\", \"location\": \"hoenn-route-104\", \"source_id\": \"decomp:data/maps/Route104#TM09\"}, {\"label\": \"TM10\", \"move\": \"Hidden Power\", \"type\": \"normal\", \"damage_class\": \"varies\", \"method\": \"mart\", \"location\": \"slateport-city\", \"detail\": \"SlateportCity_Pokemart_PowerTMs\", \"requires\": \"the Slateport TM salesman appears only after Route 111's Secret Power man gives you TM43 (secret_power_tm.inc clears FLAG_HIDE_SLATEPORT_CITY_TM_SALESMAN)\", \"source_id\": \"decomp:data/maps/SlateportCity#TM10\"}, {\"label\": \"TM39\", \"move\": \"Rock Tomb\", \"type\": \"rock\", \"damage_class\": \"physical\", \"power\": 50, \"method\": \"gift\", \"location\": \"rustboro-city\", \"detail\": \"after defeating TRAINER_ROXANNE_1\", \"source_id\": \"decomp:data/maps/RustboroCity_Gym#TM39\"}, {\"label\": \"TM43\", \"move\": \"Secret Power\", \"type\": \"normal\", \"damage_class... [1107 more characters]",
-      "round": 1,
-      "t": 22.36
-    },
-    {
-      "agent": "story_researcher",
-      "name": "turn_limit_wrap_up",
-      "args": {},
-      "result": "tool budget used; asked for the final answer",
-      "round": 1,
-      "t": 22.36
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "species_info",
-      "args": {
-        "name": "Makuhita"
-      },
-      "result": "{\"species\": \"Makuhita\", \"types\": [\"fighting\"], \"base_stats\": {\"hp\": 72, \"attack\": 60, \"defense\": 30, \"sp_attack\": 20, \"sp_defense\": 30, \"speed\": 25, \"bst\": 237}, \"abilities\": [\"thick-fat\", \"guts\"], \"legendary_or_mythical\": false, \"growth_rate\": \"fast-then-very-slow\", \"evolutions\": [{\"from\": \"Makuhita\", \"to\": \"Hariyama\", \"how\": \"level-up, level 24\", \"source_id\": \"pokeapi:pokemon_evolution#158\"}], \"source_id\": \"pokeapi:pokemon_species#296\"}",
-      "round": 1,
-      "t": 22.91
-    },
-    {
-      "agent": "battle_researcher",
-      "name": "turn_limit_wrap_up",
-      "args": {},
-      "result": "tool budget used; asked for the final answer",
-      "round": 1,
-      "t": 22.91
+      "t": 13.08
     },
     {
       "agent": "lead",
@@ -193,17 +65,13 @@
         "tasks": [
           {
             "researcher": "story",
-            "task": "Detail the next steps in the story from Rustboro City after beating Roxanne, through Rusturf Tunnel (rescuing Peeko and getting Devon Goods), delivering the letter/goods, and taking Mr. Briney's boat to Dewford Town."
-          },
-          {
-            "task": "Provide details for grunt_rusturf_tunnel (Team Aqua Grunt) and gym2_brawly (Brawly) in Pokemon Emerald.",
-            "researcher": "battle"
+            "task": "Trace the steps immediately after getting the Stone Badge, leading to the grunt_rusturf_tunnel battle and what follows (Devon Goods, Brawly). Provide route and guide passages."
           }
         ]
       },
-      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"story\", \"task\": \"Detail the next steps in the story from Rustboro City after beating Roxanne, through Rusturf Tunnel (rescuing Peeko and getting Devon Goods), delivering the letter/goods, and taking Mr. Briney's boat to Dewford Town.\", \"finding\": {\"summary\": \"After defeating Roxanne, head east to Rusturf Tunnel to defeat the Team Aqua Grunt, rescuing Peeko and reclaiming the Devon Goods. Deliver these goods to Devon Corporation to receive a PokéNav and a Letter to Steven, then head south to Route 104 and sail with Mr. Briney to Dewford Town.\", \"claims\": [{\"text\": \"Go east to Route 116 and enter Rusturf Tunnel to battle the Team Aqua Grunt, rescuing Peeko the Wingull and recovering the Devon Goods.\", \"source_ids\": [\"progression:grunt_rusturf_tunnel\", \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\", \"guide:Walkthrough:Pokemon_Emerald/Part_2#Kidnap!\"]}, {\"text\": \"Return to Rustboro City to meet the Devon Researcher on the east side, who rewards you with a Great Ball and escorts you to Devon Corporation.\", \"source_ids\": [\"guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation\"]}, {\"text\": \"On the third floor of Devon Corporation, Mr... [2955 more characters]",
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"story\", \"task\": \"Trace the steps immediately after getting the Stone Badge, leading to the grunt_rusturf_tunnel battle and what follows (Devon Goods, Brawly). Provide route and guide passages.\", \"finding\": {\"summary\": \"After earning the Stone Badge, you must chase the Team Aqua Grunt through Route 116 into Rusturf Tunnel to retrieve the stolen Devon Goods and rescue Peeko. Afterwards, return to Rustboro City to meet Mr. Stone, receive the PokéNav, and then sail with Mr. Briney from Route 104 to Dewford Town to challenge Brawly.\", \"claims\": [{\"text\": \"Immediately after Roxanne, the player pursues the Team Aqua Grunt who fled east to Route 116 and Rusturf Tunnel with the Devon Goods and Peeko.\", \"source_ids\": [\"progression:grunt_rusturf_tunnel\", \"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\"]}, {\"text\": \"Defeating the grunt in Rusturf Tunnel retrieves the Devon Goods and prompts Mr. Briney to return to his cottage near Petalburg Woods.\", \"source_ids\": [\"guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down\"]}, {\"text\": \"Returning to Rustboro City, a Devon employee meets you on the east side, gives you a Great Ball, and escorts you t... [1081 more characters]",
       "round": 1,
-      "t": 27.27
+      "t": 19.57
     }
   ],
   "citations": [
@@ -221,115 +89,88 @@
     },
     {
       "n": 3,
-      "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_2#Kidnap!",
-      "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 2 § Route 116 > Kidnap!",
-      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_2#Kidnap%21"
-    },
-    {
-      "n": 4,
-      "source_id": "decomp:trainer_parties.h#sParty_GruntRusturfTunnel/1",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_GruntRusturfTunnel/1)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
-    },
-    {
-      "n": 5,
       "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation",
       "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 3 § Rustboro City > Devon Corporation",
       "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_3#Devon_Corporation"
     },
     {
-      "n": 6,
-      "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2",
-      "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 3 § Dewford Town",
-      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_3#Dewford_Town"
-    },
-    {
-      "n": 7,
+      "n": 4,
       "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_2#Route_104_(south)",
       "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 2 § Route 104 (south)",
       "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_2#Route_104_%28south%29"
     },
     {
-      "n": 8,
+      "n": 5,
       "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_3#Checking_In",
       "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 3 § Routes 105 and 106 > Checking In",
       "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_3#Checking_In"
     },
     {
-      "n": 9,
-      "source_id": "decomp:trainer_parties.h#sParty_Brawly1/1",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_Brawly1/1)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+      "n": 6,
+      "source_id": "progression:gym2_brawly",
+      "label": "data/progression.yaml: gym2_brawly",
+      "url": null
     },
     {
-      "n": 10,
-      "source_id": "decomp:trainer_parties.h#sParty_Brawly1/2",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_Brawly1/2)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
-    },
-    {
-      "n": 11,
-      "source_id": "decomp:trainer_parties.h#sParty_Brawly1/3",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_Brawly1/3)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+      "n": 7,
+      "source_id": "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2",
+      "label": "Bulbapedia: Walkthrough:Pokémon Emerald/Part 3 § Dewford Town",
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_Emerald/Part_3#Dewford_Town"
     }
   ],
   "plan": {
     "intent": "next_steps",
-    "headline": "Head to Rusturf Tunnel to retrieve the Devon Goods, then sail to Dewford Town with Mr. Briney.",
+    "headline": "Chase the Team Aqua Grunt into Rusturf Tunnel to recover the Devon Goods, then return to Rustboro City to unlock the next leg of your journey.",
     "recommendations": [],
     "steps": [
       {
-        "title": "Rescue Peeko and recover the Devon Goods",
-        "detail": "Head east from Rustboro City to Route 116 and enter Rusturf Tunnel. Defeat the Team Aqua Grunt to rescue Mr. Briney's Wingull, Peeko, and recover the stolen Devon Goods.",
+        "title": "Head East to Route 116 and Rusturf Tunnel",
+        "detail": "Immediately after earning the Stone Badge, pursue the fleeing Team Aqua Grunt east from Rustboro City to Route 116, leading into Rusturf Tunnel.",
         "source_ids": [
           "progression:grunt_rusturf_tunnel",
-          "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down",
-          "guide:Walkthrough:Pokemon_Emerald/Part_2#Kidnap!"
+          "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down"
         ]
       },
       {
-        "title": "Visit the Devon Corporation",
-        "detail": "Return to Rustboro City and meet the Devon Researcher on the east side. He will reward you with a Great Ball and escort you to the Devon Corporation. On the third floor, Mr. Stone will give you a PokéNav and ask you to deliver a Letter to Steven in Dewford Town and the Devon Goods to Captain Stern in Slateport.",
+        "title": "Defeat the Team Aqua Grunt",
+        "detail": "Inside the tunnel, defeat the Grunt to rescue Mr. Briney's Wingull, Peeko, and retrieve the stolen Devon Goods. This will prompt Mr. Briney to return to his cottage on Route 104.",
         "source_ids": [
-          "guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation",
-          "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2"
+          "guide:Walkthrough:Pokemon_Emerald/Part_2#The_Take-Down"
         ]
       },
       {
-        "title": "Sail to Dewford Town",
-        "detail": "Travel south through Petalburg Woods to reach Mr. Briney's cottage on the south side of Route 104. Speak to Mr. Briney to board his boat and sail to Dewford Town.",
+        "title": "Return to Rustboro City",
+        "detail": "Head back to Rustboro. A Devon employee will greet you, give you a Great Ball, and escort you to the Devon Corporation president, Mr. Stone.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation"
+        ]
+      },
+      {
+        "title": "Receive the PokéNav and Deliveries",
+        "detail": "Mr. Stone will reward you with the PokéNav and assign you two tasks: deliver a Letter to Steven in Dewford Town, and take the Devon Goods to Captain Stern in Slateport City.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation"
+        ]
+      },
+      {
+        "title": "Set Sail for Dewford Town",
+        "detail": "Travel south through Petalburg Woods to Mr. Briney's cottage on the south side of Route 104. He will ferry you across Routes 105 and 106 to Dewford Town, where you can challenge Brawly at the Dewford Gym.",
         "source_ids": [
           "guide:Walkthrough:Pokemon_Emerald/Part_2#Route_104_(south)",
-          "guide:Walkthrough:Pokemon_Emerald/Part_3#Devon_Corporation",
-          "guide:Walkthrough:Pokemon_Emerald/Part_3#Checking_In"
+          "guide:Walkthrough:Pokemon_Emerald/Part_3#Checking_In",
+          "progression:gym2_brawly",
+          "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Town_2"
         ]
       }
     ],
-    "battle_notes": [
-      {
-        "battle_id": "grunt_rusturf_tunnel",
-        "note": "The Grunt has a single Level 11 Poochyena. It shouldn't be much of a threat.",
-        "source_ids": [
-          "decomp:trainer_parties.h#sParty_GruntRusturfTunnel/1"
-        ]
-      },
-      {
-        "battle_id": "gym2_brawly",
-        "note": "Brawly uses Fighting-types (Lv 16 Machop, Lv 16 Meditite, Lv 19 Makuhita) that use Bulk Up. Since you chose Treecko, you might want to catch a Flying-type like Taillow or Wingull before challenging him.",
-        "source_ids": [
-          "decomp:trainer_parties.h#sParty_Brawly1/1",
-          "decomp:trainer_parties.h#sParty_Brawly1/2",
-          "decomp:trainer_parties.h#sParty_Brawly1/3"
-        ]
-      }
-    ],
+    "battle_notes": [],
     "assumptions": [
-      "You have already defeated Roxanne and obtained the Stone Badge."
+      "You have not already defeated the Aqua Grunt in Rusturf Tunnel.",
+      "Your Treecko is adequately leveled from the Rustboro Gym battle to handle the Grunt."
     ],
     "follow_up_questions": [
-      "Do you want to stop by Cutter's House in Rustboro to retrieve HM01 (Cut) before heading to Dewford?",
-      "What is your current party lineup and their levels?"
+      "Would you like details on Brawly's team composition, levels, or weaknesses?",
+      "Do you want to know where to find Steven in Granite Cave or how to navigate the cave without Flash?"
     ],
     "unresolved": []
   },
@@ -338,134 +179,58 @@
     {
       "agent": "clarifier",
       "input_tokens": 2128,
-      "output_tokens": 1148,
-      "t": 4.83
+      "output_tokens": 216,
+      "t": 1.41,
+      "fallback": null
     },
     {
       "agent": "lead",
-      "input_tokens": 1728,
-      "output_tokens": 255,
-      "t": 11.74
+      "input_tokens": 1965,
+      "output_tokens": 220,
+      "t": 6.99,
+      "fallback": null
     },
     {
       "agent": "story_researcher",
-      "input_tokens": 1236,
-      "output_tokens": 149,
-      "t": 13.22
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 1244,
-      "output_tokens": 375,
-      "t": 13.97
+      "input_tokens": 1302,
+      "output_tokens": 156,
+      "t": 9.64,
+      "fallback": null
     },
     {
       "agent": "story_researcher",
-      "input_tokens": 1970,
-      "output_tokens": 108,
-      "t": 14.53
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 3206,
-      "output_tokens": 65,
-      "t": 15.24
+      "input_tokens": 5790,
+      "output_tokens": 73,
+      "t": 11.68,
+      "fallback": null
     },
     {
       "agent": "story_researcher",
-      "input_tokens": 2527,
-      "output_tokens": 49,
-      "t": 15.61
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 3436,
-      "output_tokens": 43,
-      "t": 16.52
+      "input_tokens": 6396,
+      "output_tokens": 55,
+      "t": 13.07,
+      "fallback": null
     },
     {
       "agent": "story_researcher",
-      "input_tokens": 2974,
-      "output_tokens": 76,
-      "t": 16.9
-    },
-    {
-      "agent": "story_researcher",
-      "input_tokens": 3579,
-      "output_tokens": 58,
-      "t": 18.14
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 4028,
-      "output_tokens": 371,
-      "t": 18.5
-    },
-    {
-      "agent": "story_researcher",
-      "input_tokens": 4248,
-      "output_tokens": 108,
-      "t": 19.5
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 4418,
-      "output_tokens": 129,
-      "t": 19.77
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 4645,
-      "output_tokens": 39,
-      "t": 20.71
-    },
-    {
-      "agent": "story_researcher",
-      "input_tokens": 4646,
-      "output_tokens": 129,
-      "t": 21.02
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 4776,
-      "output_tokens": 31,
-      "t": 21.74
-    },
-    {
-      "agent": "story_researcher",
-      "input_tokens": 5195,
-      "output_tokens": 147,
-      "t": 22.35
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 4903,
-      "output_tokens": 32,
-      "t": 22.9
-    },
-    {
-      "agent": "story_researcher",
-      "input_tokens": 4905,
-      "output_tokens": 1447,
-      "t": 27.25
-    },
-    {
-      "agent": "battle_researcher",
-      "input_tokens": 3733,
-      "output_tokens": 1194,
-      "t": 27.26
+      "input_tokens": 7063,
+      "output_tokens": 1168,
+      "t": 19.57,
+      "fallback": null
     },
     {
       "agent": "lead",
-      "input_tokens": 2972,
-      "output_tokens": 1009,
-      "t": 39.03
+      "input_tokens": 2713,
+      "output_tokens": 1004,
+      "t": 31.48,
+      "fallback": null
     },
     {
       "agent": "writer",
-      "input_tokens": 1138,
-      "output_tokens": 1965,
-      "t": 58.88
+      "input_tokens": 1116,
+      "output_tokens": 1685,
+      "t": 39.05,
+      "fallback": null
     }
   ]
 }

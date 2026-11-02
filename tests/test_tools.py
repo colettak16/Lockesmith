@@ -9,7 +9,7 @@ from agent.db import connect_session
 from agent.evidence import Ledger
 from agent.progression import load
 from agent.state import PartyMember, RunState, Ruleset, progress
-from agent.tools import battles, encounters, guide, moves, sql, story
+from agent.tools import battles, encounters, guide, moves, outlook, sql, story
 from agent.tools.common import ToolError, guarded
 
 
@@ -151,6 +151,46 @@ def test_learnset_and_varies_category(con):
     assert ls["default_moveset_at_level"] and ls["tm_hm"]
     assert "varies" in moves.move_info(ctx, "Hidden Power")["damage_class"]
     assert moves.species_info(ctx, "Gardevoir")["types"] == ["psychic"]
+
+
+# --- composite and whole-run tools -------------------------------------------------------------
+
+SIX_BADGES = ["stone", "knuckle", "dynamo", "heat", "balance", "feather"]
+PARTY = [PartyMember(species="Marshtomp", level=33), PartyMember(species="Breloom", level=30)]
+
+
+def test_scout_battle_combines_team_and_matchups(con):
+    s = battles.scout_battle(ctx_for(con, starter="mudkip", badges=SIX_BADGES, party=PARTY), "Tate & Liza")
+    assert s["teams"] and s["matchups"] and s["level_gap"]["opponent_top"] == 42
+    assert battles.scout_battle(ctx_for(con, starter="mudkip", badges=SIX_BADGES), "gym7_tate_liza")["matchups"] is None
+
+
+def test_gauntlet_overview_covers_the_rest_of_the_run(con):
+    g = outlook.gauntlet_overview(ctx_for(con, starter="mudkip", badges=SIX_BADGES))
+    ids = {b["battle_id"] for b in g["battles"]}
+    assert {"gym7_tate_liza", "gym8_juan", "champion_wallace"} <= ids
+    assert g["best_attacking_types"] and g["opponents_remaining"] > 30
+
+
+def test_assess_candidates_weighs_the_whole_run(con):
+    ctx = ctx_for(con, starter="mudkip", badges=SIX_BADGES, party=PARTY)
+    a = {c["candidate"]: c for c in outlook.assess_candidates(ctx, ["Poochyena", "Absol", "Machop"])["candidates"]}
+    assert a["Poochyena"]["final_form"] == "Mightyena" and a["Poochyena"]["final_bst"] == 420
+    assert a["Absol"]["final_bst"] == 465 and a["Absol"]["evolution_path"] == []
+    assert a["Machop"]["final_form"] == "Machamp" and a["Machop"]["needs_trade"]
+    assert "water" in outlook.assess_candidates(ctx, ["Lotad"])["candidates"][0]["shares_types_with_party"]
+
+
+def test_moves_outlook_batches_species(con):
+    m = moves.moves_outlook(ctx_for(con, starter="mudkip", badges=SIX_BADGES), ["Absol", "Shuppet"], "gym7_tate_liza")
+    assert [s["species"] for s in m["species"]] == ["Absol", "Shuppet"]
+    assert m["species"][0]["at_level"] == 42 and m["species"][1]["evolves"]
+
+
+def test_catchable_by_several_types(con):
+    r = encounters.catchable(ctx_for(con, starter="mudkip", badges=SIX_BADGES), "gym7_tate_liza", types=["dark", "ghost"])
+    assert r["species"] and all({"dark", "ghost"} & set(s["types"]) for s in r["species"])
+    assert {"Absol", "Shuppet"} <= names(r)
 
 
 # --- story, guide, sql -------------------------------------------------------------------------

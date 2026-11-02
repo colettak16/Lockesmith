@@ -97,6 +97,22 @@ def trainer_team(ctx: RequestContext, battle_ref: str) -> dict:
     }
 
 
+def scout_battle(ctx: RequestContext, battle_ref: str) -> dict:
+    """One battle in one call: the opposing team, and (when the party is known) the type
+    matchups between it and the player's party, plus the level gap."""
+    out = trainer_team(ctx, battle_ref)
+    if ctx.state.party:
+        m = threat_matrix(ctx, battle_ref)
+        out["matchups"] = m["matchups"]
+        out["uncovered_opponents"] = m["uncovered"]
+        out["level_gap"] = {"party_top": m["party_top_level"], "opponent_top": m["opponent_top_level"]}
+        out["assumptions"] = m["assumptions"]
+    else:
+        out["matchups"] = None
+        out["assumptions"] = ["No party given, so no matchup check."]
+    return out
+
+
 def party_moves(ctx: RequestContext, cur, species_id: int, level: int, given: list[str]) -> tuple[list[str], bool]:
     """Move identifiers for a party member: the ones given, else the level-up default."""
     if given:

@@ -52,7 +52,7 @@ intent, any out-of-scope part, and for revisions what must change. `reply` is ""
 
 
 def make_clarifier():
-    return runtime.make_agent("clarifier", INSTRUCTIONS, "fast", output_type=ClarifierDecision)
+    return runtime.make_agent("clarifier", INSTRUCTIONS, "fast", output_type=ClarifierDecision, effort="low")
 
 
 def missing_question(missing: list[str]) -> str:

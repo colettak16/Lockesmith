@@ -12,9 +12,10 @@ as [[id1, id2]]). Copy ids exactly from the draft. Sentences without a source id
 not state game facts.
 
 SHAPE by intent:
-- catch / revision: a one-line answer, then "Top picks": one short section per pick (where, when to
-  catch it, why it helps), each followed by "Backup:" with its alternatives. Then short notes on the
-  key battles.
+- catch / revision: a one-line answer, then "Top picks": one short section per pick, its heading
+  marked "core" (worth raising to the Champion) or "for this fight" (situational), with where, when
+  to catch it, why it helps now, "Long run:" (how it holds up later), and "Backup:" with its
+  alternatives. Then short notes on the key battles.
 - next_steps: a numbered list of what to do next, main path first, then "Optional along the way".
 - plan: phases by upcoming battle, each with what to do, catch and prepare for.
 - lookup: answer directly and briefly.
@@ -31,5 +32,6 @@ Keep it tight: no preamble, no repetition.
 
 
 def make_writer():
-    # The draft already holds the reasoning; the writer formats and cites, so little thinking is needed.
-    return runtime.make_agent("writer", INSTRUCTIONS, "strong", effort="low")
+    # The draft already holds the reasoning; the writer formats and cites, so the fast model with
+    # little thinking is enough (docs/decisions.md D10).
+    return runtime.make_agent("writer", INSTRUCTIONS, "fast", effort="low")

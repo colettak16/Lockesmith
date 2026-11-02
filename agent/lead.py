@@ -13,7 +13,7 @@ from agent.schemas import LeadDraft, ResearchTask
 
 MAX_RESEARCH_ROUNDS = 2  # Phase 3's Verifier-driven gap loop may raise this to PLAN's 3
 MAX_TASKS_PER_ROUND = 4
-RESEARCHER_MAX_TURNS = 8
+RESEARCHER_MAX_TURNS = 4  # composite tools: 1-2 rounds of calls, then the report; past this an agent wraps up
 
 
 async def run_researcher(ctx: RequestContext, task: ResearchTask) -> dict:
@@ -58,9 +58,9 @@ its source ids copied exactly.
 RESEARCH. Call dispatch_researchers with all of this round's tasks in ONE call, so they run in
 parallel. Name the target battle by id in every task (e.g. "before gym7_tate_liza"). Pick
 researchers by intent (and no others):
-- catch: battle (what's coming and what threatens the party), catch (candidates obtainable before
-  the target battle that fit the need, by type), moves (evolution timing and key moves for the
-  party and the likely candidate types).
+- catch: battle (scout the target battle against the party, and the type profile of the rest of
+  the run), catch (candidates of the needed types obtainable before the target battle, assessed
+  for long-term value), moves (evolution timing and key moves for the party and likely candidates).
 - next_steps: story (the next battle and what opens on the way); add battle if a party is known.
 - plan: story (the road to the Champion), battle (the toughest fights ahead), catch (key catches
   along the way).
@@ -71,12 +71,20 @@ Write each task as a specific, self-contained instruction (the researcher sees o
 and your task). One round is usually enough. Run a second round (the maximum is {MAX_RESEARCH_ROUNDS})
 only to fill a specific gap a finding left open, and never repeat a task that was already answered.
 
+LONG-TERM VALUE. Judge every pick over the whole remaining run, not just the next battle. A
+Pokémon that solves one gym but is weak later (low final stats, a trade evolution, types the
+party already has, little coverage against the Elite Four and Champion) is at best a situational
+pick, and you should say so. Prefer picks that solve the immediate problem AND stay useful to the
+end; if none exists, say what the trade-off is. Weigh what the party already covers.
+
 DRAFT. Fill LeadDraft:
-- recommendations: for catch/plan/revision, 2-4 picks, each with role, where (exact location,
-  method and levels from the catch finding, e.g. "Route 119, Super Rod, Lv25-30"), when (the
-  battle it should be caught before), why, source_ids, and 1-2 `alternatives` (with exact where)
-  taken from other candidates the researchers found. Never recommend a species the player
-  rejected or that breaks their rules.
+- recommendations: for catch/plan/revision, 2-4 picks, best long-term value first. Each has role;
+  horizon ("core" if worth raising to the Champion, "situational" if it's for one fight); where
+  (exact location, method and levels from the catch finding, e.g. "Route 119, Super Rod, Lv25-30");
+  when (the battle it should be caught before); why (for the immediate goal); long_term (how it
+  holds up through the Elite Four and Champion, evolution timing, what it adds to the party);
+  source_ids; and 1-2 `alternatives` (with exact where) taken from other candidates the
+  researchers found. Never recommend a species the player rejected or that breaks their rules.
 - steps: for next_steps/plan, ordered steps with detail and source_ids. For lookups, put the answer
   in steps.
 - battle_notes: per relevant battle, the threat and how to handle it, with source_ids.

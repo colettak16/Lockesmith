@@ -60,12 +60,13 @@ From then on, every push to `main` builds and rolls out a new revision.
 2. **Turn on session affinity.** Go to Cloud Run → `lockesmith` → **Edit & deploy new revision** → Networking (or the Container tab, depending on the console version) → check **Session affinity**. Conversations, learned rules and rejected picks live in one instance's memory, so follow-up messages must reach the same instance.
 3. **Environment variables** (optional; the defaults are below). Set them on the same Edit screen, under Variables & Secrets:
    - `VERTEXAI_PROJECT` (default `lockesmith`) and `VERTEXAI_LOCATION` (default `global`; the current Gemini models answer only on `global`, and `us-east4` returns 404).
-   - `LOCKESMITH_FAST_MODEL` (default `vertex_ai/gemini-3.5-flash`): the Clarifier and researchers.
-   - `LOCKESMITH_STRONG_MODEL` (default `vertex_ai/gemini-3.1-pro-preview`): the Lead and Writer.
+   - `LOCKESMITH_FAST_MODEL` (default `vertex_ai/gemini-3.5-flash`): the Clarifier, researchers and Writer.
+   - `LOCKESMITH_STRONG_MODEL` (default `vertex_ai/gemini-3.1-pro-preview`): the Lead.
+   - `LOCKESMITH_FALLBACK_MODEL` (default `vertex_ai/gemini-3.8-flash`): takes over a call that was rate-limited (429).
 
    To switch to Claude, set these to a LiteLLM Claude model string. On Vertex, Claude needs enabling in Model Garden first; with an Anthropic API key, store `ANTHROPIC_API_KEY` in Secret Manager and reference it here.
 
-Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full answer takes about 2–3 minutes. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/phase2_acceptance.py` runs the acceptance scenarios.
+Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full catch plan takes about 50 seconds; clarifying questions come back in about 2. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/phase2_acceptance.py` runs the acceptance scenarios.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 
 ## Checking a failed deploy

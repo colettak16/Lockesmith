@@ -8,7 +8,7 @@ source ids land in the evidence ledger, and problems come back as {"error": ...}
 from agents import RunContextWrapper, function_tool
 
 from agent.context import RequestContext
-from agent.tools import battles, encounters, guide, moves, sql, story
+from agent.tools import battles, encounters, guide, moves, outlook, sql, story
 from agent.tools.common import guarded
 
 Ctx = RunContextWrapper[RequestContext]
@@ -45,18 +45,62 @@ def threat_matrix(ctx: Ctx, battle: str) -> str:
 
 
 @function_tool
+def scout_battle(ctx: Ctx, battle: str) -> str:
+    """One battle in one call: the opposing team (species, types, levels, items, abilities, moves)
+    and, when the party is known, the type matchups against the party and the level gap.
+
+    Args:
+        battle: A battle id (e.g. "gym7_tate_liza") or a name ("Tate & Liza").
+    """
+    return guarded(battles.scout_battle)(ctx.context, battle)
+
+
+@function_tool
+def gauntlet_overview(ctx: Ctx) -> str:
+    """Every remaining story battle's type profile up to the Champion, plus which attacking and
+    defending types pay off over the whole rest of the run. Use it to judge long-term value."""
+    return guarded(outlook.gauntlet_overview)(ctx.context)
+
+
+@function_tool
+def assess_candidates(ctx: Ctx, species: list[str]) -> str:
+    """Long-term value of up to 6 species for the rest of the run: final evolution and how it's
+    reached (trade evolutions are impossible solo), final-form stats, how many remaining story
+    opponents it hits super effectively, which battles it's strongest in and most threatened by,
+    and what it adds to (or duplicates in) the current party.
+
+    Args:
+        species: Species names, e.g. ["Poochyena", "Absol", "Shuppet"].
+    """
+    return guarded(outlook.assess_candidates)(ctx.context, species)
+
+
+@function_tool
+def moves_outlook(ctx: Ctx, species: list[str], before_battle: str | None = None, level: int | None = None) -> str:
+    """For up to 6 species at once: their best level-up attacks by the battle, next evolution, and
+    the strongest compatible TMs obtainable before the battle (with any requirement).
+
+    Args:
+        species: Species names.
+        before_battle: Battle id or name; defaults to the next required battle.
+        level: Level to check at; defaults to the battle's top opponent level.
+    """
+    return guarded(moves.moves_outlook)(ctx.context, species, before_battle, level)
+
+
+@function_tool
 def get_catchable(ctx: Ctx, before_battle: str | None = None, species: str | None = None,
-                  type_filter: str | None = None) -> str:
+                  types: list[str] | None = None) -> str:
     """Species the player can obtain before a battle, with locations, methods, levels and slot
     odds. Applies reachability, HM and key-item gates, the player's rules and rejected picks.
     With `species`, says where it is or why it isn't available yet.
 
     Args:
-        before_battle: Battle id or name; defaults to the player's next battle.
+        before_battle: Battle id or name; defaults to the next required battle.
         species: Only this species.
-        type_filter: Only species with this type, e.g. "water".
+        types: Only species with any of these types, e.g. ["dark", "ghost", "bug"].
     """
-    return guarded(encounters.catchable)(ctx.context, before_battle, species, type_filter)
+    return guarded(encounters.catchable)(ctx.context, before_battle, species, types)
 
 
 @function_tool
@@ -149,8 +193,12 @@ _query_db.__doc__ = (
 )
 query_db = function_tool(_query_db, name_override="query_db")
 
-BATTLE_TOOLS = [get_remaining_battles, get_trainer_team, threat_matrix, species_info, move_info, search_guide]
+# Composite tools first: one call per investigative step keeps researchers to a few turns
+# (docs/decisions.md D10). The narrower tools stay for follow-ups.
+# No guide search for the battle researcher: in live runs it wandered through guide queries
+# after scout_battle had already answered (docs/decisions.md D10).
+BATTLE_TOOLS = [scout_battle, gauntlet_overview, move_info]
 # No query_db for the catch researcher: raw encounter rows skip the reachability and HM gates.
-CATCH_TOOLS = [get_catchable, encounter_odds, species_info, get_learnset, search_guide]
-MOVES_TOOLS = [get_learnset, get_tm_availability, move_info, species_info, query_db]
-STORY_TOOLS = [get_next_steps, get_story_outline, get_remaining_battles, get_tm_availability, search_guide]
+CATCH_TOOLS = [get_catchable, assess_candidates, encounter_odds, species_info, search_guide]
+MOVES_TOOLS = [moves_outlook, get_learnset, get_tm_availability, move_info, query_db]
+STORY_TOOLS = [get_next_steps, get_story_outline, gauntlet_overview, get_tm_availability, search_guide]

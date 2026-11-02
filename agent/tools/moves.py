@@ -5,7 +5,7 @@ import re
 from build.parse_decomp_trainers import default_moves
 
 from agent.context import RequestContext
-from agent.tools.common import battle, resolve, rows
+from agent.tools.common import ToolError, battle, resolve, rows
 
 GYM_GIFT_RE = re.compile(r"after defeating (TRAINER_\w+)")
 
@@ -103,6 +103,47 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
         "tm_hm": [{k: r[k] for k in ("label", "name", "type", "damage_class", "power", "source_id")} for r in machines],
         "hoenn_tutors": tutors,
     }
+
+
+def moves_outlook(ctx: RequestContext, species: list[str], before_battle: str | None = None,
+                  level: int | None = None) -> dict:
+    """For several species at once: the attacking moves each has by the battle (level-up, at
+    `level` or the battle's top opponent level), its next evolution, and the strongest compatible
+    TMs obtainable before the battle."""
+    if not species:
+        raise ToolError("give one or more species names")
+    from agent.tools.battles import team  # battles -> moves would be circular at import time
+
+    b = battle(ctx, before_battle)
+    target = level
+    if target is None:
+        try:
+            target = max(m["level"] for m in team(ctx, b)[0])
+        except ToolError:
+            target = 50
+    out = []
+    for name in species[:6]:
+        sid = resolve(ctx, name, "species")
+        ls = learnset(ctx, sid, target)
+        attacks = [m for m in ls["level_up"] if m["power"] and m["damage_class"] != "status"]
+        attacks.sort(key=lambda m: -(m["power"] or 0))
+        avail = tm_availability(ctx, b.id, sid)["available"]
+        tms_here = sorted((t for t in avail if t.get("power")), key=lambda t: -t["power"])[:4]
+        info = species_info(ctx, sid)
+        nxt = [e for e in info["evolutions"] if e["from"] == info["species"]]
+        out.append({
+            "species": info["species"], "types": info["types"], "at_level": target,
+            "default_moveset": ls["default_moveset_at_level"],
+            "best_level_up_attacks": [f"{m['name']} ({m['type']}, {m['damage_class']}, {m['power']}) Lv{m['level']}" for m in attacks[:4]],
+            "next_level_up": [f"{m['name']} Lv{m['level']}" for m in ls["next_level_up"][:2]],
+            "evolves": [f"{e['to']}: {e['how']}" for e in nxt],
+            "tms_obtainable_before": [f"{t['label']} {t['move']} ({t['type']}, {t['power']}) at {t.get('location')}"
+                                      + (f" [requires: {t['requires']}]" if t.get("requires") else "") for t in tms_here],
+            "source_ids": [m["source_id"] for m in attacks[:4]] + [t["source_id"] for t in tms_here]
+                          + [e["source_id"] for e in nxt] + [info["source_id"]],
+        })
+    return {"before_battle": b.id, "label": b.label, "species": out,
+            "note": "Gen III: the category comes from the move's type (Dark/Fire/Water/... special; Ghost/Fighting/... physical)."}
 
 
 def location_reachable(ctx: RequestContext, battle_id: str, location: str) -> bool:

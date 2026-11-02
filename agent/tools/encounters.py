@@ -66,9 +66,11 @@ def rule_filter(ctx: RequestContext, cur):
 
 
 def catchable(ctx: RequestContext, before_battle: str | None = None, species: str | None = None,
-              type_filter: str | None = None) -> dict:
-    """Species obtainable before a battle, with where, how, levels and slot odds."""
+              types: list[str] | None = None) -> dict:
+    """Species obtainable before a battle, with where, how, levels and slot odds; optionally only
+    species with any of `types`."""
     b = battle(ctx, before_battle)
+    wanted = {t.strip().lower() for t in types or [] if t.strip()}
     cur = ctx.cursor()
     target = resolve(ctx, species, "species") if species else None
     excluded_by_rule = rule_filter(ctx, cur)
@@ -78,7 +80,7 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
     for r in rows(cur, ENCOUNTER_SQL):
         if target and r["identifier"] != target:
             continue
-        if type_filter and type_filter.lower() not in (r["type1"], r["type2"]):
+        if wanted and not wanted & {r["type1"], r["type2"]}:
             continue
         where = r["location"] + (f"/{r['area']}" if r["area"] else "")
         if r["location"] == "hoenn-route-101" and r["method"] == "gift":
@@ -135,7 +137,7 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
         "excluded_by_rules": dict(removed), "source_ids": [f"progression:{b.id}"],
     }
     if len(species_out) > MAX_SPECIES:
-        result["note"] = f"Showing {MAX_SPECIES} of {len(species_out)}; pass type_filter or species to narrow."
+        result["note"] = f"Showing {MAX_SPECIES} of {len(species_out)}; pass types or species to narrow."
     if target and not found:
         result["why_not"] = blocked.get(next(iter(blocked), ""), [])[:6] or ["no Emerald encounter for this species"]
     return result
