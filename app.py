@@ -36,7 +36,21 @@ logging.getLogger("lockesmith").setLevel(logging.INFO)
 # end sends that header, usually marked "not sampled", so most turns recorded nothing at all
 # (docs/decisions.md D12). LangFuse traces the agents; HTTP spans aren't wanted.
 app = FastAPI(title="LockeSmith", telemetry={"tracing": False, "metrics": False, "logs": False})
-app.mount("/static", StaticFiles(directory=STATIC), name="static")
+
+# Cloud Run's build dates every file 1980, so without this a browser would treat its cached copy of
+# the page, banner, CSS and JS as fresh for years and never pick up a deploy. no-cache makes it ask
+# each time (a quick 304 when nothing changed).
+NO_CACHE = {"Cache-Control": "no-cache"}
+
+
+class FreshStaticFiles(StaticFiles):
+    def file_response(self, *args, **kwargs):
+        response = super().file_response(*args, **kwargs)
+        response.headers.update(NO_CACHE)
+        return response
+
+
+app.mount("/static", FreshStaticFiles(directory=STATIC), name="static")
 
 
 class ChatRequest(BaseModel):
@@ -74,7 +88,7 @@ class RunStateRequest(BaseModel):
 
 @app.get("/")
 def index() -> FileResponse:
-    return FileResponse(STATIC / "index.html")
+    return FileResponse(STATIC / "index.html", headers=NO_CACHE)
 
 
 @app.get("/health")  # not /healthz: Cloud Run reserves paths ending in "z"
