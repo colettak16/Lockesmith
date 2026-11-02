@@ -36,14 +36,7 @@ NUZLOCKE = RunState(starter="mudkip", rival="may", badges=SEVEN_BADGES, party=LA
                     ruleset=Ruleset(nuzlocke=True, dupes_clause=True, level_caps=True, used_routes=USED))
 # A hand-made log in UPR ZX's format (Randomizer.java, TrainerPokemon.toString): Tate & Liza
 # randomized to Fire types. UPR prints sections only for what it randomized, so the rest is vanilla.
-FIRE_TATE_LIZA = """\
-Randomizer Version: 4.6.1
-Random Seed: 4570
-Settings String: synthetic-acceptance
-
---Trainers Pokemon--
-#271 (TATE&LIZA)@31F2E8 - Camerupt Lv41, Torkoal Lv41, Magcargo@Sitrus Berry Lv42, Houndoom@Sitrus Berry Lv42
-"""
+FIRE_TATE_LIZA = (Path(__file__).resolve().parent.parent / "static" / "samples" / "fire-tate-liza.log").read_text(encoding="utf-8")
 FIRE_TEAM = ("camerupt", "torkoal", "magcargo", "houndoom")
 
 SCENARIOS = {

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lockesmith</title>
+<meta name="description" content="A research agent for Pokémon Emerald runs: what to catch, what to do next and how to beat the rest of the game, checked against the game's own data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='11' cy='16' r='7' fill='none' stroke='%231d7a57' stroke-width='3'/%3E%3Cpath d='M18 16h11M25 16v5M29 16v4' stroke='%231d7a57' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="16" r="7"/><path d="M18 16h11M25 16v5M29 16v4"/></svg>
+      <div>
+        <h1>Lockesmith</h1>
+        <p class="tagline">A research desk for Pokémon Emerald runs</p>
+      </div>
+    </div>
+    <div class="intro">
+      <div class="intro-col">
+        <h2>What it explores</h2>
+        <p>Which Pokémon to catch next, what to do next and how to beat the rest of Emerald. Researcher agents check every answer against the game's own data: trainer teams, encounter tables, TMs and the walkthrough.</p>
+      </div>
+      <div class="intro-col">
+        <h2>Who it's for</h2>
+        <p>Players partway through Emerald, including Nuzlocke, custom-rule and randomized runs (upload your randomizer log).</p>
+      </div>
+      <div class="intro-col">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Fill in your run on the left, or click an example below.</li>
+          <li>Ask a question.</li>
+          <li>Read the cited plan. Open the research trace to see how it got there.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="examples" aria-labelledby="examples-title">
+  <div class="examples-head">
+    <h2 id="examples-title">Try an example</h2>
+    <p>One click fills in the question and the run it needs. Then press <strong>Ask</strong>.</p>
+  </div>
+  <div class="example-list" id="examples"></div>
+</section>
+
+<main class="desk">
+  <aside class="run-panel" aria-labelledby="run-title">
+    <details class="run-details" open>
+      <summary><h2 id="run-title">Your run</h2><span class="run-status" id="run-status"></span></summary>
+      <form id="run-form" autocomplete="off">
+        <fieldset>
+          <legend>Starter <span class="req">required</span></legend>
+          <div class="seg" id="starter">
+            <label><input type="radio" name="starter" value="treecko"><span class="type-dot grass"></span>Treecko</label>
+            <label><input type="radio" name="starter" value="torchic"><span class="type-dot fire"></span>Torchic</label>
+            <label><input type="radio" name="starter" value="mudkip"><span class="type-dot water"></span>Mudkip</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Badges <span class="req">required</span></legend>
+          <div class="badges" id="badges"></div>
+          <button type="button" class="link-btn" id="no-badges">No badges yet</button>
+          <p class="hint" id="badge-hint">Not set yet: pick the badges you hold, or "No badges yet".</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Rival <span class="opt">optional</span></legend>
+          <div class="seg seg-small" id="rival">
+            <label><input type="radio" name="rival" value=""><span>Not sure</span></label>
+            <label><input type="radio" name="rival" value="may"><span>May</span></label>
+            <label><input type="radio" name="rival" value="brendan"><span>Brendan</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Last big battle won <span class="opt">optional</span></legend>
+          <select id="last-battle" aria-label="Last big battle won"><option value="">From my badges</option></select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Party <span class="opt">optional, up to 6</span></legend>
+          <div id="party"></div>
+          <button type="button" class="link-btn" id="add-member">+ Add a Pokémon</button>
+        </fieldset>
+
+        <details class="rules" id="rules">
+          <summary>Rules and challenges <span class="rules-count" id="rules-count"></span></summary>
+          <label class="check"><input type="checkbox" id="r-nuzlocke"> Nuzlocke</label>
+          <div class="nuzlocke-opts" id="nuzlocke-opts">
+            <label class="field">One encounter per
+              <select id="r-scope"><option value="location">named location (common)</option><option value="area">floor or room (stricter)</option></select>
+            </label>
+            <label class="check"><input type="checkbox" id="r-dupes"> Dupes clause</label>
+            <label class="check"><input type="checkbox" id="r-gifts"> Gifts and statics use up their area</label>
+            <div class="field">Encounters already used
+              <input id="used-filter" type="search" placeholder="Filter places" aria-label="Filter places">
+              <div class="used-list" id="used-list"></div>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="r-caps"> Level caps (next boss's highest level)</label>
+          <label class="field inline" id="cap-offset-row">Cap offset <input type="number" id="r-offset" value="0" min="-10" max="10"></label>
+          <label class="field">Single type
+            <select id="r-monotype"><option value="">Any type</option></select>
+          </label>
+          <label class="check"><input type="checkbox" id="r-nolegends"> No legendaries</label>
+          <label class="check"><input type="checkbox" id="r-wild"> Wild catches only (no gifts or trades)</label>
+          <label class="field">Banned Pokémon
+            <input id="r-banned" list="species-list" placeholder="e.g. Gyarados, Wailord" aria-describedby="banned-hint">
+            <span class="hint" id="banned-hint">Separate names with commas.</span>
+          </label>
+          <label class="field">Other rules, one per line
+            <textarea id="r-notes" rows="2" placeholder="e.g. no items in battle"></textarea>
+          </label>
+        </details>
+
+        <details class="randomizer" id="randomizer">
+          <summary>Randomized run <span class="log-pill" id="log-pill"></span></summary>
+          <p class="hint">Upload a Universal Pokémon Randomizer ZX log (the .log spoiler file). Answers then use your randomized game.</p>
+          <label class="file-btn">Choose log file <input type="file" id="log-file" accept=".log,.txt"></label>
+          <button type="button" class="link-btn" id="sample-log">Use the sample log</button>
+          <div class="log-summary" id="log-summary" aria-live="polite"></div>
+        </details>
+
+        <div class="run-actions">
+          <button type="button" class="ghost-btn" id="new-run">Start over</button>
+        </div>
+      </form>
+    </details>
+  </aside>
+
+  <section class="journal" aria-label="Conversation">
+    <div class="entries" id="entries">
+      <div class="empty" id="empty">
+        <p class="empty-title">Your field notes will appear here.</p>
+        <p>Fill in your run and ask something like <em>"What should I catch before Norman?"</em>, or try an example above.</p>
+      </div>
+    </div>
+    <form class="composer" id="composer">
+      <label for="question" class="sr-only">Your question</label>
+      <textarea id="question" rows="2" placeholder="Ask about your run: what to catch, what to do next, how to beat a gym…" required></textarea>
+      <div class="composer-row">
+        <div class="quick" id="quick"></div>
+        <button type="submit" class="ask-btn" id="ask">Ask</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="colophon">
+  <p><strong>Data:</strong> trainer teams, encounters and TMs from the <a href="https://github.com/pret/pokeemerald">pret/pokeemerald</a> decompilation;
+    species, moves and learnsets from <a href="https://pokeapi.co">PokeAPI</a>, corrected to Gen III;
+    walkthrough passages from <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald">Bulbapedia</a> (CC BY-NC-SA 2.5).</p>
+  <p><strong>Covers</strong> Emerald's main story through the Champion. <strong>Doesn't cover</strong> other games, ROM hacks, the postgame or Battle Frontier, or exact damage rolls.
+    A course project for IEOR E4570; Pokémon is © Nintendo, Game Freak and Creatures.</p>
+  <p class="session-line">Session <code id="session-id"></code> · <button type="button" class="link-btn" id="clear-chat">Clear conversation</button></p>
+</footer>
+
+<datalist id="species-list"></datalist>
+<datalist id="move-list"></datalist>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega@5.30.0/build/vega.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0/build/vega-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0/build/vega-embed.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

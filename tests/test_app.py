@@ -15,7 +15,9 @@ client = TestClient(app_module.app)
 
 @pytest.fixture(autouse=True)
 def stub_pipeline(monkeypatch):
-    async def fake_chat(message, session_id=None, run_state=None):
+    async def fake_chat(message, session_id=None, run_state=None, listener=None):
+        if listener:
+            listener({"type": "agent_start", "agent": "clarifier", "round": 0, "t": 0.1})
         session = SESSIONS.get(session_id)
         if run_state is not None:
             session.state = run_state
@@ -63,3 +65,50 @@ def test_history_and_clear():
     assert [t["content"] for t in client.get("/history", params={"session_id": "h1"}).json()["history"]] == ["first", "ok"]
     assert client.post("/clear", json={"session_id": "h1"}).json()["cleared"] is True
     assert client.get("/history", params={"session_id": "h1"}).json()["history"] == []
+
+
+def test_chat_stream_sends_progress_then_the_chat_body():
+    import json
+
+    with client.stream("POST", "/chat/stream", json={"message": "hi", "session_id": "st1"}) as r:
+        assert r.headers["content-type"].startswith("text/event-stream")
+        events = [json.loads(line[6:]) for line in r.iter_lines() if line.startswith("data: ")]
+    assert [e["type"] for e in events] == ["agent_start", "done"]
+    assert set(events[-1]["body"]) == {"response", "session_id", "tool_calls", "citations", "plan", "chart"}
+
+
+def test_catalog_and_examples():
+    cat = client.get("/catalog").json()
+    assert len(cat["species"]) == 386 and cat["species"][0]["name"] == "Bulbasaur"
+    assert [b["id"] for b in cat["badges"]][:2] == ["stone", "knuckle"]
+    assert cat["places"][0]["name"] in ("Route 101", "Route 102", "Route 103", "Route 104", "Petalburg City", "Petalburg Woods")
+    examples = client.get("/examples").json()
+    assert len(examples) >= 3 and sum(e.get("readme", False) for e in examples) == 3
+    for e in examples:  # every example's run state is valid
+        assert client.post("/run_state", json={"session_id": f"ex-{e['id']}", "run_state": e["run_state"]}).status_code == 200
+
+
+def test_examples_sample_logs_exist():
+    from app import STATIC
+    from agent.examples import EXAMPLES
+
+    for e in EXAMPLES:
+        if "sample_log" in e:
+            assert (STATIC / "samples" / e["sample_log"]).exists()
+
+
+def test_post_run_state_and_clear_log():
+    from test_log_parser import SAMPLE
+
+    body = client.post("/run_state", json={"session_id": "rs1", "run_state": {"starter": "torchic", "badges": []}}).json()
+    assert body["run_state"]["starter"] == "torchic"
+    client.post("/upload_log", json={"log_text": SAMPLE, "name": "x.log", "session_id": "rs1"})
+    assert client.get("/run_state", params={"session_id": "rs1"}).json()["run_state"]["randomizer_log_id"] == "x.log"
+    assert client.post("/clear_log", json={"session_id": "rs1"}).json()["cleared"] is True
+    after = client.get("/run_state", params={"session_id": "rs1"}).json()
+    assert after["randomizer"] is None and after["run_state"]["randomizer_log_id"] is None
+
+
+def test_index_page_is_served():
+    r = client.get("/")
+    assert r.status_code == 200 and "Lockesmith" in r.text

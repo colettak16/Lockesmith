@@ -1,21 +1,32 @@
 """Lockesmith FastAPI entry point.
 
 /chat runs the agent pipeline (agent/pipeline.py) and returns the response shape fixed in
-PLAN.md §8. /history, /clear and /run_state follow the course's chatbot conventions; the
-front end that uses them comes in Phase 4.
+PLAN.md §8; /chat/stream is the same turn as server-sent events, so the front end (static/)
+can show progress while researchers work. /history, /clear and /run_state follow the course's
+chatbot conventions.
 """
 
+import asyncio
+import json
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from agent import pipeline
+from agent.catalog import catalog as build_catalog
+from agent.examples import EXAMPLES
 from agent.session import SESSIONS
 from agent.state import RunState
 
+STATIC = Path(__file__).resolve().parent / "static"
+KEEPALIVE_S = 15  # a comment line this often keeps proxies from closing a quiet stream
+
 app = FastAPI(title="Lockesmith")
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
 class ChatRequest(BaseModel):
@@ -46,17 +57,14 @@ class UploadLogRequest(BaseModel):
     session_id: str | None = None
 
 
-@app.get("/", response_class=HTMLResponse)
-def index() -> str:
-    return """<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lockesmith</title></head>
-<body style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem;">
-<h1>Lockesmith</h1>
-<p>A research agent for Pok&eacute;mon Emerald runs (normal, Nuzlocke and randomized):
-what to catch, what to do next, and how to beat the rest of the game.</p>
-<p>The agent answers on <code>POST /chat</code>; the full front end is coming.</p>
-</body></html>"""
+class RunStateRequest(BaseModel):
+    session_id: str
+    run_state: RunState
+
+
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse(STATIC / "index.html")
 
 
 @app.get("/health")  # not /healthz: Cloud Run reserves paths ending in "z"
@@ -69,6 +77,58 @@ async def chat(req: ChatRequest) -> ChatResponse:
     return ChatResponse(**await pipeline.chat(req.message, req.session_id, req.run_state))
 
 
+@app.post("/chat/stream")
+async def chat_stream(req: ChatRequest) -> StreamingResponse:
+    """The /chat turn as server-sent events: `agent_start`, `tool_start` and `tool_call` events
+    while it runs, then `done` with the /chat response as `body` (and per-call `usage`)."""
+    queue: asyncio.Queue = asyncio.Queue()
+    loop = asyncio.get_running_loop()
+
+    def listener(event: dict) -> None:
+        try:
+            asyncio.get_running_loop()  # on the loop's thread: keep the order exact
+            queue.put_nowait(event)
+        except RuntimeError:  # a tool running in a worker thread
+            loop.call_soon_threadsafe(queue.put_nowait, event)
+
+    async def work() -> None:
+        try:
+            body = await pipeline.chat(req.message, req.session_id, req.run_state, listener=listener)
+            await asyncio.sleep(0)  # let events scheduled from worker threads land before `done`
+            await queue.put({"type": "done", "body": ChatResponse(**body).model_dump(), "usage": body.get("usage", [])})
+        except Exception as e:  # noqa: BLE001 - pipeline.chat already turns agent failures into a reply
+            await queue.put({"type": "error", "detail": f"{type(e).__name__}: {e}"})
+
+    task = asyncio.create_task(work())
+
+    async def events():
+        while True:
+            try:
+                event = await asyncio.wait_for(queue.get(), KEEPALIVE_S)
+            except TimeoutError:
+                yield ": keepalive\n\n"
+                continue
+            yield f"data: {json.dumps(event, default=str, ensure_ascii=False)}\n\n"
+            if event["type"] in ("done", "error"):
+                break
+        await task
+
+    return StreamingResponse(events(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.get("/catalog")
+def catalog() -> dict:
+    """Species, moves, battles, badges, types and Nuzlocke places for the run-state form."""
+    return build_catalog()
+
+
+@app.get("/examples")
+def examples() -> list[dict]:
+    """One-click example questions with the run state each needs (agent/examples.py)."""
+    return EXAMPLES
+
+
 @app.post("/upload_log")
 def upload_log(req: UploadLogRequest) -> dict:
     """Load a Universal Pokemon Randomizer ZX log into the session (PLAN.md §4.5): from then on
@@ -77,6 +137,12 @@ def upload_log(req: UploadLogRequest) -> dict:
         return pipeline.load_log(req.log_text, req.name, req.session_id)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e)) from e
+
+
+@app.post("/clear_log")
+def clear_log(req: SessionRequest) -> dict:
+    """Unload the session's randomizer log: answers use the vanilla game again."""
+    return {"session_id": req.session_id, "cleared": pipeline.clear_log(req.session_id)}
 
 
 @app.get("/history")
@@ -88,6 +154,14 @@ def history(session_id: str) -> dict:
 @app.post("/clear")
 def clear(req: SessionRequest) -> dict:
     return {"session_id": req.session_id, "cleared": SESSIONS.clear(req.session_id)}
+
+
+@app.post("/run_state")
+def set_run_state(req: RunStateRequest) -> dict:
+    """Save the form's run state to the session without asking anything (PLAN.md §8)."""
+    session = SESSIONS.get(req.session_id)
+    pipeline.apply_form_state(session, req.run_state)
+    return run_state(session.id)
 
 
 @app.get("/run_state")

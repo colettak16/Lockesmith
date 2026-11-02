@@ -95,6 +95,17 @@ class ToolCallRecorder(RunHooks):
     """Appends {agent, name, args, result, round} to the request context for every tool call,
     including those made by researchers running inside the Lead's dispatch tool."""
 
+    async def on_agent_start(self, context, agent) -> None:
+        context.context.emit({"type": "agent_start", "agent": agent.name})
+
+    async def on_tool_start(self, context, agent, tool) -> None:
+        raw = getattr(context, "tool_arguments", None)
+        try:
+            args = json.loads(raw) if raw else {}
+        except ValueError:
+            args = {}
+        context.context.emit({"type": "tool_start", "agent": agent.name, "name": tool.name, "args": args})
+
     async def on_tool_end(self, context, agent, tool, result) -> None:
         raw = getattr(context, "tool_arguments", None)
         try:

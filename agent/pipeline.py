@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from agent import overlay, runtime
 from agent.brief import state_brief
+from agent.chart import coverage_chart
 from agent.clarifier import make_clarifier, missing_question
 from agent.context import RequestContext, shared_index
 from agent.lead import make_lead
@@ -188,7 +189,35 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     if problems:
         plan["citation_warnings"] = problems
     session.last_plan = plan
-    return {"response": text, "citations": citations, "plan": plan}
+    return {"response": text, "citations": citations, "plan": plan, "chart": chart_or_none(ctx, plan)}
+
+
+def chart_or_none(ctx: RequestContext, plan: dict) -> dict | None:
+    try:
+        return coverage_chart(ctx, plan)
+    except Exception as e:  # noqa: BLE001 - a broken chart shouldn't cost the player their answer
+        record(ctx, "pipeline", "chart_error", {}, f"{type(e).__name__}: {e}")
+        return None
+
+
+def apply_form_state(session: Session, run_state: RunState) -> None:
+    """The form's state wins; rules learned in conversation and the loaded log still apply on top of it."""
+    state = run_state
+    for u in session.learned_rules:
+        state = state.model_copy(update={"ruleset": apply_rules(state.ruleset, u)})
+    if session.randomizer:
+        state = state.model_copy(update={"randomizer_log_id": session.randomizer["log_id"]})
+    session.state = state
+
+
+def clear_log(session_id: str) -> bool:
+    session = SESSIONS.peek(session_id)
+    if session is None or session.randomizer is None:
+        return False
+    overlay.uninstall(session.con)
+    session.randomizer = None
+    session.state = session.state.model_copy(update={"randomizer_log_id": None})
+    return True
 
 
 def load_log(text: str, name: str | None = None, session_id: str | None = None) -> dict:
@@ -206,18 +235,14 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
     return {"session_id": session.id, **session.randomizer}
 
 
-async def chat(message: str, session_id: str | None = None, run_state: RunState | None = None) -> dict:
+async def chat(message: str, session_id: str | None = None, run_state: RunState | None = None,
+               listener=None) -> dict:
+    """One /chat turn. `listener`, if given, gets progress events as agents start and tools run."""
     session = SESSIONS.get(session_id)
     if run_state is not None:
-        # The form's state wins; rules learned in conversation and the loaded log still apply on top of it.
-        state = run_state
-        for u in session.learned_rules:
-            state = state.model_copy(update={"ruleset": apply_rules(state.ruleset, u)})
-        if session.randomizer:
-            state = state.model_copy(update={"randomizer_log_id": session.randomizer["log_id"]})
-        session.state = state
+        apply_form_state(session, run_state)
     ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded),
-                         randomizer=session.randomizer)
+                         randomizer=session.randomizer, listener=listener)
     try:
         result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
     except TimeoutError:
@@ -232,6 +257,6 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
         "tool_calls": ctx.tool_calls,
         "citations": result.get("citations", []),
         "plan": result.get("plan"),
-        "chart": None,
+        "chart": result.get("chart"),
         "usage": ctx.usage,  # per-LLM-call tokens and timing; not part of the /chat contract
     }
