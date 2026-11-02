@@ -137,6 +137,17 @@ These widen PLAN.md §1, §6 and §9. They were agreed in conversation before Ph
   - Hard enforcement of exclusions comes with the Verifier (Phase 3).
 - **Deploy:** sessions live in memory, so Cloud Run needs session affinity once `/chat` is wired up.
 
+## D9. Phase 2 tuning, from live runs (2026-11-01)
+
+Measured with `scripts/phase2_acceptance.py`; the outputs are in `docs/phase2_runs/`.
+
+- **Researchers loop on tools.** Gemini Flash often calls a tool once per species and runs into `max_turns`. Agents that hit the limit now get one more turn with tools switched off and report what they found (the SDK's `max_turns` error handler); the trace shows `turn_limit_wrap_up`. Before this, every scenario lost researchers to `MaxTurnsExceeded`.
+- **Vertex quota is the main latency risk.** Four parallel researchers trip "429 Resource exhausted". The runner retries 429/5xx with exponential backoff (2 s doubling to 20 s, 5 retries), so nothing fails, but one slow researcher can push a request from about 90 s to about 240 s. A quota increase, or switching to Claude (D8), are the levers if this hurts.
+- **Thinking effort is low for the Lead and Writer.** At default effort the Lead spent around 8k tokens and a minute or more per request; low effort kept the picks specific and cited.
+- **Research rounds are capped at 2** until Phase 3's Verifier drives the gap loop. The Lead repeated answered tasks when allowed 3.
+- **Tools default to the next *required* battle,** not an optional rival fight. Raw SQL is removed from the Catch researcher, because raw encounter rows skip the reachability and HM gates.
+- **Typical times:** vague and out-of-scope questions take 3–4 s; next steps about 60 s; catch and revision questions 100–240 s. The request budget is 270 s, inside the graders' 5 minutes.
+
 ---
 
 ## Data findings
