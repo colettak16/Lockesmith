@@ -31,7 +31,11 @@ KEEPALIVE_S = 15  # a comment line this often keeps proxies from closing a quiet
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
 logging.getLogger("lockesmith").setLevel(logging.INFO)
 
-app = FastAPI(title="Lockesmith")
+# FastAPI's built-in OpenTelemetry switches itself on once LangFuse configures a tracer, and makes
+# each request's `traceparent` header the parent of everything the request does. Cloud Run's front
+# end sends that header, usually marked "not sampled", so most turns recorded nothing at all
+# (docs/decisions.md D12). LangFuse traces the agents; HTTP spans aren't wanted.
+app = FastAPI(title="Lockesmith", telemetry={"tracing": False, "metrics": False, "logs": False})
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 

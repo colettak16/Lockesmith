@@ -112,3 +112,9 @@ def test_post_run_state_and_clear_log():
 def test_index_page_is_served():
     r = client.get("/")
     assert r.status_code == 200 and "Lockesmith" in r.text
+
+
+def test_fastapi_telemetry_is_off():
+    """FastAPI's built-in tracing would parent every turn on the request's traceparent header,
+    which Cloud Run sends marked "not sampled", so LangFuse got nothing for most turns (D12)."""
+    assert app_module.app._telemetry["tracing"] is False

@@ -260,6 +260,13 @@ Design choices:
     - Pro: up to 33 s.
 
     So every call now has a time limit (`CALL_TIMEOUT_S`: 25 s for Flash, 60 s for Pro), and a call that hits it goes to the fallback model, as a rate-limited one already did. That turns a 68 s stall into about 25 s plus one fallback call.
+  - **Most deployed turns never reached LangFuse.**
+    - **Symptom:** traces were missing for 6 of 9 live turns, with no error anywhere. Locally every turn traced. The pattern looked tied to the question (Nuzlocke arrived, Tate & Liza didn't), but it wasn't.
+    - **Finding it:** a per-turn log line with a count of exported spans showed `(0, 0)`: the spans never reached the exporter. Every logged trace id equalled the trace id Cloud Run had assigned the request.
+    - **Cause:** FastAPI 0.162 has built-in OpenTelemetry tracing that turns itself on once any tracer provider is configured, which LangFuse does. It makes each request's `traceparent` header the parent of everything the request does. Google's front end sends that header on every Cloud Run request, usually marked "not sampled", so the parent-based sampler recorded nothing for those turns.
+    - **Proof:** reproduced locally by adding such a header to a request: the trace took the header's id and exported `(0, 0)`.
+    - **Fix:** `FastAPI(telemetry={"tracing": False, ...})`. With the same header, the turn then got its own trace id, exported 7 of 7 spans, and arrived. A test pins the setting.
+    - The export counter and per-turn log line stay as cheap diagnostics.
   - Left as is: OpenInference's own `turn` and `generation` span names (generic but stable; the step above each says what it is). Gemini's thinking isn't captured, because thought summaries are off and turning them on means more output tokens per call.
 - **Cost.** LangFuse's built-in prices don't match LiteLLM's `vertex_ai/` names or these Gemini versions. Prices live in `agent/pricing.py`, read from Google's pricing page on 2026-11-01:
   - 3.5 Flash: $1.50 / $9.00 per 1M input / output tokens
