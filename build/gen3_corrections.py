@@ -24,6 +24,14 @@ MAX_SPECIES = 386
 
 # Before Gen 4 a move's damage class came from its type (PLAN.md 4.2).
 PHYSICAL_TYPES = ("normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel")
+# Moves whose type is set in battle (dynamicMoveType), so their category varies too.
+DYNAMIC_TYPE_MOVES = {"hidden-power": "type from the user's IVs", "weather-ball": "type from the weather"}
+# Conditions from pokemon.c (GetEvolutionTargetSpecies) and evolution_scene.c.
+EVOLUTION_NOTES = {
+    ("wurmple", "silcoon"): "only if (personality >> 16) % 10 <= 4",
+    ("wurmple", "cascoon"): "only if (personality >> 16) % 10 > 4",
+    ("nincada", "shedinja"): "appears when Nincada evolves into Ninjask with an empty party slot (no Poke Ball needed in Gen 3)",
+}
 SPECIAL_TYPES = ("fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark")
 GEN3_TYPES = PHYSICAL_TYPES + SPECIAL_TYPES
 
@@ -397,6 +405,16 @@ def encounters(con):
         ORDER BY la.location, la.area, em.id, es.slot, e.id
         """
     )
+    # PokeAPI puts the Hall of Fame and TV-choice conditions only on the roaming-grass rows.
+    # The roaming-water rows are the same roaming Latias/Latios, so they share them.
+    con.execute(
+        """
+        UPDATE encounters SET conditions = g.conditions
+        FROM (SELECT DISTINCT species_id, conditions FROM encounters WHERE method = 'roaming-grass') g
+        WHERE encounters.method = 'roaming-water' AND encounters.species_id = g.species_id
+          AND len(encounters.conditions) = 0
+        """
+    )
 
 
 def reconcile_moves_with_rom(con, decomp_dir: Path) -> None:
@@ -421,6 +439,26 @@ def reconcile_moves_with_rom(con, decomp_dir: Path) -> None:
         "UPDATE moves SET damage_class = t.damage_class FROM types t "
         "WHERE moves.type = t.identifier AND moves.damage_class <> 'status' AND moves.damage_class <> t.damage_class"
     )
+    # Damage calculation (pokemon.c) takes the category from the move's effective type
+    # (typeOverride), which these two moves change in battle, so neither has a fixed one.
+    con.execute(f"UPDATE moves SET damage_class = 'varies' WHERE identifier IN {tuple(DYNAMIC_TYPE_MOVES)}")
+
+
+def reconcile_evolutions_with_rom(con, decomp_dir: Path) -> None:
+    """Friendship thresholds and the evolution conditions PokeAPI's columns can't express.
+
+    PokeAPI stores the Gen 8+ friendship threshold (160) for most friendship evolutions;
+    Emerald's EVO_FRIENDSHIP* checks use FRIENDSHIP_EVO_THRESHOLD from pokemon.c (220).
+    """
+    threshold = int(re.search(r"#define FRIENDSHIP_EVO_THRESHOLD (\d+)", decomp.read(decomp_dir, "src/pokemon.c")).group(1))
+    con.execute("UPDATE evolutions SET min_happiness = ? WHERE min_happiness IS NOT NULL", [threshold])
+    con.execute("ALTER TABLE evolutions ADD COLUMN note VARCHAR")
+    for (frm, to), note in EVOLUTION_NOTES.items():
+        con.execute(
+            "UPDATE evolutions SET note = ? FROM species f, species t WHERE evolutions.from_species_id = f.species_id "
+            "AND evolutions.to_species_id = t.species_id AND f.identifier = ? AND t.identifier = ?",
+            [note, frm, to],
+        )
 
 
 def reconcile_statics_with_rom(con, decomp_dir: Path) -> None:

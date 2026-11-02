@@ -140,13 +140,17 @@ def test_type_chart_is_17_by_17(db):
 
 PHYSICAL_TYPES = {"normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel"}
 SPECIAL_TYPES = {"fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark"}
+DYNAMIC_TYPE_MOVES = {"hidden-power", "weather-ball"}
 
 
 def test_damage_class_follows_move_type(db):
     rows = db.execute("SELECT identifier, type, damage_class FROM moves WHERE damage_class <> 'status'").fetchall()
     assert len(rows) > 200
     for identifier, type_, damage_class in rows:
-        if type_ in PHYSICAL_TYPES:
+        if identifier in DYNAMIC_TYPE_MOVES:
+            # Damage uses the type the move takes in battle (pokemon.c typeOverride)
+            assert damage_class == "varies", identifier
+        elif type_ in PHYSICAL_TYPES:
             assert damage_class == "physical", identifier
         elif type_ in SPECIAL_TYPES:
             assert damage_class == "special", identifier
@@ -158,7 +162,8 @@ def test_damage_class_follows_move_type(db):
     "move, field, value",
     [
         ("shadow-ball", "damage_class", "physical"),  # Ghost is physical in Gen 3
-        ("hidden-power", "damage_class", "physical"),  # listed as Normal; real type varies
+        ("hidden-power", "damage_class", "varies"),  # type from IVs, and the category follows it
+        ("weather-ball", "damage_class", "varies"),  # type from the weather
         ("high-jump-kick", "power", 85),  # 100 in Gen 4, 130 in Gen 5+
         ("high-jump-kick", "pp", 20),
         ("dig", "power", 60),  # 80 from Gen 4
@@ -250,6 +255,39 @@ def test_feebas_evolves_by_beauty(db):
         """
     ).fetchall()
     assert rows == [("level-up", 170, None)]
+
+
+def test_friendship_evolutions_use_gen3_threshold(db):
+    """pokemon.c FRIENDSHIP_EVO_THRESHOLD is 220; PokeAPI stores the Gen 8+ value (160) for most."""
+    rows = db.execute("SELECT DISTINCT min_happiness FROM evolutions WHERE min_happiness IS NOT NULL").fetchall()
+    assert rows == [(220,)]
+    (n,) = one(db, "SELECT count(*) FROM evolutions WHERE min_happiness IS NOT NULL")
+    assert n == 9  # Golbat, Chansey, Pichu, Cleffa, Igglybuff, Togepi, Azurill, Eevee x2
+
+
+def test_evolution_conditions_columns_cant_hold(db):
+    notes = dict(
+        ((f, t), note) for f, t, note in db.execute(
+            "SELECT f.identifier, t.identifier, e.note FROM evolutions e JOIN species f ON f.species_id = e.from_species_id "
+            "JOIN species t ON t.species_id = e.to_species_id WHERE e.note IS NOT NULL"
+        ).fetchall()
+    )
+    assert set(notes) == {("wurmple", "silcoon"), ("wurmple", "cascoon"), ("nincada", "shedinja")}
+    assert "empty party slot" in notes[("nincada", "shedinja")]
+
+
+def test_trainer_pokemon_use_first_ability(db):
+    """CreateNPCTrainerParty gives even personalities, so the ability slot (personality & 1) is always 0."""
+    rows = db.execute(
+        "SELECT m.species, m.ability FROM trainer_mons m WHERE m.trainer_const = 'TRAINER_JUAN_1' ORDER BY slot"
+    ).fetchall()
+    assert rows[1] == ("whiscash", "oblivious") and rows[4] == ("kingdra", "swift-swim")
+    assert one(db, "SELECT count(*) FROM trainer_mons m JOIN species s USING (species_id) WHERE m.ability <> s.ability1") == (0,)
+
+
+def test_water_roamers_share_the_hall_of_fame_condition(db):
+    rows = db.execute("SELECT method, conditions FROM encounters WHERE method LIKE 'roaming%'").fetchall()
+    assert all("story-progress-hall-of-fame" in c for _, c in rows) and len(rows) == 4
 
 
 # --- Learnsets and TMs ----------------------------------------------------------------

@@ -1,9 +1,11 @@
 """Load data/progression.yaml: the ordered story battles and what's reachable before each.
 
 An area spec in the YAML is `location` (every area), `location/area` (one PokeAPI
-area) or `location/main` (the unnamed main area). `areas_reachable` accumulates
-`areas_new` up to and including a battle, so "catchable before X" is a join of
-encounters against that set, with method gates (surf, rods, dive, ...) on top.
+area) or `location/main` (the unnamed main area), optionally as a mapping
+`{area: <spec>, methods: [...]}` when only some encounter methods open at that point
+(Route 115's beach allows fishing long before its grass). `areas_reachable`
+accumulates `areas_new` up to and including a battle, so "catchable before X" is a
+join of encounters against that set, with method gates (surf, rods, dive, ...) on top.
 """
 
 from dataclasses import dataclass, field
@@ -18,16 +20,28 @@ STARTERS = ("treecko", "torchic", "mudkip")
 RIVALS = ("may", "brendan")
 
 
-def parse_area(spec: str) -> tuple[str, str | None]:
-    """'mt-pyre' -> ('mt-pyre', '*'); 'hoenn-route-119/main' -> (..., None); 'x/b1f' -> ('x', 'b1f')."""
+AreaSpec = tuple[str, str | None, tuple[str, ...] | None]  # (location, area or ALL/None, methods or None = all)
+
+
+def parse_area(spec: str | dict) -> AreaSpec:
+    """'mt-pyre' -> ('mt-pyre', '*', None); 'hoenn-route-119/main' -> (..., None, None);
+    {'area': 'x/b1f', 'methods': ['old-rod']} -> ('x', 'b1f', ('old-rod',))."""
+    methods = None
+    if isinstance(spec, dict):
+        spec, methods = spec["area"], tuple(spec["methods"])
     location, _, area = spec.partition("/")
     if not area:
-        return location, ALL
-    return location, None if area == "main" else area
+        return location, ALL, methods
+    return location, None if area == "main" else area, methods
 
 
-def area_matches(spec: tuple[str, str | None], location: str, area: str | None) -> bool:
-    return spec[0] == location and (spec[1] == ALL or spec[1] == area)
+def area_matches(spec: AreaSpec, location: str, area: str | None, method: str | None = None) -> bool:
+    """Does the spec cover this area (and this encounter method, when one is given)?"""
+    return (
+        spec[0] == location
+        and (spec[1] == ALL or spec[1] == area)
+        and (method is None or spec[2] is None or method in spec[2])
+    )
 
 
 @dataclass(frozen=True)
@@ -43,7 +57,7 @@ class Battle:
     location: str
     hm_gates_open: tuple[str, ...]
     key_items: tuple[str, ...]
-    areas_new: tuple[tuple[str, str | None], ...]
+    areas_new: tuple[AreaSpec, ...]
     source: str
     notes: str | None = None
     review: str | None = None
@@ -63,18 +77,23 @@ class Battle:
 @dataclass
 class Progression:
     battles: list[Battle]
-    never_reachable: list[tuple[tuple[str, str | None], str]] = field(default_factory=list)
+    never_reachable: list[tuple[AreaSpec, str]] = field(default_factory=list)
 
     def get(self, battle_id: str) -> Battle:
         return next(b for b in self.battles if b.id == battle_id)
 
-    def areas_reachable(self, battle_id: str) -> list[tuple[str, str | None]]:
+    def areas_reachable(self, battle_id: str) -> list[AreaSpec]:
         """Every area spec opened up to and including `battle_id`."""
         target = self.get(battle_id).order
         return [spec for b in self.battles if b.order <= target for spec in b.areas_new]
 
-    def is_reachable(self, battle_id: str, location: str, area: str | None) -> bool:
-        return any(area_matches(spec, location, area) for spec in self.areas_reachable(battle_id))
+    def is_reachable(self, battle_id: str, location: str, area: str | None, method: str | None = None) -> bool:
+        """Can the player be in this area before `battle_id`, with this encounter method open?
+
+        Without `method`, any opened method counts. Item and HM gates (rods, Surf, Dive)
+        still apply on top; this answers only where the player can stand.
+        """
+        return any(area_matches(spec, location, area, method) for spec in self.areas_reachable(battle_id))
 
     def never_reason(self, location: str, area: str | None) -> str | None:
         return next((reason for spec, reason in self.never_reachable if area_matches(spec, location, area)), None)

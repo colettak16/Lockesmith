@@ -155,3 +155,8 @@ def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path) -> None:
         """
     )
     con.executemany("INSERT INTO trainer_mons VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", mon_rows)
+    # CreateNPCTrainerParty (battle_main.c) gives every trainer Pokemon an even personality
+    # (0x80/0x78/0x88 plus nameHash << 8), and CreateBoxMon (pokemon.c) takes the ability
+    # slot from personality & 1, so trainer Pokemon always have their first ability.
+    con.execute("ALTER TABLE trainer_mons ADD COLUMN ability VARCHAR")
+    con.execute("UPDATE trainer_mons SET ability = s.ability1 FROM species s WHERE trainer_mons.species_id = s.species_id")

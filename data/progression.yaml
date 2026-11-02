@@ -39,10 +39,15 @@
 #                     (Kecleon), go-goggles (Route 111 desert)
 #   areas_new         encounter areas that became reachable since the previous battle.
 #                     `location` means every area of it; `location/area` one PokeAPI
-#                     area; `location/main` the location's unnamed main area. The loader
-#                     (agent/progression.py) accumulates these into areas_reachable.
-#                     Method gates still apply on top: surf needs surf, fishing a rod,
-#                     rock-smash needs rock-smash, seaweed (underwater) needs dive.
+#                     area; `location/main` the location's unnamed main area. A mapping
+#                     `{area: <spec>, methods: [...]}` opens only those encounter
+#                     methods, for places you can stand in before you can reach their
+#                     grass (Route 115's beach). The loader (agent/progression.py)
+#                     accumulates these into areas_reachable. An area counts only once
+#                     you can stand in it: water-only routes wait for Surf, since the
+#                     boat ride across them is a cutscene. Item and HM gates still apply
+#                     on top: surf needs Surf, fishing a rod, rock-smash needs Rock
+#                     Smash, seaweed (underwater) needs Dive.
 #   source            guide chunk the fight is described in (data/guide/chunks.jsonl)
 #   notes / review    context for the agent / open questions for the reviewer
 #
@@ -95,8 +100,12 @@ battles:
     location: rustboro-city
     hm_gates_open: []
     key_items: []
-    areas_new: [rustboro-city, hoenn-route-116, rusturf-tunnel]
-    notes: "Route 116 and the west end of Rusturf Tunnel (Whismur) are open before the gym: nothing blocks Rustboro's east exit, and the Devon Goods theft only starts after this badge (RustboroCity_Gym sets VAR_RUSTBORO_CITY_STATE). The tunnel's far side stays behind Rock Smash boulders. Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade."
+    areas_new:
+      - rustboro-city
+      - hoenn-route-116
+      - rusturf-tunnel
+      - {area: hoenn-route-115, methods: [old-rod, good-rod, super-rod]}
+    notes: "Route 116 and the west end of Rusturf Tunnel (Whismur) are open before the gym: nothing blocks Rustboro's east exit, and the Devon Goods theft only starts after this badge (RustboroCity_Gym sets VAR_RUSTBORO_CITY_STATE). The tunnel's far side stays behind Rock Smash boulders. North of Rustboro, Route 115's southern beach is open too: fishing only (Old Rod from Dewford), since the grass is in the Surf-only north. Rustboro's gifts are the Devon fossil revivals (need a fossil from Mirage Tower, much later) and an in-game trade."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_2#Rustboro_Gym"
 
   - id: grunt_rusturf_tunnel
@@ -143,8 +152,8 @@ battles:
     location: dewford-town
     hm_gates_open: [cut]
     key_items: [old-rod]
-    areas_new: [hoenn-route-105, hoenn-route-106, dewford-town, granite-cave, hoenn-route-107, hoenn-route-108, hoenn-route-109, slateport-city]
-    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is reachable via Route 106; Flash (from its Hiker) needs this badge. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Routes 107-109 open before Brawly. Brawly can even be deferred until Norman: no other event checks his badge."
+    areas_new: [hoenn-route-106, dewford-town, granite-cave, hoenn-route-109, slateport-city]
+    notes: "Old Rod comes from the Dewford fisherman before the gym. Granite Cave is on Route 106's beach; Flash (from its Hiker) needs this badge, but the dark floors can be crossed without it. Once Steven has his letter, Mr. Briney sails Dewford -> Slateport with no badge check (FLAG_DELIVERED_STEVEN_LETTER only), so Slateport and Route 109's beach open before Brawly. Routes 105, 107 and 108 are open water: the boat ride across them is a cutscene, so they wait for Surf. Brawly can even be deferred until Norman: no other event checks his badge."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_3#Dewford_Gym"
 
   - id: grunts_oceanic_museum
@@ -220,8 +229,8 @@ battles:
     location: mt-chimney
     hm_gates_open: [cut, flash, rock-smash]
     key_items: [old-rod]
-    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main, hoenn-route-115]
-    notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. Route 115 borders Rustboro, but from there you only reach a beach; its grass is reached through the Meteor Falls exit (Bulbapedia: Route 115). A rod works from the beach earlier. Meteor Falls' other rooms need Waterfall."
+    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main]
+    notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. The Meteor Falls exit only reaches Route 115's middle section, which has no grass. Meteor Falls' other rooms need Waterfall. On the way up: two Magma Grunts (TRAINER_GRUNT_MT_CHIMNEY_1, TRAINER_GRUNT_MT_CHIMNEY_2), which the walkthrough fights before Tabitha."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!"
 
   - id: maxie_mt_chimney
@@ -280,8 +289,16 @@ battles:
     location: hoenn-route-119
     hm_gates_open: [cut, flash, rock-smash, strength, surf]
     key_items: [old-rod, good-rod, go-goggles]
-    areas_new: [abandoned-ship, new-mauville, hoenn-route-123, hoenn-route-119/main]
-    notes: "Surf (Wally's father, after Norman) opens the water on earlier routes too. Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 tile fishing."
+    areas_new:
+      - hoenn-route-105
+      - hoenn-route-107
+      - hoenn-route-108
+      - abandoned-ship
+      - new-mauville
+      - hoenn-route-123
+      - hoenn-route-119/main
+      - {area: hoenn-route-115, methods: [walk, surf]}
+    notes: "Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has 6 Feebas tiles, chosen from a save-specific seed, and fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_10#Looking_for_Answers"
 
   - id: rival4_route119
@@ -358,7 +375,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, go-goggles, devon-scope]
     areas_new: []
-    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass."
+    notes: "The Magma Emblem from Mt. Pyre's summit opens the hideout on Jagged Pass. At the summit first: four Aqua Grunts (TRAINER_GRUNT_MT_PYRE_1 to _4); Archie appears there but doesn't battle."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_12#VS_Tabitha"
 
   - id: maxie_magma_hideout
@@ -402,8 +419,23 @@ battles:
     location: mossdeep-city
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
-    areas_new: [hoenn-route-124/main, mossdeep-city/main, hoenn-route-125, shoal-cave]
-    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours."
+    areas_new:
+      - hoenn-route-124/main
+      - mossdeep-city/main
+      - hoenn-route-125
+      - shoal-cave
+      - hoenn-route-126/main
+      - hoenn-route-127
+      - hoenn-route-128
+      - hoenn-route-129
+      - hoenn-route-130
+      - mirage-island
+      - hoenn-route-131
+      - pacifidlog-town
+      - hoenn-route-132
+      - hoenn-route-133
+      - hoenn-route-134
+    notes: "Double battle. Super Rod: Mossdeep fisherman, before the gym. Shoal Cave's tide rooms alternate every six hours. Once Team Aqua escapes in the submarine (AquaHideout_B2F sets FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE), the Wailmer east of Lilycove are gone and the whole eastern sea is open by Surf: Routes 124 to 131, Pacifidlog, and Routes 132 to 134 riding the current toward Slateport. No map script on those routes checks a badge. Mirage Island (on Route 130) only appears on some days."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_14#Mossdeep_Gym"
 
   - id: space_center
@@ -433,8 +465,15 @@ battles:
     location: seafloor-cavern
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
     key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
-    areas_new: [hoenn-route-124/underwater, hoenn-route-126/main, hoenn-route-126/underwater, hoenn-route-127, hoenn-route-128, seafloor-cavern]
-    notes: "Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth."
+    areas_new:
+      - hoenn-route-124/underwater
+      - hoenn-route-126/underwater
+      - seafloor-cavern
+      - sootopolis-city
+      - desert-ruins
+      - island-cave
+      - ancient-tomb
+    notes: "Steven gives HM08 Dive after the Space Center. Underwater seaweed holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) can be visited before Seafloor Cavern; its gym stays closed (walkthrough Part 16). The Regi caves open with no story gate: in the Sealed Chamber (underwater, Route 134) use Dig (FLAG_SYS_BRAILLE_DIG), then read the inner wall with Wailord first and Relicanth last in the party (CheckRelicanthWailord). Each Regi cave then has its own puzzle."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_15#Room_7"
 
   - id: archie_seafloor_cavern
@@ -463,26 +502,14 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
     key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope]
     areas_new:
-      - sootopolis-city
       - cave-of-origin/entrance
       - cave-of-origin/1f
       - cave-of-origin/b1f
-      - hoenn-route-129
-      - hoenn-route-130
-      - mirage-island
-      - hoenn-route-131
-      - pacifidlog-town
-      - hoenn-route-132
-      - hoenn-route-133
-      - hoenn-route-134
       - sky-pillar/1f
       - sky-pillar/3f
       - sky-pillar/5f
       - sky-pillar/apex
-      - desert-ruins
-      - island-cave
-      - ancient-tomb
-    notes: "Juan is the 8th leader in Emerald (Wallace is Champion). Regirock/Regice/Registeel need the Sealed Chamber puzzle on Route 134 (Dig, then Wailord first and Relicanth last in the party). Mirage Island only appears some days. Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle."
+    notes: "Juan is the 8th leader in Emerald (Wallace is Champion). Cave of Origin is open only during the crisis: an Expert stands in front of its entrance, and the Sootopolis script moves him aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, before Sky Pillar). Catch there on the way to Wallace or not at all before the Champion. Sky Pillar opens when Wallace goes there (FLAG_WALLACE_GOES_TO_SKY_PILLAR). Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym"
 
   - id: wally_victory_road

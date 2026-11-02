@@ -104,29 +104,38 @@ def test_locations_exist(prog, db):
 
 def test_area_specs_exist(prog, db):
     areas = set(db.execute("SELECT location, area FROM location_areas").fetchall())
+    methods = {m for (m,) in db.execute("SELECT DISTINCT method FROM encounters").fetchall()}
     locations = {l for l, _ in areas}
     specs = [(b.id, s) for b in prog.battles for s in b.areas_new] + [("never", s) for s, _ in prog.never_reachable]
-    bad = [(who, s) for who, s in specs if (s[0] not in locations if s[1] == ALL else s not in areas)]
+    bad = [(who, s) for who, s in specs if (s[0] not in locations if s[1] == ALL else (s[0], s[1]) not in areas)]
     assert bad == []
+    assert [(who, s) for who, s in specs if s[2] and not set(s[2]) <= methods] == []
 
 
 def test_each_area_opens_once(prog):
-    seen = {}
+    """No area and method opens at two battles (method-limited specs may split an area)."""
+    seen = []
     for b in prog.battles:
         for spec in b.areas_new:
-            assert spec not in seen, (spec, seen.get(spec), b.id)
-            seen[spec] = b.id
+            for other, where in seen:
+                same_area = other[:2] == spec[:2] or ALL in (other[1], spec[1]) and other[0] == spec[0]
+                same_methods = other[2] is None or spec[2] is None or set(other[2]) & set(spec[2])
+                assert not (same_area and same_methods), (spec, where, b.id)
+            seen.append((spec, b.id))
 
 
 def test_every_encounter_area_is_placed(prog, db):
-    """Every area with Emerald encounters is either reachable by the Champion or listed as never reachable."""
-    areas = db.execute("SELECT DISTINCT location, area FROM encounters").fetchall()
+    """Every area and method with Emerald encounters is reachable by the Champion or listed as never reachable."""
+    rows = db.execute("SELECT DISTINCT location, area, method FROM encounters").fetchall()
     unplaced = [
-        (loc, area) for loc, area in areas
-        if not prog.is_reachable("champion_wallace", loc, area) and prog.never_reason(loc, area) is None
+        (loc, area, method) for loc, area, method in rows
+        if not prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area) is None
     ]
     assert unplaced == []
-    overlap = [(loc, area) for loc, area in areas if prog.is_reachable("champion_wallace", loc, area) and prog.never_reason(loc, area)]
+    overlap = [
+        (loc, area) for loc, area, _ in rows
+        if prog.is_reachable("champion_wallace", loc, area) and prog.never_reason(loc, area)
+    ]
     assert overlap == []
 
 
@@ -168,12 +177,32 @@ def test_resolved_review_placements(prog):
     # Briney sails to Slateport once Steven has the letter; Aqua grunts hold Route 110 until the museum
     assert prog.is_reachable("gym2_brawly", "slateport-city", None)
     assert not prog.is_reachable("grunts_oceanic_museum", "hoenn-route-110", None)
-    # Mauville's side routes are open before Wally; Route 115's grass only via Meteor Falls
+    # Mauville's side routes are open before Wally; Route 115's grass isn't reached via Meteor Falls
     assert prog.is_reachable("wally_mauville", "hoenn-route-117", None)
-    assert not prog.is_reachable("gym3_wattson", "hoenn-route-115", None)
+    assert not prog.is_reachable("maxie_mt_chimney", "hoenn-route-115", None, "walk")
     # The Devon Scope opens Lilycove before Winona; the rival waits there from the first visit
     assert prog.is_reachable("gym6_winona", "lilycove-city", None)
     assert prog.get("rival5_lilycove").order == prog.get("gym6_winona").order + 1
     # Rayquaza returns to Sky Pillar before Juan; Meteor Falls past 1F 1R needs Waterfall (Rain Badge)
     assert prog.is_reachable("gym8_juan", "sky-pillar", "apex")
     assert not prog.is_reachable("gym8_juan", "meteor-falls", "b1f")
+
+
+def test_cross_check_placements(prog):
+    """Corrections from the second-model review, each re-verified (see the battles' notes)."""
+    # Open-water routes need Surf; the boat ride across them is a cutscene
+    for route in ("hoenn-route-105", "hoenn-route-107", "hoenn-route-108"):
+        assert not prog.is_reachable("gym5_norman", route, None)
+        assert prog.is_reachable("shelly_weather_institute", route, None)
+    # Route 115: beach fishing from Rustboro early, grass only in the Surf-only north
+    assert prog.is_reachable("gym1_roxanne", "hoenn-route-115", None, "old-rod")
+    assert not prog.is_reachable("gym5_norman", "hoenn-route-115", None, "walk")
+    assert prog.is_reachable("shelly_weather_institute", "hoenn-route-115", None, "walk")
+    # The eastern sea opens by Surf once Team Aqua leaves Lilycove, before Tate & Liza
+    for loc in ("hoenn-route-128", "hoenn-route-131", "pacifidlog-town", "hoenn-route-134", "mirage-island"):
+        assert prog.is_reachable("gym7_tate_liza", loc, None)
+    assert not prog.is_reachable("matt_aqua_hideout", "hoenn-route-126", None)
+    # Dive opens Sootopolis and the Regi caves before Shelly at Seafloor Cavern
+    for loc in ("sootopolis-city", "desert-ruins", "island-cave", "ancient-tomb"):
+        assert prog.is_reachable("shelly_seafloor_cavern", loc, None)
+        assert not prog.is_reachable("space_center", loc, None)
