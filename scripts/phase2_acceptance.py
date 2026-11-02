@@ -68,12 +68,17 @@ async def run(name: str) -> bool:
     message, state, session_id = SCENARIOS[name]
     t = time.time()
     body = await pipeline.chat(message, session_id, state)
-    took = time.time() - t
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f"{name}.json").write_text(json.dumps(body, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+    problems = check(name, body)
+    report(name, body, time.time() - t, problems, OUT)
+    return not problems
+
+
+def report(name: str, body: dict, took: float, problems: list[str], out_dir: Path) -> None:
+    """Save the full response and print timings, model calls and the start of the answer."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / f"{name}.json").write_text(json.dumps(body, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
     calls = body["tool_calls"]
     by_round = Counter((c["round"], c["agent"]) for c in calls)
-    problems = check(name, body)
     print(f"\n=== {name} ({took:.0f}s) {'OK' if not problems else 'PROBLEMS: ' + '; '.join(problems)}")
     print("tool calls by (round, agent):", dict(sorted(by_round.items())))
     researcher_spans = {}
@@ -92,7 +97,6 @@ async def run(name: str) -> bool:
     print(f"model calls: {len(usage)}; served by the fallback model after a 429: {sum(1 for u in usage if u.get('fallback'))}")
     print(f"citations: {len(body['citations'])}; unverified: {(body['plan'] or {}).get('unverified_source_ids', [])}")
     print(body["response"][:900] + ("..." if len(body["response"]) > 900 else ""))
-    return not problems
 
 
 async def main(names: list[str]) -> int:

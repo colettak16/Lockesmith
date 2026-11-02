@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass
 
 from agent.context import RequestContext
 from agent.schemas import Alternative, LeadDraft, Recommendation
-from agent.tools.common import NOT_WILD, ToolError, battle, rows
+from agent.tools.common import NOT_WILD, ToolError, battle, rows, unread
 from agent.tools.battles import team
 from agent.tools.encounters import _norm, area_used, available_rows
 from agent.tools.moves import location_reachable
@@ -23,6 +23,7 @@ CODES = {
     "EVOLUTION_NOT_REACHABLE": "relies on an evolution not achievable in time",
     "EVOLUTION_ITEM_UNVERIFIED": "relies on an evolution item whose availability isn't checked",
     "MOVE_NOT_LEARNABLE": "relies on a move not learnable by then",
+    "MOVE_UNVERIFIABLE": "relies on a move whose learnability the randomizer log changed in a part Lockesmith can't read",
     "GEN3_SPLIT_MISMATCH": "the move's category doesn't suit the Pokémon's stronger attacking stat",
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
@@ -82,6 +83,9 @@ def evolution_path(cur, start_id: int, target_id: int) -> list[dict] | None:
     return None
 
 
+LEARN_KINDS = {"level-up": "movesets", "machine": "tm_compatibility", "tutor": "tutor_compatibility"}
+
+
 def move_learnable(ctx: RequestContext, cur, species_ids: list[int], move_id: int, battle_id: str, limit: int | None) -> str | None:
     """How the line can know the move by the battle, or None."""
     marks = ", ".join("?" * len(species_ids))
@@ -90,7 +94,9 @@ def move_learnable(ctx: RequestContext, cur, species_ids: list[int], move_id: in
         f"SELECT method, min(level) AS level FROM learnsets WHERE species_id IN ({marks}) AND move_id = ? GROUP BY method",
         [*species_ids, move_id],
     )
-    by_method = {r["method"]: r["level"] for r in learned}
+    # In a randomized run, a method whose data the log changed unreadably can't vouch for the move
+    skip = {m for m, kind in LEARN_KINDS.items() if unread(ctx, kind)}
+    by_method = {r["method"]: r["level"] for r in learned if r["method"] not in skip}
     if "level-up" in by_method and (limit is None or by_method["level-up"] <= limit):
         return f"level-up at {by_method['level-up']}"
     if "machine" in by_method:
@@ -203,8 +209,12 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
             continue
         m = rows(cur, "SELECT move_id, name, type, damage_class, power FROM moves WHERE identifier = ?", [mv.id])[0]
         if move_learnable(ctx, cur, line, m["move_id"], battle_id, limit) is None:
-            add("MOVE_NOT_LEARNABLE", f"{form['name']} can't know {m['name']} by {b.label}")
-        if m["power"] and m["damage_class"] in ("physical", "special"):
+            gaps = [why for why in (unread(ctx, kind) for kind in LEARN_KINDS.values()) if why]
+            if gaps:
+                add("MOVE_UNVERIFIABLE", f"can't check that {form['name']} can know {m['name']} by {b.label}: {gaps[0]}", WARNING)
+            else:
+                add("MOVE_NOT_LEARNABLE", f"{form['name']} can't know {m['name']} by {b.label}")
+        if m["power"] and m["damage_class"] in ("physical", "special") and not unread(ctx, "move_data"):
             atk, spa = form["attack"], form["sp_attack"]
             if m["damage_class"] == "physical" and spa - atk >= 20 or m["damage_class"] == "special" and atk - spa >= 20:
                 add("GEN3_SPLIT_MISMATCH",

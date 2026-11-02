@@ -31,7 +31,12 @@ class RequestContext:
     usage: list[dict] = field(default_factory=list)
     research_round: int = 0
     round_cap: int = 2  # the Verifier's repair pass allows one more round (PLAN's cap of 3)
+    randomizer: dict | None = None  # overlay.summary() of the session's loaded log, if any
     started: float = field(default_factory=time.monotonic)
+
+    @property
+    def log_changes(self) -> dict[str, str]:
+        return self.randomizer["changes"] if self.randomizer else {}
 
     def elapsed(self) -> float:
         return round(time.monotonic() - self.started, 2)

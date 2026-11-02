@@ -47,4 +47,8 @@ def search(query: str, k: int = 4) -> list[dict]:
 
 def search_guide(ctx: RequestContext, query: str, k: int = 4) -> dict:
     """Top walkthrough passages for a query, each with its guide source id."""
-    return {"query": query, "passages": search(query, max(1, min(k, 6)))}
+    out = {"query": query, "passages": search(query, max(1, min(k, 6)))}
+    if ctx.randomizer:
+        out["note"] = ("Randomized run: the walkthrough describes the vanilla game. Use it for the route, story and "
+                       "puzzles, not for which Pokémon, teams or items appear; the other tools read the player's log.")
+    return out

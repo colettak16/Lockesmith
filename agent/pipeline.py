@@ -11,11 +11,12 @@ import json
 
 from pydantic import ValidationError
 
-from agent import runtime
+from agent import overlay, runtime
 from agent.brief import state_brief
 from agent.clarifier import make_clarifier, missing_question
-from agent.context import RequestContext
+from agent.context import RequestContext, shared_index
 from agent.lead import make_lead
+from agent.randomizer_log import load_overlay, parse_log
 from agent.schemas import ClarifierDecision, LeadDraft, StateUpdate
 from agent.session import SESSIONS, Session, apply_rules
 from agent.state import RunState
@@ -106,6 +107,14 @@ async def verify_and_repair(ctx: RequestContext, draft: LeadDraft, lead_input: s
     return sanitize_citations(ctx, draft), [v for v in violations if v.severity == WARNING]
 
 
+def picks_changed(before: LeadDraft, after: LeadDraft) -> LeadDraft:
+    """The Lead's headline names its own picks; once the Verifier swaps or drops one, the
+    Writer writes the opening line from the final picks instead."""
+    if [r.species for r in before.recommendations] == [r.species for r in after.recommendations]:
+        return after
+    return after.model_copy(update={"headline": ""})
+
+
 def citation_problems(ctx: RequestContext, markdown: str, draft: LeadDraft) -> list[str]:
     """Ids the ledger doesn't have, and picks whose part of the answer cites nothing."""
     _, _, unknown = ctx.ledger.cite(markdown)
@@ -152,8 +161,9 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
             f"\n\nPREVIOUS PLAN (the player wants something different)\n{json.dumps(session.last_plan)[:3000]}"
             f"\nPLAYER FEEDBACK: {decision.revision_feedback or 'vague'}"
         )
-    draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
-    draft, warnings = await verify_and_repair(ctx, draft, lead_input)
+    lead_draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
+    draft, warnings = await verify_and_repair(ctx, lead_draft, lead_input)
+    draft = picks_changed(lead_draft, draft)
 
     writer_input = (
         f"PLAYER QUESTION\n{message}\n\nRUN STATE\n{state_brief(ctx)}\n\n"
@@ -181,15 +191,33 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     return {"response": text, "citations": citations, "plan": plan}
 
 
+def load_log(text: str, name: str | None = None, session_id: str | None = None) -> dict:
+    """Parse a UPR ZX log into the session: overlay tables, then views that shadow the vanilla
+    tables it changed (agent/overlay.py). Replaces any log the session had."""
+    session = SESSIONS.get(session_id)
+    log = parse_log(text, session.con, shared_index())
+    if not (log.sections or log.statuses):
+        raise ValueError("that doesn't look like a Universal Pokemon Randomizer log (no --Section-- headers)")
+    log_id = (name or "log").strip()[:80] or "log"
+    load_overlay(session.con, log, log_id)
+    overlay.uninstall(session.con)
+    session.randomizer = overlay.summary(log, log_id, overlay.install(session.con, log, log_id))
+    session.state = session.state.model_copy(update={"randomizer_log_id": log_id})
+    return {"session_id": session.id, **session.randomizer}
+
+
 async def chat(message: str, session_id: str | None = None, run_state: RunState | None = None) -> dict:
     session = SESSIONS.get(session_id)
     if run_state is not None:
-        # The form's state wins; rules learned in conversation still apply on top of it.
+        # The form's state wins; rules learned in conversation and the loaded log still apply on top of it.
         state = run_state
         for u in session.learned_rules:
             state = state.model_copy(update={"ruleset": apply_rules(state.ruleset, u)})
+        if session.randomizer:
+            state = state.model_copy(update={"randomizer_log_id": session.randomizer["log_id"]})
         session.state = state
-    ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded))
+    ctx = RequestContext(state=session.state, con=session.con, excluded_species=set(session.excluded),
+                         randomizer=session.randomizer)
     try:
         result = await asyncio.wait_for(answer(message, session, ctx), REQUEST_BUDGET_S)
     except TimeoutError:

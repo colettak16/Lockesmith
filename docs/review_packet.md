@@ -742,7 +742,7 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-09** Mauville City: Wally (`wally_mauville`, at `mauville-city`): badges before: 2, single, required.
   - Trainers: TRAINER_WALLY_MAUVILLE (teams: K-wally_mauville)
   - HMs usable: cut, flash; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-117, hoenn-route-118, hoenn-route-111 (old-rod, good-rod, super-rod, surf, rock-smash only)
+  - Areas newly reachable before this battle: mauville-city, hoenn-route-117, verdanturf-town, hoenn-route-118, hoenn-route-111 (old-rod, good-rod, super-rod, surf, rock-smash only)
   - Notes: Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Route 111's southern segment is open too: its pond (the route's only water) can be fished now, and its crumbling rocks are Rock Smash encounters once Rock Smash works; its grass is all in the desert (Bulbapedia: Route 111). Optional hazard there: the Winstrate family, four battles back to back with no healing (Route111_EventScript_BattleWinstrates: Victor, Victoria, Vivi, Vicky); Victoria gives a Macho Brace. Bikes from Rydel's Cycles are available in Mauville before this.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_5#Wally's_Challenge`
 - **P-10** Mauville Gym: Wattson (`gym3_wattson`, at `mauville-city`): badges before: 2, single, required.
@@ -753,7 +753,7 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-11** Mt. Chimney: Magma Admin Tabitha (`tabitha_mt_chimney`, at `mt-chimney`): badges before: 3, single, required.
   - Trainers: TRAINER_TABITHA_MT_CHIMNEY (teams: K-tabitha_mt_chimney)
   - HMs usable: cut, flash, rock-smash; key items: old-rod
-  - Areas newly reachable before this battle: hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main
+  - Areas newly reachable before this battle: hoenn-route-112, fiery-path, hoenn-route-113, fallarbor-town, hoenn-route-114, meteor-falls/main, mt-chimney
   - Notes: Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. The Meteor Falls exit only reaches Route 115's middle section, which has no grass. Meteor Falls' other rooms need Waterfall. On the way up: two Magma Grunts (TRAINER_GRUNT_MT_CHIMNEY_1, TRAINER_GRUNT_MT_CHIMNEY_2), which the walkthrough fights before Tabitha.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!`
 - **P-12** Mt. Chimney: Magma Leader Maxie (`maxie_mt_chimney`, at `mt-chimney`): badges before: 3, single, required.
@@ -789,7 +789,7 @@ This is the most judgement-heavy section and the one we most want checked.
 - **P-17** Fortree Gym: Winona (`gym6_winona`, at `fortree-city`): badges before: 5, single, required.
   - Trainers: TRAINER_WINONA_1 (teams: K-gym6_winona)
   - HMs usable: cut, flash, rock-smash, strength, surf; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
-  - Areas newly reachable before this battle: fortree-city, hoenn-route-120, hoenn-route-121, hoenn-route-122, lilycove-city, mt-pyre, hoenn-safari-zone/sw, hoenn-safari-zone/se, hoenn-safari-zone/nwmach-bike-area, hoenn-safari-zone/neacro-bike-area, magma-hideout
+  - Areas newly reachable before this battle: fortree-city, hoenn-route-120, scorched-slab, hoenn-route-121, hoenn-route-122, lilycove-city, mt-pyre, hoenn-safari-zone/sw, hoenn-safari-zone/se, hoenn-safari-zone/nwmach-bike-area, hoenn-safari-zone/neacro-bike-area, magma-hideout
   - Notes: Steven hands over the Devon Scope on Route 120; it reveals the Kecleon blocking the gym (and the devon-scope encounters on Routes 119/120). The same scope opens the way east: Route 121, Lilycove, Mt. Pyre (Surf via Route 122) and, with the Magma Emblem from Mt. Pyre's summit, the Magma Hideout on Jagged Pass. None of it checks this badge. The Safari Zone's entrance checks for the Pokéblock Case (Route121_SafariZoneEntrance), which the Lilycove Contest Hall gives out (contest_hall.inc); its bike areas each need one bike (swap at Rydel's), and its two expansion areas are postgame.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_11#Fortree_Gym`
 - **P-18** Lilycove City: Rival (optional) (`rival5_lilycove`, at `lilycove-city`): badges before: 6, single, optional.

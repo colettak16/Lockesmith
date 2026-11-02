@@ -5,10 +5,10 @@ from build.parse_decomp_trainers import default_moves
 from agent.context import RequestContext
 from agent.progression import Battle
 from agent.state import rival_for, starter_for
-from agent.tools.common import TYPE_CHART_SOURCE, ToolError, battle, effectiveness, resolve, rows
+from agent.tools.common import TYPE_CHART_SOURCE, ToolError, battle, effectiveness, resolve, rows, unread
 
 TEAM_SQL = """
-    SELECT m.trainer_const, t.class_name, t.name AS trainer_name, m.slot, s.identifier, s.name AS species,
+    SELECT m.trainer_const, t.class_name, t.name AS trainer_name, m.slot, m.species_id, s.identifier, s.name AS species,
            s.type1, s.type2, m.level, m.held_item, m.ability, m.moves, m.moves_source, m.iv_value, m.source_id
     FROM trainer_mons m JOIN trainers t USING (trainer_const) JOIN species s USING (species_id)
     WHERE m.trainer_const IN ({marks}) ORDER BY m.trainer_const, m.slot
@@ -43,10 +43,32 @@ def team(ctx: RequestContext, b: Battle) -> tuple[list[dict], str | None]:
     cur = ctx.cursor()
     mons = rows(cur, TEAM_SQL.format(marks=", ".join("?" * len(consts))), consts)
     moves = move_table(cur)
+    movesets_unknown, move_data_unknown = unread(ctx, "movesets"), unread(ctx, "move_data")
+    metronome = ctx.log_changes.get("movesets") == "metronome-only"
     for m in mons:
         m["types"] = [t for t in (m.pop("type1"), m.pop("type2")) if t]
+        if metronome:  # UPR's Metronome-only mode gives trainers' Pokemon Metronome too
+            m["moves"], m["moves_source"] = ["metronome"], "Metronome only (randomizer setting)"
+        elif m["moves_source"] not in ("custom", "log"):  # the level-up default, vanilla or randomized
+            if movesets_unknown:
+                m["moves"], m["moves_source"] = [], f"unknown: {movesets_unknown}"
+            elif m["moves_source"].startswith("unknown"):
+                # UPR resets a randomized trainer Pokemon's moves to its new species' level-up default
+                m["moves"] = level_up_default(cur, m["species_id"], m["level"])
+                m["moves_source"] = "default (the new species' level-up moves; the log has no movesets)"
         m["move_details"] = [moves[x] for x in m["moves"] if x in moves]
+    if move_data_unknown:
+        note = "; ".join(filter(None, [note, f"{move_data_unknown} (move types and powers shown are vanilla)"]))
     return mons, note
+
+
+def level_up_default(cur, species_id: int, level: int) -> list[str]:
+    learnset = cur.execute(
+        "SELECT l.level, m.identifier FROM learnsets l JOIN moves m USING (move_id) "
+        "WHERE l.species_id = ? AND l.method = 'level-up' ORDER BY l.level, l.level_order",
+        [species_id],
+    ).fetchall()
+    return default_moves(learnset, level)
 
 
 def remaining_battles(ctx: RequestContext) -> dict:
@@ -92,7 +114,7 @@ def trainer_team(ctx: RequestContext, battle_ref: str) -> dict:
         )
     return {
         "battle_id": b.id, "label": b.label, "format": b.battle_format, "location": b.location,
-        "partner": b.partner, "notes": b.notes, "rival_note": note,
+        "partner": b.partner, "notes": b.notes, "team_note": note,
         "teams": list(teams.values()), "source_ids": [f"progression:{b.id}"],
     }
 
@@ -117,15 +139,9 @@ def party_moves(ctx: RequestContext, cur, species_id: int, level: int, given: li
     """Move identifiers for a party member: the ones given, else the level-up default."""
     if given:
         return [resolve(ctx, mv, "move") for mv in given], False
-    learnset = [
-        (lvl, mv)
-        for lvl, mv in cur.execute(
-            "SELECT l.level, m.identifier FROM learnsets l JOIN moves m USING (move_id) "
-            "WHERE l.species_id = ? AND l.method = 'level-up' ORDER BY l.level, l.level_order",
-            [species_id],
-        ).fetchall()
-    ]
-    return default_moves(learnset, level), True
+    if unread(ctx, "movesets"):
+        return [], True
+    return level_up_default(cur, species_id, level), True
 
 
 def best_hit(move_details: list[dict], user_types: list[str], target_types: list[str]) -> dict | None:
@@ -176,11 +192,13 @@ def threat_matrix(ctx: RequestContext, battle_ref: str) -> dict:
         )
     top = max(p["level"] for p in party)
     return {
-        "battle_id": b.id, "label": b.label, "rival_note": note,
+        "battle_id": b.id, "label": b.label, "team_note": note,
         "party_top_level": top, "opponent_top_level": max(m["level"] for m in mons),
         "matchups": out,
         "uncovered": [o["opponent"] for o in out if not o["answered_by"]],
         "assumptions": (
-            [f"Moves not given for {', '.join(assumed)}: used the level-up default moveset at their level."] if assumed else []
+            [f"Moves not given for {', '.join(assumed)}: " + (f"no moves assumed, since {unread(ctx, 'movesets')}." if unread(ctx, "movesets")
+                                                              else "used the level-up default moveset at their level.")]
+            if assumed else []
         ) + ["Type matchups only; no damage rolls, abilities or stat stages. Hidden Power and Weather Ball count as Normal."],
     }

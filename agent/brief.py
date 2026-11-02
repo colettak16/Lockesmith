@@ -27,6 +27,15 @@ def state_brief(ctx: RequestContext) -> str:
         lines.append("Party: not given.")
     rules = s.ruleset.describe()
     lines.append("Rules: " + ("; ".join(rules) if rules else "none (a normal run)") + ".")
+    if ctx.randomizer:
+        r = ctx.randomizer
+        lines.append("Randomized run (the player's UPR log is loaded): tools read the log for "
+                     + (", ".join(r["shadowed"]) or "nothing yet") + "; trust them over the walkthrough or memory.")
+        if r["starters"] and s.starter in r["starters"]:
+            lines.append(f"The player's starter slot ({s.starter}) is {r['starters'][s.starter]} in this run.")
+        if r["unread"]:
+            lines.append("Changed in the log but unreadable (tools refuse these; say so rather than guess): "
+                         + ", ".join(r["unread"].values()) + ".")
     if ctx.excluded_species:
         lines.append("Rejected this session (never recommend): " + ", ".join(sorted(ctx.excluded_species)) + ".")
     return "\n".join(lines)

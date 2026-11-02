@@ -105,7 +105,8 @@ def test_locations_exist(prog, db):
 def test_area_specs_exist(prog, db):
     areas = set(db.execute("SELECT location, area FROM location_areas").fetchall())
     methods = {m for (m,) in db.execute("SELECT DISTINCT method FROM encounters").fetchall()}
-    locations = {l for l, _ in areas}
+    # A whole-location spec may name a place with no encounter areas (Mauville City has TMs and tutors)
+    locations = {l for (l,) in db.execute("SELECT identifier FROM locations").fetchall()}
     specs = [(b.id, s) for b in prog.battles for s in b.areas_new] + [("never", s) for s, _ in prog.never_reachable]
     bad = [(who, s) for who, s in specs if (s[0] not in locations if s[1] == ALL else (s[0], s[1]) not in areas)]
     assert bad == []
@@ -223,3 +224,10 @@ def test_second_cross_check_placements(prog):
     assert prog.never_reason("littleroot-town", None, "gift")
     assert prog.never_reason("mossdeep-city", "stevens-house", "gift")
     assert "pokeblock-case" in prog.get("gym6_winona").key_items
+
+
+def test_tm_and_tutor_places_open(prog, db):
+    """Every TM or tutor location opens at some step (towns with no wild Pokémon included)."""
+    opened = {s[0] for b in prog.battles for s in b.areas_new}
+    places = {l for (l,) in db.execute("SELECT location FROM tm_locations UNION SELECT location FROM move_tutors").fetchall() if l}
+    assert places - opened == {"ss-tidal"}  # the S.S. Ticket comes after the Hall of Fame

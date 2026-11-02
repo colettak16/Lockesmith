@@ -70,6 +70,12 @@ def test_move_not_learnable(con):
     assert "MOVE_NOT_LEARNABLE" in found(ctx_for(con), pick("Shuppet", key_moves=["Surf"]))
 
 
+def test_tm_from_a_town_without_wild_pokemon(con):
+    """TM24 Thunderbolt is sold and given in Mauville City, which has no encounter table."""
+    ctx = ctx_for(con, badges=SIX_BADGES + ["mind"])
+    assert "MOVE_NOT_LEARNABLE" not in found(ctx, pick("Chinchou", "gym8_juan", evolve_to="Lanturn", key_moves=["Thunderbolt"]))
+
+
 def test_split_mismatch_is_a_warning(con):
     assert "GEN3_SPLIT_MISMATCH" in found(ctx_for(con), pick("Absol", key_moves=["Crunch"]), WARNING)
 
@@ -112,6 +118,14 @@ def test_citations(con):
     ctx = ctx_for(con)
     assert "UNCITED_CLAIM" in found(ctx, pick("Absol", source_ids=[]))
     assert "CITATION_NOT_IN_EVIDENCE" in found(ctx, pick("Absol", source_ids=["made:up"]))
+
+
+def test_move_unverifiable_when_the_log_hides_movesets(con):
+    """A randomized run whose movesets the log changed unreadably: warn, don't reject (D11)."""
+    ctx = ctx_for(con)
+    ctx.randomizer = {"changes": {"movesets": "metronome-only"}}
+    codes = found(ctx, pick("Shuppet", key_moves=["Surf"]))
+    assert "MOVE_UNVERIFIABLE" in codes and "MOVE_NOT_LEARNABLE" not in codes
 
 
 def test_every_code_is_exercised():

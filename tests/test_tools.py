@@ -58,7 +58,7 @@ def test_trainer_team_juan(con):
 
 def test_rival_team_lists_both_rivals_when_they_differ(con):
     t = battles.trainer_team(ctx_for(con, starter="torchic", badges=["stone"]), "rival2_rustboro")
-    assert len(t["teams"]) == 2 and t["rival_note"]
+    assert len(t["teams"]) == 2 and t["team_note"]
     one = battles.trainer_team(ctx_for(con, starter="torchic", badges=["stone"], rival="may"), "rival2_rustboro")
     assert len(one["teams"]) == 1
 

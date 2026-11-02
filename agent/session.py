@@ -2,7 +2,7 @@
 learned in conversation and rejected picks.
 
 Sessions live in memory on one Cloud Run instance, so the service needs session affinity.
-Each session has its own DuckDB connection, where randomizer overlays will live.
+Each session has its own DuckDB connection, where a loaded randomizer log's overlays live.
 """
 
 import threading
@@ -28,6 +28,7 @@ class Session:
     last_plan: dict | None = None
     excluded: set[str] = field(default_factory=set)
     learned_rules: list[RuleUpdate] = field(default_factory=list)
+    randomizer: dict | None = None  # overlay.summary() of the loaded randomizer log
 
 
 def apply_rules(rules: Ruleset, u: RuleUpdate) -> Ruleset:

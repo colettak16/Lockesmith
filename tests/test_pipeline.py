@@ -113,6 +113,7 @@ def test_seeded_bad_pick_is_replaced_by_its_backup(models):
     script["writer"] = "Catch Absol [[progression:gym7_tate_liza]]."
     body = chat("what for Tate & Liza?", "p-seeded", STATE)
     assert [r["species"] for r in body["plan"]["recommendations"]] == ["Absol"]
+    assert body["plan"]["headline"] == ""  # it named Bagon; the Writer opens from the final picks
     assert calls.count("lead") == 1  # the backup was promoted without a repair round
     verifier = [c for c in body["tool_calls"] if c["agent"] == "verifier"]
     assert "NOT_OBTAINABLE_BEFORE" in verifier[0]["result"] and "replaced Bagon" in verifier[1]["result"]

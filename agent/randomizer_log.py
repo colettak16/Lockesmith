@@ -171,7 +171,7 @@ class RandomizerLog:
         """
         out = dict(self.statuses)
         for name in self.sections:
-            kind = SECTION_KEYS.get(name.lower(), name.lower())
+            kind = SECTION_KEYS.get(name.lower(), "starters" if "starter" in name.lower() else name.lower())
             out[kind] = "unparsed" if name in self.unparsed_sections else "parsed"
         return out
 

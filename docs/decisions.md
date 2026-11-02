@@ -172,6 +172,68 @@ The user judged 100–240 s unacceptable; even a minute is long. We considered c
 - **The Lead stays on Pro.** On Flash it saved only about 5 s (46 s vs 51 s), but it dispatched an unneeded fourth researcher, ignoring the instructions.
 - **Result** (`scripts/phase2_acceptance.py`): catch plan 51 s with 14 model calls (down from about 31); revision 51 s; next steps 39 s; vague and out-of-scope 2 s. All five scenarios pass. Phase 4's front end will stream progress so the wait is visible.
 
+## D11. Phase 3: the Verifier, the gap loop, rulesets and randomized runs (2026-11-01)
+
+**Verifier (`agent/verifier.py`).** Code, no LLM. It checks every pick and every backup against the data:
+- obtainable before its battle, through the same gates as `get_catchable`
+- evolution reachable in time; trade evolutions fail, and items get a warning
+- key moves learnable by then: level-up within the level limit, a TM reachable or a gym reward already won, or a reachable tutor
+- the player's rules (below)
+- Gen III facts: no Fairy type, no species or moves past Gen III, and a warning when a move's category doesn't suit the Pokémon's stronger attacking stat
+- citations: every source id came from a tool this request
+
+Each violation has a code (`CODES`) and a severity. Errors send the pick back; warnings go to the Writer, which mentions them where they matter.
+
+**Gap loop (`pipeline.verify_and_repair`).**
+1. A failing pick whose backup passes is swapped for the backup. This costs no model call; it's why the Lead writes complete backups.
+2. Picks still failing send the Lead back once, with the Verifier's errors. It may run one targeted researcher round, so PLAN's cap of 3 rounds holds.
+3. Whatever still fails is dropped, and the reason goes in `unresolved`.
+
+The Writer's citations are then checked (unknown ids, or a pick whose section cites nothing), with one retry.
+
+**Rulesets.** We default to the common Nuzlocke conventions and let the player change each one, in the form or in chat ("gifts count", "caps at the ace's level +2"):
+- first encounter per **location**, with `encounter_scope: area` for the stricter per-room reading
+- gifts and statics don't use up an area unless the player says so
+- dupes clause off unless asked
+- level caps at the next leader's ace, plus an offset
+
+Anything the fields can't express goes in `notes`, and the Lead is told to respect those. Rules and rejected picks learned in conversation persist across turns, even when the form resends its own state.
+
+**Randomized runs (`POST /upload_log`, `agent/overlay.py`).** After a log is parsed into overlay tables, the session's database gets **views with the vanilla tables' names**:
+- `encounters`, `trainer_mons`, `species`, `evolutions`, `machines`, `move_tutors`, `learnsets`
+- the session's search path (and DuckDB's view resolution) finds these before `base.*`
+
+So every tool and the Verifier read the randomized game with no code changes, and other sessions keep vanilla. Details, each checked against UPR ZX's source:
+- **Wild slots.** Converted to the vanilla numbering (1-based per method, fishing split by rod), with Gen III slot rates. A set the parser couldn't place is dropped, not answered from vanilla.
+- **Starters and statics.** Starters follow `gStarterMons` order. Statics are remapped by species. When one vanilla species became several randomized ones at several places, the rows carry a "place unknown" condition.
+- **In-game trades.** An unread trades section removes the vanilla trades.
+- **Trainers.**
+  - Randomized trainers get their new species' level-up moves at their level: UPR sets `resetMoves` (`AbstractRomHandler.randomizeTrainerPokes`, `Gen3RomHandler.setTrainers`).
+  - Metronome-only mode gives every trainer Metronome.
+- **TMs and tutors.** TM and tutor moves keep each slot's compatibility, as UPR does.
+- **Evolutions.**
+  - Random evolutions keep each vanilla evolution's method and change only the target (`new Evolution(fromPK, picked, ev.carryStats, ev.type, ev.extraInfo)`).
+  - Targets follow `evolution.h` order, which differs from dex order only for Eevee and Tyrogue.
+  - Evolution families are recomputed, so the dupes clause sees the new ones.
+  - UPR's method changes and the 160 friendship threshold apply on top.
+- **What the log changed but Lockesmith can't read.** This covers level-up movesets, TM/tutor compatibility, move data, shops and anything new. It isn't answered from vanilla:
+  - tools leave it out with an `unknown` note, or refuse (`move_info`)
+  - the Verifier downgrades an unprovable move to a `MOVE_UNVERIFIABLE` warning instead of rejecting the pick
+  - the brief tells every agent what's unknown
+  - `search_guide` warns that the walkthrough describes the vanilla game
+
+Limits: wild sets from the log map to whole locations, not rooms (the vanilla table has the same grain for most places), and no real Emerald log has been through the parser yet (D4).
+
+**Found in the live runs** (`scripts/phase3_acceptance.py`, outputs in `docs/phase3_runs/`):
+- **Towns with no wild Pokémon were never "reachable."** Mauville City, Verdanturf, Fallarbor, Mt. Chimney and Scorched Slab weren't in any `areas_new`, so their TMs and tutors were never available. The Verifier wrongly rejected Lanturn with Thunderbolt and Starmie with Psychic before Juan, since TM24 and TM29 are both in Mauville. Each now opens at the step its route does. A test checks that every TM and tutor place opens somewhere; the one exception is the S.S. Tidal, whose ticket comes after the Hall of Fame.
+- **A promoted backup left the headline naming the old pick.** When the final picks differ from the Lead's, the headline is blanked and the Writer opens from the final picks.
+
+**Results** (Gemini, after both fixes):
+- Nuzlocke into Juan (dupes clause, level caps, 23 used areas): 102 s, 22 model calls. The Verifier rejected a Gyarados backup that relied on Dragon Dance (Lv50, above the Lv46 cap). Running the Verifier again on the final plan found no errors.
+- Water monotype with no legendaries, stated in chat: 77 s, 15 calls. Both rules were learned and every pick is Water-type.
+- Randomized Tate & Liza from an uploaded log (a Fire-type team): 61 s, 14 calls. The answer named the log's team, recommended Water and Ground types, and cited `log:trainers#271`.
+- A first run, before the town fix, also exercised the repair round: 118 s, with one Lead repair. The gap loop costs about 40 s when a repair is needed, and nothing when a backup is promoted.
+
 ---
 
 ## Data findings

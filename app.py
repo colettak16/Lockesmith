@@ -7,9 +7,9 @@ front end that uses them comes in Phase 4.
 
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from agent import pipeline
 from agent.session import SESSIONS
@@ -37,6 +37,15 @@ class SessionRequest(BaseModel):
     session_id: str
 
 
+MAX_LOG_CHARS = 4_000_000  # a full UPR ZX Emerald log with every section is about 1-2 MB
+
+
+class UploadLogRequest(BaseModel):
+    log_text: str = Field(max_length=MAX_LOG_CHARS)
+    name: str | None = None
+    session_id: str | None = None
+
+
 @app.get("/", response_class=HTMLResponse)
 def index() -> str:
     return """<!doctype html>
@@ -60,6 +69,16 @@ async def chat(req: ChatRequest) -> ChatResponse:
     return ChatResponse(**await pipeline.chat(req.message, req.session_id, req.run_state))
 
 
+@app.post("/upload_log")
+def upload_log(req: UploadLogRequest) -> dict:
+    """Load a Universal Pokemon Randomizer ZX log into the session (PLAN.md §4.5): from then on
+    the session's answers use the randomized game. Returns what was read and what wasn't."""
+    try:
+        return pipeline.load_log(req.log_text, req.name, req.session_id)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
+
+
 @app.get("/history")
 def history(session_id: str) -> dict:
     session = SESSIONS.peek(session_id)
@@ -79,6 +98,7 @@ def run_state(session_id: str) -> dict:
         "session_id": session_id,
         "run_state": session.state.model_dump() if session else None,
         "rejected_species": sorted(session.excluded) if session else [],
+        "randomizer": session.randomizer if session else None,
     }
 
 

@@ -5,6 +5,7 @@ from functools import cache
 
 from agent.context import RequestContext
 from agent.db import connect_readonly
+from agent.overlay import UNREAD_KINDS
 from agent.progression import Battle
 
 MAX_TOOL_CHARS = 16000  # tools cap their own lists well below this; it's a last resort
@@ -69,6 +70,18 @@ def guarded(fn):
 
     wrapper.__name__, wrapper.__doc__ = fn.__name__, fn.__doc__
     return wrapper
+
+
+def unread(ctx: RequestContext, kind: str) -> str | None:
+    """Why the tools can't answer `kind` (e.g. "movesets") from their tables in this run, or None.
+    Set when the session's randomizer log changed that kind and Lockesmith doesn't read it."""
+    status = ctx.log_changes.get(kind, "unchanged")
+    if status == "metronome-only":
+        return f"in this randomized run every Pokémon's {UNREAD_KINDS.get(kind, kind)} are Metronome only"
+    if status == "unparsed":
+        return (f"this run's randomizer log changed {UNREAD_KINDS.get(kind, kind)}, and Lockesmith can't read "
+                "that part of the log, so the vanilla data would be wrong here")
+    return None
 
 
 def resolve(ctx: RequestContext, text: str, kind: str) -> str:

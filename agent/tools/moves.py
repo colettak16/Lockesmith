@@ -5,7 +5,7 @@ import re
 from build.parse_decomp_trainers import default_moves
 
 from agent.context import RequestContext
-from agent.tools.common import ToolError, battle, resolve, rows
+from agent.tools.common import ToolError, battle, resolve, rows, unread
 
 GYM_GIFT_RE = re.compile(r"after defeating (TRAINER_\w+)")
 
@@ -55,6 +55,8 @@ def species_info(ctx: RequestContext, name: str) -> dict:
 def move_info(ctx: RequestContext, name: str) -> dict:
     """Gen 3 type, category, power, accuracy, PP and description of one move."""
     mid = resolve(ctx, name, "move")
+    if why := unread(ctx, "move_data"):
+        raise ToolError(why)
     m = rows(
         ctx.cursor(),
         "SELECT name, type, damage_class, power, accuracy, pp, priority, effect_chance, description, source_id "
@@ -95,7 +97,7 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
         [sid],
     )
     upto = [r for r in level_up if r["level"] <= cap]
-    return {
+    out = {
         "species": sid, "max_level": max_level,
         "level_up": [{k: r[k] for k in ("level", "name", "type", "damage_class", "power", "source_id")} for r in upto],
         "next_level_up": [{k: r[k] for k in ("level", "name", "type", "source_id")} for r in level_up if r["level"] > cap][:4],
@@ -103,6 +105,19 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
         "tm_hm": [{k: r[k] for k in ("label", "name", "type", "damage_class", "power", "source_id")} for r in machines],
         "hoenn_tutors": tutors,
     }
+    # A randomized run whose log changed parts Lockesmith doesn't read: say so instead of answering from vanilla
+    unknown = {}
+    for kind, keys in (("movesets", ("level_up", "next_level_up", "default_moveset_at_level")),
+                       ("tm_compatibility", ("tm_hm",)), ("tutor_compatibility", ("hoenn_tutors",))):
+        if why := unread(ctx, kind):
+            unknown[kind] = why
+            for k in keys:
+                out[k] = []
+    if why := unread(ctx, "move_data"):
+        unknown["move_data"] = why + " (the types and powers listed are vanilla)"
+    if unknown:
+        out["unknown"] = unknown
+    return out
 
 
 def moves_outlook(ctx: RequestContext, species: list[str], before_battle: str | None = None,
@@ -141,7 +156,7 @@ def moves_outlook(ctx: RequestContext, species: list[str], before_battle: str | 
                                       + (f" [requires: {t['requires']}]" if t.get("requires") else "") for t in tms_here],
             "source_ids": [m["source_id"] for m in attacks[:4]] + [t["source_id"] for t in tms_here]
                           + [e["source_id"] for e in nxt] + [info["source_id"]],
-        })
+        } | ({"unknown": ls["unknown"]} if "unknown" in ls else {}))
     return {"before_battle": b.id, "label": b.label, "species": out,
             "note": "Gen III: the category comes from the move's type (Dark/Fire/Water/... special; Ghost/Fighting/... physical)."}
 
@@ -160,7 +175,8 @@ def tm_availability(ctx: RequestContext, before_battle: str | None = None, speci
         "tl.requires, tl.source_id FROM tm_locations tl JOIN machines mc ON mc.label = tl.label JOIN moves m USING (move_id)"
     )
     params = []
-    if species:
+    compat_unknown = unread(ctx, "tm_compatibility")
+    if species and not compat_unknown:
         sid = resolve(ctx, species, "species")
         sql += (" WHERE mc.move_id IN (SELECT l.move_id FROM learnsets l JOIN species s USING (species_id) "
                 "WHERE s.identifier = ? AND l.method = 'machine')")
@@ -177,8 +193,11 @@ def tm_availability(ctx: RequestContext, before_battle: str | None = None, speci
             later += 1
             continue
         available.append({k: v for k, v in r.items() if v is not None})
-    return {
+    out = {
         "before_battle": b.id, "label": b.label, "available": available, "not_yet_available": later,
         "note": "`requires` lists conditions beyond reaching the place (an HM, a key, a side quest, a party condition).",
         "source_ids": [f"progression:{b.id}"],
     }
+    if species and compat_unknown:
+        out["unknown"] = {"tm_compatibility": compat_unknown + f"; these are all TMs, not only ones {species} can learn"}
+    return out

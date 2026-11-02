@@ -208,7 +208,9 @@ battles:
     hm_gates_open: [cut, flash]
     key_items: [old-rod]
     areas_new:
+      - mauville-city
       - hoenn-route-117
+      - verdanturf-town
       - hoenn-route-118
       - {area: hoenn-route-111, methods: [old-rod, good-rod, super-rod, surf, rock-smash]}
     notes: "Wally has one Lv16 Ralts. He only battles when you talk to him, but he stands in the gym doorway, so he comes before Wattson. Routes 117 and 118 (west bank) are open as soon as you reach Mauville. Route 111's southern segment is open too: its pond (the route's only water) can be fished now, and its crumbling rocks are Rock Smash encounters once Rock Smash works; its grass is all in the desert (Bulbapedia: Route 111). Optional hazard there: the Winstrate family, four battles back to back with no healing (Route111_EventScript_BattleWinstrates: Victor, Victoria, Vivi, Vicky); Victoria gives a Macho Brace. Bikes from Rydel's Cycles are available in Mauville before this."
@@ -239,7 +241,7 @@ battles:
     location: mt-chimney
     hm_gates_open: [cut, flash, rock-smash]
     key_items: [old-rod]
-    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, hoenn-route-114, meteor-falls/main]
+    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, fallarbor-town, hoenn-route-114, meteor-falls/main, mt-chimney]
     notes: "Rock Smash (Mauville) clears the way north to Route 111/112. Route 111's grass is all inside the sandstorm, so it waits for the Go-Goggles. The Meteor Falls exit only reaches Route 115's middle section, which has no grass. Meteor Falls' other rooms need Waterfall. On the way up: two Magma Grunts (TRAINER_GRUNT_MT_CHIMNEY_1, TRAINER_GRUNT_MT_CHIMNEY_2), which the walkthrough fights before Tabitha."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_7#Challenge_Accepted!"
 
@@ -343,6 +345,7 @@ battles:
     areas_new:
       - fortree-city
       - hoenn-route-120
+      - scorched-slab
       - hoenn-route-121
       - hoenn-route-122
       - lilycove-city

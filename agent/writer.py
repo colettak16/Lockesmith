@@ -12,7 +12,8 @@ as [[id1, id2]]). Copy ids exactly from the draft. Sentences without a source id
 not state game facts.
 
 SHAPE by intent:
-- catch / revision: a one-line answer, then "Top picks": one short section per pick, its heading
+- catch / revision: a one-line answer (the draft's headline; if that's empty, one line naming the
+  draft's recommendations, and no other Pokémon), then "Top picks": one short section per pick, its heading
   marked "core" (worth raising to the Champion) or "for this fight" (situational), with where, when
   to catch it, why it helps now, "Long run:" (how it holds up later), and "Backup:" with its
   alternatives. Then short notes on the key battles.
