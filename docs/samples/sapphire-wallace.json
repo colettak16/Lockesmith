@@ -1,0 +1,1142 @@
+{
+  "response": "Chinchou and Magnemite are excellent additions to handle Wallace's Ice coverage and Whiscash's Ground typing, perfectly complementing your Grass/Electric core [1][2][3][4].\n\n### Top picks\n\n#### Chinchou (core)\n* **Where:** Route 124 or Route 126: Dive (seaweed) (Lv20-30, 30% encounter rate) [5][6].\n* **When:** Available right now using Dive [5].\n* **Why it helps now:** With Volt Absorb, it resists or absorbs Water, resists Ice attacks from Wallace's Sealeo and Milotic, and hits his Water-types super-effectively with Electric STAB moves like Spark [1][7][8][4].\n* **Long run:** Evolves into Lanturn at Level 27 [9]. Its massive base 125 HP makes it a resilient tank against Glacia's Ice-types and Steven's Water/Steel types in the Elite Four [1][10].\n* **Backup:** None [10].\n\n#### Magnemite (core)\n* **Where:** New Mauville (Lv22-26, 49-50% encounter rate walking) [11][12].\n* **When:** Available now using the Basement Key from Wattson [11].\n* **Why it helps now:** Its Electric/Steel typing resists Ice Beam and Aurora Beam, allowing it to safely switch in on Milotic and Sealeo and retaliate with powerful Electric attacks like Thunderbolt [2][13][8][4].\n* **Long run:** Evolves into Magneton at Level 30 [14]. Its defensive typing and 120 base Special Attack make it a fantastic pivot against Glacia and Steven, though it must avoid Earthquake [2][10].\n* **Backup:** Spheal (found in Shoal Cave at Lv26-32, 50% encounter rate walking) [15][16]. Its Thick Fat ability and Water/Ice typing neutralize the Ice-type coverage moves that threaten Sceptile and Breloom [15]. It evolves into Sealeo at 32 and Walrein at 44, which excels against Drake's Dragon-types [17][18].\n\n---\n\n### Key Battle Notes\n\n* **Gym Leader Wallace:** Whiscash knows Earthquake, which is immune to Electric and deals 2x damage to Electric-types, making it a severe threat to Manectric [3][19]. Use Sceptile's Leaf Blade (4x effective) to defeat it quickly [3][19]. Beware of Sealeo's Aurora Beam and Milotic's Ice Beam, which deal 2x damage to Sceptile and Breloom [19][8][4]. Pivot to an Ice-resisting partner like Lanturn or Magneton to handle them safely [1][2][8][4].\n\n---\n\n### Assumptions\n* You have access to New Mauville via Wattson's Basement Key [11].\n* Your Sceptile has learned Leaf Blade (learned at Level 29) [10].\n\n### To sharpen this\n* Do you plan to catch and use Kyogre, or would you prefer a regular encounter like Chinchou or Magnemite to fill out your team?\n* Do you already have the Thunderbolt TM from Wattson, or do you have Game Corner coins to purchase it for Magneton?",
+  "session_id": "sample-sapphire-wallace",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What should I catch to beat Wallace?"
+      },
+      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"Identify the best Pok\\u00e9mon to catch in Sapphire to defeat Gym Leader Wallace, given a team with Sceptile, Pelipper, Manectric, and Breloom and having 7 badges.\", \"state_updates\": {\"game\": \"sapphire\", \"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null}, \"rule_updates\": {\"nuzlocke\": null, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": null, \"level_caps\": null, \"level_cap_offset\": null, \"allowed_types\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_banned_types\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 21.49
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT * FROM trainers WHERE name LIKE '%Wallace%' OR class_name LIKE '%Leader%'"
+      },
+      "result": "{\"columns\": [\"trainer_id\", \"trainer_const\", \"trainer_class\", \"class_name\", \"name\", \"is_female\", \"is_double\", \"items\", \"ai_flags\", \"party_symbol\", \"party_size\", \"source_id\"], \"rows\": [[1, \"TRAINER_ARCHIE_1\", \"TRAINER_CLASS_AQUA_LEADER\", \"Aqua Leader\", \"Archie\", false, false, [\"super-potion\", \"super-potion\"], \"0x7\", \"gTrainerParty_Archie1\", 2, \"decomp:trainers.h#TRAINER_ARCHIE_1\"], [34, \"TRAINER_ARCHIE_2\", \"TRAINER_CLASS_AQUA_LEADER\", \"Aqua Leader\", \"Archie\", false, false, [\"super-potion\", \"super-potion\"], \"0x7\", \"gTrainerParty_Archie2\", 3, \"decomp:trainers.h#TRAINER_ARCHIE_2\"], [35, \"TRAINER_ARCHIE_3\", \"TRAINER_CLASS_AQUA_LEADER\", \"Aqua Leader\", \"Archie\", false, false, [\"super-potion\", \"super-potion\"], \"0x7\", \"gTrainerParty_Archie3\", 3, \"decomp:trainers.h#TRAINER_ARCHIE_3\"], [265, \"TRAINER_ROXANNE\", \"TRAINER_CLASS_LEADER\", \"Leader\", \"Roxanne\", true, false, [\"potion\", \"potion\"], \"0x7\", \"gTrainerParty_Roxanne\", 2, \"decomp:trainers.h#TRAINER_ROXANNE\"], [266, \"TRAINER_BRAWLY\", \"TRAINER_CLASS_LEADER\", \"Leader\", \"Brawly\", false, false, [\"super-potion\", \"super-potion\"], \"0x7\", \"gTrainerParty_Brawly\", 2, \"decomp:trainers.h#TRAINER_BRAWLY\"], [267, \"TRAINER_WATTSON\", \"TRAINER_CLASS_LEADER\", \"... [2311 more characters]",
+      "round": 1,
+      "t": 39.28
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "species": null,
+        "before_battle": "gym8_wallace",
+        "types": [
+          "electric",
+          "grass",
+          "water",
+          "ice",
+          "dragon"
+        ]
+      },
+      "result": "{\"before_battle\": \"gym8_wallace\", \"label\": \"Sootopolis Gym: Wallace\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\", \"dive\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"pokeblock-case\", \"go-goggles\", \"devon-scope\"], \"species_count\": 46, \"species\": [{\"species\": \"Barboach\", \"types\": [\"water\", \"ground\"], \"places\": [{\"where\": \"Route 111\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#28973\"}, {\"where\": \"Route 114\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29029\"}, {\"where\": \"Route 120\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29176\"}], \"wild\": true}, {\"species\": \"Carvanha\", \"types\": [\"water\", \"dark\"], \"places\": [{\"where\": \"Route 119\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#29149\"}, {\"where\": \"Route 118\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 60, \"source_id\": \"pokeapi:encounters#29123\"}, {\"where\": \"Route 118\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#29119\"}], \"wild\": true}, {\"species\": \"Corphish\", \"types\": [\"... [10070 more characters]",
+      "round": 1,
+      "t": 39.71
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "scout_battle",
+      "args": {
+        "battle": "gym8_wallace"
+      },
+      "result": "{\"battle_id\": \"gym8_wallace\", \"label\": \"Sootopolis Gym: Wallace\", \"format\": \"single\", \"location\": \"sootopolis-city\", \"partner\": null, \"notes\": \"Wallace is the 8th leader in Ruby/Sapphire (Emerald: Juan); Luvdisc 40, Whiscash 42, Sealeo 40, Seaking 42, Milotic 43. He gives TM03 Water Pulse. Sootopolis's houses open after the Cave of Origin battle too (TM31 Brick Break). Sky Pillar is postgame in Ruby/Sapphire (Route 131 changes layout only after the Hall of Fame), so Rayquaza is out of reach before the Champion. Waterfall needs this badge, so Meteor Falls' back rooms (Bagon) open at the next battle.\", \"team_note\": null, \"teams\": [{\"trainer\": \"Leader Wallace\", \"trainer_const\": \"TRAINER_WALLACE\", \"pokemon\": [{\"species\": \"Luvdisc\", \"types\": [\"water\"], \"level\": 40, \"held_item\": null, \"ability\": \"swift-swim\", \"iv\": 24, \"moves_source\": \"custom\", \"moves\": [\"Water Pulse (water, special, power 60)\", \"Attract (normal, status, power None)\", \"Sweet Kiss (normal, status, power None)\", \"Flail (normal, physical, power None)\"], \"source_id\": \"decomp:trainer_parties.h#gTrainerParty_Wallace/1\"}, {\"species\": \"Whiscash\", \"types\": [\"water\", \"ground\"], \"level\": 42, \"held_item\": null, \"ability\": \"oblivious... [4065 more characters]",
+      "round": 1,
+      "t": 40.84
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "gauntlet_overview",
+      "args": {},
+      "result": "{\"opponents_remaining\": 42, \"battles\": [{\"battle_id\": \"admin_seafloor_cavern\", \"battle\": \"Seafloor Cavern: Aqua Admin Shelly\", \"levels\": [38, 38], \"types\": {\"dark\": 2, \"water\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 1}}, {\"battle_id\": \"leader_seafloor_cavern\", \"battle\": \"Seafloor Cavern: Aqua Leader Archie\", \"levels\": [41, 43], \"types\": {\"dark\": 2, \"poison\": 1, \"flying\": 1, \"water\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 1, \"flying\": 1}}, {\"battle_id\": \"legendary_cave_of_origin\", \"battle\": \"Cave of Origin: Kyogre (Lv45)\", \"levels\": [45, 45], \"types\": {\"water\": 1}, \"attack_types\": {\"ice\": 1, \"normal\": 1, \"water\": 1}}, {\"battle_id\": \"gym8_wallace\", \"battle\": \"Sootopolis Gym: Wallace\", \"levels\": [40, 43], \"types\": {\"water\": 5, \"ground\": 1, \"ice\": 1}, \"attack_types\": {\"water\": 5, \"ice\": 2, \"normal\": 2, \"ground\": 1}}, {\"battle_id\": \"wally_victory_road\", \"battle\": \"Victory Road: Wally\", \"levels\": [41, 45], \"types\": {\"dragon\": 1, \"flying\": 1, \"normal\": 1, \"grass\": 1}, \"attack_types\": {\"dragon\": 1, \"flying\": 1, \"dark\": 1, \"grass\": 1}}, {\"battle_id\": \"e4_sidney\", \"battle\": \"Elite Four: Sidney\", \"levels\": [46, 49], \"types\": {\"dark\": 5, \"grass\": 2, \"water\": 1}, \"attack_types\": {\"normal\"... [2263 more characters]",
+      "round": 1,
+      "t": 40.84
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT * FROM trainer_mons WHERE trainer_const = 'TRAINER_WALLACE'"
+      },
+      "result": "{\"columns\": [\"trainer_id\", \"trainer_const\", \"slot\", \"species_id\", \"species\", \"level\", \"held_item\", \"moves\", \"moves_source\", \"iv\", \"iv_value\", \"source_id\", \"ability\"], \"rows\": [[272, \"TRAINER_WALLACE\", 1, 370, \"luvdisc\", 40, null, [\"water-pulse\", \"attract\", \"sweet-kiss\", \"flail\"], \"custom\", 200, 24, \"decomp:trainer_parties.h#gTrainerParty_Wallace/1\", \"swift-swim\"], [272, \"TRAINER_WALLACE\", 2, 340, \"whiscash\", 42, null, [\"rain-dance\", \"water-pulse\", \"amnesia\", \"earthquake\"], \"custom\", 200, 24, \"decomp:trainer_parties.h#gTrainerParty_Wallace/2\", \"oblivious\"], [272, \"TRAINER_WALLACE\", 3, 364, \"sealeo\", 40, null, [\"encore\", \"body-slam\", \"aurora-beam\", \"water-pulse\"], \"custom\", 200, 24, \"decomp:trainer_parties.h#gTrainerParty_Wallace/3\", \"thick-fat\"], [272, \"TRAINER_WALLACE\", 4, 119, \"seaking\", 42, null, [\"water-pulse\", \"rain-dance\", \"fury-attack\", \"horn-drill\"], \"custom\", 200, 24, \"decomp:trainer_parties.h#gTrainerParty_Wallace/4\", \"swift-swim\"], [272, \"TRAINER_WALLACE\", 5, 350, \"milotic\", 43, null, [\"water-pulse\", \"twister\", \"recover\", \"ice-beam\"], \"custom\", 250, 30, \"decomp:trainer_parties.h#gTrainerParty_Wallace/5\", \"marvel-scale\"]], \"source_id\": \"sql:fa104530d2\", \"source_ids\": [\"dec... [256 more characters]",
+      "round": 1,
+      "t": 41.63
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "move_info",
+      "args": {
+        "name": "Water Pulse"
+      },
+      "result": "{\"name\": \"Water Pulse\", \"type\": \"water\", \"damage_class\": \"special\", \"power\": 60, \"accuracy\": 100, \"pp\": 20, \"priority\": 0, \"effect_chance\": 20, \"description\": \"Attacks with ultrasonic\\nwaves. May confuse the foe\", \"source_id\": \"pokeapi:moves#352\"}",
+      "round": 1,
+      "t": 42.17
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "moves_outlook",
+      "args": {
+        "before_battle": "gym8_wallace",
+        "level": 43,
+        "species": [
+          "Sceptile",
+          "Manectric",
+          "Breloom",
+          "Pelipper",
+          "Lanturn",
+          "Magneton"
+        ]
+      },
+      "result": "{\"before_battle\": \"gym8_wallace\", \"label\": \"Sootopolis Gym: Wallace\", \"species\": [{\"species\": \"Sceptile\", \"types\": [\"grass\"], \"at_level\": 43, \"default_moveset\": [\"Screech\", \"Leaf Blade\", \"Agility\", \"Slam\"], \"best_level_up_attacks\": [\"Slam (normal, physical, 80) Lv43\", \"Leaf Blade (grass, special, 70) Lv29\", \"Pound (normal, physical, 40) Lv1\", \"Quick Attack (normal, physical, 40) Lv1\"], \"next_level_up\": [\"Detect Lv51\", \"False Swipe Lv59\"], \"evolves\": [], \"tms_obtainable_before\": [\"TM01 Focus Punch (fighting, 150) at hoenn-route-115\", \"TM15 Hyper Beam (normal, 150) at lilycove-city [requires: the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle]\", \"TM22 Solar Beam (grass, 120) at hoenn-safari-zone\", \"TM23 Iron Tail (steel, 100) at meteor-falls\"], \"source_ids\": [\"pokeapi:pokemon_moves#254/21/level-up/43\", \"pokeapi:pokemon_moves#254/348/level-up/29\", \"pokeapi:pokemon_moves#254/1/level-up/1\", \"pokeapi:pokemon_moves#254/98/level-up/1\", \"decomp:data/maps/Route115#TM01\", \"decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM15\", ... [7987 more characters]",
+      "round": 1,
+      "t": 44.48
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "assess_candidates",
+      "args": {
+        "species": [
+          "Chinchou",
+          "Spheal",
+          "Magnemite",
+          "Lotad",
+          "Carvanha"
+        ]
+      },
+      "result": "{\"candidates\": [{\"candidate\": \"Chinchou\", \"final_form\": \"Lanturn\", \"final_types\": [\"water\", \"electric\"], \"final_bst\": 460, \"final_stats\": {\"hp\": 125, \"attack\": 58, \"defense\": 58, \"sp_attack\": 76, \"sp_defense\": 76, \"speed\": 67}, \"abilities\": [\"volt-absorb\", \"illuminate\"], \"evolution_path\": [\"Lanturn: level-up, level 27\"], \"needs_trade\": false, \"legendary\": false, \"remaining_opponents_hit_super_effectively\": 16, \"of_remaining_opponents\": 42, \"new_coverage_vs_party\": 0, \"shares_types_with_party\": [\"electric\", \"water\"], \"strongest_into\": [\"Sootopolis Gym: Wallace\", \"Champion: Steven\", \"Elite Four: Glacia\", \"Seafloor Cavern: Aqua Leader Archie\"], \"most_threatened_by\": [\"Champion: Steven\", \"Sootopolis Gym: Wallace\", \"Victory Road: Wally\"], \"source_ids\": [\"pokeapi:pokemon_species#170\", \"pokeapi:pokemon_species#171\", \"rules:gen3_type_chart\", \"pokeapi:pokemon_evolution#95\"]}, {\"candidate\": \"Spheal\", \"final_form\": \"Walrein\", \"final_types\": [\"ice\", \"water\"], \"final_bst\": 530, \"final_stats\": {\"hp\": 110, \"attack\": 80, \"defense\": 90, \"sp_attack\": 95, \"sp_defense\": 90, \"speed\": 65}, \"abilities\": [\"thick-fat\"], \"evolution_path\": [\"Sealeo: level-up, level 32\", \"Walrein: level-up, level 44\"], \"needs... [3479 more characters]",
+      "round": 1,
+      "t": 46.7
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Wallace Sootopolis Gym Sapphire team"
+      },
+      "result": "{\"query\": \"Wallace Sootopolis Gym Sapphire team\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#Words_of_Encouragement\", \"page\": \"Walkthrough:Pokémon Ruby and Sapphire/Part 17\", \"section\": \"Route 126 > Sootopolis City > Words of Encouragement\", \"text\": \"Upon reaching the island, you find Steven waiting for you outside the Gym. With the skies cleared, he thanks you for all you have done. He also thanks you on behalf of Wallace, who has now returned to his Gym. Steven warns that Wallace is strong, but that everything you have been through should leave the two of you on equal footing. He encourages you to challenge his friend, then leaves on the back of his Fly Pokémon.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_21#Route_128\", \"page\": \"Walkthrough:Pokémon Ruby and Sapphire/Part 21\", \"section\": \"Route 128\", \"text\": \"With all eight Hoenn League Gym Badges in hand, it's finally time to challenge the Pokémon League! Wallace directed you to an island in the east that holds the city of Ever Grande. To get there, leave Sootopolis City behind and use Surf to travel southeastward. Return to the ring of shallow water that marks the locat... [1563 more characters]",
+      "round": 1,
+      "t": 52.24
+    },
+    {
+      "agent": "story_researcher",
+      "name": "get_next_steps",
+      "args": {},
+      "result": "{\"next\": {\"battle_id\": \"admin_seafloor_cavern\", \"label\": \"Seafloor Cavern: Aqua Admin Shelly\", \"location\": \"seafloor-cavern\", \"optional\": false, \"format\": \"single\", \"highest_level\": 38, \"new_hms_usable\": [\"dive\"], \"new_key_items\": [], \"areas_opened_before_it\": [\"hoenn-route-124/underwater\", \"hoenn-route-126/underwater\", \"seafloor-cavern\", \"sootopolis-city\", \"desert-ruins\", \"island-cave\", \"ancient-tomb\"], \"notes\": \"Steven gives HM08 Dive in his Mossdeep house after Tate & Liza. Seaweed underwater holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) can be reached now, but every door in it, the gym's too, stays shut until the Cave of Origin battle (E-08). Two grunts in Seafloor Cavern's first room before the admin. The Regi caves open with no story gate, by the Ruby/Sapphire puzzles: in the Sealed Chamber (Surf to Route 134, then Dive) use Dig, then read the inner wall with Relicanth first and Wailord last in the party (Emerald's order is the reverse). Regirock: Strength in Desert Ruins (Route 111 desert, Go-Goggles). Regice: wait two minutes without pressing a button in Island Cave (Route 105). Registeel: Fly in the middle of Ancient Tomb (Route 120).\", \"sourc... [2388 more characters]",
+      "round": 1,
+      "t": 54.97
+    },
+    {
+      "agent": "story_researcher",
+      "name": "get_story_outline",
+      "args": {},
+      "result": "{\"remaining\": [{\"battle_id\": \"admin_seafloor_cavern\", \"label\": \"Seafloor Cavern: Aqua Admin Shelly\", \"location\": \"seafloor-cavern\", \"optional\": false, \"format\": \"single\", \"highest_level\": 38, \"new_hms_usable\": [\"dive\"], \"new_key_items\": [], \"notes\": \"Steven gives HM08 Dive in his Mossdeep house after Tate & Liza. Seaweed underwater holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) c\", \"source_ids\": [\"progression:admin_seafloor_cavern\", \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Seafloor_Cavern\"], \"areas_opened_count\": 7}, {\"battle_id\": \"leader_seafloor_cavern\", \"label\": \"Seafloor Cavern: Aqua Leader Archie\", \"location\": \"seafloor-cavern\", \"optional\": false, \"format\": \"single\", \"highest_level\": 43, \"new_hms_usable\": [], \"new_key_items\": [], \"notes\": \"One more grunt between Shelly and Archie. Afterwards Kyogre wakes and leaves for the Cave of Origin (FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN, E-07).\", \"source_ids\": [\"progression:leader_seafloor_cavern\", \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Chamber_10\"], \"areas_opened_count\": 0}, {\"battle_id\": \"legendary_cave_of_origin\", \"label\": \"Cave of Origin: Kyogre (Lv45)\", \"location\": \"cave-of-origin... [3820 more characters]",
+      "round": 1,
+      "t": 55.01
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT location, area, method, rarity, min_level, max_level FROM encounters INNER JOIN species USING (species_id) WHERE identifier = 'chinchou' OR identifier = 'magnemite' OR identifier = 'lanturn'"
+      },
+      "result": "{\"columns\": [\"location\", \"area\", \"method\", \"rarity\", \"min_level\", \"max_level\"], \"rows\": [[\"hoenn-route-124\", \"underwater\", \"seaweed\", 30, 20, 30], [\"hoenn-route-126\", \"underwater\", \"seaweed\", 30, 20, 30], [\"new-mauville\", \"entrance\", \"walk\", 20, 24, 24], [\"new-mauville\", \"entrance\", \"walk\", 10, 25, 25], [\"new-mauville\", \"entrance\", \"walk\", 10, 23, 23], [\"new-mauville\", \"entrance\", \"walk\", 5, 26, 26], [\"new-mauville\", \"entrance\", \"walk\", 4, 22, 22], [\"new-mauville\", \"entrance\", \"walk\", 1, 22, 22], [\"new-mauville\", null, \"walk\", 20, 24, 24], [\"new-mauville\", null, \"walk\", 10, 25, 25], [\"new-mauville\", null, \"walk\", 10, 23, 23], [\"new-mauville\", null, \"walk\", 5, 26, 26], [\"new-mauville\", null, \"walk\", 4, 22, 22]], \"source_id\": \"sql:5273fcc350\"}",
+      "round": 1,
+      "t": 63.68
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 63.68
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Sootopolis Gym Wallace battle"
+      },
+      "result": "{\"query\": \"Sootopolis Gym Wallace battle\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#Words_of_Encouragement\", \"page\": \"Walkthrough:Pokémon Ruby and Sapphire/Part 17\", \"section\": \"Route 126 > Sootopolis City > Words of Encouragement\", \"text\": \"Upon reaching the island, you find Steven waiting for you outside the Gym. With the skies cleared, he thanks you for all you have done. He also thanks you on behalf of Wallace, who has now returned to his Gym. Steven warns that Wallace is strong, but that everything you have been through should leave the two of you on equal footing. He encourages you to challenge his friend, then leaves on the back of his Fly Pokémon.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_21#Route_128\", \"page\": \"Walkthrough:Pokémon Ruby and Sapphire/Part 21\", \"section\": \"Route 128\", \"text\": \"With all eight Hoenn League Gym Badges in hand, it's finally time to challenge the Pokémon League! Wallace directed you to an island in the east that holds the city of Ever Grande. To get there, leave Sootopolis City behind and use Surf to travel southeastward. Return to the ring of shallow water that marks the location of ... [1556 more characters]",
+      "round": 1,
+      "t": 69.99
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 69.99
+    },
+    {
+      "agent": "lead",
+      "name": "dispatch_researchers",
+      "args": {
+        "tasks": [
+          {
+            "task": "Analyze gym8_wallace in Sapphire. Provide Wallace's team, levels, moves, and threats. Assess matchups for Sceptile, Manectric, Breloom, and Pelipper.",
+            "researcher": "battle"
+          },
+          {
+            "researcher": "catch",
+            "task": "Suggest Pokémon to catch before gym8_wallace in Sapphire that perform well against Wallace (Water types, Ice coverage). Consider the party: Sceptile, Manectric, Breloom, Pelipper. Include locations and encounter odds."
+          },
+          {
+            "task": "Provide key moves, learnsets, and TMs before gym8_wallace for Sceptile, Manectric, Breloom, Pelipper, and strong candidates against Wallace.",
+            "researcher": "moves"
+          },
+          {
+            "researcher": "story",
+            "task": "Detail the next steps in Sapphire from Seafloor Cavern (Aqua Admin Shelly) up to gym8_wallace, including Cave of Origin and any required encounters."
+          }
+        ]
+      },
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Analyze gym8_wallace in Sapphire. Provide Wallace's team, levels, moves, and threats. Assess matchups for Sceptile, Manectric, Breloom, and Pelipper.\", \"finding\": {\"summary\": \"Gym Leader Wallace in Pokémon Sapphire leads a team of water-type specialists ranging from Level 40 to 43. While your Sceptile and Manectric have powerful type advantages, Ice-type coverage moves on Sealeo (Aurora Beam) and Milotic (Ice Beam) pose severe threats to Sceptile and Breloom, while Whiscash's Earthquake threatens Manectric.\", \"claims\": [{\"text\": \"Sootopolis Gym Leader Wallace fields a team of five Pokémon: Luvdisc (Lv40), Whiscash (Lv42), Sealeo (Lv40), Seaking (Lv42), and Milotic (Lv43).\", \"source_ids\": [\"decomp:trainer_parties.h#gTrainerParty_Wallace/1\", \"decomp:trainer_parties.h#gTrainerParty_Wallace/2\", \"decomp:trainer_parties.h#gTrainerParty_Wallace/3\", \"decomp:trainer_parties.h#gTrainerParty_Wallace/4\", \"decomp:trainer_parties.h#gTrainerParty_Wallace/5\"]}, {\"text\": \"Wallace's Whiscash knows Earthquake, which deals double super-effective damage to Manectric.\", \"source_ids\": [\"decomp:trainer_parties.h#gTrainerParty_Wallace/2\", \"rules:ge... [11081 more characters]",
+      "round": 1,
+      "t": 87.14
+    },
+    {
+      "agent": "verifier",
+      "name": "verify",
+      "args": {
+        "picks": [
+          "Chinchou",
+          "Magnemite"
+        ]
+      },
+      "result": "[{\"code\": \"NOT_OBTAINABLE_BEFORE\", \"severity\": \"error\", \"species\": \"Kyogre\", \"detail\": \"Kyogre isn't obtainable before Sootopolis Gym: Wallace (cave-of-origin/b4f static: closed for good before Sootopolis Gym: Wallace: the Lv45 legendary is the required battle itself; once it ends (caught, knocked out or fled) it's gone)\", \"rec\": 0, \"alt\": 0}]",
+      "round": 1,
+      "t": 113.44
+    },
+    {
+      "agent": "verifier",
+      "name": "promote_backups",
+      "args": {},
+      "result": "[\"dropped backup(s) Kyogre for Chinchou\"]",
+      "round": 1,
+      "t": 113.44
+    },
+    {
+      "agent": "verifier",
+      "name": "correct_where",
+      "args": {},
+      "result": "[\"corrected where for Chinchou (names no place where it's available): 'Routes 124 or 126 (Underwater seaweed, Lv20-30, 30% encounter rate)' -> 'Route 124: Dive (seaweed) (Lv20-30, 30%); Route 126: Dive (seaweed) (Lv20-30, 30%)'\"]",
+      "round": 1,
+      "t": 113.48
+    },
+    {
+      "agent": "verifier",
+      "name": "citation_check",
+      "args": {},
+      "result": "all citations resolve",
+      "round": 1,
+      "t": 127.21
+    }
+  ],
+  "citations": [
+    {
+      "n": 1,
+      "source_id": "pokeapi:pokemon_species#171",
+      "label": "PokeAPI: Lanturn (species data)",
+      "url": null
+    },
+    {
+      "n": 2,
+      "source_id": "pokeapi:pokemon_species#82",
+      "label": "PokeAPI: Magneton (species data)",
+      "url": null
+    },
+    {
+      "n": 3,
+      "source_id": "decomp:trainer_parties.h#gTrainerParty_Wallace/2",
+      "label": "pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/2)",
+      "url": "https://github.com/pret/pokeruby/blob/5784633ce4ef7ade1a7f2d2d0c288e3d5e6cdd7f/src/data/trainer_parties.h"
+    },
+    {
+      "n": 4,
+      "source_id": "decomp:trainer_parties.h#gTrainerParty_Wallace/5",
+      "label": "pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/5)",
+      "url": "https://github.com/pret/pokeruby/blob/5784633ce4ef7ade1a7f2d2d0c288e3d5e6cdd7f/src/data/trainer_parties.h"
+    },
+    {
+      "n": 5,
+      "source_id": "pokeapi:encounters#29283",
+      "label": "PokeAPI: Chinchou at Route 124 (seaweed)",
+      "url": null
+    },
+    {
+      "n": 6,
+      "source_id": "pokeapi:encounters#29318",
+      "label": "PokeAPI: Chinchou at Route 126 (seaweed)",
+      "url": null
+    },
+    {
+      "n": 7,
+      "source_id": "pokeapi:pokemon_moves#171/209/level-up/25",
+      "label": "PokeAPI: Lanturn learns Spark (level-up)",
+      "url": null
+    },
+    {
+      "n": 8,
+      "source_id": "decomp:trainer_parties.h#gTrainerParty_Wallace/3",
+      "label": "pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/3)",
+      "url": "https://github.com/pret/pokeruby/blob/5784633ce4ef7ade1a7f2d2d0c288e3d5e6cdd7f/src/data/trainer_parties.h"
+    },
+    {
+      "n": 9,
+      "source_id": "pokeapi:pokemon_evolution#95",
+      "label": "PokeAPI: Chinchou evolves into Lanturn",
+      "url": null
+    },
+    {
+      "n": 10,
+      "source_id": "rules:game",
+      "label": "LockeSmith's Sapphire rules (agent/brief.py, checked in docs/audit/engine.txt)",
+      "url": "https://github.com/colettak16/Lockesmith/blob/main/docs/audit/engine.txt"
+    },
+    {
+      "n": 11,
+      "source_id": "pokeapi:encounters#28694",
+      "label": "PokeAPI: Magnemite at New Mauville (walk)",
+      "url": null
+    },
+    {
+      "n": 12,
+      "source_id": "pokeapi:encounters#28706",
+      "label": "PokeAPI: Magnemite at New Mauville (walk)",
+      "url": null
+    },
+    {
+      "n": 13,
+      "source_id": "decomp:data/maps/MauvilleCity#TM24",
+      "label": "pokeruby data/maps/MauvilleCity (TM24)",
+      "url": "https://github.com/pret/pokeruby/blob/5784633ce4ef7ade1a7f2d2d0c288e3d5e6cdd7f/data/maps/MauvilleCity"
+    },
+    {
+      "n": 14,
+      "source_id": "pokeapi:pokemon_evolution#51",
+      "label": "PokeAPI: Magnemite evolves into Magneton",
+      "url": null
+    },
+    {
+      "n": 15,
+      "source_id": "pokeapi:encounters#28670",
+      "label": "PokeAPI: Spheal at Shoal Cave (walk)",
+      "url": null
+    },
+    {
+      "n": 16,
+      "source_id": "pokeapi:encounters#70724",
+      "label": "PokeAPI: Spheal at Shoal Cave (walk)",
+      "url": null
+    },
+    {
+      "n": 17,
+      "source_id": "pokeapi:pokemon_evolution#184",
+      "label": "PokeAPI: Spheal evolves into Sealeo",
+      "url": null
+    },
+    {
+      "n": 18,
+      "source_id": "pokeapi:pokemon_evolution#185",
+      "label": "PokeAPI: Sealeo evolves into Walrein",
+      "url": null
+    },
+    {
+      "n": 19,
+      "source_id": "rules:gen3_type_chart",
+      "label": "Gen 3 type chart (pokeruby data/type_effectiveness.inc)",
+      "url": null
+    }
+  ],
+  "plan": {
+    "intent": "catch",
+    "headline": "Chinchou and Magnemite are excellent additions to handle Wallace's Ice coverage and Whiscash's Ground typing, perfectly complementing your Grass/Electric core.",
+    "recommendations": [
+      {
+        "species": "Chinchou",
+        "role": "Bulky Water/Electric pivot",
+        "horizon": "core",
+        "before_battle": "gym8_wallace",
+        "where": "Route 124: Dive (seaweed) (Lv20-30, 30%); Route 126: Dive (seaweed) (Lv20-30, 30%)",
+        "when": "Available right now using Dive",
+        "why": "With Volt Absorb, it resists or absorbs Water, resists Ice attacks from Sealeo and Milotic, and hits Wallace's Water-types super-effectively with Electric STAB.",
+        "long_term": "Evolves into Lanturn at Level 27. Its massive base 125 HP makes it a resilient tank against Glacia's Ice-types and Steven's Water/Steel types in the Elite Four.",
+        "evolve_to": "Lanturn",
+        "key_moves": [
+          "Spark"
+        ],
+        "source_ids": [
+          "pokeapi:encounters#29283",
+          "pokeapi:encounters#29318",
+          "pokeapi:pokemon_evolution#95",
+          "pokeapi:pokemon_species#171",
+          "pokeapi:pokemon_moves#171/209/level-up/25"
+        ],
+        "alternatives": []
+      },
+      {
+        "species": "Magnemite",
+        "role": "Special attacker and Ice resist",
+        "horizon": "core",
+        "before_battle": "gym8_wallace",
+        "where": "New Mauville (Lv22-26, 49-50% encounter rate walking)",
+        "when": "Available now using the Basement Key from Wattson",
+        "why": "Its Electric/Steel typing resists Ice Beam and Aurora Beam, allowing it to safely switch in on Milotic and Sealeo and retaliate with powerful Electric attacks.",
+        "long_term": "Evolves into Magneton at Level 30. Its defensive typing and 120 base Special Attack make it a fantastic pivot against Glacia and Steven, though it must avoid Earthquake.",
+        "evolve_to": "Magneton",
+        "key_moves": [
+          "Thunderbolt"
+        ],
+        "source_ids": [
+          "pokeapi:encounters#28694",
+          "pokeapi:encounters#28706",
+          "pokeapi:pokemon_evolution#51",
+          "decomp:data/maps/MauvilleCity#TM24",
+          "pokeapi:pokemon_species#82"
+        ],
+        "alternatives": [
+          {
+            "species": "Spheal",
+            "horizon": "core",
+            "where": "Shoal Cave (Lv26-32, 50% encounter rate walking)",
+            "why": "Its Thick Fat ability and Water/Ice typing neutralize the Ice-type coverage moves that threaten Sceptile and Breloom.",
+            "long_term": "Evolves into Sealeo at 32 and Walrein at 44. Walrein is incredibly bulky and excels against Drake's Dragon-types in the Elite Four.",
+            "evolve_to": "Sealeo",
+            "key_moves": [
+              "Aurora Beam",
+              "Surf"
+            ],
+            "source_ids": [
+              "pokeapi:encounters#28670",
+              "pokeapi:encounters#70724",
+              "pokeapi:pokemon_evolution#184",
+              "pokeapi:pokemon_evolution#185"
+            ]
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "title": "Clear Seafloor Cavern",
+        "detail": "Defeat two Grunts, Aqua Admin Shelly, and finally Aqua Leader Archie (highest level 43). Archie's defeat will awaken Kyogre and cause it to flee to Sootopolis City.",
+        "source_ids": [
+          "progression:admin_seafloor_cavern",
+          "progression:leader_seafloor_cavern",
+          "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Chamber_10"
+        ]
+      },
+      {
+        "title": "Enter the Cave of Origin",
+        "detail": "Dive on Route 126 to reach Sootopolis City. Enter the now-open Cave of Origin. On B3F, collect HM07 Waterfall.",
+        "source_ids": [
+          "progression:admin_seafloor_cavern",
+          "progression:legendary_cave_of_origin",
+          "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#VS_Kyogre_(Sapphire)"
+        ]
+      },
+      {
+        "title": "Face Kyogre",
+        "detail": "On B4F, you must engage Kyogre (Lv45) in a required encounter. You can catch, defeat, or run from it to clear the weather and unlock the Sootopolis Gym.",
+        "source_ids": [
+          "progression:legendary_cave_of_origin"
+        ]
+      },
+      {
+        "title": "Challenge Gym Leader Wallace",
+        "detail": "Challenge the Sootopolis Gym to face Wallace and earn the Rain Badge.",
+        "source_ids": [
+          "progression:gym8_wallace",
+          "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#Sootopolis_Gym"
+        ]
+      }
+    ],
+    "battle_notes": [
+      {
+        "battle_id": "gym8_wallace",
+        "note": "Wallace's Whiscash knows Earthquake (immune to Electric, 2x against Electric types), making it a severe threat to Manectric. Use Sceptile's Leaf Blade (4x effective) to defeat it. Beware of Sealeo's Aurora Beam and Milotic's Ice Beam, which deal 2x damage to Sceptile and Breloom. Pivot to an Ice-resisting Pokémon like Lanturn or Magneton to handle them safely.",
+        "source_ids": [
+          "decomp:trainer_parties.h#gTrainerParty_Wallace/2",
+          "rules:gen3_type_chart",
+          "decomp:trainer_parties.h#gTrainerParty_Wallace/3",
+          "decomp:trainer_parties.h#gTrainerParty_Wallace/5"
+        ]
+      }
+    ],
+    "assumptions": [
+      "You have access to New Mauville via Wattson's Basement Key.",
+      "Your Sceptile has learned Leaf Blade (learned at Level 29)."
+    ],
+    "follow_up_questions": [
+      "Do you plan to catch and use Kyogre, or would you prefer a regular encounter like Chinchou or Magnemite to fill out your team?",
+      "Do you already have the Thunderbolt TM from Wattson, or do you have Game Corner coins to purchase it for Magneton?"
+    ],
+    "unresolved": []
+  },
+  "chart": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": {
+      "text": "Type coverage over the rest of the run",
+      "subtitle": "Share of each battle's team your STAB types hit super-effectively (type chart only, no damage rolls)"
+    },
+    "data": {
+      "values": [
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 5,
+          "threats": 2,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 5,
+          "threats": 2,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Wallace",
+          "order": 23,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 1,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 2,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.4
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 5,
+          "threats": 2,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 1,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Sidney",
+          "order": 25,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 4,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Phoebe",
+          "order": 26,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 3,
+          "threats": 5,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 3,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 5,
+          "threats": 5,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 3,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Glacia",
+          "order": 27,
+          "hits": 5,
+          "threats": 0,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Drake",
+          "order": 28,
+          "hits": 0,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Sceptile (party)",
+          "kind": "party",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 1,
+          "threats": 3,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Pelipper (party)",
+          "kind": "party",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 3,
+          "threats": 4,
+          "team_size": 6,
+          "share": 0.5
+        },
+        {
+          "member": "Manectric (party)",
+          "kind": "party",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 1,
+          "threats": 3,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Breloom (party)",
+          "kind": "party",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 3,
+          "threats": 4,
+          "team_size": 6,
+          "share": 0.5
+        },
+        {
+          "member": "Chinchou → Lanturn (pick)",
+          "kind": "pick",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 4,
+          "threats": 4,
+          "team_size": 6,
+          "share": 0.67
+        },
+        {
+          "member": "Magnemite → Magneton (pick)",
+          "kind": "pick",
+          "battle": "Steven",
+          "order": 29,
+          "hits": 3,
+          "threats": 3,
+          "team_size": 6,
+          "share": 0.5
+        }
+      ]
+    },
+    "width": {
+      "step": 46
+    },
+    "height": {
+      "step": 30
+    },
+    "encoding": {
+      "x": {
+        "field": "battle",
+        "type": "ordinal",
+        "sort": {
+          "field": "order"
+        },
+        "title": null,
+        "axis": {
+          "labelAngle": -40,
+          "labelLimit": 120
+        }
+      },
+      "y": {
+        "field": "member",
+        "type": "nominal",
+        "title": null,
+        "sort": [
+          "Sceptile (party)",
+          "Pelipper (party)",
+          "Manectric (party)",
+          "Breloom (party)",
+          "Chinchou → Lanturn (pick)",
+          "Magnemite → Magneton (pick)"
+        ],
+        "axis": {
+          "labelLimit": 220
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rect",
+          "stroke": "#fffdf6",
+          "strokeWidth": 2,
+          "cornerRadius": 3
+        },
+        "encoding": {
+          "color": {
+            "field": "share",
+            "type": "quantitative",
+            "title": "Hit super-effectively",
+            "scale": {
+              "domain": [
+                0,
+                1
+              ],
+              "scheme": "greens"
+            },
+            "legend": {
+              "format": ".0%"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "member"
+            },
+            {
+              "field": "battle"
+            },
+            {
+              "field": "hits",
+              "title": "opponents hit super-effectively"
+            },
+            {
+              "field": "threats",
+              "title": "opponents with a super-effective move on it"
+            },
+            {
+              "field": "team_size",
+              "title": "team size"
+            }
+          ]
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 11
+        },
+        "encoding": {
+          "text": {
+            "field": "hits"
+          },
+          "color": {
+            "condition": {
+              "test": "datum.share > 0.6",
+              "value": "#ffffff"
+            },
+            "value": "#2b2a26"
+          }
+        }
+      }
+    ],
+    "config": {
+      "view": {
+        "stroke": null
+      },
+      "axis": {
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "usermeta": {
+      "source": "emerald.duckdb trainer teams (or the loaded randomizer log) and the Gen 3 type chart"
+    }
+  },
+  "usage": [
+    {
+      "agent": "clarifier",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2797,
+      "output_tokens": 193,
+      "cost_usd": 0.005933,
+      "t": 21.49,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 2794,
+      "output_tokens": 406,
+      "cost_usd": 0.01046,
+      "t": 35.92,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2085,
+      "output_tokens": 211,
+      "cost_usd": 0.005026,
+      "t": 39.27,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1927,
+      "output_tokens": 295,
+      "cost_usd": 0.005546,
+      "t": 39.66,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 1484,
+      "output_tokens": 32,
+      "cost_usd": 0.001233,
+      "t": 40.77,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3293,
+      "output_tokens": 47,
+      "cost_usd": 0.005363,
+      "t": 41.63,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3353,
+      "output_tokens": 17,
+      "cost_usd": 0.005182,
+      "t": 42.17,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3721,
+      "output_tokens": 190,
+      "cost_usd": 0.007292,
+      "t": 44.35,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3419,
+      "output_tokens": 762,
+      "cost_usd": 0.011987,
+      "t": 45.75,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4927,
+      "output_tokens": 510,
+      "cost_usd": 0.01198,
+      "t": 46.59,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 6501,
+      "output_tokens": 123,
+      "cost_usd": 0.010859,
+      "t": 52.22,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1639,
+      "output_tokens": 85,
+      "cost_usd": 0.003223,
+      "t": 54.94,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 6646,
+      "output_tokens": 175,
+      "cost_usd": 0.011544,
+      "t": 63.67,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3975,
+      "output_tokens": 1759,
+      "cost_usd": 0.021794,
+      "t": 63.69,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 7300,
+      "output_tokens": 55,
+      "cost_usd": 0.011445,
+      "t": 69.98,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 5825,
+      "output_tokens": 953,
+      "cost_usd": 0.017315,
+      "t": 86.14,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 6676,
+      "output_tokens": 1327,
+      "cost_usd": 0.009983,
+      "t": 87.13,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 6251,
+      "output_tokens": 2227,
+      "cost_usd": 0.039226,
+      "t": 113.33,
+      "fallback": null
+    },
+    {
+      "agent": "writer",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2286,
+      "output_tokens": 1163,
+      "cost_usd": 0.013896,
+      "t": 127.11,
+      "fallback": null
+    }
+  ],
+  "seconds": 127.5
+}
