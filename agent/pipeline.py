@@ -165,6 +165,11 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     if decision.action == "decline":
         return {"response": decision.reply, "plan": None, "intent": "declined"}
     missing = session.state.missing_required()
+    if decision.action == "ask" and not missing and session.state.party:
+        # The Clarifier may only ask for the starter, badges or party, and all three are here. A live
+        # Sapphire run had it ask where the player was and which routes they'd used, with no Nuzlocke on.
+        record(ctx, "clarifier", "ask_overridden", {"reply": decision.reply}, "starter, badges and party are known; researching")
+        decision = decision.model_copy(update={"action": "proceed", "reply": "", "research_brief": decision.research_brief or message})
     if decision.action == "ask" or (missing and decision.intent != "lookup"):
         return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing),
                 "plan": None, "intent": "clarify"}

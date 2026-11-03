@@ -75,6 +75,26 @@ def test_missing_required_state_asks_without_research(models):
     assert body["tool_calls"][0]["agent"] == "clarifier"
 
 
+def test_needless_ask_is_overridden_when_the_run_is_known(models):
+    # Live Sapphire run (2026-11-03): starter, six badges and a party set, no Nuzlocke, and the
+    # Clarifier asked where the player was and which routes they'd used
+    calls, script = models
+    script["clarifier"] = decision(action="ask", reply="Where are you, and which routes have you used?")
+    script["lead"] = DRAFT
+    script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]."
+    known = RunState(starter="mudkip", badges=STATE.badges, party=[{"species": "Swampert", "level": 46}])
+    body = chat("who should i catch next?", "p-needless-ask", known)
+    assert calls == ["clarifier", "lead", "writer"] and body["response"].startswith("Catch Sharpedo")
+    assert [c["name"] for c in body["tool_calls"]][:2] == ["decide", "ask_overridden"]
+
+
+def test_ask_for_the_party_still_stands(models):
+    calls, script = models
+    script["clarifier"] = decision(action="ask", reply="What's in your party?")
+    assert chat("how do I fix my team?", "p-party-ask", STATE)["response"] == "What's in your party?"
+    assert calls == ["clarifier"]
+
+
 def test_decline_returns_the_reply(models):
     calls, script = models
     script["clarifier"] = decision(action="decline", intent="lookup", reply="I only cover Emerald.")

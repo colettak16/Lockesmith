@@ -201,7 +201,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 383 tests (5 wait for a real randomizer log), no model calls
+uv run pytest                           # 385 tests (5 wait for a real randomizer log), no model calls
 ```
 
 Scripts:
