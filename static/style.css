@@ -83,9 +83,10 @@ code { font-family: var(--mono); font-size: .85em; }
   image-rendering: pixelated; /* scaled-up GBA pixels stay crisp */
 }
 .hero.has-video img.hero-art { display: none; }
-.hero-inner { position: relative; height: 100%; max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; align-items: flex-start; }
+/* The title card sits in the banner's top-left corner at any width */
+.hero-inner { position: relative; height: 100%; padding: 0 18px; display: flex; align-items: flex-start; }
 .title-card {
-  display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 9px 12px 9px 11px; max-width: calc(100vw - 32px);
+  display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 9px 12px 9px 11px; max-width: calc(100vw - 32px);
   background: #fbfbf6; color: #1f2a26; border: 3px solid #36424c; border-radius: 10px;
   box-shadow: inset 0 0 0 2px #fbfbf6, inset 0 0 0 4px #8fb3c7, 0 6px 18px -8px rgba(0, 0, 0, .45);
 }
@@ -160,7 +161,8 @@ code { font-family: var(--mono); font-size: .85em; }
 }
 
 /* ---- desk layout ----------------------------------------------------------------- */
-.desk { max-width: 1320px; margin: 0 auto; padding: 18px 24px 28px; display: grid; grid-template-columns: 370px minmax(0, 1fr); gap: 22px; align-items: start; }
+/* Wide: the answer column gets the room, so answers need less scrolling */
+.desk { max-width: 1800px; margin: 0 auto; padding: 18px 20px 28px; display: grid; grid-template-columns: 370px minmax(0, 1fr); gap: 22px; align-items: start; }
 
 /* ---- run panel ----------------------------------------------------------------- */
 .run-panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; background: var(--paper-2); border: 1px solid var(--rule-2); border-radius: var(--radius); box-shadow: var(--shadow); }
@@ -342,7 +344,7 @@ details.box > summary:hover { color: var(--emerald); }
 @keyframes pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--emerald) 30%, transparent); } }
 
 /* ---- footer -------------------------------------------------------------------- */
-.colophon { max-width: 1320px; margin: 0 auto; padding: 8px 24px 32px; font-size: .82rem; color: var(--ink-2); }
+.colophon { max-width: 1800px; margin: 0 auto; padding: 8px 20px 32px; font-size: .82rem; color: var(--ink-2); }
 .colophon p { margin: 4px 0; }
 .session-line { color: var(--ink-3); }
 
