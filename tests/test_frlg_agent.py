@@ -77,3 +77,41 @@ def test_kanto_evolutions_past_mew_fail_the_verifier(con, game):
                           why="fits", long_term="lt", evolve_to="Crobat", key_moves=[], source_ids=[], alternatives=[])
     details = [v.detail for v in check_pick(ctx, pick, "gym5_koga", 0, None) if v.code == "EVOLUTION_NOT_REACHABLE"]
     assert details and "National Dex" in details[0]
+
+
+def test_a_firered_turn_runs_end_to_end(monkeypatch):
+    """The whole /chat pipeline on a FireRed run with the models stubbed: the game line is citable, the
+    Verifier swaps a pick that needs Crobat for its backup, and citations name pokefirered."""
+    import asyncio
+
+    from agent import pipeline, runtime
+    from agent.schemas import Alternative, ClarifierDecision, LeadDraft, RuleUpdate, StateUpdate
+
+    no_state = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
+    no_rules = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
+                          level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None,
+                          wild_only=None, add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])
+    cited = "decomp:trainer_parties.h#sParty_LeaderKoga"
+    zubat = Recommendation(species="Zubat", role="r", horizon="core", before_battle="gym5_koga", where="w", when="w",
+                           why="fits", long_term="lt", evolve_to="Crobat", key_moves=[], source_ids=[cited],
+                           alternatives=[Alternative(species="Gastly", horizon="core", where="w", why="fits",
+                                                     long_term="lt", evolve_to="", key_moves=[], source_ids=[cited])])
+    script = {
+        "clarifier": ClarifierDecision(action="proceed", intent="catch", reply="", research_brief="", state_updates=no_state,
+                                       rule_updates=no_rules, reject_species=[], revision_feedback=""),
+        "lead": LeadDraft(intent="catch", headline="h", recommendations=[zubat], steps=[], battle_notes=[],
+                          assumptions=[], follow_up_questions=[], unresolved=[]),
+        "writer": f"Catch Gastly [[{cited}]]. FireRed rules [[rules:game]].",
+    }
+
+    async def fake_run(agent, input, context, max_turns=8):
+        if agent.name == "lead":
+            context.ledger.add(cited)
+        return script[agent.name]
+
+    monkeypatch.setattr(runtime, "run", fake_run)
+    state = RunState(game="firered", starter="charmander", badges=["boulder", "cascade", "thunder", "rainbow"])
+    body = asyncio.run(pipeline.chat("what should I catch for Koga?", "frlg-e2e", state))
+    assert [r["species"] for r in body["plan"]["recommendations"]] == ["Gastly"]
+    labels = [c["label"] for c in body["citations"]]
+    assert any(label.startswith("pokefirered") for label in labels) and any("FireRed rules" in label for label in labels)
