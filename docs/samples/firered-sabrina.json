@@ -1,0 +1,1168 @@
+{
+  "response": "Snorlax is the perfect counter to Sabrina's Psychic-types, combining massive Special Defense to absorb her attacks with high physical Attack to exploit her team's weak physical bulk [1].\n\n### Top picks\n\n#### Snorlax (core)\n* **Where:** Route 12 or Route 16 by using the Poké Flute (Lv30) [2][3].\n* **When:** Available immediately, before entering Saffron Gym [2].\n* **Why it helps now:** It has an enormous HP stat (160) and excellent Special Defense (110) to sponge Sabrina's Special-based Psychic attacks [1]. Since Ghost is a physical type in Gen III, Snorlax is one of the best users of TM30 Shadow Ball (bought at the Celadon Game Corner), dealing heavy physical damage to Sabrina's physically frail Psychic-types [1][4][5].\n* **Key moves:** Body Slam, Shadow Ball (TM30 from Celadon Game Corner) [6][4][5].\n* **Long run:** Outstanding [1]. It remains one of the strongest overall Pokémon through the Elite Four and Champion due to its sheer bulk, Thick Fat/Immunity ability, and wide TM learnset [1].\n* **Backup:** Scyther (core; Celadon Prize Corner for 5,500 coins or Safari Zone, Lv23-28) [7]. It has high physical Attack (110) and Speed (105) to strike hard with physical Bug-type moves against Sabrina's fragile Psychic-types [8]. While it cannot evolve into Scizor until the postgame National Dex, it still functions well as a fast physical attacker [9][8].\n\n---\n\n### Key Battles\n\n#### Gym 6: Sabrina\nSabrina uses Kadabra (Lv38), Mr. Mime (Lv37), Venomoth (Lv38), and Alakazam (Lv43) [10][11][12][13]. Kadabra, Mr. Mime, and Alakazam all use Calm Mind to raise their Special Attack and Special Defense [10][11][13]. Target their weak physical Defense with strong physical attackers [10]. Be cautious of Mr. Mime, which can set up physical defense with Barrier and use Baton Pass to give its stat boosts to Alakazam [11].\n\n---\n\n### Next steps\n\n1. **Navigate Silph Co.:** Retrieve the Card Key on 5F to unlock the electronic doors [14].\n2. **Defeat the Rival:** Use the warp panel on 3F to reach the northwest room on 7F, where you will battle your Rival [15][16][17].\n3. **Clear out Team Rocket:** Continue to 11F and defeat Giovanni [18]. This clears the Team Rocket Grunts blocking Saffron Gym, allowing you to challenge Sabrina [19].\n\n---\n\n### Assumptions\n* You have enough money or Game Corner coins to obtain TM30 Shadow Ball from Celadon City, which is highly recommended for Snorlax [5].\n\n### To sharpen this\n* Do you have access to physical TM moves like Return to exploit the low physical Defense of Sabrina's Psychic-types?",
+  "session_id": "sample-firered-sabrina",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What should I catch to beat Sabrina?"
+      },
+      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"The player wants to know what Pokemon they should catch to help them defeat Gym Leader Sabrina in FireRed.\", \"state_updates\": {\"game\": \"firered\", \"starter\": \"charmander\", \"badges\": [\"boulder\", \"cascade\", \"thunder\", \"rainbow\", \"soul\"], \"rival\": null, \"last_battle\": null, \"party\": [{\"species\": \"Charizard\", \"level\": 40, \"moves\": []}, {\"species\": \"Pidgeotto\", \"level\": 34, \"moves\": []}, {\"species\": \"Raichu\", \"level\": 35, \"moves\": []}, {\"species\": \"Lapras\", \"level\": 30, \"moves\": []}]}, \"rule_updates\": {\"nuzlocke\": null, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": null, \"level_caps\": null, \"level_cap_offset\": null, \"allowed_types\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_banned_types\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 2.54
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "moves_outlook",
+      "args": {
+        "species": [
+          "Snorlax",
+          "Haunter",
+          "Gengar",
+          "Hypno"
+        ],
+        "level": 43,
+        "before_battle": "gym6_sabrina"
+      },
+      "result": "{\"before_battle\": \"gym6_sabrina\", \"label\": \"Saffron Gym: Sabrina\", \"species\": [{\"species\": \"Snorlax\", \"types\": [\"normal\"], \"at_level\": 43, \"default_moveset\": [\"Snore\", \"Body Slam\", \"Sleep Talk\", \"Block\"], \"best_level_up_attacks\": [\"Body Slam (normal, physical, 85) Lv33\", \"Headbutt (normal, physical, 70) Lv17\", \"Snore (normal, physical, 40) Lv29\", \"Tackle (normal, physical, 35) Lv1\"], \"next_level_up\": [\"Covet Lv45\", \"Rollout Lv49\"], \"evolves\": [], \"tms_obtainable_before\": [\"TM01 Focus Punch (fighting, 150) at saffron-city\", \"TM15 Hyper Beam (normal, 150) at celadon-city\", \"TM14 Blizzard (ice, 120) at pokemon-mansion\", \"TM22 Solar Beam (grass, 120) at pokemon-mansion\"], \"source_ids\": [\"pokeapi:pokemon_moves#143/34/level-up/33\", \"pokeapi:pokemon_moves#143/29/level-up/17\", \"pokeapi:pokemon_moves#143/173/level-up/29\", \"pokeapi:pokemon_moves#143/33/level-up/1\", \"decomp:data/maps/SilphCo_5F#TM01\", \"decomp:data/maps/CeladonCity_DepartmentStore_2F#TM15\", \"decomp:data/maps/PokemonMansion_B1F#TM14\", \"decomp:data/maps/PokemonMansion_B1F#TM22\", \"pokeapi:pokemon_species#143\"]}, {\"species\": \"Haunter\", \"types\": [\"ghost\", \"poison\"], \"at_level\": 43, \"default_moveset\": [\"Confuse Ray\", \"Shadow Punch\",... [3021 more characters]",
+      "round": 1,
+      "t": 13.33
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "scout_battle",
+      "args": {
+        "battle": "gym6_sabrina"
+      },
+      "result": "{\"battle_id\": \"gym6_sabrina\", \"label\": \"Saffron Gym: Sabrina\", \"format\": \"single\", \"location\": \"saffron-city\", \"partner\": null, \"notes\": \"Kadabra 38, Mr. Mime 37, Venomoth 38, Alakazam 43. TM04 Calm Mind. A Rocket blocks the gym door until Giovanni leaves Silph Co.\", \"team_note\": null, \"teams\": [{\"trainer\": \"Leader Sabrina\", \"trainer_const\": \"TRAINER_LEADER_SABRINA\", \"pokemon\": [{\"species\": \"Kadabra\", \"types\": [\"psychic\"], \"level\": 38, \"held_item\": null, \"ability\": \"synchronize\", \"iv\": 0, \"moves_source\": \"custom\", \"moves\": [\"Psybeam (psychic, special, power 65)\", \"Reflect (psychic, status, power None)\", \"Future Sight (psychic, special, power 80)\", \"Calm Mind (psychic, status, power None)\"], \"source_id\": \"decomp:trainer_parties.h#sParty_LeaderSabrina/1\"}, {\"species\": \"Mr. Mime\", \"types\": [\"psychic\"], \"level\": 37, \"held_item\": null, \"ability\": \"soundproof\", \"iv\": 0, \"moves_source\": \"custom\", \"moves\": [\"Barrier (psychic, status, power None)\", \"Psybeam (psychic, special, power 65)\", \"Baton Pass (normal, status, power None)\", \"Calm Mind (psychic, status, power None)\"], \"source_id\": \"decomp:trainer_parties.h#sParty_LeaderSabrina/2\"}, {\"species\": \"Venomoth\", \"types\": [\"bug\", \"poison\"], \"l... [2182 more characters]",
+      "round": 1,
+      "t": 13.52
+    },
+    {
+      "agent": "battle_researcher",
+      "name": "gauntlet_overview",
+      "args": {},
+      "result": "{\"opponents_remaining\": 61, \"battles\": [{\"battle_id\": \"rival6_silph\", \"battle\": \"Silph Co.: Rival\", \"levels\": [35, 40], \"types\": {\"psychic\": 2, \"normal\": 1, \"flying\": 1, \"fire\": 1}, \"attack_types\": {\"normal\": 3, \"psychic\": 2, \"flying\": 1, \"fire\": 1}}, {\"battle_id\": \"boss2_silph_co\", \"battle\": \"Silph Co. 11F: Giovanni\", \"levels\": [35, 41], \"types\": {\"poison\": 2, \"ground\": 2, \"normal\": 1, \"rock\": 1}, \"attack_types\": {\"normal\": 4, \"poison\": 2, \"rock\": 1, \"fighting\": 1}}, {\"battle_id\": \"gym6_sabrina\", \"battle\": \"Saffron Gym: Sabrina\", \"levels\": [37, 43], \"types\": {\"psychic\": 3, \"bug\": 1, \"poison\": 1}, \"attack_types\": {\"psychic\": 4, \"bug\": 1, \"flying\": 1}}, {\"battle_id\": \"gym7_blaine\", \"battle\": \"Cinnabar Gym: Blaine\", \"levels\": [40, 47], \"types\": {\"fire\": 4}, \"attack_types\": {\"fire\": 4, \"normal\": 4, \"dark\": 2, \"flying\": 2}}, {\"battle_id\": \"sevii_three_island_bikers\", \"battle\": \"Three Island: Biker gang and Cue Ball Paxton (optional Sevii errand)\", \"levels\": [37, 39], \"types\": {\"poison\": 6}, \"attack_types\": {\"poison\": 6, \"normal\": 3}}, {\"battle_id\": \"sevii_berry_forest\", \"battle\": \"Sevii Islands: Berry Forest's Hypno (optional errand)\", \"levels\": [30, 30], \"types\": {\"psychic\": 1}, \"atta... [3002 more characters]",
+      "round": 1,
+      "t": 13.54
+    },
+    {
+      "agent": "story_researcher",
+      "name": "get_next_steps",
+      "args": {},
+      "result": "{\"next\": {\"battle_id\": \"rival6_silph\", \"label\": \"Silph Co.: Rival\", \"location\": \"saffron-city\", \"optional\": false, \"format\": \"single\", \"highest_level\": 40, \"new_hms_usable\": [\"surf\"], \"new_key_items\": [\"secret-key\"], \"areas_opened_before_it\": [\"kanto-sea-route-20\", \"kanto-sea-route-21\", \"seafoam-islands\", \"kanto-power-plant\", \"cinnabar-island\", \"cinnabar-island/cinnabar-lab\", \"pokemon-mansion\"], \"notes\": \"Silph Co. opens once Mr. Fuji is rescued; the Card Key (5F) opens its doors. The Copycat's house (Mimic tutor) has a Rocket at its door until Silph Co. is cleared. With Surf (Soul Badge): the sea routes to Cinnabar (the Pokémon Mansion holds the Secret Key; the lab revives fossils and has three trades), Seafoam Islands (Articuno; Strength boulders stop the currents), and the Power Plant (Zapdos, two Electrode) by Route 10's water.\", \"source_ids\": [\"progression:rival6_silph\", \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#Silph_Co.\"]}, \"then\": [{\"battle_id\": \"boss2_silph_co\", \"label\": \"Silph Co. 11F: Giovanni\", \"location\": \"saffron-city\", \"optional\": false, \"format\": \"single\", \"highest_level\": 41, \"new_hms_usable\": [], \"new_key_items\": [], \"areas_opened_before_it\": [\"saff... [955 more characters]",
+      "round": 1,
+      "t": 13.8
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "types": [
+          "dark",
+          "ghost",
+          "bug"
+        ],
+        "before_battle": "gym6_sabrina",
+        "species": null
+      },
+      "result": "{\"before_battle\": \"gym6_sabrina\", \"label\": \"Saffron Gym: Sabrina\", \"hms_usable\": [\"cut\", \"flash\", \"fly\", \"strength\", \"surf\"], \"key_items\": [\"old-rod\", \"bicycle\", \"tea\", \"silph-scope\", \"poke-flute\", \"good-rod\", \"super-rod\", \"card-key\", \"secret-key\"], \"species_count\": 11, \"species\": [{\"species\": \"Paras\", \"types\": [\"bug\", \"grass\"], \"places\": [{\"where\": \"Mt. Moon (b1f)\", \"method\": \"walk\", \"lv\": [5, 10], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31326\"}, {\"where\": \"Safari Zone (area-1-east)\", \"method\": \"walk\", \"lv\": [22, 22], \"rate_pct\": 15, \"source_id\": \"pokeapi:encounters#31483\"}, {\"where\": \"Safari Zone (area-2-north)\", \"method\": \"walk\", \"lv\": [23, 23], \"rate_pct\": 15, \"source_id\": \"pokeapi:encounters#31510\"}], \"wild\": true}, {\"species\": \"Gastly\", \"types\": [\"ghost\", \"poison\"], \"places\": [{\"where\": \"Pokémon Tower (3f)\", \"method\": \"walk\", \"lv\": [13, 19], \"rate_pct\": 90, \"source_id\": \"pokeapi:encounters#31745\"}, {\"where\": \"Pokémon Tower (4f)\", \"method\": \"walk\", \"lv\": [13, 19], \"rate_pct\": 86, \"source_id\": \"pokeapi:encounters#31757\"}, {\"where\": \"Pokémon Tower (5f)\", \"method\": \"walk\", \"lv\": [13, 19], \"rate_pct\": 86, \"source_id\": \"pokeapi:encounters#31769\"}], \"wild\": true}, {\"specie... [3754 more characters]",
+      "round": 1,
+      "t": 13.82
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "species": "Gengar",
+        "max_level": 45
+      },
+      "result": "{\"species\": \"gengar\", \"max_level\": 45, \"level_up\": [{\"level\": 1, \"name\": \"Hypnosis\", \"type\": \"psychic\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/95/level-up/1\"}, {\"level\": 1, \"name\": \"Lick\", \"type\": \"ghost\", \"damage_class\": \"physical\", \"power\": 20, \"source_id\": \"pokeapi:pokemon_moves#94/122/level-up/1\"}, {\"level\": 1, \"name\": \"Spite\", \"type\": \"ghost\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/180/level-up/1\"}, {\"level\": 8, \"name\": \"Spite\", \"type\": \"ghost\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/180/level-up/8\"}, {\"level\": 13, \"name\": \"Curse\", \"type\": \"???\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/174/level-up/13\"}, {\"level\": 16, \"name\": \"Night Shade\", \"type\": \"ghost\", \"damage_class\": \"physical\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/101/level-up/16\"}, {\"level\": 21, \"name\": \"Confuse Ray\", \"type\": \"ghost\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#94/109/level-up/21\"}, {\"level\": 25, \"name\": \"Shadow Punch\", \"type\": \"ghost\", \"damage_class\": \"physical\", \"power\": 60, \"source_id\": \"po... [6833 more characters]",
+      "round": 1,
+      "t": 15.7
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "max_level": 45,
+        "species": "Snorlax"
+      },
+      "result": "{\"species\": \"snorlax\", \"max_level\": 45, \"level_up\": [{\"level\": 1, \"name\": \"Tackle\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 35, \"source_id\": \"pokeapi:pokemon_moves#143/33/level-up/1\"}, {\"level\": 5, \"name\": \"Amnesia\", \"type\": \"psychic\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#143/133/level-up/5\"}, {\"level\": 9, \"name\": \"Defense Curl\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#143/111/level-up/9\"}, {\"level\": 13, \"name\": \"Belly Drum\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#143/187/level-up/13\"}, {\"level\": 17, \"name\": \"Headbutt\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 70, \"source_id\": \"pokeapi:pokemon_moves#143/29/level-up/17\"}, {\"level\": 21, \"name\": \"Yawn\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#143/281/level-up/21\"}, {\"level\": 25, \"name\": \"Rest\", \"type\": \"psychic\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#143/156/level-up/25\"}, {\"level\": 29, \"name\": \"Snore\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 40, \"sou... [7320 more characters]",
+      "round": 1,
+      "t": 15.7
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "get_learnset",
+      "args": {
+        "max_level": 45,
+        "species": "Hypno"
+      },
+      "result": "{\"species\": \"hypno\", \"max_level\": 45, \"level_up\": [{\"level\": 1, \"name\": \"Nightmare\", \"type\": \"ghost\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#97/171/level-up/1\"}, {\"level\": 1, \"name\": \"Pound\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 40, \"source_id\": \"pokeapi:pokemon_moves#97/1/level-up/1\"}, {\"level\": 1, \"name\": \"Hypnosis\", \"type\": \"psychic\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#97/95/level-up/1\"}, {\"level\": 1, \"name\": \"Disable\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#97/50/level-up/1\"}, {\"level\": 1, \"name\": \"Confusion\", \"type\": \"psychic\", \"damage_class\": \"special\", \"power\": 50, \"source_id\": \"pokeapi:pokemon_moves#97/93/level-up/1\"}, {\"level\": 7, \"name\": \"Disable\", \"type\": \"normal\", \"damage_class\": \"status\", \"power\": null, \"source_id\": \"pokeapi:pokemon_moves#97/50/level-up/7\"}, {\"level\": 11, \"name\": \"Confusion\", \"type\": \"psychic\", \"damage_class\": \"special\", \"power\": 50, \"source_id\": \"pokeapi:pokemon_moves#97/93/level-up/11\"}, {\"level\": 17, \"name\": \"Headbutt\", \"type\": \"normal\", \"damage_class\": \"physical\", \"power\": 70, \"source_id\": \"pokeap... [6813 more characters]",
+      "round": 1,
+      "t": 15.7
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Silph Co. Card Key warp panel rival Giovanni"
+      },
+      "result": "{\"query\": \"Silph Co. Card Key warp panel rival Giovanni\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#5F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 5F\", \"text\": \"Fight the Rocket Grunt near the stairs and Scientist Beau to the west. Follow the hallway southward to reach another Rocket Grunt standing next to a warp panel. Defeat him, step on the warp panel, then warp right back. Turn eastward to find a Card Key, which is used to open the building's electronic doors. Pass by the warp panel again and unlock the northwest room to reach a Protein. Take the stairs up to 6F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#3F_2\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 3F\", \"text\": \"Use the Card Key to unlock the central room. Open the door to the west-central room beyond that, defeat Scientist Jose, and grab the nearby Hyper Potion. Take the warp in the central room.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#11F_(West)\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part... [650 more characters]",
+      "round": 1,
+      "t": 16.55
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Silph Co. 3F 7F rival"
+      },
+      "result": "{\"query\": \"Silph Co. 3F 7F rival\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F_(Northwest)\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 7F (Northwest)\", \"text\": \"When you reach the northwest room on the seventh floor, Blue is waiting for you.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#6F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 6F\", \"text\": \"Follow the western hallway past Scientist Taylor and unlock the southwest room to get an HP Up and an X Special. Climb the stairs to 7F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#8F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 8F\", \"text\": \"Battle Scientist Parker and the two Rocket Grunts, then grab the Iron in the eastern room. Take the elevator down to 3F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 7F\", \"text\": \"Use the Card Key to ... [194 more characters]",
+      "round": 1,
+      "t": 18.28
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "assess_candidates",
+      "args": {
+        "species": [
+          "Gastly",
+          "Scyther",
+          "Snorlax",
+          "Parasect",
+          "Venomoth"
+        ]
+      },
+      "result": "{\"candidates\": [{\"candidate\": \"Gastly\", \"final_form\": \"Gengar\", \"final_types\": [\"ghost\", \"poison\"], \"final_bst\": 500, \"final_stats\": {\"hp\": 60, \"attack\": 65, \"defense\": 60, \"sp_attack\": 130, \"sp_defense\": 75, \"speed\": 110}, \"abilities\": [\"levitate\"], \"evolution_path\": [\"Haunter: level-up, level 25\", \"Gengar: trade\"], \"needs_trade\": true, \"legendary\": false, \"remaining_opponents_hit_super_effectively\": 15, \"of_remaining_opponents\": 61, \"new_coverage_vs_party\": 10, \"shares_types_with_party\": [], \"strongest_into\": [\"Saffron Gym: Sabrina\", \"Elite Four: Agatha\", \"Silph Co.: Rival\", \"Route 22: Rival (before the League)\"], \"most_threatened_by\": [\"Viridian Gym: Giovanni\", \"Elite Four: Agatha\", \"Saffron Gym: Sabrina\"], \"source_ids\": [\"pokeapi:pokemon_species#92\", \"pokeapi:pokemon_species#94\", \"rules:gen3_type_chart\", \"pokeapi:pokemon_evolution#56\", \"pokeapi:pokemon_evolution#57\"]}, {\"candidate\": \"Scyther\", \"final_form\": \"Scyther\", \"final_types\": [\"bug\", \"flying\"], \"final_bst\": 500, \"final_stats\": {\"hp\": 70, \"attack\": 110, \"defense\": 80, \"sp_attack\": 55, \"sp_defense\": 80, \"speed\": 105}, \"abilities\": [\"swarm\"], \"evolution_path\": [], \"needs_trade\": false, \"evolutions_not_available\": [\"Scyther ... [3199 more characters]",
+      "round": 1,
+      "t": 19.52
+    },
+    {
+      "agent": "story_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "Silph Co. Lapras Silph Co 7F Northwest"
+      },
+      "result": "{\"query\": \"Silph Co. Lapras Silph Co 7F Northwest\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F_(Northwest)\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 7F (Northwest)\", \"text\": \"When you reach the northwest room on the seventh floor, Blue is waiting for you.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#6F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 6F\", \"text\": \"Follow the western hallway past Scientist Taylor and unlock the southwest room to get an HP Up and an X Special. Climb the stairs to 7F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 11\", \"section\": \"Saffron City > Silph Co. > 7F\", \"text\": \"Use the Card Key to unlock the east-central room and pick up 08. Turn around and follow the central hallway to the southwest room. Battle Scientist Joshua and grab the Calcium before taking the stairs up to 9F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#4F\", \"page\": \"Walkthrough:Pokémo... [186 more characters]",
+      "round": 1,
+      "t": 20.07
+    },
+    {
+      "agent": "story_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 20.07
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "before_battle": "gym6_sabrina",
+        "species": "Snorlax",
+        "types": null
+      },
+      "result": "{\"before_battle\": \"gym6_sabrina\", \"label\": \"Saffron Gym: Sabrina\", \"hms_usable\": [\"cut\", \"flash\", \"fly\", \"strength\", \"surf\"], \"key_items\": [\"old-rod\", \"bicycle\", \"tea\", \"silph-scope\", \"poke-flute\", \"good-rod\", \"super-rod\", \"card-key\", \"secret-key\"], \"species_count\": 1, \"species\": [{\"species\": \"Snorlax\", \"types\": [\"normal\"], \"places\": [{\"where\": \"Route 12\", \"method\": \"pokeflute\", \"lv\": [30, 30], \"source_id\": \"pokeapi:encounters#58090\", \"count\": 1}, {\"where\": \"Route 16\", \"method\": \"pokeflute\", \"lv\": [30, 30], \"source_id\": \"pokeapi:encounters#58091\", \"count\": 1}], \"wild\": false}], \"excluded_by_rules\": {}, \"source_ids\": [\"progression:gym6_sabrina\"]}",
+      "round": 1,
+      "t": 21.23
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT * FROM tm_locations WHERE label = 'TM04' OR label = 'TM30' or label = 'TM29'"
+      },
+      "result": "{\"columns\": [\"label\", \"method\", \"map\", \"map_folder\", \"mapsec\", \"location\", \"flag\", \"detail\", \"requires\", \"source_id\"], \"rows\": [[\"TM04\", \"gift\", \"MAP_SAFFRON_CITY_GYM\", \"SaffronCity_Gym\", \"MAPSEC_SAFFRON_CITY\", \"saffron-city\", null, \"after defeating TRAINER_LEADER_SABRINA\", null, \"decomp:data/maps/SaffronCity_Gym#TM04\"], [\"TM29\", \"gift\", \"MAP_SAFFRON_CITY_MR_PSYCHICS_HOUSE\", \"SaffronCity_MrPsychicsHouse\", \"MAPSEC_SAFFRON_CITY\", \"saffron-city\", null, null, null, \"decomp:data/maps/SaffronCity_MrPsychicsHouse#TM29\"], [\"TM30\", \"game-corner\", \"MAP_CELADON_CITY_GAME_CORNER_PRIZE_ROOM\", \"CeladonCity_GameCorner_PrizeRoom\", \"MAPSEC_CELADON_CITY\", \"celadon-city\", null, null, null, \"decomp:data/maps/CeladonCity_GameCorner_PrizeRoom#TM30\"]], \"source_id\": \"sql:1ca2888a44\", \"source_ids\": [\"decomp:data/maps/SaffronCity_Gym#TM04\", \"decomp:data/maps/SaffronCity_MrPsychicsHouse#TM29\", \"decomp:data/maps/CeladonCity_GameCorner_PrizeRoom#TM30\"]}",
+      "round": 1,
+      "t": 21.48
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "search_guide",
+      "args": {
+        "query": "TM30 Shadow Ball FireRed"
+      },
+      "result": "{\"query\": \"TM30 Shadow Ball FireRed\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_20#2F_(East)\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 20\", \"section\": \"Cerulean City > Cerulean Cave > 2F (East)\", \"text\": \"Clear the rock to reach an Ultra Ball, then go back down to 1F.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_9#4F_2\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 9\", \"section\": \"Lavender Town > Pokémon Tower > 4F\", \"text\": \"Pick up the Elixir and Awakening in the center of the room, and the Great Ball near the south wall. Climb the western stairs.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_18#The_Ultimate_Horn\", \"page\": \"Walkthrough:Pokémon FireRed and LeafGreen/Part 18\", \"section\": \"Six Island > Water Path > The Ultimate Horn\", \"text\": \"The northern island holds two isolated homes. In the northern house, there is a woman who likes big Heracross and wishes to see the \\\"ultimate horn\\\". If you show her a Heracross, she will measure its size and reward you with a Nest Ball. After doing so, she will give out another Nest Ball for each Heracross that you show her th... [509 more characters]",
+      "round": 1,
+      "t": 23.96
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 23.96
+    },
+    {
+      "agent": "lead",
+      "name": "dispatch_researchers",
+      "args": {
+        "tasks": [
+          {
+            "researcher": "battle",
+            "task": "Analyze gym6_sabrina in FireRed. What is her team, what are the threats, and what types are good against her?"
+          },
+          {
+            "researcher": "catch",
+            "task": "Find Pokemon obtainable before gym6_sabrina in FireRed that are good against Psychic types (Dark, Ghost, Bug, or high Sp.Def/Physical attackers). The player has Charizard, Pidgeotto, Raichu, Lapras."
+          },
+          {
+            "task": "Check learnsets and TMs for Snorlax, Haunter/Gengar, and Hypno before gym6_sabrina.",
+            "researcher": "moves"
+          },
+          {
+            "researcher": "story",
+            "task": "What are the steps to reach gym6_sabrina from Silph Co?"
+          }
+        ]
+      },
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Analyze gym6_sabrina in FireRed. What is her team, what are the threats, and what types are good against her?\", \"finding\": {\"summary\": \"Sabrina's psychic-type team relies heavily on Special Attack and Special Defense setup via Calm Mind. You should target level 43 to match her Alakazam and use physical attacks or Dark/Ghost moves to bypass her Special Defense boosts and target her team's weak physical defenses.\", \"claims\": [{\"text\": \"Sabrina's team consists of Kadabra (Lv38), Mr. Mime (Lv37), Venomoth (Lv38), and Alakazam (Lv43).\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_LeaderSabrina/1\", \"decomp:trainer_parties.h#sParty_LeaderSabrina/2\", \"decomp:trainer_parties.h#sParty_LeaderSabrina/3\", \"decomp:trainer_parties.h#sParty_LeaderSabrina/4\"]}, {\"text\": \"Kadabra, Mr. Mime, and Alakazam all know Calm Mind, allowing them to raise their Special Attack and Special Defense, while Alakazam can also heal using Recover.\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_LeaderSabrina/1\", \"decomp:trainer_parties.h#sParty_LeaderSabrina/2\", \"decomp:trainer_parties.h#sParty_LeaderSabrina/4\"]}, {\"text\": \"Mr. Mime can set up physical ... [7827 more characters]",
+      "round": 1,
+      "t": 30.4
+    },
+    {
+      "agent": "verifier",
+      "name": "verify",
+      "args": {
+        "picks": [
+          "Snorlax"
+        ]
+      },
+      "result": "all checks passed",
+      "round": 1,
+      "t": 48.15
+    },
+    {
+      "agent": "verifier",
+      "name": "correct_where",
+      "args": {},
+      "result": "[\"corrected where for Snorlax (not by static there): 'Route 12 or Route 16, Lv30 (static encounter requiring the Pok\\u00e9 Flute)' -> 'Route 12: pokeflute (Lv30-30); Route 16: pokeflute (Lv30-30)'\"]",
+      "round": 1,
+      "t": 48.18
+    },
+    {
+      "agent": "verifier",
+      "name": "citation_check",
+      "args": {},
+      "result": "all citations resolve",
+      "round": 1,
+      "t": 53.53
+    }
+  ],
+  "citations": [
+    {
+      "n": 1,
+      "source_id": "pokeapi:pokemon_species#143",
+      "label": "PokeAPI: Snorlax (species data)",
+      "url": null
+    },
+    {
+      "n": 2,
+      "source_id": "pokeapi:encounters#58090",
+      "label": "PokeAPI: Snorlax at Route 12 (pokeflute)",
+      "url": null
+    },
+    {
+      "n": 3,
+      "source_id": "pokeapi:encounters#58091",
+      "label": "PokeAPI: Snorlax at Route 16 (pokeflute)",
+      "url": null
+    },
+    {
+      "n": 4,
+      "source_id": "pokeapi:pokemon_moves#143/247/machine",
+      "label": "PokeAPI: Snorlax learns Shadow Ball (machine)",
+      "url": null
+    },
+    {
+      "n": 5,
+      "source_id": "decomp:data/maps/CeladonCity_GameCorner_PrizeRoom#TM30",
+      "label": "pokefirered data/maps/CeladonCity_GameCorner_PrizeRoom (TM30)",
+      "url": "https://github.com/pret/pokefirered/blob/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/data/maps/CeladonCity_GameCorner_PrizeRoom"
+    },
+    {
+      "n": 6,
+      "source_id": "pokeapi:pokemon_moves#143/34/level-up/33",
+      "label": "PokeAPI: Snorlax learns Body Slam (level-up)",
+      "url": null
+    },
+    {
+      "n": 7,
+      "source_id": "pokeapi:encounters#71147",
+      "label": "PokeAPI: Scyther at Celadon City (gift)",
+      "url": null
+    },
+    {
+      "n": 8,
+      "source_id": "pokeapi:pokemon_species#123",
+      "label": "PokeAPI: Scyther (species data)",
+      "url": null
+    },
+    {
+      "n": 9,
+      "source_id": "rules:game",
+      "label": "LockeSmith's FireRed rules (agent/brief.py)",
+      "url": null
+    },
+    {
+      "n": 10,
+      "source_id": "decomp:trainer_parties.h#sParty_LeaderSabrina/1",
+      "label": "pokefirered src/data/trainer_parties.h (sParty_LeaderSabrina/1)",
+      "url": "https://github.com/pret/pokefirered/blob/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/src/data/trainer_parties.h"
+    },
+    {
+      "n": 11,
+      "source_id": "decomp:trainer_parties.h#sParty_LeaderSabrina/2",
+      "label": "pokefirered src/data/trainer_parties.h (sParty_LeaderSabrina/2)",
+      "url": "https://github.com/pret/pokefirered/blob/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/src/data/trainer_parties.h"
+    },
+    {
+      "n": 12,
+      "source_id": "decomp:trainer_parties.h#sParty_LeaderSabrina/3",
+      "label": "pokefirered src/data/trainer_parties.h (sParty_LeaderSabrina/3)",
+      "url": "https://github.com/pret/pokefirered/blob/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/src/data/trainer_parties.h"
+    },
+    {
+      "n": 13,
+      "source_id": "decomp:trainer_parties.h#sParty_LeaderSabrina/4",
+      "label": "pokefirered src/data/trainer_parties.h (sParty_LeaderSabrina/4)",
+      "url": "https://github.com/pret/pokefirered/blob/ce6406d8c2eaf46d543c8a2606de0c3cb1951982/src/data/trainer_parties.h"
+    },
+    {
+      "n": 14,
+      "source_id": "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#5F",
+      "label": "Bulbapedia: Walkthrough:Pokémon FireRed and LeafGreen/Part 11 § Saffron City > Silph Co. > 5F",
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_FireRed_and_LeafGreen/Part_11#5F"
+    },
+    {
+      "n": 15,
+      "source_id": "progression:rival6_silph",
+      "label": "Story progression (data/progression_frlg.yaml): Silph Co.: Rival",
+      "url": null
+    },
+    {
+      "n": 16,
+      "source_id": "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F_(Northwest)",
+      "label": "Bulbapedia: Walkthrough:Pokémon FireRed and LeafGreen/Part 11 § Saffron City > Silph Co. > 7F (Northwest)",
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_FireRed_and_LeafGreen/Part_11#7F_%28Northwest%29"
+    },
+    {
+      "n": 17,
+      "source_id": "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#3F_2",
+      "label": "Bulbapedia: Walkthrough:Pokémon FireRed and LeafGreen/Part 11 § Saffron City > Silph Co. > 3F",
+      "url": "https://bulbapedia.bulbagarden.net/wiki/Walkthrough%3APok%C3%A9mon_FireRed_and_LeafGreen/Part_11#3F"
+    },
+    {
+      "n": 18,
+      "source_id": "progression:boss2_silph_co",
+      "label": "Story progression (data/progression_frlg.yaml): Silph Co. 11F: Giovanni",
+      "url": null
+    },
+    {
+      "n": 19,
+      "source_id": "progression:gym6_sabrina",
+      "label": "Story progression (data/progression_frlg.yaml): Saffron Gym: Sabrina",
+      "url": null
+    }
+  ],
+  "plan": {
+    "intent": "catch",
+    "headline": "Snorlax is the perfect counter to Sabrina's Psychic-types, combining massive Special Defense to absorb her attacks with high physical Attack to exploit her team's weak physical bulk.",
+    "recommendations": [
+      {
+        "species": "Snorlax",
+        "role": "Special Sponge & Physical Attacker",
+        "horizon": "core",
+        "before_battle": "gym6_sabrina",
+        "where": "Route 12: pokeflute (Lv30-30); Route 16: pokeflute (Lv30-30)",
+        "when": "Available immediately, before entering Saffron Gym.",
+        "why": "It has an enormous HP stat (160) and excellent Special Defense (110) to sponge Sabrina's Special-based Psychic attacks. Since Ghost is a physical type in Gen III, Snorlax is one of the best users of TM30 Shadow Ball (bought at Celadon Game Corner), dealing heavy physical damage to Sabrina's physically frail Psychic-types.",
+        "long_term": "Outstanding. It remains one of the strongest overall Pokémon through the Elite Four and Champion due to its sheer bulk, Thick Fat/Immunity ability, and wide TM learnset.",
+        "evolve_to": "",
+        "key_moves": [
+          "Body Slam",
+          "Shadow Ball (TM30 from Celadon Game Corner)"
+        ],
+        "source_ids": [
+          "pokeapi:encounters#58090",
+          "pokeapi:pokemon_species#143",
+          "pokeapi:pokemon_moves#143/34/level-up/33",
+          "pokeapi:pokemon_moves#143/247/machine",
+          "decomp:data/maps/CeladonCity_GameCorner_PrizeRoom#TM30",
+          "pokeapi:encounters#58091"
+        ],
+        "alternatives": [
+          {
+            "species": "Scyther",
+            "horizon": "core",
+            "where": "Celadon City Prize Corner (5500 coins) or Safari Zone, Lv23-28",
+            "why": "High physical Attack (110) and Speed (105) allow it to strike hard with physical Bug-type moves against Sabrina's fragile Psychic-types.",
+            "long_term": "Decent, though it cannot evolve into Scizor until the postgame National Dex. It still functions well as a fast physical attacker.",
+            "evolve_to": "",
+            "key_moves": [],
+            "source_ids": [
+              "pokeapi:encounters#71147",
+              "pokeapi:pokemon_species#123"
+            ]
+          }
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "title": "Navigate Silph Co.",
+        "detail": "Retrieve the Card Key on 5F to unlock the electronic doors.",
+        "source_ids": [
+          "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#5F"
+        ]
+      },
+      {
+        "title": "Defeat the Rival",
+        "detail": "Use the warp panel on 3F to reach the northwest room on 7F, where you will battle your Rival.",
+        "source_ids": [
+          "progression:rival6_silph",
+          "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#7F_(Northwest)",
+          "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#3F_2"
+        ]
+      },
+      {
+        "title": "Clear out Team Rocket",
+        "detail": "Continue to 11F and defeat Giovanni. This clears the Team Rocket Grunts blocking Saffron Gym, allowing you to challenge Sabrina.",
+        "source_ids": [
+          "progression:boss2_silph_co",
+          "progression:gym6_sabrina"
+        ]
+      }
+    ],
+    "battle_notes": [
+      {
+        "battle_id": "gym6_sabrina",
+        "note": "Sabrina's team consists of Kadabra (Lv38), Mr. Mime (Lv37), Venomoth (Lv38), and Alakazam (Lv43). Kadabra, Mr. Mime, and Alakazam all use Calm Mind to raise their Special Attack and Special Defense. Target their weak physical Defense with strong physical attackers. Be cautious of Mr. Mime, which can set up physical defense with Barrier and use Baton Pass to give its stat boosts to Alakazam.",
+        "source_ids": [
+          "decomp:trainer_parties.h#sParty_LeaderSabrina/1",
+          "decomp:trainer_parties.h#sParty_LeaderSabrina/2",
+          "decomp:trainer_parties.h#sParty_LeaderSabrina/3",
+          "decomp:trainer_parties.h#sParty_LeaderSabrina/4"
+        ]
+      }
+    ],
+    "assumptions": [
+      "You have enough money or coins to obtain TM30 Shadow Ball from the Celadon Game Corner, which is highly recommended for Snorlax."
+    ],
+    "follow_up_questions": [
+      "Do you have access to physical TM moves like Return to exploit the low physical Defense of Sabrina's Psychic-types?"
+    ],
+    "unresolved": []
+  },
+  "chart": {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": {
+      "text": "Type coverage over the rest of the run",
+      "subtitle": "Share of each battle's team your STAB types hit super-effectively (type chart only, no damage rolls)"
+    },
+    "data": {
+      "values": [
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Sabrina",
+          "order": 16,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.25
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Sabrina",
+          "order": 16,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.25
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Sabrina",
+          "order": 16,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Sabrina",
+          "order": 16,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Sabrina",
+          "order": 16,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Blaine",
+          "order": 17,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Blaine",
+          "order": 17,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Blaine",
+          "order": 17,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Blaine",
+          "order": 17,
+          "hits": 4,
+          "threats": 0,
+          "team_size": 4,
+          "share": 1.0
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Blaine",
+          "order": 17,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 4,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Giovanni",
+          "order": 20,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Giovanni",
+          "order": 20,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Giovanni",
+          "order": 20,
+          "hits": 0,
+          "threats": 5,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Giovanni",
+          "order": 20,
+          "hits": 5,
+          "threats": 4,
+          "team_size": 5,
+          "share": 1.0
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Giovanni",
+          "order": 20,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Lorelei",
+          "order": 22,
+          "hits": 1,
+          "threats": 4,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Lorelei",
+          "order": 22,
+          "hits": 0,
+          "threats": 4,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Lorelei",
+          "order": 22,
+          "hits": 4,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Lorelei",
+          "order": 22,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Lorelei",
+          "order": 22,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Bruno",
+          "order": 23,
+          "hits": 3,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Bruno",
+          "order": 23,
+          "hits": 3,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.6
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Bruno",
+          "order": 23,
+          "hits": 0,
+          "threats": 2,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Bruno",
+          "order": 23,
+          "hits": 2,
+          "threats": 4,
+          "team_size": 5,
+          "share": 0.4
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Bruno",
+          "order": 23,
+          "hits": 0,
+          "threats": 3,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Agatha",
+          "order": 24,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Agatha",
+          "order": 24,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Agatha",
+          "order": 24,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Agatha",
+          "order": 24,
+          "hits": 1,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.2
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Agatha",
+          "order": 24,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Lance",
+          "order": 25,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Lance",
+          "order": 25,
+          "hits": 0,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Lance",
+          "order": 25,
+          "hits": 2,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.4
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Lance",
+          "order": 25,
+          "hits": 4,
+          "threats": 1,
+          "team_size": 5,
+          "share": 0.8
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Lance",
+          "order": 25,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 5,
+          "share": 0.0
+        },
+        {
+          "member": "Charizard (party)",
+          "kind": "party",
+          "battle": "Rival",
+          "order": 26,
+          "hits": 1,
+          "threats": 2,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Pidgeotto (party)",
+          "kind": "party",
+          "battle": "Rival",
+          "order": 26,
+          "hits": 1,
+          "threats": 1,
+          "team_size": 6,
+          "share": 0.17
+        },
+        {
+          "member": "Raichu (party)",
+          "kind": "party",
+          "battle": "Rival",
+          "order": 26,
+          "hits": 2,
+          "threats": 1,
+          "team_size": 6,
+          "share": 0.33
+        },
+        {
+          "member": "Lapras (party)",
+          "kind": "party",
+          "battle": "Rival",
+          "order": 26,
+          "hits": 4,
+          "threats": 2,
+          "team_size": 6,
+          "share": 0.67
+        },
+        {
+          "member": "Snorlax (pick)",
+          "kind": "pick",
+          "battle": "Rival",
+          "order": 26,
+          "hits": 0,
+          "threats": 0,
+          "team_size": 6,
+          "share": 0.0
+        }
+      ]
+    },
+    "width": {
+      "step": 46
+    },
+    "height": {
+      "step": 30
+    },
+    "encoding": {
+      "x": {
+        "field": "battle",
+        "type": "ordinal",
+        "sort": {
+          "field": "order"
+        },
+        "title": null,
+        "axis": {
+          "labelAngle": -40,
+          "labelLimit": 120
+        }
+      },
+      "y": {
+        "field": "member",
+        "type": "nominal",
+        "title": null,
+        "sort": [
+          "Charizard (party)",
+          "Pidgeotto (party)",
+          "Raichu (party)",
+          "Lapras (party)",
+          "Snorlax (pick)"
+        ],
+        "axis": {
+          "labelLimit": 220
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rect",
+          "stroke": "#fffdf6",
+          "strokeWidth": 2,
+          "cornerRadius": 3
+        },
+        "encoding": {
+          "color": {
+            "field": "share",
+            "type": "quantitative",
+            "title": "Hit super-effectively",
+            "scale": {
+              "domain": [
+                0,
+                1
+              ],
+              "scheme": "greens"
+            },
+            "legend": {
+              "format": ".0%"
+            }
+          },
+          "tooltip": [
+            {
+              "field": "member"
+            },
+            {
+              "field": "battle"
+            },
+            {
+              "field": "hits",
+              "title": "opponents hit super-effectively"
+            },
+            {
+              "field": "threats",
+              "title": "opponents with a super-effective move on it"
+            },
+            {
+              "field": "team_size",
+              "title": "team size"
+            }
+          ]
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 11
+        },
+        "encoding": {
+          "text": {
+            "field": "hits"
+          },
+          "color": {
+            "condition": {
+              "test": "datum.share > 0.6",
+              "value": "#ffffff"
+            },
+            "value": "#2b2a26"
+          }
+        }
+      }
+    ],
+    "config": {
+      "view": {
+        "stroke": null
+      },
+      "axis": {
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "usermeta": {
+      "source": "emerald.duckdb trainer teams (or the loaded randomizer log) and the Gen 3 type chart"
+    }
+  },
+  "usage": [
+    {
+      "agent": "clarifier",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2986,
+      "output_tokens": 296,
+      "cost_usd": 0.007143,
+      "t": 2.53,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 2936,
+      "output_tokens": 290,
+      "cost_usd": 0.009352,
+      "t": 11.23,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2245,
+      "output_tokens": 133,
+      "cost_usd": 0.004564,
+      "t": 13.24,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1638,
+      "output_tokens": 102,
+      "cost_usd": 0.003375,
+      "t": 13.46,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1788,
+      "output_tokens": 77,
+      "cost_usd": 0.003375,
+      "t": 13.78,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2096,
+      "output_tokens": 244,
+      "cost_usd": 0.00534,
+      "t": 13.79,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3714,
+      "output_tokens": 195,
+      "cost_usd": 0.007326,
+      "t": 15.67,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2435,
+      "output_tokens": 136,
+      "cost_usd": 0.004876,
+      "t": 16.54,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3022,
+      "output_tokens": 53,
+      "cost_usd": 0.00501,
+      "t": 18.28,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3478,
+      "output_tokens": 488,
+      "cost_usd": 0.009609,
+      "t": 19.42,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3435,
+      "output_tokens": 127,
+      "cost_usd": 0.006295,
+      "t": 20.07,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4969,
+      "output_tokens": 67,
+      "cost_usd": 0.008056,
+      "t": 21.22,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 9587,
+      "output_tokens": 746,
+      "cost_usd": 0.021094,
+      "t": 21.47,
+      "fallback": null
+    },
+    {
+      "agent": "story_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3286,
+      "output_tokens": 306,
+      "cost_usd": 0.007683,
+      "t": 22.12,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3430,
+      "output_tokens": 1293,
+      "cost_usd": 0.016782,
+      "t": 23.05,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 5174,
+      "output_tokens": 181,
+      "cost_usd": 0.00939,
+      "t": 23.96,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 10608,
+      "output_tokens": 1254,
+      "cost_usd": 0.027198,
+      "t": 29.09,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4431,
+      "output_tokens": 944,
+      "cost_usd": 0.015142,
+      "t": 30.4,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 5412,
+      "output_tokens": 1492,
+      "cost_usd": 0.028728,
+      "t": 48.09,
+      "fallback": null
+    },
+    {
+      "agent": "writer",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2113,
+      "output_tokens": 1120,
+      "cost_usd": 0.01325,
+      "t": 53.48,
+      "fallback": null
+    }
+  ],
+  "seconds": 53.8
+}
