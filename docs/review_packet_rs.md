@@ -28,6 +28,9 @@ Assembled 2026-11-02 from scratch extraction scripts run against the **pret/poke
     The agent's per-game brief now carries all of these, and the encounter abilities, for Ruby/Sapphire.
   - **SE-10 / Q-10:** every script that starts an encounter was compared with Emerald's. Only two things differ, the roamer (E-10) and gifts when your party is full. Ruby/Sapphire's Castform and fossil givers wait until you have room; Emerald sends the Pokémon to the PC.
   - Before/after checks in the test suite at the story steps the reviewer named: the Oceanic Museum, the hideout admin, Tate & Liza, the Seafloor Cavern and the legendary.
+- **Section 12's scripts are in the repo:** [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with their reports in [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit). Round 3 couldn't mark V-01 to V-05 agreed without them.
+  - Re-running them from fresh downloads of the pinned commits reproduced draft 4's reachability, chokepoint and map-change results exactly.
+  - One count changed: V-02's tally of same-tile blockers (540/517/23, not 476/451/25). The conclusion is the same.
 - **Narrowed:** V-00 and V-15 now say what section 12 covers: movement and story blockers. It doesn't cover every script that starts an encounter; the Lati TV report is one of those.
 - **Already handled:** the randomizer parser records, for each kind of data, whether the log's section was parsed, left unparsed, Metronome Only or unchanged. That was fixed in Emerald's review round 2, so a recognised ROM isn't taken as proof that everything was read.
 - **Confirmed by the reviewer:**
@@ -88,7 +91,7 @@ You are a second reviewer for **LockeSmith**, a research agent that answers ques
 
 Everything below is what the agent treats as fact for Ruby and Sapphire. Each claim has an ID. Please check as many as you can, prioritising:
 - **what's new in draft 5:** E-10, the closings (P-R6, CL-01, CL-02), SE-10 and Q-10's script comparison, V-11's additions, and Q-11
-- **section 12** (new in draft 4): whether its method could miss a gate (Q-09, answered in round 3)
+- **section 12** (new in draft 4): whether its method could miss a gate. Its scripts are now readable at [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with their output in [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit)
 - **section 4**, story order, especially the Ruby/Sapphire split and the steps that differ from Emerald
 - **section 5**, trainer teams
 - **X-** claims
@@ -904,7 +907,7 @@ Answered in draft 4:
 
 Answered in round 3 (draft 5):
 - **Q-10** (raised and answered in draft 5) `[diff]` Does any encounter's activation script differ from Emerald, the way E-10 does?
-  - **Method:** every script in pokeruby that starts an encounter was compared with its Emerald counterpart: `setwildbattle`, `givemon`, `giveegg` and `InitRoamer`. There are 16 outside the debug scripts. The flags and items checked before each one were compared too.
+  - **Method:** every script in pokeruby that starts an encounter was compared with its Emerald counterpart: `setwildbattle`, `givemon`, `giveegg` and `InitRoamer`. There are 19 outside the debug scripts *(audit.encounter_scripts; report `encounter_scripts_ruby.txt`)*. The flags and items checked before each one were compared too.
   - **The same in both games:**
     - the Regis, behind the puzzles (X-14)
     - New Mauville's three Voltorb: Wattson stands in Mauville from Norman's gym onward in both, and gives the Basement Key
@@ -930,7 +933,14 @@ Still open:
 
 This answers Q-08: does Ruby or Sapphire open any area at a different story point from Emerald, beyond what sections 3 and 4 already say? Claims are `[diff]` unless marked.
 
-Scratch scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731ad5bfd6e6` over the 348 map ids both games have. pokeruby was read once as Ruby and once as Sapphire, with `.ifdef SAPPHIRE` blocks resolved. The scripts aren't part of the repo.
+Scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731ad5bfd6e6` over the 348 map ids both games have. pokeruby was read once as Ruby and once as Sapphire, with `.ifdef SAPPHIRE` blocks resolved.
+
+**The scripts and their output are in the repo (new in draft 5):**
+- the scripts: [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with a README mapping each script to the claims below
+- their reports: [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit), one plain-text file per check, headed by the two commits compared
+- `uv run python -m audit` re-runs everything in about a minute, from the two decomps downloaded at the pinned commits.
+
+Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are meant to be read directly, so you can check a claim without running anything.
 
 - **V-00 Result.**
   - Every difference in when an area opens is either an Emerald-only story beat (P-R2, X-17) or a Ruby/Sapphire gate already listed (X-08, X-10, X-11, X-18, E-01 to E-09).
@@ -942,7 +952,7 @@ Scratch scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731
 
 ### What was compared
 
-- **V-01 Reachability per map.**
+- **V-01 Reachability per map.** *(audit.reach; report `reach.txt`)*
   - **Tile data.** Each layout block gives a metatile, collision and elevation. Metatile behaviors come from each game's tileset attribute files, and the encounter and surfable bits from `sTileBitAttributes`.
   - **Flood fill.** From every entrance (each warp tile, and each map edge with a connection), a flood fill runs under six sets of field abilities:
     - none
@@ -962,26 +972,25 @@ Scratch scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731
   - **The rules above are the corrected model.** Draft 4's first run missed door exits and allowed surfing at any elevation. The re-run with the engine's rules found about 200 more door exits per game and the same 9 differing maps (V-06).
   - **Obstacles:** Cut trees, Rock Smash rocks and Strength boulders need their move. Other NPCs are left to V-02.
   - **Ignored:** exits to maps only one game has.
-- **V-02 Story blockers on chokepoints.**
+- **V-02 Story blockers on chokepoints.** *(audit.chokepoints and audit.story_gates)*
   - **Candidates:** every object visible at a new game (its flag isn't set by `new_game.inc`), except item balls and field-move obstacles. That includes objects removed by `setflag`, objects removed by `removeobject` (D-08) and objects that never leave.
   - **Test:** objects that share a hide flag are walled off together, and the rest one at a time. A candidate is a chokepoint if walling it costs any entrance an exit, grass or water, even with every field ability.
   - **Matching:** chokepoints are matched across games by map and tiles, and for each match the scripts that remove it were compared.
-  - **The rest:** 476 `setflag`-removed blockers stand on the same tile in both games, and 451 of them are removed by a script in the same map. The other 25 are:
-    - Mt. Chimney's scene (22) and Meteor Falls' Cozmo, which Ruby/Sapphire run from the shared `magma_chimney.inc` and Emerald from `MtChimney`
-    - two that a truncated name in the comparison's output hid: the Lilycove rooftop sale woman and the Oceanic Museum 1F grunt. Both are hidden by their own map's script in both games.
-- **V-03 Step triggers.** Every coordinate trigger on a story variable whose tile is in only one game, with its script read.
-- **V-04 Conditional map changes.** For every conditional branch in a map's scripts, the target label was checked for:
+  - **The rest:** 540 `setflag`-removed blockers stand on the same tile in both games. For 517 of them, the scripts that hide them live in the same place in both games. The other 23 are Mt. Chimney's scene (22) and Meteor Falls' Cozmo: Ruby/Sapphire run them from the shared `magma_chimney.inc`, Emerald from `MtChimney`. *(audit.story_gates, section 1b.)*
+  - **Corrected in draft 5:** draft 4 gave 476, 451 and 25. That count came from a scratch comparison that wasn't kept and can't be re-run, and it included two blockers that only looked different because of a truncated name. The repo's script gives the numbers above. The conclusion is unchanged.
+- **V-03 Step triggers.** *(audit.story_gates, section 2)* Every coordinate trigger on a story variable whose tile is in only one game, with its script read.
+- **V-04 Conditional map changes.** *(audit.map_changes)* For every conditional branch in a map's scripts, the target label was checked for:
   - metatile changes
   - layout swaps
   - permanent NPC moves (`setobjectxyperm`)
   - warp changes
 
   The two games' sets were then compared. Both branch syntaxes are read (D-08). The first pass read only pokeemerald's three-argument form and missed pokeruby's `compare` plus one-argument branches, so it was re-run. The re-run found no new difference, and it confirmed that New Mauville's door (Basement Key, 6 tiles) and Sootopolis's gym puzzle match.
-- **V-05 Engine code.** The C rules that the model above assumes, and the engine-level gates map data doesn't show: V-10 and V-11.
+- **V-05 Engine code.** *(audit.engine for the tables, behavior numbers, headers, permissions and abilities; the movement rules were read by hand)* The C rules that the model above assumes, and the engine-level gates map data doesn't show: V-10 and V-11.
 
 ### Results
 
-- **V-06 Reachability.** 127 of the 348 shared maps have some differing blocks, but only **9** differ in what is reachable from some entrance under some set of field abilities:
+- **V-06 Reachability.** *(audit.layouts, then audit.reach)* 127 of the 348 shared maps have some differing blocks, but only **9** differ in what is reachable from some entrance under some set of field abilities:
 
 | Map | Difference | Why it doesn't change any unlock |
 |---|---|---|
@@ -1129,7 +1138,7 @@ Scratch scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731
   - Route 111 north of Mauville needs Rock Smash in both: two breakable rocks at (18, 101) and (19, 100).
   - Ruby/Sapphire-only maps on the story path need nothing beyond Surf to get in. These are Ruby's Magma Hideout maps (`MAGMA_HIDEOUT_B1F`/`B2F`) and Cave of Origin B2F–B4F.
   - The obstacle scripts' badge checks are identical: Cut badge 1, Rock Smash 3, Strength 4 (`data/field_move_scripts.inc` vs `data/scripts/field_move_scripts.inc`), as is C-12.
-- **V-13 Ruby vs Sapphire.** V-02 to V-04 give identical output when pokeruby is read as Ruby and as Sapphire. V-01 doesn't depend on the version, except for the hideout maps (X-11) and Cave of Origin B4F.
+- **V-13 Ruby vs Sapphire.** V-02 to V-04 give identical output when pokeruby is read as Ruby and as Sapphire, and so does Q-10's encounter-script report. `python -m audit` writes both versions' reports and checks they match. V-01 doesn't depend on the version, except for the hideout maps (X-11) and Cave of Origin B4F.
 - **V-14 New, all three games: the Lilycove Department Store needs the rival battle.** `[decomp]`
   - **The block:** the rival stands at (27, 7), the only walkable tile below the store's door at (27, 6). Collision blocks both sides of the door, in both decomps.
   - **Declining doesn't clear it.** It sets `FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE` and leaves the rival in place (`LilycoveCity_EventScript_DeclineMayBattle` and the Brendan equivalent).

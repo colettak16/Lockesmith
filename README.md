@@ -201,7 +201,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 374 tests (5 wait for a real randomizer log), no model calls
+uv run pytest                           # 377 tests (5 wait for a real randomizer log), no model calls
 ```
 
 Scripts:
@@ -209,6 +209,7 @@ Scripts:
 - `scripts/baseline.py`: the no-tools baseline, saved to `docs/baseline/`
 - `scripts/expected_answers.py`: expected answers from the data
 - `scripts/phase2_acceptance.py`, `scripts/phase3_acceptance.py`: live acceptance scenarios
+- `uv run python -m audit`: the Ruby/Sapphire vs Emerald comparison behind the review packet's section 12, run on the full decomps at their pinned commits, with reports written to `docs/audit/` ([audit/README.md](audit/README.md))
 
 Deployment (Cloud Run, continuous deploy from GitHub, IAP, Vertex AI permissions, LangFuse) is in [docs/deploy.md](docs/deploy.md).
 

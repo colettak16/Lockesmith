@@ -1,0 +1,153 @@
+# audit.map_changes: pret/pokeruby@5784633ce4ef vs pret/pokeemerald@731ad5bfd6e6
+# regenerate with `uv run python -m audit` (see audit/README.md)
+JAGGED_PASS
+    E   VAR_JAGGED_PASS_STATE=1 (le)                            tiles     2
+LAVARIDGE_TOWN
+    RS  VAR_0x8008=1 (eq)                                       npc-move  1
+    RS  VAR_LAVARIDGE_RIVAL_STATE=2 (eq)                        npc-move  2
+    E   VAR_0x8004=9 (eq)                                       npc-move  2
+LILYCOVE_CITY
+    RS  FLAG_BADGE07_GET (set)                                  tiles     8
+    RS  FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE (unset)             tiles     12
+    E   FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE (unset)             tiles     12
+LITTLEROOT_TOWN_BRENDANS_HOUSE_2F
+    RS  FLAG_DEFEATED_RIVAL_ROUTE103 (unset)                    npc-move  1
+LITTLEROOT_TOWN_MAYS_HOUSE_2F
+    RS  FLAG_DEFEATED_RIVAL_ROUTE103 (unset)                    npc-move  1
+LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB
+    E   VAR_DEX_UPGRADE_JOHTO_STARTER_STATE=4 (ge)              layout    LAYOUT_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB_WITH_TABLE
+    E   VAR_DEX_UPGRADE_JOHTO_STARTER_STATE=6 (ge)              layout    LAYOUT_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB_WITH_TABLE
+    E   VAR_DEX_UPGRADE_JOHTO_STARTER_STATE=6 (ge)              npc-move  1
+MAUVILLE_CITY
+    E   VAR_FACING=DIR_EAST (eq)                                npc-move  1
+MAUVILLE_CITY_GYM
+    RS  FLAG_MAUVILLE_GYM_BARRIERS_STATE (set)                  tiles     25
+    E   FLAG_MAUVILLE_GYM_BARRIERS_STATE (set)                  tiles     26
+METEOR_FALLS_1F_1R
+    E   FLAG_SYS_GAME_CLEAR (set)                               tiles     4
+MOSSDEEP_CITY_GAME_CORNER_1F
+    RS  VAR_GAME_CORNER_STATE=0 (ne)                            npc-move  1
+    RS  VAR_RESULT=0 (eq)                                       npc-move  1
+    RS  VAR_RESULT=1 (eq)                                       tiles     2
+MOSSDEEP_CITY_SPACE_CENTER_1F
+    E   VAR_MOSSDEEP_CITY_STATE=2 (eq)                          npc-move  4
+    E   VAR_MOSSDEEP_CITY_STATE=2 (le)                          tiles     1
+    E   VAR_MOSSDEEP_SPACE_CENTER_STAIR_GUARD_STATE=1 (eq)      npc-move  1
+    E   VAR_MOSSDEEP_SPACE_CENTER_STAIR_GUARD_STATE=2 (eq)      npc-move  1
+    E   VAR_MOSSDEEP_SPACE_CENTER_STAIR_GUARD_STATE=3 (eq)      npc-move  1
+MOSSDEEP_CITY_SPACE_CENTER_2F
+    E   VAR_MOSSDEEP_CITY_STATE=2 (eq)                          npc-move  3
+    E   VAR_MOSSDEEP_SPACE_CENTER_STATE=2 (eq)                  npc-move  3
+MT_PYRE_SUMMIT
+    E   VAR_MT_PYRE_STATE=2 (eq)                                npc-move  2
+PETALBURG_CITY_GYM
+    RS  FLAG_SYS_GAME_CLEAR (set)                               npc-move  1
+    RS  VAR_PETALBURG_GYM_STATE=1 (eq)                          npc-move  1
+    RS  VAR_PETALBURG_GYM_STATE=6 (lt)                          npc-move  1
+    E   VAR_PETALBURG_GYM_STATE=1 (eq)                          npc-move  1
+    E   VAR_PETALBURG_GYM_STATE=6 (lt)                          npc-move  1
+ROUTE103
+    E   FLAG_SYS_GAME_CLEAR (set)                               tiles     2
+ROUTE110_TRICK_HOUSE_PUZZLE3
+    RS  VAR_TEMP_8=1 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=2 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=3 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=4 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=5 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=6 (eq)                                       tiles     1
+    RS  VAR_TEMP_8=7 (eq)                                       tiles     1
+    RS  VAR_TEMP_9=0 (eq)                                       tiles     82
+    RS  VAR_TEMP_9=1 (eq)                                       tiles     82
+    E   VAR_TEMP_8=1 (eq)                                       tiles     1
+    E   VAR_TEMP_8=2 (eq)                                       tiles     1
+    E   VAR_TEMP_8=3 (eq)                                       tiles     1
+    E   VAR_TEMP_8=4 (eq)                                       tiles     1
+    E   VAR_TEMP_9=0 (eq)                                       tiles     74
+    E   VAR_TEMP_9=1 (eq)                                       tiles     74
+ROUTE111
+    RS  FLAG_REGI_DOORS_OPENED (unset)                          tiles     2
+    E   FLAG_MIRAGE_TOWER_VISIBLE (unset)                       layout    LAYOUT_ROUTE111_NO_MIRAGE_TOWER
+    E   FLAG_REGI_DOORS_OPENED (unset)                          tiles     2
+    E   VAR_MIRAGE_TOWER_STATE=1 (eq)                           tiles     18
+ROUTE114_FOSSIL_MANIACS_TUNNEL
+    E   FLAG_SYS_GAME_CLEAR (set)                               npc-move  1
+    E   FLAG_SYS_GAME_CLEAR (unset)                             tiles     2
+ROUTE119
+    RS  VAR_TEMP_1=1 (eq)                                       npc-move  2
+    RS  VAR_TEMP_1=2 (eq)                                       npc-move  2
+    E   VAR_TEMP_1=1 (eq)                                       npc-move  1
+    E   VAR_TEMP_1=1 (eq)                                       npc-move  2
+    E   VAR_TEMP_1=2 (eq)                                       npc-move  1
+    E   VAR_TEMP_1=2 (eq)                                       npc-move  2
+ROUTE119_WEATHER_INSTITUTE_2F
+    RS  VAR_WEATHER_INSTITUTE_STATE=0 (eq)                      npc-move  1
+    RS  VAR_WEATHER_INSTITUTE_STATE=1 (eq)                      npc-move  1
+    E   FLAG_SYS_GAME_CLEAR (set)                               npc-move  1
+    E   VAR_WEATHER_INSTITUTE_STATE=0 (eq)                      npc-move  1
+    E   VAR_WEATHER_INSTITUTE_STATE=1 (eq)                      npc-move  1
+ROUTE130
+    RS  VAR_RESULT=1 (eq)                                       layout    46
+    E   VAR_RESULT=TRUE (eq)                                    layout    LAYOUT_ROUTE130_MIRAGE_ISLAND
+ROUTE131
+    RS  FLAG_SYS_GAME_CLEAR (set)                               layout    320
+RUSTBORO_CITY
+    E   VAR_TEMP_0=11 (eq)                                      npc-move  1
+SAFARI_ZONE_SOUTHEAST
+    RS  VAR_SAFARI_ZONE_STATE=2 (eq)                            npc-move  1
+SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM
+    RS  FLAG_SYS_SHOAL_TIDE (set)                               layout    169
+    E   FLAG_SYS_SHOAL_TIDE (set)                               layout    LAYOUT_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM
+SHOAL_CAVE_LOW_TIDE_INNER_ROOM
+    RS  FLAG_SYS_SHOAL_TIDE (set)                               layout    170
+    E   FLAG_SYS_SHOAL_TIDE (set)                               layout    LAYOUT_SHOAL_CAVE_HIGH_TIDE_INNER_ROOM
+SKY_PILLAR_1F
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_1F_CLEAN
+SKY_PILLAR_2F
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_2F_CLEAN
+SKY_PILLAR_3F
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_3F_CLEAN
+SKY_PILLAR_4F
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_4F_CLEAN
+SKY_PILLAR_5F
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_5F_CLEAN
+SKY_PILLAR_OUTSIDE
+    E   FLAG_WALLACE_GOES_TO_SKY_PILLAR (set)                   tiles     2
+SKY_PILLAR_TOP
+    E   VAR_SKY_PILLAR_STATE=2 (lt)                             layout    LAYOUT_SKY_PILLAR_TOP_CLEAN
+SLATEPORT_CITY
+    RS  VAR_SLATEPORT_STATE=1 (eq)                              npc-move  7
+    E   VAR_0x8004=30 (eq)                                      npc-move  1
+    E   VAR_SLATEPORT_CITY_STATE=1 (eq)                         npc-move  7
+SOOTOPOLIS_CITY
+    RS  FLAG_LEGENDARY_BATTLE_COMPLETED (set)                   npc-move  1
+    RS  FLAG_LEGENDARY_BATTLE_COMPLETED (unset)                 tiles     9
+    RS  FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN (unset)             npc-move  1
+    RS  FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN (unset)             tiles     1
+    RS  FLAG_SYS_WEATHER_CTRL (set)                             npc-move  2
+    RS  VAR_SOOTOPOLIS_STATE=1 (eq)                             npc-move  2
+    E   FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE (unset)              tiles     1
+    E   FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE (unset)              tiles     9
+    E   FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN (set)              npc-move  2
+    E   VAR_SKY_PILLAR_STATE=1 (le)                             layout    LAYOUT_SOOTOPOLIS_CITY_LEGENDS_BATTLE
+    E   VAR_SOOTOPOLIS_CITY_STATE=1 (eq)                        layout    LAYOUT_SOOTOPOLIS_CITY_LEGENDS_BATTLE
+    E   VAR_SOOTOPOLIS_CITY_STATE=1 (eq)                        npc-move  4
+    E   VAR_SOOTOPOLIS_CITY_STATE=2 (eq)                        layout    LAYOUT_SOOTOPOLIS_CITY_LEGENDS_BATTLE
+    E   VAR_SOOTOPOLIS_CITY_STATE=2 (eq)                        npc-move  4
+    E   VAR_SOOTOPOLIS_CITY_STATE=3 (eq)                        layout    LAYOUT_SOOTOPOLIS_CITY_LEGENDS_BATTLE
+    E   VAR_SOOTOPOLIS_CITY_STATE=3 (eq)                        npc-move  4
+    E   VAR_SOOTOPOLIS_CITY_STATE=4 (eq)                        layout    LAYOUT_SOOTOPOLIS_CITY_LEGENDS_BATTLE
+    E   VAR_SOOTOPOLIS_CITY_STATE=4 (eq)                        npc-move  3
+    E   VAR_SOOTOPOLIS_CITY_STATE=4 (eq)                        npc-move  4
+    E   VAR_SOOTOPOLIS_CITY_STATE=5 (eq)                        npc-move  4
+    E   VAR_SOOTOPOLIS_CITY_STATE=6 (eq)                        npc-move  1
+    E   VAR_SOOTOPOLIS_WALLACE_STATE=0 (eq)                     npc-move  1
+    E   VAR_SOOTOPOLIS_WALLACE_STATE=1 (eq)                     npc-move  1
+    E   VAR_SOOTOPOLIS_WALLACE_STATE=2 (eq)                     npc-move  1
+UNDERWATER_SEALED_CHAMBER
+    RS  VAR_0x8004=12 (ne)                                      divewarp  MAP_ROUTE134, 255, 60, 31
+    RS  VAR_0x8005=44 (ne)                                      divewarp  MAP_ROUTE134, 255, 60, 31
+    E   VAR_0x8004=12 (ne)                                      divewarp  MAP_ROUTE134, 60, 31
+    E   VAR_0x8005=44 (ne)                                      divewarp  MAP_ROUTE134, 60, 31
+VICTORY_ROAD_1F
+    E   VAR_VICTORY_ROAD_1F_STATE=1 (eq)                        npc-move  1
+    E   VAR_VICTORY_ROAD_1F_STATE=2 (eq)                        npc-move  1

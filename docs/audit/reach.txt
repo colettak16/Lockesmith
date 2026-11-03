@@ -1,0 +1,209 @@
+# audit.reach: pret/pokeruby@5784633ce4ef vs pret/pokeemerald@731ad5bfd6e6
+# regenerate with `uv run python -m audit` (see audit/README.md)
+MAP_JAGGED_PASS:
+    from warp MAP_MT_CHIMNEY with +smash:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_MT_CHIMNEY with +strength:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_MT_CHIMNEY with +surf:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_MT_CHIMNEY with +waterfall:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_MT_CHIMNEY with cut:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_MT_CHIMNEY with none:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_ROUTE112 with +smash:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    from warp MAP_ROUTE112 with +strength:
+      RS: exits=['warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+      E : exits=['warp:MAGMA_HIDEOUT_1F', 'warp:MT_CHIMNEY', 'warp:ROUTE112'] grass=True surf=False fish=False
+    ... 2 more
+MAP_MOSSDEEP_CITY_GAME_CORNER_1F:
+    from warp MAP_MOSSDEEP_CITY with +smash:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +strength:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +surf:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +waterfall:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with cut:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with none:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY_GAME_CORNER_B1F with +smash:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY_GAME_CORNER_B1F with +strength:
+      RS: exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY_GAME_CORNER_B1F'] grass=False surf=False fish=False
+    ... 4 more
+MAP_MOSSDEEP_CITY_GYM:
+    from warp MAP_MOSSDEEP_CITY with +smash:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +strength:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +surf:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with +waterfall:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with cut:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+    from warp MAP_MOSSDEEP_CITY with none:
+      RS: exits=['warp:MOSSDEEP_CITY'] grass=False surf=False fish=False
+      E : exits=['warp:MOSSDEEP_CITY', 'warp:MOSSDEEP_CITY_GYM'] grass=False surf=False fish=False
+MAP_ROUTE110_TRICK_HOUSE_PUZZLE7:
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with +smash:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with +strength:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with +surf:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with +waterfall:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with cut:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_END with none:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_END', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_ENTRANCE with +smash:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_ENTRANCE', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    from warp MAP_ROUTE110_TRICK_HOUSE_ENTRANCE with +strength:
+      RS: exits=['warp:ROUTE110_TRICK_HOUSE_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE110_TRICK_HOUSE_ENTRANCE', 'warp:ROUTE110_TRICK_HOUSE_PUZZLE7'] grass=False surf=False fish=False
+    ... 4 more
+MAP_ROUTE115:
+    from edge right with +smash:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+    from edge right with +strength:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+    from edge right with +surf:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+    from edge right with +waterfall:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+    from edge right with cut:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+    from edge right with none:
+      RS: exits=[] grass=False surf=False fish=False
+      E : exits=['edge:right'] grass=False surf=False fish=False
+MAP_ROUTE121_SAFARI_ZONE_ENTRANCE:
+    from warp MAP_ROUTE121 with +smash:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+    from warp MAP_ROUTE121 with +strength:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+    from warp MAP_ROUTE121 with +surf:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+    from warp MAP_ROUTE121 with +waterfall:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+    from warp MAP_ROUTE121 with cut:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+    from warp MAP_ROUTE121 with none:
+      RS: exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTHEAST'] grass=False surf=False fish=False
+      E : exits=['warp:ROUTE121', 'warp:SAFARI_ZONE_SOUTH'] grass=False surf=False fish=False
+MAP_SAFARI_ZONE_SOUTHEAST:
+    from edge left with +smash:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    from edge left with +strength:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    from edge left with +surf:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=True fish=True
+    from edge left with +waterfall:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=True fish=True
+    from edge left with cut:
+      RS: exits=['edge:left', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    from edge left with none:
+      RS: exits=['edge:left', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    from edge up with +smash:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    from edge up with +strength:
+      RS: exits=['edge:left', 'edge:up', 'warp:ROUTE121_SAFARI_ZONE_ENTRANCE'] grass=True surf=False fish=False
+      E : exits=['edge:left', 'edge:up'] grass=True surf=False fish=True
+    ... 4 more
+MAP_SEAFLOOR_CAVERN_ROOM3:
+    from warp MAP_SEAFLOOR_CAVERN_ROOM6 with +smash:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM6 with cut:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM6 with none:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM7 with +smash:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM7 with cut:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM7 with none:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM8 with +smash:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    from warp MAP_SEAFLOOR_CAVERN_ROOM8 with cut:
+      RS: exits=['warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+      E : exits=['warp:SEAFLOOR_CAVERN_ROOM6', 'warp:SEAFLOOR_CAVERN_ROOM7', 'warp:SEAFLOOR_CAVERN_ROOM8'] grass=True surf=False fish=False
+    ... 1 more
+MAP_SKY_PILLAR_OUTSIDE:
+    from warp MAP_SKY_PILLAR_ENTRANCE with +smash:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+    from warp MAP_SKY_PILLAR_ENTRANCE with +strength:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+    from warp MAP_SKY_PILLAR_ENTRANCE with +surf:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+    from warp MAP_SKY_PILLAR_ENTRANCE with +waterfall:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+    from warp MAP_SKY_PILLAR_ENTRANCE with cut:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+    from warp MAP_SKY_PILLAR_ENTRANCE with none:
+      RS: exits=['warp:SKY_PILLAR_1F', 'warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+      E : exits=['warp:SKY_PILLAR_ENTRANCE'] grass=False surf=False fish=False
+maps with reachability differences: 9 of 348

@@ -1,0 +1,130 @@
+# audit.layouts: pret/pokeruby@5784633ce4ef vs pret/pokeemerald@731ad5bfd6e6
+# regenerate with `uv run python -m audit` (see audit/README.md)
+shared maps: 348  identical geometry: 221  different: 127
+  ABANDONED_SHIP_CORRIDORS_1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_CORRIDORS_B1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_HIDDEN_FLOOR_ROOMS: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_ROOMS2_1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_ROOMS2_B1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_ROOMS_1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_ROOMS_B1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_ROOM_B1F: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_UNDERWATER1: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ABANDONED_SHIP_UNDERWATER2: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  ANCIENT_TOMB: metatile 1 blocks x4-4 y4-4
+  AQUA_HIDEOUT_B1F: elevation 7 blocks x20-22 y8-10
+  CAVE_OF_ORIGIN_B1F: size 23x23 vs 19x19
+  DESERT_RUINS: metatile 1 blocks x4-4 y4-4
+  DEWFORD_TOWN_GYM: metatile 488 blocks x0-17 y0-27; collision 145 blocks x1-16 y3-25; elevation 147 blocks x1-16 y4-26
+  DEWFORD_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  EVER_GRANDE_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  FALLARBOR_TOWN: metatile 25 blocks x6-10 y3-7
+  FALLARBOR_TOWN_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  FALLARBOR_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  FORTREE_CITY_GYM: metatile 404 blocks x0-19 y0-24; collision 202 blocks x1-18 y1-24; elevation 201 blocks x1-18 y1-23
+  FORTREE_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  FORTREE_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  JAGGED_PASS: metatile 57 blocks x4-26 y6-21; collision 30 blocks x7-26 y7-21; elevation 28 blocks x7-26 y7-21
+  LAVARIDGE_TOWN_GYM_1F: size 11x24 vs 17x19
+  LAVARIDGE_TOWN_GYM_B1F: size 11x24 vs 17x19
+  LAVARIDGE_TOWN_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  LAVARIDGE_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  LILYCOVE_CITY: collision 4 blocks x36-41 y21-22
+  LILYCOVE_CITY_CONTEST_LOBBY: size 23x12 vs 31x12
+  LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR: size 4x6 vs 5x6
+  LILYCOVE_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  LILYCOVE_CITY_UNUSED_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  LITTLEROOT_TOWN_BRENDANS_HOUSE_2F: metatile 2 blocks x5-5 y0-1
+  LITTLEROOT_TOWN_MAYS_HOUSE_1F: metatile 24 blocks x4-9 y5-8; elevation 20 blocks x4-9 y5-8
+  LITTLEROOT_TOWN_MAYS_HOUSE_2F: metatile 17 blocks x1-5 y1-6
+  LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB: metatile 6 blocks x11-12 y1-5; collision 2 blocks x11-12 y2-4; elevation 2 blocks x11-12 y2-4
+  MAGMA_HIDEOUT_1F: size 28x30 vs 37x38
+  MAUVILLE_CITY_GYM: metatile 159 blocks x0-9 y0-20; collision 30 blocks x0-9 y2-17; elevation 113 blocks x0-9 y2-20
+  MAUVILLE_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  MAUVILLE_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  METEOR_FALLS_1F_1R: metatile 13 blocks x3-26 y2-26
+  METEOR_FALLS_1F_2R: metatile 1 blocks x27-27 y12-12
+  MOSSDEEP_CITY: metatile 313 blocks x35-79 y2-25; collision 135 blocks x52-79 y3-25; elevation 140 blocks x35-79 y3-25
+  MOSSDEEP_CITY_GAME_CORNER_1F: size 11x8 vs 12x10
+  MOSSDEEP_CITY_GYM: size 20x30 vs 26x36
+  MOSSDEEP_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  MOSSDEEP_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  MT_CHIMNEY: metatile 7 blocks x14-22 y5-11
+  MT_PYRE_2F: metatile 11 blocks x1-6 y3-9; collision 11 blocks x1-6 y3-9; elevation 11 blocks x1-6 y3-9
+  MT_PYRE_3F: metatile 8 blocks x3-9 y5-6; collision 8 blocks x3-9 y5-6; elevation 8 blocks x3-9 y5-6
+  MT_PYRE_6F: metatile 2 blocks x8-9 y3-3; collision 2 blocks x8-9 y3-3
+  OLDALE_TOWN: metatile 1 blocks x18-18 y3-3
+  OLDALE_TOWN_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  OLDALE_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  PACIFIDLOG_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  PETALBURG_CITY_GYM: metatile 203 blocks x0-8 y0-111; collision 4 blocks x2-6 y2-3; elevation 188 blocks x0-8 y2-111
+  PETALBURG_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  PETALBURG_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  ROUTE103: size 80x20 vs 80x22
+  ROUTE105: metatile 25 blocks x4-10 y18-65; collision 15 blocks x4-6 y54-65; elevation 16 blocks x3-6 y54-63
+  ROUTE106: metatile 6 blocks x10-11 y6-8; collision 4 blocks x10-11 y6-8; elevation 4 blocks x10-11 y6-8
+  ROUTE108: metatile 25 blocks x42-48 y2-6; collision 10 blocks x43-48 y2-4; elevation 16 blocks x42-48 y2-5
+  ROUTE109: size 40x60 vs 40x63
+  ROUTE110: metatile 48 blocks x3-36 y37-79; collision 13 blocks x4-35 y39-79; elevation 11 blocks x4-11 y72-79
+  ROUTE110_TRICK_HOUSE_PUZZLE1: metatile 115 blocks x1-14 y2-21; collision 56 blocks x1-14 y3-20; elevation 56 blocks x1-14 y3-20
+  ROUTE110_TRICK_HOUSE_PUZZLE2: metatile 172 blocks x0-14 y2-21; collision 125 blocks x0-14 y2-21; elevation 127 blocks x0-14 y2-21
+  ROUTE110_TRICK_HOUSE_PUZZLE3: metatile 135 blocks x0-14 y2-20; collision 47 blocks x0-14 y4-19; elevation 47 blocks x0-14 y4-19
+  ROUTE110_TRICK_HOUSE_PUZZLE4: metatile 160 blocks x0-14 y2-19; collision 122 blocks x0-14 y2-18; elevation 122 blocks x0-14 y2-18
+  ROUTE110_TRICK_HOUSE_PUZZLE5: metatile 160 blocks x0-14 y2-21; collision 159 blocks x0-14 y2-21; elevation 159 blocks x0-14 y2-21
+  ROUTE110_TRICK_HOUSE_PUZZLE6: metatile 160 blocks x0-14 y2-21; collision 129 blocks x0-14 y2-21; elevation 129 blocks x0-14 y2-21
+  ROUTE110_TRICK_HOUSE_PUZZLE7: metatile 261 blocks x0-14 y2-21; collision 146 blocks x0-14 y2-21; elevation 180 blocks x0-14 y2-21
+  ROUTE110_TRICK_HOUSE_PUZZLE8: metatile 126 blocks x0-14 y2-21; collision 97 blocks x0-14 y2-21
+  ROUTE111: metatile 251 blocks x2-39 y21-136; collision 52 blocks x4-33 y55-121; elevation 51 blocks x4-32 y21-121
+  ROUTE112: metatile 26 blocks x8-33 y26-38; elevation 3 blocks x32-33 y26-32
+  ROUTE113: metatile 248 blocks x0-99 y0-15; collision 61 blocks x11-90 y1-15; elevation 49 blocks x11-90 y1-15
+  ROUTE114: metatile 97 blocks x1-31 y13-57; collision 22 blocks x5-31 y14-53; elevation 26 blocks x5-31 y14-53
+  ROUTE114_FOSSIL_MANIACS_TUNNEL: metatile 6 blocks x2-8 y1-16; collision 51 blocks x0-12 y1-21; elevation 10 blocks x11-12 y1-11
+  ROUTE115: metatile 208 blocks x8-39 y0-62; collision 77 blocks x8-39 y2-62; elevation 57 blocks x8-36 y3-62
+  ROUTE116: metatile 110 blocks x22-82 y0-19; collision 33 blocks x24-77 y4-16; elevation 31 blocks x24-77 y4-16
+  ROUTE117: metatile 65 blocks x0-16 y5-10; collision 17 blocks x0-14 y6-8; elevation 25 blocks x0-15 y6-10
+  ROUTE118: metatile 140 blocks x3-73 y0-13; collision 22 blocks x5-45 y0-13; elevation 18 blocks x5-45 y4-13
+  ROUTE119: metatile 52 blocks x8-35 y10-69; collision 27 blocks x8-35 y12-62; elevation 27 blocks x8-35 y12-62
+  ROUTE120: metatile 66 blocks x9-32 y15-68; collision 21 blocks x13-19 y35-43; elevation 20 blocks x13-19 y35-43
+  ROUTE121: metatile 33 blocks x17-73 y7-14; collision 16 blocks x59-72 y7-14; elevation 16 blocks x59-72 y7-14
+  ROUTE123: metatile 34 blocks x129-139 y10-19; collision 18 blocks x129-139 y12-19; elevation 18 blocks x129-139 y12-19
+  ROUTE124: metatile 64 blocks x7-67 y18-79; collision 64 blocks x7-67 y18-79; elevation 3 blocks x59-60 y66-78
+  ROUTE125: metatile 222 blocks x0-56 y12-39; collision 71 blocks x0-54 y14-39; elevation 101 blocks x2-49 y12-39
+  ROUTE127: metatile 126 blocks x9-63 y5-33; collision 31 blocks x10-60 y5-22; elevation 66 blocks x10-60 y5-24
+  ROUTE131: metatile 23 blocks x36-54 y14-34; collision 18 blocks x36-54 y14-34; elevation 12 blocks x52-54 y14-19
+  ROUTE132: metatile 40 blocks x3-56 y22-33
+  ROUTE133: metatile 7 blocks x67-69 y22-30; collision 4 blocks x67-68 y22-24; elevation 4 blocks x67-68 y22-24
+  ROUTE134: metatile 40 blocks x39-61 y15-24; collision 14 blocks x44-61 y15-24; elevation 16 blocks x43-61 y15-24
+  RUSTBORO_CITY: metatile 24 blocks x8-35 y8-48; collision 4 blocks x8-15 y17-18; elevation 16 blocks x8-35 y9-48
+  RUSTBORO_CITY_DEVON_CORP_1F: metatile 4 blocks x3-8 y1-2; collision 2 blocks x3-8 y2-2; elevation 4 blocks x3-8 y2-3; tilesets gTileset_General/gTileset_Facility vs gTileset_Building/gTileset_Facility
+  RUSTBORO_CITY_DEVON_CORP_3F: elevation 15 blocks x4-18 y3-7; tilesets gTileset_General/gTileset_Facility vs gTileset_Building/gTileset_Facility
+  RUSTBORO_CITY_FLAT1_2F: metatile 28 blocks x7-12 y3-7; collision 2 blocks x9-9 y5-6; elevation 15 blocks x7-11 y4-7
+  RUSTBORO_CITY_GYM: size 11x19 vs 11x20
+  RUSTBORO_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  RUSTBORO_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  SAFARI_ZONE_NORTHEAST: metatile 1210 blocks x0-39 y0-39; collision 537 blocks x0-39 y0-39; elevation 777 blocks x0-39 y0-39
+  SAFARI_ZONE_SOUTHEAST: metatile 1255 blocks x0-39 y0-39; collision 541 blocks x0-39 y0-39; elevation 732 blocks x0-39 y0-39
+  SEAFLOOR_CAVERN_ENTRANCE: metatile 3 blocks x6-14 y17-18
+  SEAFLOOR_CAVERN_ROOM2: size 18x21 vs 18x12
+  SEAFLOOR_CAVERN_ROOM3: metatile 112 blocks x0-15 y0-15; collision 44 blocks x2-13 y2-11; elevation 64 blocks x0-15 y0-11
+  SEAFLOOR_CAVERN_ROOM6: metatile 17 blocks x0-23 y5-21
+  SEAFLOOR_CAVERN_ROOM7: metatile 2 blocks x4-5 y24-24
+  SKY_PILLAR_OUTSIDE: metatile 2 blocks x14-14 y4-5; collision 1 blocks x14-14 y5-5; elevation 1 blocks x14-14 y5-5
+  SKY_PILLAR_TOP: metatile 303 blocks x0-26 y0-17; collision 196 blocks x0-26 y0-17; elevation 181 blocks x0-26 y4-17
+  SLATEPORT_CITY: metatile 267 blocks x2-39 y8-56; collision 99 blocks x2-39 y33-56; elevation 111 blocks x2-39 y33-56
+  SLATEPORT_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  SLATEPORT_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  SLATEPORT_CITY_POKEMON_FAN_CLUB: elevation 12 blocks x3-10 y5-8
+  SOOTOPOLIS_CITY: metatile 42 blocks x32-56 y32-37; collision 25 blocks x32-56 y10-37; elevation 24 blocks x32-56 y32-37
+  SOOTOPOLIS_CITY_GYM_1F: metatile 63 blocks x0-16 y0-25; collision 45 blocks x1-16 y2-19; elevation 88 blocks x3-13 y2-25
+  SOOTOPOLIS_CITY_GYM_B1F: metatile 95 blocks x0-16 y4-25; collision 15 blocks x2-14 y6-21; elevation 21 blocks x2-14 y6-22
+  SOOTOPOLIS_CITY_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  SOOTOPOLIS_CITY_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  SS_TIDAL_CORRIDOR: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  SS_TIDAL_LOWER_DECK: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  SS_TIDAL_ROOMS: tilesets gTileset_General/gTileset_Ship vs gTileset_General/gTileset_InsideShip
+  VERDANTURF_TOWN: metatile 32 blocks x1-6 y3-8; collision 6 blocks x1-6 y4-8; elevation 6 blocks x1-6 y4-8
+  VERDANTURF_TOWN_MART: metatile 2 blocks x0-0 y3-4; elevation 1 blocks x0-0 y3-3
+  VERDANTURF_TOWN_POKEMON_CENTER_2F: size 14x9 vs 14x10
+  VICTORY_ROAD_B1F: metatile 3 blocks x13-13 y16-18; collision 3 blocks x13-13 y16-18; elevation 3 blocks x13-13 y16-18
+  VICTORY_ROAD_B2F: metatile 6 blocks x5-10 y16-26; collision 3 blocks x10-10 y24-26; elevation 3 blocks x10-10 y24-26
