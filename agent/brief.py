@@ -82,6 +82,8 @@ def state_brief(ctx: RequestContext) -> str:
         ) + ".")
     else:
         lines.append("Party: not given.")
+    if s.owned:
+        lines.append("Also has, outside the party (no need to catch these): " + ", ".join(s.owned) + ".")
     rules = s.ruleset.describe()
     lines.append("Rules: " + ("; ".join(rules) if rules else "none (a normal run)") + ".")
     if ctx.randomizer:

@@ -87,7 +87,7 @@ def test_a_firered_turn_runs_end_to_end(monkeypatch):
     from agent import pipeline, runtime
     from agent.schemas import Alternative, ClarifierDecision, LeadDraft, RuleUpdate, StateUpdate
 
-    no_state = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
+    no_state = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None, owned=None)
     no_rules = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
                           level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None,
                           wild_only=None, add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])
@@ -115,3 +115,13 @@ def test_a_firered_turn_runs_end_to_end(monkeypatch):
     assert [r["species"] for r in body["plan"]["recommendations"]] == ["Gastly"]
     labels = [c["label"] for c in body["citations"]]
     assert any(label.startswith("pokefirered") for label in labels) and any("FireRed rules" in label for label in labels)
+
+
+def test_a_pokemon_in_the_pc_needs_no_catching(con, game):
+    """Snorlax can't be caught before Erika (the Poké Flute comes later), but one the player already
+    has in the PC is a fine pick."""
+    pick = Recommendation(species="Snorlax", role="r", horizon="core", before_battle="gym4_erika", where="w", when="w",
+                          why="fits", long_term="lt", evolve_to="", key_moves=[], source_ids=[], alternatives=[])
+    codes = lambda ctx: {v.code for v in check_pick(ctx, pick, "gym4_erika", 0, None)}
+    assert "NOT_OBTAINABLE_BEFORE" in codes(ctx_for(con, game))
+    assert "NOT_OBTAINABLE_BEFORE" not in codes(ctx_for(con, game, owned=["Snorlax"]))

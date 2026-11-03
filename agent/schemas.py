@@ -30,6 +30,7 @@ class StateUpdate(BaseModel):
     rival: Literal["may", "brendan"] | None
     last_battle: str | None
     party: list[PartyEntry] | None
+    owned: list[str] | None  # Pokémon the player says they already have outside the party (the PC)
 
 
 class RuleUpdate(BaseModel):

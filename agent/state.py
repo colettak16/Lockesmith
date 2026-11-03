@@ -127,6 +127,7 @@ class RunState(BaseModel):
     rival: str | None = Field(default=None, description="May or Brendan in Hoenn; Kanto has no choice")
     last_battle: str | None = Field(default=None, description="Id of the last major battle beaten (progression.yaml)")
     party: list[PartyMember] = Field(default_factory=list)
+    owned: list[str] = Field(default_factory=list, description="Pokémon the player already has outside the party (the PC)")
     current_location: str | None = None
     ruleset: Ruleset = Field(default_factory=Ruleset)
     randomizer_log_id: str | None = None

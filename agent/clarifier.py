@@ -37,7 +37,9 @@ run state you're given, and copy into
 Dynamo badge: list every badge they now hold; "my team is Combusken 30 and Breloom 28" sets the
 party). Badge names: Hoenn stone, knuckle, dynamo, heat, balance, feather, mind, rain; Kanto boulder,
 cascade, thunder, rainbow, soul, marsh, volcano, earth. Starters: Hoenn treecko, torchic, mudkip;
-Kanto bulbasaur, charmander, squirtle. Leave a field null when the message doesn't mention it.
+Kanto bulbasaur, charmander, squirtle. `owned`: Pokémon the player says they already have outside
+the party, in the PC ("I also have a Snorlax and a Growlithe" -> ["Snorlax", "Growlithe"]); they're
+added to what the run state already has. Leave a field null when the message doesn't mention it.
 
 ASKING. Set action="ask" only if the answer truly depends on information that's missing: the
 starter or the badges for anything but a lookup, or the party for a question about the player's own

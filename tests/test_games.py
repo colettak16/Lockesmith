@@ -10,7 +10,7 @@ from agent.progression import Battle
 from agent.schemas import StateUpdate
 from agent.state import RunState
 
-NO_UPDATE = dict(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
+NO_UPDATE = dict(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None, owned=None)
 
 
 @pytest.mark.parametrize("game", list(GAMES.values()), ids=list(GAMES))

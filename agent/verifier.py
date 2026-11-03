@@ -160,7 +160,9 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
         add("RULESET_TYPE_VIOLATION", f"{sp['name']} is {why}")
     elif form is not sp and (why := rules.type_problem([form["type1"], form["type2"]])):
         add("RULESET_TYPE_VIOLATION", f"{form['name']}, its evolution, is {why}")
-    party_ids = [ctx.index.resolve(m.species, "species", cutoff=80) for m in ctx.state.party]
+    # The party and the Pokémon the player has in the PC are already caught: no need to obtain them,
+    # and for a dupes clause their families count
+    party_ids = [ctx.index.resolve(n, "species", cutoff=80) for n in [m.species for m in ctx.state.party] + ctx.state.owned]
     party_ids = [p.id for p in party_ids if p]
     in_party = sp["identifier"] in party_ids
     if rules.dupes_clause and not in_party and party_ids:

@@ -11,7 +11,7 @@ from agent.schemas import Alternative, ClarifierDecision, LeadDraft, Recommendat
 from agent.session import SESSIONS
 from agent.state import RunState
 
-NO_STATE = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
+NO_STATE = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None, owned=None)
 NO_RULES = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
                       level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None, wild_only=None,
                       add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])
@@ -236,3 +236,39 @@ def test_trace_tags_and_pseudonymous_users():
     assert uid == observability.user_id("accounts.google.com:1234567890") and "1234567890" not in uid
     assert observability.user_id(None) is None
     assert observability.workflow_name("catch_researcher") == "research-catches"
+
+
+def test_a_follow_up_gives_the_lead_the_conversation_and_keeps_the_pc(models):
+    """Live FireRed run: turn 1 listed Snorlax among the player's PC Pokémon and recommended it; turn 2
+    (a lookup) went to the Lead with none of that, which offered Snorlax again as a new catch."""
+    calls, script = models
+    seen = []
+    script["clarifier"] = [
+        decision(state_updates=NO_STATE.model_copy(update={"owned": ["Sharpedo", "Growlith"]})),
+        decision(intent="lookup"),
+    ]
+
+    def lead(ctx):
+        seen.append(ctx.state.owned)
+        return DRAFT
+
+    script["lead"] = lead
+    script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]."
+    chat("what should I add? I also have a Sharpedo and a Growlith", "p-memory", STATE)
+    captured = {}
+    real_run = runtime.run
+
+    async def capture(agent, input, context, max_turns=8):
+        if agent.name == "lead":
+            captured["input"] = input
+        return await real_run(agent, input, context, max_turns)
+
+    runtime.run = capture
+    try:
+        chat("does Sharpedo learn Crunch?", "p-memory")
+    finally:
+        runtime.run = real_run
+    assert seen[0] == ["Sharpedo", "Growlithe"]  # resolved to species names
+    earlier = captured["input"].split("EARLIER IN THIS CONVERSATION")[1]
+    assert "I also have a Sharpedo" in earlier and "Picks: Sharpedo" in earlier
+    assert "Also has, outside the party (no need to catch these): Sharpedo, Growlithe." in captured["input"]

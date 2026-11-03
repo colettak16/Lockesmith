@@ -578,3 +578,17 @@ Not changed, since Codex misread them:
 - `pallet-town` is excluded only for the starter gift; its fishing opens at the Route 22 step.
 - `kanto-route-3/pokemon-center` is marked as PokeAPI's duplicate of the Route 4 Magikarp salesman.
 - Key items stay the ones the tools gate on, not every key item.
+
+## D17. Conversation memory: the Lead sees earlier turns, and the run state keeps the player's PC (2026-11-03)
+
+A live FireRed conversation, read in LangFuse:
+- **Turn 1.** The player listed what was in their PC (Snorlax, Growlithe, ...). The answer recommended Snorlax and Growlithe.
+- **Turn 2.** The player asked a follow-up, and the Clarifier classed it as a lookup. The Lead got only the new message, the Clarifier's brief and the run state. It had no earlier turns, since the previous answer went to the Lead only on revisions, and the PC wasn't part of the run state. So it offered Snorlax again as a new catch, "if you haven't fainted or caught both static encounters".
+
+Fixes:
+- **Earlier turns.** On every follow-up, the Lead gets EARLIER IN THIS CONVERSATION: the player's recent messages and the previous answer's picks. Its prompt says to build on them, not start over.
+- **The PC in the run state.** `owned` holds Pokémon the player has outside the party.
+  - The Clarifier fills it from chat (merged, not replaced, with names resolved to species).
+  - The form shows it as "Also in your PC".
+  - The brief tells every agent not to send the player out to catch them.
+  - The Verifier counts them as already obtained, and as caught for a dupes clause.

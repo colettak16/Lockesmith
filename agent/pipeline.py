@@ -51,10 +51,26 @@ def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunStat
             data["last_battle"] = u.last_battle
     if u.party is not None:
         data["party"] = [p.model_dump() for p in u.party]
+    if getattr(u, "owned", None):  # added to, not replaced: players mention their PC a few at a time
+        names = [o.strip() for o in u.owned if o.strip()]
+        if ctx is not None:  # "Growlith" -> "Growlithe"; names that match no species are dropped
+            names = [m.name for m in (ctx.index.resolve(n, "species", cutoff=80) for n in names) if m]
+        data["owned"] = list(dict.fromkeys([*data.get("owned", []), *names]))
     try:
         return RunState(**data)
     except ValidationError:
         return state
+
+
+def conversation_context(session: Session) -> str:
+    """What the Lead needs from earlier turns on a follow-up: what the player said (Pokémon they have,
+    plans) and what was already recommended, so an answer builds on it instead of starting over."""
+    said = [t["content"][:600] for t in session.history[-2 * HISTORY_TURNS:] if t["role"] == "user"]
+    lines = [f"- The player said: {s}" for s in said]
+    if session.last_plan:
+        picks = ", ".join(r["species"] for r in session.last_plan.get("recommendations", []))
+        lines.append(f"- Your previous answer: {session.last_plan.get('headline', '')}" + (f" Picks: {picks}." if picks else ""))
+    return "\n".join(lines)
 
 
 def clarifier_input(message: str, session: Session) -> str:
@@ -202,6 +218,8 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
             f"\n\nPREVIOUS PLAN (the player wants something different)\n{json.dumps(session.last_plan)[:3000]}"
             f"\nPLAYER FEEDBACK: {decision.revision_feedback or 'vague'}"
         )
+    elif session.history:
+        lead_input += f"\n\nEARLIER IN THIS CONVERSATION\n{conversation_context(session)}"
     lead_draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
     draft, warnings = await verify_and_repair(ctx, lead_draft, lead_input)
     draft = picks_changed(lead_draft, draft)

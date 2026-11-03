@@ -214,6 +214,9 @@ function buildForm() {
   $("#r-allowed-types").appendChild(ui.pickers.allowedTypes);
   $("#r-banned-types").appendChild(ui.pickers.bannedTypes);
   $("#r-banned").appendChild(ui.pickers.bannedSpecies);
+  // Pokémon the player already has outside the party: the agent won't send them out to catch these
+  ui.pickers.owned = tagPicker({ listId: "species-list", options: ui.options.species, placeholder: "e.g. Snorlax", more: "Add a Pokémon" });
+  $("#owned").appendChild(ui.pickers.owned);
   renderUsedList();
 
   $("#badges").addEventListener("click", (e) => {
@@ -300,6 +303,7 @@ function readForm() {
     badges: ui.badgesSet ? ui.catalog.badges.map((b) => b.id).filter((b) => ui.badges.has(b)) : null,
     last_battle: $("#last-battle").value || null,
     party,
+    owned: ui.pickers.owned.getValues(),
     ruleset: {
       nuzlocke: $("#r-nuzlocke").checked,
       encounter_scope: $("#r-scope").value,
@@ -328,6 +332,7 @@ function fillForm(rs = {}, { highlight = false } = {}) {
   $("#last-battle").value = rs.last_battle || "";
   $("#party").innerHTML = "";
   for (const m of rs.party || []) addMember(m);
+  ui.pickers.owned.setValues(rs.owned || []);
   if (!(rs.party || []).length) addMember();
   $("#add-member").hidden = (rs.party || []).length >= 6;
   const r = rs.ruleset || {};
