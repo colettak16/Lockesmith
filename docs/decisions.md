@@ -497,3 +497,52 @@ One run each can't separate the fixes from Vertex's load that day. The 25 s time
 - A rate-limited Pro call is now retried after 1, 2, 4 and 8 s, about 15 s at most, before Flash. A 429 comes back in under a second.
 - A stalled Pro call (60 s) is retried once. Pro hasn't stalled in any recorded call, and one retry still fits the 270 s request budget.
 - Flash calls still fall back at once.
+
+## D16. FireRed and LeafGreen (2026-11-03, branch `firered-leafgreen`)
+
+The user wants LockeSmith to grow past the class, so FireRed/LeafGreen went in as the first game outside Hoenn, and the game-specific parts became data where that was cheap.
+
+**Built from pret/pokefirered** (commit `ce6406d8`), which keeps pokeemerald's layout. `build/decomp.py` tells the three decomp families apart by layout (`family`). For FireRed/LeafGreen it handles:
+- the version flags and `_FireRed`/`_LeafGreen` wild tables
+- Hoenn's unnamed leftover map sections
+- the friendship threshold, read only from the `EVO_FRIENDSHIP` case
+- the TM list in `data/party_menu.h`
+
+The databases match the decomp on every cross-check: species, moves, type chart, learnsets, evolutions, every wild table (`tests/test_frlg_facts.py`). Emerald, Ruby and Sapphire rebuild row-for-row identical, apart from a new empty `move_tutors.requires` column.
+
+**What FireRed/LeafGreen add, each read from the code:**
+- **National Dex gate.** Until the National Dex, which comes after the Hall of Fame, any evolution into a species past #151 is cancelled: level-up, friendship and trade (`evolution_scene.c`). The party menu also refuses stones that would do it (`MonCanEvolve`). Espeon and Umbreon never evolve, since the day/night friendship cases are commented out.
+  - Games carry this as `evolution_limit`.
+  - `assess_candidates` stops evolution lines there.
+  - The Verifier fails a pick that needs a gated evolution.
+- **TMs.**
+  - Gym TMs and gifts come from `giveitem_msg`.
+  - The Celadon prize room sells TMs.
+  - The Celadon roof girl trades three TMs for drinks.
+  - TM10 has no map source: Pickup is the only way (`sPickupItems`, 5%). The game line says so.
+- **Tutors.**
+  - 15 one-time tutors, found through the maps that call their scripts.
+  - Cape Brink's ultimate moves need a lead starter with friendship exactly 255 (`CapeBrinkGetMoveToTeachLeadPokemon`).
+- **Rival.** The rival takes the starter strong against yours. The trainer constants are named after the rival's starter. The stored name "TERRY" never shows in battle, which prints the player-given name, so those trainers have no name in the database.
+- **Field abilities.** As in Ruby/Sapphire, only Stench and Illuminate matter outside battle (`wild_encounter.c`).
+
+**Per-game cast.** Each game in `agent/games.py` names:
+- its starters
+- the rival choice: May/Brendan, or none in Kanto
+- its badges in `FLAG_BADGE0x_GET` order, with each one's gym battle and leader names
+
+The run state, the Clarifier schema, the catalog and the form all read the cast. Switching region in chat drops the other region's starter, badges, rival and party unless they're restated.
+
+**Story order** (`data/progression_frlg.yaml`, 23 steps, drafted from the decomp and Bulbapedia's walkthrough). Gates read from the code:
+- HM badges: `FLAG_BADGE01_GET + field move`.
+- Viridian Gym: needs badges 2–7.
+- Route 23: a guard per badge.
+- Saffron: the gatehouses want Tea, and a Rocket blocks Sabrina's door until Silph Co.
+- Route 22 rivals: the early one is a detour; the late one is armed by Viridian Gym.
+- The optional Sevii errand: Bill can be declined, and the ferry home opens only after it.
+
+Every encounter area is either opened by a step or marked never reachable.
+
+**Walkthrough corpus.** Bulbapedia's 20-part FireRed/LeafGreen walkthrough (360 passages). Its version marks render as "(FireRed)" and "(LeafGreen)".
+
+**Review.** `docs/review_packet_frlg.md` goes through Codex (ChatGPT) rounds, run from an empty folder with decomp excerpts in the packet. Every claim gets checked in the decomp before anything changes.
