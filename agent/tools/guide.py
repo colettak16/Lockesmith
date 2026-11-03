@@ -1,6 +1,6 @@
 """search_guide: BM25 over the game's Bulbapedia walkthrough chunks (docs/decisions.md D2).
 
-Emerald and Ruby/Sapphire have one corpus each. Ruby/Sapphire chunks list the versions
+Emerald, Ruby/Sapphire and FireRed/LeafGreen have one corpus each. Paired chunks list the versions
 they describe, so a Sapphire search skips Ruby-only sections (VS Maxie, the Magma Hideout)."""
 
 import json

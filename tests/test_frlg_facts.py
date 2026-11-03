@@ -70,7 +70,9 @@ def test_gym_leaders(db):
 
 
 def test_champion_team_follows_the_players_starter(db):
-    """The rival takes the starter strong against yours: TRAINER_CHAMPION_FIRST_<your starter>."""
+    """The rival takes the starter strong against yours, and the constants are named after the rival's:
+    a Bulbasaur player (VAR_STARTER_MON 0) fights TRAINER_RIVAL_OAKS_LAB_CHARMANDER, and so on
+    (PalletTown_ProfessorOaksLab's RivalApproachForBattle branches)."""
     aces = {const: team(db, const)[-1] for const in (
         "TRAINER_CHAMPION_FIRST_BULBASAUR", "TRAINER_CHAMPION_FIRST_CHARMANDER", "TRAINER_CHAMPION_FIRST_SQUIRTLE")}
     assert aces == {"TRAINER_CHAMPION_FIRST_BULBASAUR": ("venusaur", 63),

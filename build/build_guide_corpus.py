@@ -1,6 +1,6 @@
 """Fetch a Bulbapedia walkthrough and cache it as searchable chunks.
 
-    uv run python build/build_guide_corpus.py                 # both corpora: fetch missing pages, rebuild chunks
+    uv run python build/build_guide_corpus.py                 # every corpus: fetch missing pages, rebuild chunks
     uv run python build/build_guide_corpus.py --corpus rs     # only Ruby/Sapphire
     uv run python build/build_guide_corpus.py --refresh       # refetch every page
 
@@ -36,14 +36,23 @@ WIKI = "https://bulbapedia.bulbagarden.net/wiki/"
 USER_AGENT = "Lockesmith/0.1 (IEOR E4570 course project)"
 TITLES = [f"Walkthrough:Pokémon Emerald/Part {i}" for i in range(1, 22)]
 CORPORA = {
-    "emerald": {"dir": GUIDE, "titles": TITLES, "versions": False},
+    "emerald": {"dir": GUIDE, "titles": TITLES, "versions": ()},
     "rs": {
         "dir": ROOT / "data" / "guide_rs",
         "titles": [f"Walkthrough:Pokémon Ruby and Sapphire/Part {i}" for i in range(1, 24)],
-        "versions": True,
+        "versions": ("ruby", "sapphire"),
+    },
+    "frlg": {
+        "dir": ROOT / "data" / "guide_frlg",
+        "titles": [f"Walkthrough:Pokémon FireRed and LeafGreen/Part {i}" for i in range(1, 21)],
+        "versions": ("firered", "leafgreen"),
     },
 }
-VERSION_MARKS = {"r": "ruby", "ru": "ruby", "ruby": "ruby", "s": "sapphire", "sa": "sapphire", "sapphire": "sapphire"}
+VERSION_MARKS = {
+    "r": "ruby", "ru": "ruby", "ruby": "ruby", "s": "sapphire", "sa": "sapphire", "sapphire": "sapphire",
+    "fr": "firered", "firered": "firered", "lg": "leafgreen", "leafgreen": "leafgreen",
+}
+VERSION_LABEL = {"ruby": "Ruby", "sapphire": "Sapphire", "firered": "FireRed", "leafgreen": "LeafGreen"}
 
 # Link-style templates that render as their first argument plus a suffix.
 SUFFIX_TEMPLATES = {"rt": ("Route ", ""), "ci": ("", " City"), "to": ("", " Town")}
@@ -73,14 +82,14 @@ def fetch(title: str) -> dict:
     }
 
 
-def render_template(body: str, versions: bool = False) -> str:
+def render_template(body: str, versions: tuple[str, ...] = ()) -> str:
     parts = [p.strip() for p in body.split("|")]
     name = parts[0].lower()
     args = [p for p in parts[1:] if "=" not in p]
     if versions and name.startswith("sup") and args:
         marks = [VERSION_MARKS.get(a.lower()) for a in args]
-        if any(marks):
-            return " (" + "/".join(m.title() for m in marks if m) + ")"
+        if any(m in versions for m in marks):
+            return " (" + "/".join(VERSION_LABEL[m] for m in marks if m in versions) + ")"
     if name.startswith(DROP_PREFIXES):
         return ""
     if name in SUFFIX_TEMPLATES:
@@ -107,7 +116,7 @@ def strip_tables(text: str) -> str:
     return "\n".join(out)
 
 
-def wikitext_to_text(text: str, versions: bool = False) -> str:
+def wikitext_to_text(text: str, versions: tuple[str, ...] = ()) -> str:
     text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
     text = re.sub(r"<ref[^>]*/>|<ref[^>]*>.*?</ref>", "", text, flags=re.S)
     for _ in range(10):  # innermost templates first
@@ -140,14 +149,14 @@ def sections(wikitext: str) -> list[tuple[list[str], str]]:
     return [(p, t) for p, t in out if t.strip()]
 
 
-def chunk_versions(path: list[str], raw: str) -> list[str]:
-    """The versions a Ruby/Sapphire section describes: a heading marked (R) or (S) wins;
-    otherwise both."""
-    marks = {VERSION_MARKS.get(m.lower()) for h in path for m in re.findall(r"\{\{sup/\d\|(\w+)\}\}", h)} - {None}
-    return sorted(marks) if marks else ["ruby", "sapphire"]
+def chunk_versions(path: list[str], raw: str, versions: tuple[str, ...]) -> list[str]:
+    """The versions a section describes: a heading marked for one version ((R)/(S), (FR)/(LG))
+    wins; otherwise both of the corpus's versions."""
+    marks = {VERSION_MARKS.get(m.lower()) for h in path for m in re.findall(r"\{\{sup/\d\|(\w+)\}\}", h)} & set(versions)
+    return sorted(marks) if marks else list(versions)
 
 
-def chunks(page: dict, versions: bool = False) -> list[dict]:
+def chunks(page: dict, versions: tuple[str, ...] = ()) -> list[dict]:
     out, seen = [], {}
     for path, raw in sections(page["wikitext"]):
         text = wikitext_to_text(raw, versions)
@@ -166,7 +175,7 @@ def chunks(page: dict, versions: bool = False) -> list[dict]:
             "text": text,
         }
         if versions:
-            chunk["versions"] = chunk_versions(path, raw)
+            chunk["versions"] = chunk_versions(path, raw, versions)
         out.append(chunk)
     return out
 
