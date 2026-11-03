@@ -10,16 +10,23 @@ VANILLA_KINDS = {
 
 
 # One line per game on how it differs, so no agent answers from another game's memory.
+# Ruby/Sapphire's lead-ability rule is from pokeruby: wild_encounter.c checks only Stench and Illuminate;
+# SetWildMonHeldItem (pokemon_3.c), the fishing bite (field_player_avatar.c) and egg steps (daycare.c) check none.
+RS_FIELD_ABILITIES = (
+    "Outside battle, a lead Pokémon's ability changes nothing but the encounter rate (Stench lowers it, Illuminate "
+    "raises it): Synchronize, Cute Charm, Magnet Pull, Static, Intimidate, Keen Eye, Compound Eyes, Suction Cups, "
+    "Flame Body and the other field effects start in Emerald, so don't suggest them here."
+)
 GAME_LINES = {
     "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
     "ruby": ("Game: Pokémon Ruby (Game Boy Advance, not Omega Ruby). The villain is Team Magma only; the 8th gym "
              "leader is Wallace and the Champion is Steven; there are no move tutors; Groudon (Lv45) is a required "
              "battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. Teams and "
-             "encounters differ from Emerald's: trust the tools, not Emerald memory."),
+             "encounters differ from Emerald's: trust the tools, not Emerald memory. " + RS_FIELD_ABILITIES),
     "sapphire": ("Game: Pokémon Sapphire (Game Boy Advance, not Alpha Sapphire). The villain is Team Aqua only; the "
                  "8th gym leader is Wallace and the Champion is Steven; there are no move tutors; Kyogre (Lv45) is a "
                  "required battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. "
-                 "Teams and encounters differ from Emerald's: trust the tools, not Emerald memory."),
+                 "Teams and encounters differ from Emerald's: trust the tools, not Emerald memory. " + RS_FIELD_ABILITIES),
 }
 
 

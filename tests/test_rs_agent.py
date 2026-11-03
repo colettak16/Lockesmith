@@ -112,3 +112,29 @@ def test_session_switches_database_with_the_game():
     assert s.con.execute("SELECT value FROM base.build_info WHERE key = 'game'").fetchone() == ("sapphire",)
     assert not s.sync_game()
     s.con.close()
+
+
+def test_hideout_electrode_until_the_mind_badge(con, game):
+    before = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES[:6]), "gym7_tate_liza", species="electrode")
+    hideout = [p for p in before["species"][0]["places"] if p["method"] == "static"]
+    assert hideout and "Mind Badge" in hideout[0]["missable"]
+    after = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES), "admin_seafloor_cavern", species="electrode")
+    assert [(p["where"], p["method"]) for sp in after["species"] for p in sp["places"]] == [("New Mauville", "walk")]
+
+
+def test_next_steps_warn_before_an_area_closes(con, game):
+    steps = story.next_steps(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES[:6]))
+    last_chance = {s["battle_id"]: s.get("closes_for_good_after_it") for s in [steps["next"], *steps["then"]]}
+    assert "Mind Badge" in last_chance["gym7_tate_liza"][0]
+
+
+def test_legendary_not_offered_after_its_battle(con, game):
+    legend = {"ruby": "groudon", "sapphire": "kyogre"}[game.id]
+    out = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES), "gym8_wallace", species=legend)
+    assert out["species"] == [] and "closed for good" in out["why_not"][0]
+
+
+def test_brief_rules_out_emerald_field_abilities(con, game):
+    from agent.brief import state_brief
+    text = state_brief(ctx_for(con, game, starter="mudkip"))
+    assert "Synchronize" in text and "Compound Eyes" in text and "Stench" in text

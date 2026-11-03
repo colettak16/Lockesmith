@@ -36,6 +36,15 @@ PACIFIDLOG_FAN_CLUB = (
     "once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 "
     "Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK)"
 )
+# Same in all three games: the rival stands on (27, 7), the only tile below the store's door (27, 6),
+# and declining the battle leaves them there; only the battle's end removes them (RivalFlyAway).
+LILYCOVE_RIVAL_AT_STORE_DOOR = (
+    "the Lilycove rival stands on the only tile below the Department Store's door until you battle them; "
+    "declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the "
+    "Lilycove rival battle"
+)
+LILYCOVE_STORE_TMS = ("TM14", "TM15", "TM16", "TM17", "TM20", "TM25", "TM33", "TM38")
+LILYCOVE_STORE = {(tm, "mart", "LilycoveCity_DepartmentStore_4F"): LILYCOVE_RIVAL_AT_STORE_DOOR for tm in LILYCOVE_STORE_TMS}
 # (label, method, map folder) -> what else the source needs beyond reaching the map
 REQUIRES = {
     ("TM02", "item-ball", "MeteorFalls_B1F_2R"): "Waterfall (Rain Badge) to reach Meteor Falls' back rooms",
@@ -55,6 +64,7 @@ REQUIRES = {
     ("TM27", "gift", "PacifidlogTown_House2"): PACIFIDLOG_FAN_CLUB,
     ("TM43", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN,
     ("TM49", "gift", "SSTidalRooms"): "postgame: the S.S. Ticket comes after the Hall of Fame (hall_of_fame.inc)",
+    **LILYCOVE_STORE,
 }
 
 
@@ -86,6 +96,7 @@ RS_REQUIRES = {
     ),
     ("TM43", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN_RS,
     ("TM49", "gift", "SSTidalRooms"): REQUIRES[("TM49", "gift", "SSTidalRooms")],
+    **LILYCOVE_STORE,
 }
 # pokeruby leaders have no rematch numbering, so gym rewards are tagged with these constants.
 RS_LEADERS = ("ROXANNE", "BRAWLY", "WATTSON", "FLANNERY", "NORMAN", "WINONA", "TATE_AND_LIZA", "WALLACE")

@@ -107,6 +107,9 @@ def available_rows(ctx: RequestContext, b, target: str | None = None, wanted: se
         if POSTGAME_CONDITIONS & set(r["conditions"]) or ctx.prog.never_reason(r["location"], r["area"], r["method"]):
             blocked[r["name"]].append(f"{where} {r['method']}: postgame or event only")
             continue
+        if gone := ctx.prog.closed_reason(b.id, r["location"], r["area"], r["method"]):
+            blocked[r["name"]].append(f"{where} {r['method']}: closed for good before {b.label}: {gone}")
+            continue
         if not ctx.prog.is_reachable(b.id, r["location"], r["area"], r["method"]):
             blocked[r["name"]].append(f"{where} {r['method']}: not reachable before {b.label}")
             continue
@@ -119,6 +122,7 @@ def available_rows(ctx: RequestContext, b, target: str | None = None, wanted: se
             removed[reason] += 1
             continue
         r["condition_note"] = needs[1] if needs else None
+        r["missable"] = ctx.prog.missable_reason(b.id, r["location"], r["area"], r["method"])
         out.append(r)
     return out, blocked, removed
 
@@ -150,6 +154,8 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
             place["conditions"] = list(r["conditions"])
         if needs:
             place["note"] = needs
+        if r["missable"]:
+            place["missable"] = r["missable"]
         place["rate_pct"] += r["rarity"] or 0
         place["lv"] = [min(place["lv"][0], r["min_level"]), max(place["lv"][1], r["max_level"])]
     species_out = []

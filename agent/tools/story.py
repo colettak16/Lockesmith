@@ -20,7 +20,7 @@ def _ace(ctx: RequestContext, b: Battle) -> int | None:
 
 
 def _step(ctx: RequestContext, b: Battle, prev: Battle | None) -> dict:
-    return {
+    step = {
         "battle_id": b.id, "label": b.label, "location": b.location, "optional": b.optional,
         "format": b.battle_format, "highest_level": _ace(ctx, b),
         "new_hms_usable": sorted(set(b.hm_gates_open) - set(prev.hm_gates_open if prev else ())),
@@ -28,6 +28,10 @@ def _step(ctx: RequestContext, b: Battle, prev: Battle | None) -> dict:
         "areas_opened_before_it": [_area_text(s) for s in b.areas_new],
         "notes": b.notes, "source_ids": [f"progression:{b.id}", b.source],
     }
+    # Last chance: areas that close for good once this battle is behind the player
+    if gone := [f"{_area_text(c.spec)}: {c.reason}" for c in ctx.prog.closes if c.after == b.id]:
+        step["closes_for_good_after_it"] = gone
+    return step
 
 
 def next_steps(ctx: RequestContext) -> dict:

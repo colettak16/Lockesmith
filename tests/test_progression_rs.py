@@ -153,8 +153,9 @@ def test_each_area_opens_once(prog):
 
 def test_every_encounter_area_is_placed(prog, db):
     rows = db.execute("SELECT DISTINCT location, area, method FROM encounters").fetchall()
-    unplaced = [r for r in rows if not prog.is_reachable("champion_steven", *r) and prog.never_reason(*r) is None]
-    overlap = [r for r in rows if prog.is_reachable("champion_steven", *r) and prog.never_reason(*r)]
+    # Placed = opened by the Champion, even if it closed again since (the hideout, the legendary's static)
+    unplaced = [r for r in rows if not prog.opened("champion_steven", *r) and prog.never_reason(*r) is None]
+    overlap = [r for r in rows if prog.opened("champion_steven", *r) and prog.never_reason(*r)]
     assert unplaced == [] and overlap == []
 
 
@@ -176,10 +177,52 @@ def test_sources_cite_existing_guide_chunks(prog, game):
 
 def test_events_follow_real_battles(prog):
     ids = {b.id for b in prog.battles}
-    assert len(prog.events) == 9 and all(e["after"] in ids for e in prog.events)
+    assert len(prog.events) == 10 and all(e["after"] in ids for e in prog.events)
 
 
 def test_tm_places_open(prog, db):
     places = {l for (l,) in db.execute("SELECT location FROM tm_locations").fetchall() if l}
     never_ok = {"ss-tidal"}  # TM49, after the Hall of Fame
     assert sorted(l for l in places - never_ok if not any(s[0] == l for b in prog.battles for s in b.areas_new)) == []
+
+
+def test_closings_name_real_battles_and_open_areas(prog):
+    ids = {b.id for b in prog.battles}
+    for c in prog.closes:
+        assert c.after in ids, c
+        assert any(spec[0] == c.spec[0] for spec in prog.areas_reachable(c.after)), c  # it was open first
+
+
+def test_hideout_closes_at_the_mind_badge(prog, game):
+    hideout = {"ruby": "team-magma-hideout", "sapphire": "team-aqua-hideout"}[game.id]
+    assert prog.is_reachable("gym7_tate_liza", hideout, None, "static")  # the last chance
+    assert prog.missable_reason("gym7_tate_liza", hideout, None, "static")
+    for later in ("admin_seafloor_cavern", "gym8_wallace", "champion_steven"):
+        assert not prog.is_reachable(later, hideout, None, "static")
+        assert "Mind Badge" in prog.closed_reason(later, hideout, None, "static")
+
+
+def test_legendary_is_gone_after_its_battle(prog):
+    assert prog.is_reachable("legendary_cave_of_origin", "cave-of-origin", "b4f", "static")
+    assert not prog.is_reachable("gym8_wallace", "cave-of-origin", "b4f", "static")
+    assert prog.is_reachable("gym8_wallace", "cave-of-origin", "1f", "walk")  # the cave itself stays open
+
+
+# Reachability on each side of the story steps that open or close something (review round 4):
+# (battle, location, area, method, reachable before it?)
+TRANSITIONS = [
+    ("grunts_oceanic_museum", "hoenn-route-110", None, "walk", True),  # the grass south of the grunts
+    ("grunts_oceanic_museum", "hoenn-route-110", None, "surf", False),  # north of the grunt line
+    ("rival2_route110", "hoenn-route-110", None, "surf", True),
+    ("admin_hideout", "hoenn-route-124", None, "surf", False),  # the Wailmer block the sea east of Lilycove
+    ("gym7_tate_liza", "hoenn-route-124", None, "surf", True),
+    ("gym7_tate_liza", "seafloor-cavern", None, "walk", False),  # needs Dive (Mind Badge)
+    ("admin_seafloor_cavern", "seafloor-cavern", None, "walk", True),
+    ("leader_seafloor_cavern", "cave-of-origin", "1f", "walk", False),  # the Expert blocks it
+    ("legendary_cave_of_origin", "cave-of-origin", "1f", "walk", True),
+]
+
+
+@pytest.mark.parametrize("battle, location, area, method, expected", TRANSITIONS)
+def test_story_transitions(prog, battle, location, area, method, expected):
+    assert prog.is_reachable(battle, location, area, method) is expected

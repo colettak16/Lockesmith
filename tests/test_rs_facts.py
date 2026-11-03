@@ -169,6 +169,17 @@ def test_sootopolis_tm_waits_for_the_legendary(db):
     assert "FLAG_LEGENDARY_BATTLE_COMPLETED" in req
 
 
+@pytest.mark.parametrize("game_id", ["emerald", "ruby", "sapphire"])
+def test_lilycove_store_tms_need_the_rival_battle(game_id):
+    # All three games: the rival stands on the only tile below the store's door until battled;
+    # declining leaves them there (docs/review_packet_rs.md V-14).
+    con = duckdb.connect(str(GAMES[game_id].db_path), read_only=True)
+    got = dict(con.execute("SELECT label, requires FROM tm_locations WHERE map_folder = 'LilycoveCity_DepartmentStore_4F'").fetchall())
+    con.close()
+    assert sorted(got) == ["TM14", "TM15", "TM16", "TM17", "TM20", "TM25", "TM33", "TM38"]
+    assert all(req and "Lilycove rival battle" in req for req in got.values())
+
+
 # --- Cross-checks against pokeruby ------------------------------------------------------
 
 

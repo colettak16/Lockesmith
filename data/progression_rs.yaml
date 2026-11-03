@@ -248,7 +248,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength]
     key_items: [old-rod, pokeblock-case, go-goggles]
     areas_new: [{area: hoenn-route-111, methods: [walk]}]
-    notes: "Slaking 28, Vigoroth 30, Slaking 31. The Go-Goggles open the Route 111 desert. There's no Mirage Tower in Ruby/Sapphire: the Root Fossil (Lileep) and Claw Fossil (Anorith) lie on the desert floor and taking one hides the other (Route111 scripts). Strength comes from Rusturf Tunnel once Wanda's boyfriend can reach her, usable with the Heat Badge."
+    notes: "Slaking 28, Vigoroth 30, Slaking 31. The Go-Goggles open the Route 111 desert. There's no Mirage Tower in Ruby/Sapphire: the Root Fossil (Lileep) and Claw Fossil (Anorith) lie on the desert floor and taking one hides the other (Route111 scripts). Devon Corp revives it (Lv20) only into a free party slot, as with every Ruby/Sapphire gift. Strength comes from Rusturf Tunnel once Wanda's boyfriend can reach her, usable with the Heat Badge."
     source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_10#Petalburg_Gym"
 
   - id: admin_weather_institute
@@ -271,7 +271,7 @@ battles:
       - hoenn-route-123
       - hoenn-route-119/main
       - {area: hoenn-route-115, methods: [walk, surf]}
-    notes: {ruby: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Magma Grunts (TRAINER_GRUNT_43, _52, _44, _45) before Courtney.", sapphire: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Aqua Grunts (TRAINER_GRUNT_16, _25, _17, _18) before Shelly."}
+    notes: {ruby: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Magma Grunts (TRAINER_GRUNT_43, _52, _44, _45) before Courtney. Afterwards the scientist gives Castform (Lv25 @ Mystic Water), but only into a free party slot: Ruby/Sapphire's gift scripts check the party size and never send to the PC (Emerald's do), so come back with room.", sapphire: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Aqua Grunts (TRAINER_GRUNT_16, _25, _17, _18) before Shelly. Afterwards the scientist gives Castform (Lv25 @ Mystic Water), but only into a free party slot: Ruby/Sapphire's gift scripts check the party size and never send to the PC (Emerald's do), so come back with room."}
     source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_11#Weather_Institute"
 
   - id: rival3_route119
@@ -334,7 +334,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, pokeblock-case, go-goggles, devon-scope]
     areas_new: []
-    notes: "The rival is outside the Department Store and asks to battle; declining is allowed (FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). The constants here are named after the player's starter."
+    notes: "The rival is outside the Department Store and asks to battle; declining is allowed (FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). The constants here are named after the player's starter. Declining leaves the rival on (27,7), the only tile below the store's door (only LilycoveCity_EventScript_RivalFlyAway removes them), so the store and its 4F TMs (TM14, 15, 16, 17, 20, 25, 33, 38) need this battle."
     source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_13#Rival_Battle_4"
 
   - id: admin_hideout
@@ -555,12 +555,20 @@ events:
   - {id: hideout_closed, after: gym7_tate_liza, flag: FLAG_BADGE07_GET, closes: "Lilycove's hideout for good: its two Electrode, the Master Ball, Max Elixir, Nugget and Nest Ball are missable", source: "decomp:data/maps/LilycoveCity/scripts.inc"}
   - {id: legend_escaped, after: leader_seafloor_cavern, flag: FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN, opens: "Cave of Origin (the Expert at its entrance steps aside)", source: "decomp:data/maps/SootopolisCity/scripts.inc"}
   - {id: legendary_battle_done, after: legendary_cave_of_origin, flag: FLAG_LEGENDARY_BATTLE_COMPLETED, opens: "Sootopolis's doors and gym; Wallace appears", source: "decomp:data/maps/CaveOfOrigin_B4F/scripts.inc"}
-  - {id: hall_of_fame, after: champion_steven, flag: FLAG_SYS_GAME_CLEAR, opens: "Sky Pillar (Rayquaza), the Beldum gift, the roaming Latios/Latias, the S.S. Tidal", source: "decomp:data/scripts/hall_of_fame.inc"}
+  - {id: hall_of_fame, after: champion_steven, flag: FLAG_SYS_GAME_CLEAR, opens: "Sky Pillar (Rayquaza), the Beldum gift, the S.S. Tidal, and the TV news at home that starts the roamer (FLAG_SYS_TV_LATI, set only while no Lati is roaming yet)", source: "decomp:data/scripts/hall_of_fame.inc"}
+  - {id: lati_tv_report, after: champion_steven, flag: FLAG_LATIOS_OR_LATIAS_ROAMING, opens: "the roaming Latios (Ruby) / Latias (Sapphire): after the Hall of Fame the TV on your house's 1F shows the news, and checking it runs InitRoamer. Nothing starts it automatically, and there's no color question (Emerald asks which one; here the version decides)", source: "decomp:data/scripts/tv.inc"}
+
+# Areas that close for good. With `after`, the area is still reachable before that battle and
+# gone for every later one, so the tools stop offering it; without `after`, it closes on a
+# player action and the tools only flag it as missable.
+closes:
+  - {area: {ruby: team-magma-hideout, sapphire: team-aqua-hideout}, after: gym7_tate_liza, reason: "Lilycove's hideout is walled off for good once you hold the Mind Badge (LilycoveCity_OnLoad checks FLAG_BADGE07_GET; E-06), taking its two Lv30 Electrode and its items (the Master Ball among them) with it"}
+  - {area: cave-of-origin/b4f, methods: [static], after: legendary_cave_of_origin, reason: "the Lv45 legendary is the required battle itself; once it ends (caught, knocked out or fled) it's gone"}
 
 # Encounters that can't be had before the Champion (see data/progression.yaml).
 never_reachable:
   - {area: mossdeep-city/stevens-house, methods: [gift], reason: "you visit Steven's house for HM08 Dive before the Champion; only the Beldum gift comes after the Hall of Fame (hall_of_fame.inc)"}
   - {area: sky-pillar, reason: "postgame in Ruby/Sapphire: Route 131 opens the way only after the Hall of Fame (Route131_MapScripts)"}
-  - {area: roaming-hoenn, reason: "the roaming Latios (Ruby) / Latias (Sapphire) appears after the Hall of Fame"}
+  - {area: roaming-hoenn, reason: "the roaming Latios (Ruby) / Latias (Sapphire) starts after the Hall of Fame, once you check the TV news at home (E-10)"}
   - {area: southern-island, reason: "Eon Ticket event"}
   - {area: hoenn-pokecenter, reason: "Colosseum bonus disc gift (event)"}

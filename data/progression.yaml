@@ -373,7 +373,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
-    notes: "The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout."
+    notes: "The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout. Optional, but the rival stands on (27,7), the only tile below the Department Store's door, and declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle; only RivalFlyAway removes them), so the store and its 4F TMs (TM14, 15, 16, 17, 20, 25, 33, 38) need this battle."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)"
 
   - id: tabitha_magma_hideout
@@ -501,6 +501,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
     key_items: [old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: []
+    notes: "From here until Rayquaza's scene in Sootopolis, Sootopolis's surfing and Sweet Scent water encounters are off (FLAG_LEGENDARIES_IN_SOOTOPOLIS, set in SeafloorCavern_Room9 and cleared by the Rayquaza scene; AreLegendariesInSootopolisPreventingEncounters in wild_encounter.c). Fishing there still works. Ruby/Sapphire have no such block."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_15#VS_Archie"
 
   - id: gym8_juan
@@ -612,6 +613,13 @@ battles:
     notes: "Emerald's Champion is Wallace (Steven is Champion in Ruby/Sapphire)."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_19#Champion"
 
+# Areas that close for good. With `after`, the area is still reachable before that battle and
+# gone for every later one, so the tools stop offering it; without `after`, it closes on a
+# player action and the tools only flag it as missable.
+closes:
+  - {area: cave-of-origin, after: gym8_juan, reason: "open only during the Groudon/Kyogre crisis: the Expert at its entrance steps aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, until Wallace leaves for Sky Pillar), so catch there on the way to Wallace in the cave or not at all"}
+  - {area: mirage-tower, reason: "collapses for good once you take a fossil from its top floor (MirageTower_4F sets VAR_MIRAGE_TOWER_STATE), and until then it shows on Route 111 only about half the times you arrive (SetMirageTowerVisibility)"}
+
 # Encounters that can't be had before the Champion. Tools should say "postgame" or
 # "event only" rather than "not in the data". This is about the encounter, not the
 # place: an entry with `methods` blocks only those methods (Littleroot itself is where
@@ -627,7 +635,7 @@ never_reachable:
   - {area: desert-underpass, reason: "opens after the Hall of Fame"}
   - {area: marine-cave, reason: "postgame (Kyogre)"}
   - {area: terra-cave, reason: "postgame (Groudon)"}
-  - {area: roaming-hoenn, reason: "Latios/Latias start roaming after the Hall of Fame"}
+  - {area: roaming-hoenn, reason: "Latios/Latias start roaming after the Hall of Fame: entering your house plays the TV news, and the color you tell Mom picks which one roams (players_house.inc, InitRoamer)"}
   - {area: artisan-cave, reason: "Battle Frontier (postgame)"}
   - {area: hoenn-battle-frontier, reason: "Battle Frontier (postgame)"}
   - {area: southern-island, reason: "Eon Ticket event"}
