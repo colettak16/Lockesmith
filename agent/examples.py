@@ -61,6 +61,27 @@ EXAMPLES = [
         },
     },
     {
+        "id": "firered-sabrina", "title": "FireRed: into Sabrina", "tag": "firered",
+        "blurb": "Kanto data: Saffron's Psychic gym, after Silph Co.",
+        "message": "What should I catch to beat Sabrina?",
+        "run_state": {
+            "game": "firered", "starter": "charmander", "badges": ["boulder", "cascade", "thunder", "rainbow", "soul"],
+            "party": [{"species": "Charizard", "level": 40}, {"species": "Pidgeotto", "level": 34},
+                      {"species": "Raichu", "level": 35}, {"species": "Lapras", "level": 30}],
+        },
+    },
+    {
+        "id": "leafgreen-crobat", "title": "LeafGreen: Crobat?", "tag": "leafgreen",
+        "blurb": "FireRed/LeafGreen stop evolutions at #151 until the postgame.",
+        "message": "My Golbat is really friendly now. Will it evolve into Crobat before the Elite Four?",
+        "run_state": {
+            "game": "leafgreen", "starter": "squirtle",
+            "badges": ["boulder", "cascade", "thunder", "rainbow", "soul", "marsh", "volcano", "earth"],
+            "party": [{"species": "Blastoise", "level": 52}, {"species": "Golbat", "level": 46},
+                      {"species": "Jolteon", "level": 47}, {"species": "Dugtrio", "level": 45}],
+        },
+    },
+    {
         "id": "monotype", "title": "Custom rules in chat", "tag": "rules",
         "blurb": "Rules typed in plain words become checked constraints.",
         "message": "I'm doing a Water monotype run with no legendaries. What should I catch before Juan?",
