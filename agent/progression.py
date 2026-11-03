@@ -213,5 +213,6 @@ def load(path: Path = PATH, version: str | None = None) -> Progression:
 
 
 def load_game(game: Game = EMERALD) -> Progression:
-    """The progression for a game: Emerald's file, or the shared Ruby/Sapphire file resolved for the version."""
-    return load(game.progression_path, game.id if game.is_rs else None)
+    """The progression for a game: Emerald's file, or the file a version pair shares (Ruby/Sapphire,
+    FireRed/LeafGreen) resolved for the version."""
+    return load(game.progression_path, game.id if game.rom_version else None)

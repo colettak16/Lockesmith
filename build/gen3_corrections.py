@@ -1,4 +1,4 @@
-"""Gen 3 correction layer: PokeAPI's modern tables -> tables accurate for one Gen 3 Hoenn game.
+"""Gen 3 correction layer: PokeAPI's modern tables -> tables accurate for one Gen 3 game.
 
 Expects the PokeAPI CSVs loaded into schema `raw` (see build_db.load_raw) and
 creates the corrected tables in `main`, for the game given (agent/games.py: its
@@ -518,7 +518,15 @@ RS_ROM_CONDITIONS = {
 }
 
 
+# FireRed/LeafGreen: the places with conditions (Cerulean Cave, the roaming beasts, Water Labyrinth's
+# egg, the event islands) are postgame or event-only as a whole, so progression_frlg.yaml's
+# never_reachable covers them and no encounter row needs a condition of its own.
+FRLG_ROM_CONDITIONS: dict[str, tuple[str, str]] = {}
+
+
 def rom_condition_rows(game: Game) -> dict[tuple[str, str, str | None], list[str]]:
+    if game.is_frlg:
+        return {}
     if not game.is_rs:
         return ROM_CONDITION_ROWS
     legendary = "groudon" if game.rom_version == "RUBY" else "kyogre"
@@ -536,7 +544,7 @@ def rom_condition_rows(game: Game) -> dict[tuple[str, str, str | None], list[str
 
 def add_rom_conditions(con, decomp_dir: Path, game: Game = EMERALD) -> None:
     """Attach the game's ROM-condition gates to their encounter rows and describe them in `rom_conditions`."""
-    conditions_table = RS_ROM_CONDITIONS if game.is_rs else ROM_CONDITIONS
+    conditions_table = {"rs": RS_ROM_CONDITIONS, "frlg": FRLG_ROM_CONDITIONS}.get(game.family, ROM_CONDITIONS)
     constants = decomp.read(decomp_dir, "include/constants/flags.h") + decomp.read(decomp_dir, "include/constants/vars.h")
     for name, (symbol, _) in conditions_table.items():
         assert symbol in constants or not symbol.isupper(), f"{name}: {symbol} not in the decomp's flags/vars"
@@ -548,9 +556,10 @@ def add_rom_conditions(con, decomp_dir: Path, game: Game = EMERALD) -> None:
         ).fetchone()[0]
         assert n > 0, f"no encounter rows for {location} {method} {species}"
     con.execute("CREATE TABLE rom_conditions (condition VARCHAR PRIMARY KEY, decomp_symbol VARCHAR, description VARCHAR)")
-    con.executemany(
-        "INSERT INTO rom_conditions VALUES (?, ?, ?)", [(k, s, d) for k, (s, d) in conditions_table.items()]
-    )
+    if conditions_table:  # FireRed/LeafGreen have none (FRLG_ROM_CONDITIONS)
+        con.executemany(
+            "INSERT INTO rom_conditions VALUES (?, ?, ?)", [(k, s, d) for k, (s, d) in conditions_table.items()]
+        )
 
 
 def reconcile_evolutions_with_rom(con, decomp_dir: Path) -> None:

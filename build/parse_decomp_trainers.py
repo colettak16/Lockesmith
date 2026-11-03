@@ -112,7 +112,7 @@ def parse_trainers(decomp_dir: Path) -> list[dict]:
         f = fields(body)
         party = re.search(r"\b(sParty_\w+|gTrainerParty_\w+)\b", f.get("party", ""))
         name = re.search(r'_\("([^"]*)"\)', f["trainerName"]).group(1)
-        trainer_class = f["trainerClass"]
+        trainer_class = f.get("trainerClass", "TRAINER_CLASS_NONE")  # pokefirered's TRAINER_NONE has only a name
         out.append(
             {
                 "trainer_id": ids[const],

@@ -1,14 +1,15 @@
-"""Build one database per game (data/emerald.duckdb, data/ruby.duckdb, data/sapphire.duckdb).
+"""Build one database per game (data/emerald.duckdb, ruby, sapphire, firered, leafgreen).
 
     uv run python build/fetch_sources.py              # once, or after changing data/sources.lock.json
-    uv run python build/build_db.py                   # all three games
+    uv run python build/build_db.py                   # every game
     uv run python build/build_db.py --game ruby       # one game
 
 Steps: load PokeAPI CSVs into `raw`, apply the Gen 3 correction layer for the game's
 PokeAPI version, add the decomp-derived tables (map sections, trainers, TM locations,
 tutors), drop `raw` and write the file. Every table a tool reads carries a `source_id`
 per row. Emerald comes from pokeemerald; Ruby and Sapphire from pokeruby, each with its
-own wild tables, script branches and aliases (agent/games.py, docs/decisions.md D13).
+own wild tables, script branches and aliases (agent/games.py, docs/decisions.md D13);
+FireRed and LeafGreen from pokefirered the same way (D16).
 """
 
 import argparse
@@ -53,6 +54,21 @@ MAPSEC_OVERRIDES = {
         "MAPSEC_BATTLE_TOWER": ("hoenn-battle-tower", None),
     },
 }
+# FireRed/LeafGreen sections PokeAPI's Gen 3 indices leave out: Silph Co. is part of Saffron City
+# there (the Lapras gift is Saffron's silph-co-7f area), and Ember Spa, the Rocket Warehouse, Dotted
+# Hole and Tanoby Key are inside a Sevii place. Sevii Isle 6-9 are unused prototype maps and the
+# special area is the link rooms, so they stay unmapped.
+FRLG_MAPSEC_OVERRIDES = {
+    "MAPSEC_UNDERGROUND_PATH": ("kanto-underground-path", None),
+    "MAPSEC_UNDERGROUND_PATH_2": ("kanto-underground-path", None),
+    "MAPSEC_SILPH_CO": ("saffron-city", None),
+    "MAPSEC_TRAINER_TOWER": ("trainer-tower", None),
+    "MAPSEC_EMBER_SPA": ("kindle-road", None),
+    "MAPSEC_ROCKET_WAREHOUSE": ("five-island", None),
+    "MAPSEC_DOTTED_HOLE": ("six-island", None),
+    "MAPSEC_TANOBY_KEY": ("sevault-canyon", None),
+}
+MAPSEC_OVERRIDES["firered"] = MAPSEC_OVERRIDES["leafgreen"] = FRLG_MAPSEC_OVERRIDES
 
 
 def decomp_dir(game: Game) -> Path:

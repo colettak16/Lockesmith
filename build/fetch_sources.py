@@ -3,9 +3,9 @@
     uv run python build/fetch_sources.py            # use SHAs in data/sources.lock.json
     uv run python build/fetch_sources.py --update   # re-resolve to the latest upstream commits
 
-PokeAPI CSVs come from raw.githubusercontent.com at a fixed commit. The two decomps
-(pokeemerald for Emerald, pokeruby for Ruby and Sapphire) are sparse, blobless git
-checkouts of only the directories the build reads.
+PokeAPI CSVs come from raw.githubusercontent.com at a fixed commit. The decomps
+(pokeemerald for Emerald, pokeruby for Ruby and Sapphire, pokefirered for FireRed and
+LeafGreen) are sparse, blobless git checkouts of only the directories the build reads.
 """
 
 import argparse
@@ -25,6 +25,7 @@ USER_AGENT = "Lockesmith/0.1 (IEOR E4570 course project)"
 POKEAPI_REPO = "PokeAPI/pokeapi"
 POKEEMERALD_REPO = "pret/pokeemerald"
 POKERUBY_REPO = "pret/pokeruby"
+POKEFIRERED_REPO = "pret/pokefirered"
 
 POKEAPI_CSVS = [
     "abilities", "ability_flavor_text", "ability_names",
@@ -96,7 +97,39 @@ POKERUBY_PATHS = [
     "data/item_ball_scripts.inc",
     "data/event_scripts.s",
 ]
-DECOMPS = {"pokeemerald": (POKEEMERALD_REPO, POKEEMERALD_PATHS), "pokeruby": (POKERUBY_REPO, POKERUBY_PATHS)}
+# pokefirered builds FireRed or LeafGreen from one tree and keeps pokeemerald's layout and file names;
+# the TM list is in party_menu.c, and trades, tutors and the National Dex gate are in their own files.
+POKEFIRERED_PATHS = [
+    "src/data/trainer_parties.h",
+    "src/data/trainers.h",
+    "src/data/pokemon",
+    "src/data/battle_moves.h",
+    "src/data/wild_encounters.json",
+    "src/data/text/species_names.h",
+    "src/data/text/trainer_class_names.h",
+    "src/data/text/move_names.h",
+    "src/data/text/abilities.h",
+    "src/data/region_map",
+    "src/data/ingame_trades.h",
+    "src/data/party_menu.h",
+    "src/battle_main.c",
+    "src/pokemon.c",
+    "src/party_menu.c",
+    "src/evolution_scene.c",
+    "src/field_specials.c",
+    "src/trade.c",
+    "include/constants",
+    "data/maps",
+    "data/scripts",
+    "data/text",
+    "data/event_scripts.s",
+    "data/specials.inc",
+]
+DECOMPS = {
+    "pokeemerald": (POKEEMERALD_REPO, POKEEMERALD_PATHS),
+    "pokeruby": (POKERUBY_REPO, POKERUBY_PATHS),
+    "pokefirered": (POKEFIRERED_REPO, POKEFIRERED_PATHS),
+}
 
 
 def latest_sha(repo: str) -> str:

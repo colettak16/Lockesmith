@@ -18,6 +18,11 @@ pokeruby (Ruby/Sapphire) names TM items by number (`ITEM_TM01_FOCUS_PUNCH`), kee
 item-ball scripts in data/item_ball_scripts.inc, gives Game Corner prizes with
 `additem`, has leaders without a `_1` suffix, and has no move tutors. Its gates are
 RS_REQUIRES (docs/review_packet_rs.md TM-01..TM-03).
+
+pokefirered (FireRed/LeafGreen) aliases TM items like pokeruby, sells Game Corner prizes in
+Celadon's prize room (`setvar VAR_TEMP_1, ITEM_TM13`), names leaders TRAINER_LEADER_BROCK,
+and has 15 one-time tutors (`MOVETUTOR_X`, some in shared labels that a map calls) plus Cape
+Brink's starter tutor, a C special with its own conditions. Its gates are FRLG_REQUIRES.
 """
 
 import re
@@ -100,20 +105,46 @@ RS_REQUIRES = {
 }
 # pokeruby leaders have no rematch numbering, so gym rewards are tagged with these constants.
 RS_LEADERS = ("ROXANNE", "BRAWLY", "WATTSON", "FLANNERY", "NORMAN", "WINONA", "TATE_AND_LIZA", "WALLACE")
+LEADER_BATTLE = {
+    "emerald": r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_\w+_1)\b",
+    "rs": r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_(?:" + "|".join(RS_LEADERS) + r"))\b",
+    "frlg": r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_LEADER_\w+)\b",
+}
+# The Game Corner's prize counter: (map, how its script names a prize)
+GAME_CORNER = {
+    "emerald": ("MAP_MAUVILLE_CITY_GAME_CORNER", r"setvar\s+VAR_0x8004,\s*(ITEM_(?:TM|HM)\w+)"),
+    "rs": ("MAP_MAUVILLE_CITY_GAME_CORNER", r"additem\s+(ITEM_(?:TM|HM)\w+)"),
+    "frlg": ("MAP_CELADON_CITY_GAME_CORNER_PRIZE_ROOM", r"setvar\s+VAR_TEMP_1,\s*(ITEM_(?:TM|HM)\w+)"),
+}
+# FireRed/LeafGreen gates map data can't show; filled in from the decomp and the review rounds.
+CELADON_ROOF = "CeladonCity_DepartmentStore_Roof"
+THIRSTY_GIRL = (
+    "the thirsty girl on the Celadon Department Store roof trades it for a drink from the roof's vending "
+    "machines (the drink is in `detail`), once per drink"
+)
+FRLG_REQUIRES = {(tm, "gift", CELADON_ROOF): THIRSTY_GIRL for tm in ("TM16", "TM20", "TM33")}
+# Cape Brink (Two Island) teaches the lead Pokemon its starter's ultimate move (field_specials.c)
+CAPE_BRINK = "TwoIsland_CapeBrink_House"
+CAPE_BRINK_MOVES = {"MOVE_FRENZY_PLANT": "Venusaur", "MOVE_BLAST_BURN": "Charizard", "MOVE_HYDRO_CANNON": "Blastoise"}
+
+
+# `giveitem ITEM_TM39`, or pokefirered's `giveitem_msg <text>, ITEM_TM39`
+GIFT = r"giveitem(?:_msg\s+\w+,)?\s+(ITEM_(?:TM|HM)\w+)"
 
 
 def requires_for(decomp_dir: Path) -> dict[tuple[str, str, str], str]:
-    return RS_REQUIRES if decomp.is_rs(decomp_dir) else REQUIRES
+    return {"rs": RS_REQUIRES, "frlg": FRLG_REQUIRES}.get(decomp.family(decomp_dir), REQUIRES)
 
 
 def item_aliases(decomp_dir: Path) -> dict[str, str]:
-    """`ITEM_TM_SANDSTORM` and `ITEM_TM37` -> `TM37`; in pokeruby `ITEM_TM37_SANDSTORM` -> `TM37`."""
+    """`ITEM_TM_SANDSTORM` and `ITEM_TM37` -> `TM37`; in pokeruby and pokefirered
+    `ITEM_TM37_SANDSTORM` -> `TM37`."""
     out = {}
     for label, move in decomp.tm_hm_moves(decomp_dir):
         kind = label[:2]
         out[f"ITEM_{kind}_{move.removeprefix('MOVE_')}"] = label
         out[f"ITEM_{label}"] = label
-    if decomp.is_rs(decomp_dir):
+    if decomp.family(decomp_dir) != "emerald":
         for name in decomp.defines(decomp_dir, "include/constants/items.h"):
             m = re.match(r"ITEM_(TM|HM)(\d\d)_\w+$", name)
             if m:
@@ -138,8 +169,8 @@ def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
     def add(label, method, map_id, flag=None, detail=None):
         rows.append({"label": label, "method": method, "map": map_id, "flag": flag, "detail": detail})
 
-    rs = decomp.is_rs(decomp_dir)
-    ball_file = "data/item_ball_scripts.inc" if rs else "data/scripts/item_ball_scripts.inc"
+    fam = decomp.family(decomp_dir)
+    ball_file = "data/item_ball_scripts.inc" if fam == "rs" else "data/scripts/item_ball_scripts.inc"
     ball_scripts = {}
     for name, body in labelled_blocks(decomp.read(decomp_dir, ball_file)).items():
         # A ball gives the first item its script finds. pokeruby has an unlabeled `finditem
@@ -169,13 +200,13 @@ def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
         if path.name == "item_ball_scripts.inc":
             continue
         text = path.read_text(encoding="utf-8")
-        given = {aliases[i] for i in re.findall(r"giveitem\s+(ITEM_(?:TM|HM)\w+)", text) if i in aliases}
+        given = {aliases[i] for i in re.findall(GIFT, text) if i in aliases}
         if given:
             shared.append((set(labelled_blocks(text)), given, path.name))
 
     for map_id, m in maps.items():
         text = map_texts.get(map_id, "")
-        for item in re.findall(r"giveitem\s+(ITEM_(?:TM|HM)\w+)", text):
+        for item in re.findall(GIFT, text):
             if item in aliases:
                 add(aliases[item], "gift", map_id)
         refs = set(re.findall(r"\w+", text)) | {
@@ -190,16 +221,17 @@ def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
             for item in re.findall(r"\.2byte\s+(ITEM_\w+)", body):
                 if item in aliases:
                     add(aliases[item], "mart", map_id, detail=mart)
-        if map_id == "MAP_MAUVILLE_CITY_GAME_CORNER":
-            prize = r"additem\s+(ITEM_(?:TM|HM)\w+)" if rs else r"setvar\s+VAR_0x8004,\s*(ITEM_(?:TM|HM)\w+)"
+        corner, prize = GAME_CORNER[fam]
+        if map_id == corner:
             for item in dict.fromkeys(re.findall(prize, text)):
                 add(aliases[item], "game-corner", map_id)
+        # FireRed/LeafGreen's thirsty girl: `setvar VAR_0x8008, <drink>` then `setvar VAR_0x8009, <TM>`
+        if fam == "frlg" and m["folder"] == CELADON_ROOF:
+            for drink, item in re.findall(r"setvar\s+VAR_0x8008,\s*ITEM_(\w+)\s+setvar\s+VAR_0x8009,\s*(ITEM_TM\w+)", text):
+                add(aliases[item], "gift", map_id, detail=f"for {drink.replace('_', ' ').title()}")
 
     # Gym TMs are handed over after the leader's battle in the same map script.
-    leader_re = (
-        r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_(?:" + "|".join(RS_LEADERS) + r"))\b"
-        if rs else r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_\w+_1)\b"
-    )
+    leader_re = LEADER_BATTLE[fam]
     for row in rows:
         if row["method"] == "gift" and "_GYM" in row["map"]:
             leaders = re.findall(leader_re, map_texts.get(row["map"], ""))
@@ -210,21 +242,43 @@ def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
     return sorted(unique.values(), key=lambda r: (r["label"], r["method"], r["map"]))
 
 
-def extract_tutors(decomp_dir: Path) -> list[tuple[str, str]]:
-    """[(map folder, MOVE_X)] for the Hoenn move tutors. Each teaches once in Emerald.
+def extract_tutors(decomp_dir: Path, version: str | None = None) -> list[tuple[str, str, str | None]]:
+    """[(map folder, MOVE_X, what else it needs)] for the move tutors. Each teaches once.
 
-    The script labels are prefixed with the map folder they live in. The other 20
-    Emerald tutors are in the Battle Frontier, which is out of scope. Ruby and Sapphire
-    have no move tutors (Fallarbor's "move tutor" is the Move Relearner).
+    Emerald's script labels are prefixed with the map folder they live in; its other 20
+    tutors are in the Battle Frontier, which is out of scope. Ruby and Sapphire have no move
+    tutors (Fallarbor's "move tutor" is the Move Relearner). FireRed/LeafGreen's labels are
+    found through the maps that call them, and Cape Brink's starter tutor is added from
+    field_specials.c (CapeBrinkGetMoveToTeachLeadPokemon).
     """
-    if decomp.is_rs(decomp_dir):
+    fam = decomp.family(decomp_dir)
+    if fam == "rs":
         return []
-    text = decomp.read(decomp_dir, "data/scripts/move_tutors.inc")
+    blocks = labelled_blocks(decomp.read(decomp_dir, "data/scripts/move_tutors.inc"))
+    if fam == "emerald":
+        out = []
+        for name, body in blocks.items():
+            m = re.search(r"setvar\s+VAR_0x8005,\s*TUTOR_(MOVE_\w+)", body)
+            if m and "_EventScript_" in name:
+                out.append((name.split("_EventScript_")[0], m.group(1), None))
+        return out
+    tutors = {}
+    for name, body in blocks.items():
+        m = re.search(r"setvar\s+VAR_0x8005,\s*MOVETUTOR_(\w+)", body)
+        if m:
+            tutors[name] = f"MOVE_{m.group(1)}"
     out = []
-    for name, body in labelled_blocks(text).items():
-        m = re.search(r"setvar\s+VAR_0x8005,\s*TUTOR_(MOVE_\w+)", body)
-        if m and "_EventScript_" in name:
-            out.append((name.split("_EventScript_")[0], m.group(1)))
+    for m in decomp.maps(decomp_dir, version).values():
+        path = Path(decomp_dir) / "data" / "maps" / m["folder"] / "scripts.inc"
+        refs = set(re.findall(r"\w+", path.read_text(encoding="utf-8"))) if path.exists() else set()
+        refs |= {e.get("script") for key in ("object_events", "coord_events", "bg_events") for e in m.get(key) or []}
+        out += [(m["folder"], move, None) for label, move in tutors.items() if label in refs]
+    found = {move for _, move, _ in out}
+    assert found == set(tutors.values()), f"tutors no map calls: {sorted(set(tutors.values()) - found)}"
+    specials = decomp.read(decomp_dir, "src/field_specials.c")
+    for move, species in CAPE_BRINK_MOVES.items():
+        assert f"SPECIES_{species.upper()}" in specials and move in specials, f"Cape Brink no longer teaches {move}"
+        out.append((CAPE_BRINK, move, f"the lead Pokemon must be {species} with friendship 255 (CapeBrinkGetMoveToTeachLeadPokemon)"))
     return out
 
 
@@ -259,20 +313,21 @@ def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path, version: str | None 
     folders = {m["folder"]: map_id for map_id, m in maps.items()}
     move_ids = decomp.move_ids(decomp_dir)
     tutor_rows = []
-    for folder, move_const in extract_tutors(decomp_dir):
+    for folder, move_const, needs in extract_tutors(decomp_dir, version):
         map_id = folders[folder]
         mapsec = maps[map_id]["region_map_section"]
+        source = "src/field_specials.c" if folder == CAPE_BRINK else "data/scripts/move_tutors.inc"
         tutor_rows.append(
-            (move_ids[move_const], map_id, folder, mapsec, mapsec_location.get(mapsec), True,
-             f"decomp:data/scripts/move_tutors.inc#{folder}")
+            (move_ids[move_const], map_id, folder, mapsec, mapsec_location.get(mapsec), True, needs,
+             f"decomp:{source}#{folder}")
         )
     con.execute(
         """
         CREATE TABLE move_tutors (
             move_id INTEGER, map VARCHAR, map_folder VARCHAR, mapsec VARCHAR, location VARCHAR,
-            one_time BOOLEAN, source_id VARCHAR
+            one_time BOOLEAN, requires VARCHAR, source_id VARCHAR
         )
         """
     )
     if tutor_rows:  # Ruby and Sapphire have none
-        con.executemany("INSERT INTO move_tutors VALUES (?, ?, ?, ?, ?, ?, ?)", tutor_rows)
+        con.executemany("INSERT INTO move_tutors VALUES (?, ?, ?, ?, ?, ?, ?, ?)", tutor_rows)

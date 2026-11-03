@@ -1,16 +1,18 @@
-"""Parsers for the pret decompilations: pokeemerald (Emerald) and pokeruby (Ruby and Sapphire).
+"""Parsers for the pret decompilations: pokeemerald (Emerald), pokeruby (Ruby and Sapphire) and
+pokefirered (FireRed and LeafGreen).
 
 These read the ROM's own tables. The build uses them for trainer parties, the
 default-moves rule and TM locations, and the tests use them to cross-check the
 PokeAPI-derived tables after Gen 3 corrections.
 
-The two decomps hold the same data in different files and syntax (pokeruby:
-base_stats.h, battle_moves.c, *_en.h text, asm .inc tables, positional arrays).
-`is_rs` tells them apart by layout. pokeruby builds either game from one tree, so
-functions whose answer depends on the version take `version` ("RUBY"/"SAPPHIRE";
-None for Emerald): wild tables come in `_Ruby`/`_Sapphire` pairs, scripts branch
-on `.ifdef SAPPHIRE`, `constants/version.inc` aliases trainers and species, and
-the Lilycove hideout exists as two map sets of which each version uses one.
+`family` tells the decomps apart by layout. pokeruby holds the data in other files and
+syntax (base_stats.h, battle_moves.c, *_en.h text, asm .inc tables, positional arrays);
+pokefirered keeps pokeemerald's layout, with the TM list in data/party_menu.h. pokeruby and
+pokefirered each build two versions from one tree, so functions whose answer depends on the
+version take `version` ("RUBY"/"SAPPHIRE"/"FIRERED"/"LEAFGREEN"; None for Emerald): wild
+tables come in `_Ruby`/`_Sapphire` (`_FireRed`/`_LeafGreen`) pairs, scripts branch on
+`.ifdef SAPPHIRE` (`.ifdef LEAFGREEN`), pokeruby's `constants/version.inc` aliases trainers
+and species, and its Lilycove hideout exists as two map sets of which each version uses one.
 
 Identifiers are normalised to PokeAPI style (`SPECIES_MR_MIME` -> `mr-mime`,
 `TYPE_DARK` -> `dark`) and species are keyed by National Dex number.
@@ -62,11 +64,23 @@ RS_ITEM_RENAMES = {
 }
 # The other version's hideout maps: pokeruby has both sets, and Lilycove opens one per version.
 OTHER_HIDEOUT = {"RUBY": "AquaHideout_", "SAPPHIRE": "MagmaHideout_"}
+# Build flags of the two-version decomps, and the suffix of each version's wild tables.
+VERSION_WILD_SUFFIX = {"RUBY": "_Ruby", "SAPPHIRE": "_Sapphire", "FIRERED": "_FireRed", "LEAFGREEN": "_LeafGreen"}
+
+
+def family(decomp: Path) -> str:
+    """Which decomp a tree is, by layout: "rs" (pokeruby), "frlg" (pokefirered) or "emerald"."""
+    d = Path(decomp)
+    if (d / "src" / "data" / "pokemon" / "base_stats.h").exists():
+        return "rs"
+    if (d / "src" / "data" / "region_map" / "region_map_layout_kanto.h").exists():
+        return "frlg"
+    return "emerald"
 
 
 def is_rs(decomp: Path) -> bool:
-    """True for a pokeruby tree (Ruby/Sapphire), False for pokeemerald."""
-    return (Path(decomp) / "src" / "data" / "pokemon" / "base_stats.h").exists()
+    """True for a pokeruby tree (Ruby/Sapphire)."""
+    return family(decomp) == "rs"
 
 
 def to_identifier(const: str, prefix: str) -> str:
@@ -137,9 +151,9 @@ def enum_members(decomp: Path, rel: str, first: str) -> list[str]:
 def script_lines(text: str, version: str | None) -> list[str]:
     """The lines of an asm script that the given version compiles.
 
-    `.ifdef`/`.ifndef RUBY|SAPPHIRE` blocks for the other version are dropped, as are
-    `.ifdef DEBUG` blocks. Other conditionals keep their first branch. Emerald (None)
-    keeps every line.
+    `.ifdef`/`.ifndef` blocks for the other version (RUBY|SAPPHIRE, FIRERED|LEAFGREEN) are
+    dropped, as are `.ifdef DEBUG` blocks. Other conditionals keep their first branch.
+    Emerald (None) keeps every line.
     """
     if version is None:
         return text.splitlines()
@@ -149,7 +163,7 @@ def script_lines(text: str, version: str | None) -> list[str]:
         m = re.match(r"\.(ifdef|ifndef)\s+(\w+)", s)
         if m:
             flag, positive = m.group(2), m.group(1) == "ifdef"
-            if flag in ("RUBY", "SAPPHIRE"):
+            if flag in VERSION_WILD_SUFFIX:
                 stack.append((flag == version) == positive)
             elif flag == "DEBUG":
                 stack.append(not positive)
@@ -349,10 +363,16 @@ def evolution_pairs(decomp: Path) -> set[tuple[int, int]]:
 
 def friendship_threshold(decomp: Path) -> int:
     """The friendship evolutions' threshold: FRIENDSHIP_EVO_THRESHOLD in pokeemerald's pokemon.c;
-    pokeruby writes `friendship >= 220` into each EVO_FRIENDSHIP case (pokemon_3.c)."""
+    pokeruby (pokemon_3.c) and pokefirered (pokemon.c) write `friendship >= 220` into each
+    EVO_FRIENDSHIP case. pokefirered's pokemon.c has other friendship checks, so only the
+    evolution cases count."""
     if is_rs(decomp):
         values = set(re.findall(r"friendship >= (\d+)", read(decomp, "src/pokemon_3.c")))
         assert len(values) == 1, f"several friendship thresholds in pokemon_3.c: {values}"
+        return int(values.pop())
+    if family(decomp) == "frlg":
+        values = set(re.findall(r"case EVO_FRIENDSHIP:\s*if \(friendship >= (\d+)\)", read(decomp, "src/pokemon.c")))
+        assert len(values) == 1, f"expected one EVO_FRIENDSHIP threshold in pokemon.c: {values}"
         return int(values.pop())
     return int(re.search(r"#define FRIENDSHIP_EVO_THRESHOLD (\d+)", read(decomp, "src/pokemon.c")).group(1))
 
@@ -365,9 +385,10 @@ def map_sections(decomp: Path) -> list[dict]:
     """Region map sections in index order. A section's index is its MAPSEC id.
 
     pokeruby's town names embed a {NAME_END} control code ("PETALBURG{NAME_END} CITY");
-    it's dropped here so names read as the game shows them."""
+    it's dropped here so names read as the game shows them. pokefirered keeps Hoenn's
+    sections (indices 0-87) without names, ahead of Kanto's and the Sevii Islands'."""
     secs = json.loads(read(decomp, "src/data/region_map/region_map_sections.json"))["map_sections"]
-    return [{"index": i, "id": s["id"], "name": s["name"].replace("{NAME_END}", "")} for i, s in enumerate(secs)]
+    return [{"index": i, "id": s["id"], "name": s.get("name", "").replace("{NAME_END}", "")} for i, s in enumerate(secs)]
 
 
 @cache
@@ -391,13 +412,13 @@ def maps(decomp: Path, version: str | None = None) -> dict[str, dict]:
 def wild_headers(decomp: Path, version: str | None = None) -> list[dict]:
     """gWildMonHeaders entries in ROM order (Battle Pyramid/Pike tables excluded).
 
-    pokeruby lists every map twice, `<Map>_Ruby` and `<Map>_Sapphire`; a version keeps its own."""
+    pokeruby lists every map twice, `<Map>_Ruby` and `<Map>_Sapphire`, and pokefirered as
+    `<Map>_FireRed` and `<Map>_LeafGreen`; a version keeps its own."""
     groups = json.loads(read(decomp, "src/data/wild_encounters.json"))["wild_encounter_groups"]
     headers = next(g for g in groups if g["label"] == "gWildMonHeaders")["encounters"]
-    if is_rs(decomp):
-        assert version in ("RUBY", "SAPPHIRE"), "a Ruby/Sapphire wild table needs a version"
-        suffix = "_" + version.title()
-        headers = [h for h in headers if h["base_label"].endswith(suffix)]
+    if family(decomp) != "emerald":
+        assert version in VERSION_WILD_SUFFIX, f"a {family(decomp)} wild table needs a version"
+        headers = [h for h in headers if h["base_label"].endswith(VERSION_WILD_SUFFIX[version])]
     return headers
 
 
@@ -438,9 +459,11 @@ def wild_species_by_location(
 
 @cache
 def tm_hm_moves(decomp: Path) -> list[tuple[str, str]]:
-    """[(label, MOVE_X)] for TM01-TM50 then HM01-HM08 (tms_hms.h; pokeruby's TMHMMoves[])."""
-    if is_rs(decomp):
-        body = re.search(r"TMHMMoves\[\]\s*=\s*\{(.*?)\};", strip_comments(read(decomp, "src/party_menu.c")), flags=re.S)
+    """[(label, MOVE_X)] for TM01-TM50 then HM01-HM08 (tms_hms.h; pokeruby's TMHMMoves[] in
+    party_menu.c; pokefirered's sTMHMMoves[] in data/party_menu.h)."""
+    if family(decomp) != "emerald":
+        rel = "src/party_menu.c" if is_rs(decomp) else "src/data/party_menu.h"
+        body = re.search(r"TMHMMoves\[\]\s*=\s*\{(.*?)\};", strip_comments(read(decomp, rel)), flags=re.S)
         moves = re.findall(r"\b(MOVE_\w+)\b", body.group(1))
         assert len(moves) == 58, f"expected 58 TM/HM moves, found {len(moves)}"
         return [(f"TM{i:02d}", m) for i, m in enumerate(moves[:50], 1)] + [
