@@ -28,6 +28,7 @@ CODES = {
     "GEN3_SPLIT_MISMATCH": "the move's category doesn't suit the Pokémon's stronger attacking stat",
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
     "TYPE_CLAIM_WRONG": "states a type matchup that the Gen III type chart and abilities contradict",
+    "MOVE_ALREADY_KNOWN": "suggests teaching a party Pokémon a move it already knows",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
     "NUZLOCKE_DUPE": "the dupes clause forbids it",
     "RULESET_TYPE_VIOLATION": "breaks the player's allowed or banned types",
@@ -486,6 +487,56 @@ def verify(ctx: RequestContext, draft: LeadDraft) -> list[Violation]:
             out.append(Violation("CITATION_NOT_IN_EVIDENCE", ERROR, label, f"no tool returned {', '.join(missing[:3])}"))
         text = getattr(item, "note", None) or f"{getattr(item, 'title', '')}. {getattr(item, 'detail', '')}"
         out += [Violation("TYPE_CLAIM_WRONG", WARNING, label, d) for d in matchup_errors(ctx, text)]
+        out += [Violation("MOVE_ALREADY_KNOWN", WARNING, label, d)
+                for d in known_move_suggestions(ctx, text, getattr(item, "title", ""))]
+    return out
+
+
+# --- moves the party already knows -------------------------------------------------------------
+# "Consider TM26 Earthquake or HM04 Strength", "teach Blastoise Surf", "teach Ice Beam to Lapras": a move
+# offered to a Pokémon. The Pokémon is the one named in the phrase, else the party member the sentence
+# names last before it, else the step's title ("Snorlax"); it's flagged only when the player gave that
+# member's moves and the move is one of them.
+_TEACH: dict[str, tuple[re.Pattern, dict[str, str]]] = {}
+
+
+def teach_pattern(ctx: RequestContext) -> tuple[re.Pattern, dict[str, str]]:
+    """A regex for a TM/HM label or "teach [Pokémon]" followed by any move name (status moves too),
+    with an optional "to <Pokémon>" after it; and lowercased move name -> id."""
+    if ctx.game.id not in _TEACH:
+        moves = {name: i for i, name in ctx.cursor().execute("SELECT identifier, name FROM moves").fetchall()}
+        moves |= {n.replace(" ", ""): i for n, i in list(moves.items())}  # SolarBeam, ThunderPunch
+        _, species_ids, _, _ = name_patterns(ctx)
+        alt = lambda names: "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True))
+        pattern = (rf"(?:\b(?:TM|HM)\d{{2}}\s+|\bteach(?:ing)?\s+(?:(?P<who>{alt(species_ids)})\s+|it\s+|them\s+)?"
+                   rf"(?:(?:TM|HM)\d{{2}}\s+)?)(?P<move>{alt(moves)})(?!\w)(?:\s+to\s+(?:your\s+)?(?P<to>{alt(species_ids)}))?")
+        _TEACH[ctx.game.id] = (re.compile(pattern, re.I), {n.lower(): i for n, i in moves.items()})
+    return _TEACH[ctx.game.id]
+
+
+def known_move_suggestions(ctx: RequestContext, text: str, title: str = "") -> list[str]:
+    """What's wrong with each "teach X" in `text` aimed at a party member that already knows X."""
+    known: dict[str, tuple[str, set[str]]] = {}  # species id -> (name as given, move ids it knows)
+    for m in ctx.state.party:
+        sp = ctx.index.resolve(m.species, "species", cutoff=80)
+        moves = {mv.id for mv in (ctx.index.resolve(x, "move", cutoff=88) for x in m.moves) if mv}
+        if sp and moves:
+            known[sp.id] = (m.species, moves)
+    if not known:
+        return []
+    teach_re, move_ids = teach_pattern(ctx)
+    species_re, species_ids, _, _ = name_patterns(ctx)
+    by_name = {n.lower(): i for n, i in species_ids.items()}
+    in_title = [species_ids[s.group(1)] for s in species_re.finditer(title) if species_ids[s.group(1)] in known]
+    out = []
+    for sentence in re.split(r"(?<=[.;!?])\s+", text):
+        for m in teach_re.finditer(sentence):
+            named = [species_ids[s.group(1)] for s in species_re.finditer(sentence[: m.start()]) if species_ids[s.group(1)] in known]
+            who = by_name.get((m["who"] or m["to"] or "").lower()) or (named[-1] if named else None)                 or (in_title[0] if len(in_title) == 1 else None)
+            move = move_ids.get(m["move"].lower())
+            if who in known and move in known[who][1]:
+                out.append(f"suggests teaching {known[who][0]} {m['move']}, which it already knows (the player's party "
+                           f"lists it): drop that suggestion")
     return out
 
 

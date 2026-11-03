@@ -72,7 +72,9 @@ researchers by intent (and no others):
 Write each task as a specific, self-contained instruction (the researcher sees only the run state
 and your task). On a follow-up, EARLIER IN THIS CONVERSATION says what the player already told you
 and what you already recommended: treat it as still true, and build on a previous pick ("your
-Snorlax") instead of offering it again as a new catch. One round is usually enough. Run a second round (the maximum is {MAX_RESEARCH_ROUNDS})
+Snorlax") instead of offering it again as a new catch. The run state lists the moves the player
+gave for each party Pokémon: never suggest teaching one a move it already knows, and name the move
+a new one would replace. One round is usually enough. Run a second round (the maximum is {MAX_RESEARCH_ROUNDS})
 only to fill a specific gap a finding left open, and never repeat a task that was already answered.
 
 LONG-TERM VALUE. Judge every pick over the whole remaining run, not just the next battle. A

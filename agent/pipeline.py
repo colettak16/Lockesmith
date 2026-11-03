@@ -62,6 +62,11 @@ def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunStat
         return state
 
 
+# Verifier findings the Writer fixes in the text rather than mentions: wrong matchups, and moves a party
+# Pokémon already knows offered as new
+CORRECTION_CODES = {"TYPE_CLAIM_WRONG", "MOVE_ALREADY_KNOWN"}
+
+
 def conversation_context(session: Session) -> str:
     """What the Lead needs from earlier turns on a follow-up: what the player said (Pokémon they have,
     plans) and what was already recommended, so an answer builds on it instead of starting over."""
@@ -223,15 +228,15 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     lead_draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
     draft, warnings = await verify_and_repair(ctx, lead_draft, lead_input)
     draft = picks_changed(lead_draft, draft)
-    corrections = [f"{w.species}: {w.detail}" for w in warnings if w.code == "TYPE_CLAIM_WRONG"]
-    warnings = [w for w in warnings if w.code != "TYPE_CLAIM_WRONG"]
+    corrections = [f"{w.species}: {w.detail}" for w in warnings if w.code in CORRECTION_CODES]
+    warnings = [w for w in warnings if w.code not in CORRECTION_CODES]
 
     writer_input = (
         f"PLAYER QUESTION\n{message}\n\nRUN STATE\n{state_brief(ctx)}\n\n"
         f"PLAYER RULES\n{json.dumps(session.state.ruleset.describe())}\n\n"
         f"REVISION FEEDBACK: {decision.revision_feedback or 'none'}\n\n"
         f"VERIFIER WARNINGS (mention briefly where they matter)\n{json.dumps([f'{w.species}: {w.detail}' for w in warnings])}\n\n"
-        f"VERIFIER CORRECTIONS (the draft states these matchups wrongly: write the correct one, or leave the claim out)\n"
+        f"VERIFIER CORRECTIONS (the draft gets these wrong: write the correct version, or leave the claim out)\n"
         f"{json.dumps(corrections)}\n\n"
         f"DRAFT (JSON)\n{draft.model_dump_json()}"
     )

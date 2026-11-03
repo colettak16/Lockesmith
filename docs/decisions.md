@@ -592,3 +592,8 @@ Fixes:
   - The form shows it as "Also in your PC".
   - The brief tells every agent not to send the player out to catch them.
   - The Verifier counts them as already obtained, and as caught for a dupes clause.
+
+**Moves a party Pokémon already knows** (same day). In a live FireRed answer, the Lead's plan said "Consider TM26 Earthquake or HM04 Strength" for a Snorlax whose moves the player had given as Strength, Yawn, Snore and Rest. The brief listed them, but the Moves researcher suggested Strength anyway, and the Lead copied it.
+- **The check.** A new Verifier check, `MOVE_ALREADY_KNOWN`, reads steps and battle notes for a move offered to a party member: a TM/HM label, "teach [Pokémon]", or "teach X to [Pokémon]". It aims the suggestion at the Pokémon named in the phrase, else the last party member the sentence names, else the step's title. It flags the suggestion when that member's given moves already include the move.
+- **How it's fixed.** Like `TYPE_CLAIM_WRONG`, the finding goes to the Writer as a correction to fix in the text.
+- **Prompts.** The Moves researcher and the Lead are told to check the party's moves and to name the move a new one replaces.

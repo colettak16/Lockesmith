@@ -183,6 +183,28 @@ def test_battle_notes_and_steps_are_checked_for_matchups(con):
         "Prepare: says Electric does 2x to Kingdra, but Electric does 1x to Water/Dragon in Gen III"]
 
 
+def test_teaching_a_party_pokemon_a_move_it_knows_is_flagged(con):
+    """Live FireRed answer: "Consider TM26 Earthquake or HM04 Strength" for a Snorlax whose moves the
+    player gave as Strength, Yawn, Snore, Rest."""
+    party = [PartyMember(species="Marshtomp", level=33, moves=["Surf", "Mud Shot", "Take Down", "Protect"]),
+             PartyMember(species="Breloom", level=30, moves=["Mach Punch", "Headbutt", "Leech Seed", "Stun Spore"])]
+    ctx = ctx_for(con, party=party)
+    flags = matchup_flags_of(ctx, "MOVE_ALREADY_KNOWN", step=(
+        "Marshtomp", "Use TM26 Earthquake for Ground STAB, or HM03 Surf for coverage. Teach Breloom TM09 Bullet Seed. "
+                     "Replace Headbutt with Sky Uppercut."))
+    covered.add("MOVE_ALREADY_KNOWN")
+    assert flags == ["Marshtomp: suggests teaching Marshtomp Surf, which it already knows (the player's party lists it): drop that suggestion"]
+    from agent.pipeline import CORRECTION_CODES
+    assert "MOVE_ALREADY_KNOWN" in CORRECTION_CODES  # the Writer fixes it in the text
+
+
+def matchup_flags_of(ctx, code, step):
+    title, detail = step
+    draft = LeadDraft(intent="plan", headline="h", recommendations=[], assumptions=[], follow_up_questions=[], unresolved=[],
+                      battle_notes=[], steps=[Step(title=title, detail=detail, source_ids=CITED)])
+    return [f"{v.species}: {v.detail}" for v in verify(ctx, draft) if v.code == code]
+
+
 def test_every_code_is_exercised():
     """Runs last in this module: each code in CODES came up in at least one test above."""
     assert set(CODES) - covered == set()

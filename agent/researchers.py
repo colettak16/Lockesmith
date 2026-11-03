@@ -59,7 +59,9 @@ the Champion, or that it's only a short-term answer). Never return a rejected or
 attacks by the battle, next evolution, and the strongest TMs obtainable before it. Use it for the
 party and the candidates in the task, then get_learnset or get_tm_availability only for specifics.
 Point out Gen III category quirks (e.g. Dark and Fire moves are special, Ghost moves are physical)
-and which movesets keep working late in the run.""",
+and which movesets keep working late in the run. The run state lists the moves the player gave for
+each party Pokémon: never suggest teaching one a move it already knows, and when you suggest a new
+move, say which current move it replaces.""",
     ),
     "story": (
         STORY_TOOLS,
