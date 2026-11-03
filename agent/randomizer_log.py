@@ -39,6 +39,9 @@ TRAINER_MON_RE = re.compile(
 )
 STATIC_SUFFIX_RE = re.compile(r"(?:\s+\(egg\))?(?:\(\d+\))?(?:\s+Lv\s*\d+(?:-\d+)?.*)?$")
 # "Pokemon Movesets: Metronome Only." / "Trainers: Unchanged.", printed between sections
+# UPR prints the ROM's name in the closing footer ("Randomization of Ruby (U) completed."); the
+# name is its gen3_offsets.ini section. Ruby and Sapphire logs are read against their own tables.
+GAME_RE = re.compile(r"^Randomization of (?:Pokemon |Pokémon )?(Ruby|Sapphire|Emerald)\b", re.I | re.M)
 STATUS_RE = re.compile(r"^(?P<what>[A-Z][A-Za-z ]+): (?P<status>Unchanged|Metronome Only)\.$")
 # EvolutionUpdate.toString: "EEVEE -> ESPEON by reaching high happiness", or the condensed
 # "NINCADA now also evolves into SHEDINJA at minimum level 20"
@@ -159,6 +162,7 @@ class RandomizerLog:
     statics: list[tuple[str, str]] = field(default_factory=list)  # (vanilla species, new species)
     move_tutors: list[tuple[str, str]] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    game: str | None = None  # "emerald" | "ruby" | "sapphire", from the log's footer
 
     def randomized(self, key: str) -> bool:
         return key in {SECTION_KEYS.get(s.lower(), s.lower()) for s in self.sections}
@@ -201,9 +205,23 @@ def split_sections(text: str) -> tuple[list[str], dict[str, list[str]], dict[str
     return header, sections, statuses
 
 
+def detect_game(text: str) -> str | None:
+    """Which game a UPR log was made from, or None if its footer is missing."""
+    m = GAME_RE.search(text)
+    return m.group(1).lower() if m else None
+
+
+def norm_map_name(name: str) -> str:
+    """UPR reads Ruby/Sapphire town names with their {NAME_END} control code, which its text
+    table may print as `\\c` ("PETALBURG\\c  CITY"); match on the plain name."""
+    return re.sub(r"\s+", " ", name.replace("\\c", " ")).strip().upper()
+
+
 class LogParser:
     def __init__(self, con: duckdb.DuckDBPyConnection, index: EntityIndex | None = None):
         self.con = con
+        row = con.execute("SELECT value FROM build_info WHERE key = 'game'").fetchone()
+        self.game = row[0] if row else "emerald"
         self.index = index or EntityIndex(con)
         self.expected_sets = {
             n: (m, method, slots)
@@ -219,10 +237,11 @@ class LogParser:
         for name, location, area in con.execute(
             "SELECT name, location, area FROM map_sections WHERE location IS NOT NULL"
         ).fetchall():
-            self.section_location.setdefault(name.upper(), []).append((location, area))
+            self.section_location.setdefault(norm_map_name(name), []).append((location, area))
         self.trainer_names = dict(con.execute("SELECT trainer_id, trainer_const FROM trainers").fetchall())
-        # Gen3RomHandler appends Steven's multi-battle team after the last trainer (index = count)
-        self.partner_index = max(self.trainer_names) + 1
+        # Gen3RomHandler appends Steven's Space Center team after the last trainer (index = count),
+        # in Emerald logs only (getTrainers: romType == RomType_Em).
+        self.partner_index = max(self.trainer_names) + 1 if self.game == "emerald" else None
         self.tm_labels = {r[0] for r in con.execute("SELECT label FROM machines").fetchall()}
 
     def species(self, raw: str, log: RandomizerLog) -> str | None:
@@ -238,7 +257,9 @@ class LogParser:
         return m.id if m else None
 
     def parse(self, text: str) -> RandomizerLog:
-        log = RandomizerLog()
+        log = RandomizerLog(game=detect_game(text))
+        if log.game and log.game != self.game:
+            log.warnings.append(f"the log is from {log.game.title()}, but it's being read against {self.game.title()}'s data")
         header, sections, log.statuses = split_sections(text)
         for line in header:
             if ":" in line:
@@ -303,10 +324,10 @@ class LogParser:
         if expected:
             rom_map, method, _ = expected
             name, location, area = self.map_section.get(rom_map, (None, None, None))
-            if method == upr_method and name and name.upper() == ws.map_name.upper():
+            if method == upr_method and name and norm_map_name(name) == norm_map_name(ws.map_name):
                 ws.rom_map, ws.location, ws.area, ws.aligned = rom_map, location, area, True
         if not ws.aligned:
-            candidates = self.section_location.get(ws.map_name.upper(), [])
+            candidates = self.section_location.get(norm_map_name(ws.map_name), [])
             if len(candidates) == 1:
                 ws.location, ws.area = candidates[0]
             log.warnings.append(

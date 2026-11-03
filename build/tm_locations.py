@@ -1,4 +1,4 @@
-"""Where every TM and HM comes from, extracted from pokeemerald map data.
+"""Where every TM and HM comes from, extracted from the decomp's map data (pokeemerald or pokeruby).
 
 Five kinds of source, all machine-readable in the decomp:
   item-ball    object_events whose script is an item-ball script (`finditem ITEM_TM_X`)
@@ -13,6 +13,11 @@ are tagged with the leader they're awarded for. Gates map data can't show (an HM
 to reach the item, a key, a side quest, a party condition) are in REQUIRES, each
 checked against the decomp scripts or Bulbapedia (docs/decisions.md D1, D7).
 HM gifts after a story beat are covered by progression.yaml's hm_gates_open.
+
+pokeruby (Ruby/Sapphire) names TM items by number (`ITEM_TM01_FOCUS_PUNCH`), keeps the
+item-ball scripts in data/item_ball_scripts.inc, gives Game Corner prizes with
+`additem`, has leaders without a `_1` suffix, and has no move tutors. Its gates are
+RS_REQUIRES (docs/review_packet_rs.md TM-01..TM-03).
 """
 
 import re
@@ -53,35 +58,82 @@ REQUIRES = {
 }
 
 
+SLATEPORT_TM_SALESMAN_RS = (
+    "the Slateport TM salesman appears only after Route 111's Secret Power man gives you TM43 "
+    "(secret_power_tm.inc clears FLAG_HIDE_TM_SALESMAN_SLATEPORT)"
+)
+RS_REQUIRES = {
+    ("TM02", "item-ball", "MeteorFalls_B1F_2R"): REQUIRES[("TM02", "item-ball", "MeteorFalls_B1F_2R")],
+    ("TM06", "item-ball", "FieryPath"): REQUIRES[("TM06", "item-ball", "FieryPath")],
+    ("TM07", "item-ball", "ShoalCave_LowTideIceRoom"): REQUIRES[("TM07", "item-ball", "ShoalCave_LowTideIceRoom")],
+    ("TM10", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN_RS,
+    ("TM11", "item-ball", "ScorchedSlab"): REQUIRES[("TM11", "item-ball", "ScorchedSlab")],
+    ("TM12", "gift", "Route110_TrickHouseEnd"): "a Trick House puzzle prize",
+    ("TM12", "gift", "Route110_TrickHouseEntrance"): "a Trick House puzzle prize",
+    ("TM13", "item-ball", "AbandonedShip_Room_B1F"): REQUIRES[("TM13", "item-ball", "AbandonedShip_Room_B1F")],
+    ("TM18", "item-ball", "AbandonedShip_HiddenFloorRooms"): REQUIRES[("TM18", "item-ball", "AbandonedShip_HiddenFloorRooms")],
+    ("TM19", "gift", "Route123"): REQUIRES[("TM19", "gift", "Route123")],
+    ("TM21", "gift", "PacifidlogTown_House2"): PACIFIDLOG_FAN_CLUB,
+    ("TM24", "gift", "MauvilleCity"): (
+        "Wattson gives it after you finish New Mauville with his Basement Key; he waits outside his gym "
+        "once you've beaten Norman"
+    ),
+    ("TM26", "item-ball", "SeafloorCavern_Room9"): REQUIRES[("TM26", "item-ball", "SeafloorCavern_Room9")],
+    ("TM27", "gift", "FallarborTown_House1"): "Professor Cozmo gives it once you hand over the Meteorite (from Mt. Chimney)",
+    ("TM27", "gift", "PacifidlogTown_House2"): PACIFIDLOG_FAN_CLUB,
+    ("TM31", "gift", "SootopolisCity_House1"): (
+        "Sootopolis's doors stay shut until the Cave of Origin legendary battle (FLAG_LEGENDARY_BATTLE_COMPLETED)"
+    ),
+    ("TM43", "mart", "SlateportCity"): SLATEPORT_TM_SALESMAN_RS,
+    ("TM49", "gift", "SSTidalRooms"): REQUIRES[("TM49", "gift", "SSTidalRooms")],
+}
+# pokeruby leaders have no rematch numbering, so gym rewards are tagged with these constants.
+RS_LEADERS = ("ROXANNE", "BRAWLY", "WATTSON", "FLANNERY", "NORMAN", "WINONA", "TATE_AND_LIZA", "WALLACE")
+
+
+def requires_for(decomp_dir: Path) -> dict[tuple[str, str, str], str]:
+    return RS_REQUIRES if decomp.is_rs(decomp_dir) else REQUIRES
+
+
 def item_aliases(decomp_dir: Path) -> dict[str, str]:
-    """`ITEM_TM_SANDSTORM` and `ITEM_TM37` -> `TM37`."""
+    """`ITEM_TM_SANDSTORM` and `ITEM_TM37` -> `TM37`; in pokeruby `ITEM_TM37_SANDSTORM` -> `TM37`."""
     out = {}
     for label, move in decomp.tm_hm_moves(decomp_dir):
         kind = label[:2]
         out[f"ITEM_{kind}_{move.removeprefix('MOVE_')}"] = label
         out[f"ITEM_{label}"] = label
+    if decomp.is_rs(decomp_dir):
+        for name in decomp.defines(decomp_dir, "include/constants/items.h"):
+            m = re.match(r"ITEM_(TM|HM)(\d\d)_\w+$", name)
+            if m:
+                out[name] = f"{m.group(1)}{m.group(2)}"
     return out
 
 
 def labelled_blocks(text: str) -> dict[str, str]:
-    """`Label::` (or `Label:`) -> the script text up to the next label."""
-    parts = re.split(r"^(\w+)::?\s*$", text, flags=re.M)
+    """`Label::` (or `Label:`) -> the script text up to the next label. pokeruby labels may
+    carry a trailing address comment (`Label:: @ 81B1A44`)."""
+    parts = re.split(r"^(\w+)::?\s*(?:@.*)?$", text, flags=re.M)
     return {parts[i]: parts[i + 1] for i in range(1, len(parts) - 1, 2)}
 
 
-def extract(decomp_dir: Path) -> list[dict]:
+def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
     aliases = item_aliases(decomp_dir)
     item_re = re.compile(r"\b(ITEM_(?:TM|HM)\w+)\b")
-    maps = decomp.maps(decomp_dir)
+    maps = decomp.maps(decomp_dir, version)
     folder_to_map = {m["folder"]: map_id for map_id, m in maps.items()}
     rows = []
 
     def add(label, method, map_id, flag=None, detail=None):
         rows.append({"label": label, "method": method, "map": map_id, "flag": flag, "detail": detail})
 
+    rs = decomp.is_rs(decomp_dir)
+    ball_file = "data/item_ball_scripts.inc" if rs else "data/scripts/item_ball_scripts.inc"
     ball_scripts = {}
-    for name, body in labelled_blocks(decomp.read(decomp_dir, "data/scripts/item_ball_scripts.inc")).items():
-        m = item_re.search(body)
+    for name, body in labelled_blocks(decomp.read(decomp_dir, ball_file)).items():
+        # A ball gives the first item its script finds. pokeruby has an unlabeled `finditem
+        # ITEM_HM08_DIVE` after Victory Road B2F's ball that no object uses, so don't search on.
+        m = re.search(r"finditem\s+(ITEM_\w+)", body)
         if m and m.group(1) in aliases:
             ball_scripts[name] = aliases[m.group(1)]
 
@@ -128,13 +180,18 @@ def extract(decomp_dir: Path) -> list[dict]:
                 if item in aliases:
                     add(aliases[item], "mart", map_id, detail=mart)
         if map_id == "MAP_MAUVILLE_CITY_GAME_CORNER":
-            for item in re.findall(r"setvar\s+VAR_0x8004,\s*(ITEM_(?:TM|HM)\w+)", text):
+            prize = r"additem\s+(ITEM_(?:TM|HM)\w+)" if rs else r"setvar\s+VAR_0x8004,\s*(ITEM_(?:TM|HM)\w+)"
+            for item in dict.fromkeys(re.findall(prize, text)):
                 add(aliases[item], "game-corner", map_id)
 
     # Gym TMs are handed over after the leader's battle in the same map script.
+    leader_re = (
+        r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_(?:" + "|".join(RS_LEADERS) + r"))\b"
+        if rs else r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_\w+_1)\b"
+    )
     for row in rows:
         if row["method"] == "gift" and "_GYM" in row["map"]:
-            leaders = re.findall(r"trainerbattle_(?:single|double|no_intro)\s+(TRAINER_\w+_1)\b", map_texts.get(row["map"], ""))
+            leaders = re.findall(leader_re, map_texts.get(row["map"], ""))
             if leaders:
                 row["detail"] = f"after defeating {leaders[0]}"
 
@@ -146,8 +203,11 @@ def extract_tutors(decomp_dir: Path) -> list[tuple[str, str]]:
     """[(map folder, MOVE_X)] for the Hoenn move tutors. Each teaches once in Emerald.
 
     The script labels are prefixed with the map folder they live in. The other 20
-    Emerald tutors are in the Battle Frontier, which is out of scope.
+    Emerald tutors are in the Battle Frontier, which is out of scope. Ruby and Sapphire
+    have no move tutors (Fallarbor's "move tutor" is the Move Relearner).
     """
+    if decomp.is_rs(decomp_dir):
+        return []
     text = decomp.read(decomp_dir, "data/scripts/move_tutors.inc")
     out = []
     for name, body in labelled_blocks(text).items():
@@ -157,22 +217,23 @@ def extract_tutors(decomp_dir: Path) -> list[tuple[str, str]]:
     return out
 
 
-def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path) -> None:
+def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path, version: str | None = None) -> None:
     """Create `tm_locations` and `move_tutors`. Needs `moves` and `map_sections` already built."""
-    maps = decomp.maps(decomp_dir)
+    maps = decomp.maps(decomp_dir, version)
+    requires = requires_for(decomp_dir)
     mapsec_location = dict(con.execute("SELECT mapsec, location FROM map_sections").fetchall())
     rows = []
-    for r in extract(decomp_dir):
+    for r in extract(decomp_dir, version):
         m = maps[r["map"]]
         mapsec = m["region_map_section"]
         rows.append(
             (
                 r["label"], r["method"], r["map"], m["folder"], mapsec, mapsec_location.get(mapsec), r["flag"],
-                r["detail"], REQUIRES.get((r["label"], r["method"], m["folder"])),
+                r["detail"], requires.get((r["label"], r["method"], m["folder"])),
                 f"decomp:data/maps/{m['folder']}#{r['label']}",
             )
         )
-    unmatched = set(REQUIRES) - {(r[0], r[1], r[3]) for r in rows}
+    unmatched = set(requires) - {(r[0], r[1], r[3]) for r in rows}
     assert not unmatched, f"REQUIRES entries with no extracted source: {sorted(unmatched)}"
     con.execute(
         """
@@ -202,4 +263,5 @@ def build(con: duckdb.DuckDBPyConnection, decomp_dir: Path) -> None:
         )
         """
     )
-    con.executemany("INSERT INTO move_tutors VALUES (?, ?, ?, ?, ?, ?, ?)", tutor_rows)
+    if tutor_rows:  # Ruby and Sapphire have none
+        con.executemany("INSERT INTO move_tutors VALUES (?, ?, ?, ?, ?, ?, ?)", tutor_rows)

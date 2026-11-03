@@ -24,6 +24,7 @@ class PartyEntry(BaseModel):
 class StateUpdate(BaseModel):
     """Run-state facts the player stated in this message; null means "not mentioned"."""
 
+    game: Literal["emerald", "ruby", "sapphire"] | None
     starter: Literal["treecko", "torchic", "mudkip"] | None
     badges: list[str] | None
     rival: Literal["may", "brendan"] | None

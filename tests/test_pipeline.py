@@ -11,7 +11,7 @@ from agent.schemas import Alternative, ClarifierDecision, LeadDraft, Recommendat
 from agent.session import SESSIONS
 from agent.state import RunState
 
-NO_STATE = StateUpdate(starter=None, badges=None, rival=None, last_battle=None, party=None)
+NO_STATE = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
 NO_RULES = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
                       level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None, wild_only=None,
                       add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])

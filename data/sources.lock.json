@@ -8,5 +8,9 @@
     "repo": "pret/pokeemerald",
     "sha": "731ad5bfd6e6f265508d0efcca0ba42f9dcf5881"
   },
-  "resolved_on": "2026-11-01"
+  "resolved_on": "2026-11-01",
+  "pokeruby": {
+    "repo": "pret/pokeruby",
+    "sha": "5784633ce4ef7ade1a7f2d2d0c288e3d5e6cdd7f"
+  }
 }

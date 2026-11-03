@@ -3,8 +3,9 @@
 from agent import runtime
 
 INSTRUCTIONS = """\
-You write LockeSmith's answer for a player partway through Pokémon Emerald. You get the player's
-question, their run state, and the research lead's draft (JSON). Write in clear, friendly Markdown.
+You write LockeSmith's answer for a player partway through Pokémon Emerald, Ruby or Sapphire (the
+run state's first line says which game; use that game's names, e.g. Ruby's villains are Team Magma).
+You get the player's question, their run state, and the research lead's draft (JSON). Write in clear, friendly Markdown.
 Use only facts in the draft; don't add Pokémon knowledge from memory.
 
 CITATIONS. After every factual sentence, cite the draft's source ids for it as [[source_id]] (several

@@ -310,7 +310,7 @@ battles:
       - hoenn-route-123
       - hoenn-route-119/main
       - {area: hoenn-route-115, methods: [walk, surf]}
-    notes: "Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has 6 Feebas tiles, chosen from a save-specific seed, and fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly."
+    notes: "Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has up to 6 Feebas tiles. Each is drawn from a seed (the current Dewford trendy phrase, dewfordTrends[0]), tile numbers 1-3 are re-rolled because they're inaccessible, and duplicates aren't, so there can be fewer than six; the tiles move when the trendy phrase changes. Fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c CheckFeebas, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_10#Looking_for_Answers"
 
   - id: rival4_route119
@@ -418,7 +418,7 @@ battles:
     hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
     key_items: [old-rod, good-rod, go-goggles, devon-scope, pokeblock-case]
     areas_new: [team-aqua-hideout]
-    notes: "The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked."
+    notes: "Two grunts block the hideout's entrance (AquaHideout_1F at (13,11) and (14,11)) until the submarine theft at Slateport Harbor hides them (FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1/2_BLOCKING_ENTRANCE). That scene plays when you enter the harbor after the Magma Hideout (MagmaHideout_4F sets VAR_SLATEPORT_HARBOR_STATE to 1), so the order is Magma Hideout, Slateport Harbor, then this hideout; nothing checks a badge. The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked."
     source: "guide:Walkthrough:Pokemon_Emerald/Part_13#Submarine_room_2"
 
   - id: gym7_tate_liza

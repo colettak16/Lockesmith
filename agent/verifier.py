@@ -174,7 +174,7 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
     if not in_party:
         places, blocked, _ = available_rows(ctx, b, sp["identifier"], apply_rules=False)
         if not places:
-            why = next(iter(blocked.values()), ["no Emerald encounter"])[0]
+            why = next(iter(blocked.values()), [f"no {ctx.game.short} encounter"])[0]
             add("NOT_OBTAINABLE_BEFORE", f"{sp['name']} isn't obtainable before {b.label} ({why})")
         else:
             if rules.wild_only and all(p["method"] in NOT_WILD for p in places):

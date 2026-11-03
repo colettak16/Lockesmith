@@ -1,0 +1,566 @@
+# LockeSmith progression file for Pokémon Ruby and Sapphire (docs/review_packet_rs.md, section 4)
+#
+# The ordered story steps from the first rival fight to the Champion, shared by both
+# versions. A value written as {ruby: ..., sapphire: ...} is resolved for the version
+# being loaded (agent/progression.py): Ruby's story fights Team Magma, Sapphire's Team
+# Aqua, and the hideout and the Cave of Origin legendary differ.
+#
+# How it was drafted
+#   - Battles and trainer constants: every trainerbattle in pokeruby's map scripts that
+#     names a leader, Elite Four member, champion, rival or Wally, plus the villain fights
+#     through constants/version.inc's aliases, resolved per version. The forced
+#     Groudon/Kyogre battle is a step of its own (`wild`).
+#   - Order and areas: Emerald's reviewed data/progression.yaml, whose map connections and
+#     warps match Ruby/Sapphire on all 348 shared maps, with the Ruby/Sapphire changes the
+#     review packet lists (A-01 to A-10) and two review rounds applied. Event gates that
+#     could differ were checked in pokeruby's scripts; see `events` at the end.
+#   - Same rules as Emerald's file: an area is listed at the first battle it can be
+#     reached before, having fought only the battles above it; an HM counts once you hold
+#     it and the badge that allows it outside battle (pokemon_menu.c checks
+#     FLAG_BADGE01_GET + the field move's index: Cut 1, Flash 2, Rock Smash 3, Strength 4,
+#     Surf 5, Fly 6, Dive 7, Waterfall 8). Badge order is looser than this list: only
+#     Norman's gym checks earlier badges (VAR_PETALBURG_GYM_STATE), after the first four
+#     in any order.
+#
+# Fields: as in data/progression.yaml, plus
+#   wild    a required wild battle: {species, level}; trainer_consts is then []
+#   events  (top level) story milestones that aren't battles but open or close areas
+#
+# Rival constants: the rival takes the starter with the type advantage over yours. In
+# pokeruby the Route 103/110/119 constants are numbered (MAY_4 = Torchic for a Treecko
+# player, ...); the Lilycove ones are named after the player's starter. May's and
+# Brendan's teams are the same except the Route 110 lead for Mudkip players.
+
+version: 1
+
+battles:
+  - id: rival1_route103
+    order: 1
+    label: "Route 103: Rival (first battle)"
+    badges_before: 0
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_4, brendan: TRAINER_BRENDAN_4}
+      torchic: {may: TRAINER_MAY_7, brendan: TRAINER_BRENDAN_7}
+      mudkip: {may: TRAINER_MAY_1, brendan: TRAINER_BRENDAN_1}
+    battle_format: single
+    optional: false
+    location: hoenn-route-103
+    hm_gates_open: []
+    key_items: []
+    areas_new: []
+    notes: "Rival's Lv5 starter has the type advantage. No Poké Balls yet, so nothing is catchable before this fight. Birch's rescue battle on Route 101 is against a Lv2 Poochyena (Emerald: Zigzagoon) and can't be caught."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_1#Rival_Battle_1"
+
+  - id: grunt_petalburg_woods
+    order: 2
+    label: {ruby: "Petalburg Woods: Team Magma Grunt", sapphire: "Petalburg Woods: Team Aqua Grunt"}
+    badges_before: 0
+    trainer_consts: {ruby: [TRAINER_GRUNT_36], sapphire: [TRAINER_GRUNT_9]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: petalburg-woods
+    hm_gates_open: []
+    key_items: []
+    areas_new: [hoenn-route-101, hoenn-route-103, hoenn-route-102, petalburg-city, hoenn-route-104, petalburg-woods]
+    notes: "One Lv9 Poochyena. Ruby/Sapphire's early routes have Zigzagoon where Emerald has Poochyena; wild Poochyena are only on Routes 101-103."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_2#Petalburg_Woods"
+
+  - id: gym1_roxanne
+    order: 3
+    label: "Rustboro Gym: Roxanne"
+    badges_before: 0
+    trainer_consts: [TRAINER_ROXANNE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: rustboro-city
+    hm_gates_open: []
+    key_items: []
+    areas_new:
+      - rustboro-city
+      - hoenn-route-116
+      - rusturf-tunnel
+      - {area: hoenn-route-115, methods: [old-rod, good-rod, super-rod]}
+    notes: "Geodude 14 and Nosepass 15 (Emerald adds a second Geodude). Route 116 and the west end of Rusturf Tunnel are open before the gym, and Route 115's southern beach for fishing only, as in Emerald (same map connections; the placement is Emerald's reviewed one). Rustboro's in-game trade gives Makuhita for your Slakoth. Fossils (Root/Claw) come from the Route 111 desert much later and are revived at Devon Corp."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_3#Rustboro_Gym"
+
+  - id: grunt_rusturf_tunnel
+    order: 4
+    label: {ruby: "Rusturf Tunnel: Team Magma Grunt (Devon Goods)", sapphire: "Rusturf Tunnel: Team Aqua Grunt (Devon Goods)"}
+    badges_before: 1
+    trainer_consts: {ruby: [TRAINER_GRUNT_42], sapphire: [TRAINER_GRUNT_15]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: rusturf-tunnel
+    hm_gates_open: [cut]
+    key_items: []
+    areas_new: []
+    notes: "One Lv11 Poochyena. Ruby/Sapphire have no Rustboro rival fight after this (Emerald's optional one doesn't exist)."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_3#Rusturf_Tunnel"
+
+  - id: gym2_brawly
+    order: 5
+    label: "Dewford Gym: Brawly"
+    badges_before: 1
+    trainer_consts: [TRAINER_BRAWLY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: dewford-town
+    hm_gates_open: [cut]
+    key_items: [old-rod, pokeblock-case]
+    areas_new:
+      - hoenn-route-106
+      - dewford-town
+      - granite-cave
+      - hoenn-route-109
+      - slateport-city
+      - {area: hoenn-route-110, methods: [walk]}
+    notes: "Machop 17 and Makuhita 18. Old Rod from the Dewford fisherman (DewfordTown giveitem). Slateport, Route 109's beach and Route 110's first grass open before Brawly, as in Emerald: Route 110's grunt line at y=83 (x=7-10) stays until the museum fight (E-02). The Pokéblock Case is a gift from the girl in Slateport's Contest Lobby (no condition; Emerald gives it in Lilycove). Granite Cave holds Mawile (Ruby) or Sableye (Sapphire). Brawly can be deferred until Norman."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_4#Dewford_Gym"
+
+  - id: grunts_oceanic_museum
+    order: 6
+    label: {ruby: "Oceanic Museum: Team Magma Grunts", sapphire: "Oceanic Museum: Team Aqua Grunts"}
+    badges_before: 2
+    trainer_consts: {ruby: [TRAINER_GRUNT_46, TRAINER_GRUNT_47], sapphire: [TRAINER_GRUNT_19, TRAINER_GRUNT_20]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: slateport-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new: []
+    notes: "Two separate single battles on the museum's second floor. The museum script hides the grunt line across Route 110 (FLAG_HIDE_EVIL_TEAM_ROUTE110 in SlateportCity_OceanicMuseum_2F; E-02)."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_5#Oceanic_Museum"
+
+  - id: rival2_route110
+    order: 7
+    label: "Route 110: Rival"
+    badges_before: 2
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_5, brendan: TRAINER_BRENDAN_5}
+      torchic: {may: TRAINER_MAY_8, brendan: TRAINER_BRENDAN_8}
+      mudkip: {may: TRAINER_MAY_2, brendan: TRAINER_BRENDAN_2}
+    battle_format: single
+    optional: false
+    location: hoenn-route-110
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new:
+      - {area: hoenn-route-110, methods: [surf, old-rod, good-rod, super-rod]}
+    notes: "Mudkip players: same team for both rivals, but May leads with Wailmer and Brendan with Numel. North of the old grunt line the route's water opens."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_5#Rival_Battle_2"
+
+  - id: wally_mauville
+    order: 8
+    label: "Mauville City: Wally"
+    badges_before: 2
+    trainer_consts: [TRAINER_WALLY_2]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mauville-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new:
+      - mauville-city
+      - hoenn-route-117
+      - verdanturf-town
+      - hoenn-route-118
+      - {area: hoenn-route-111, methods: [old-rod, good-rod, super-rod, surf, rock-smash]}
+    notes: "Wally has one Lv16 Ralts. He stands on the tile in front of the gym door (MauvilleCity map.json: Wally at (8,6), gym warp at (8,5)), so he comes before Wattson; declining only makes him ask again. Routes 117 and 118's west bank open with Mauville (Route 117 has Roselia and Surskit in Ruby/Sapphire). Route 111's southern segment opens too: its pond, and its rocks once Rock Smash works; its grass is all in the desert. Optional hazard: the Winstrate family on Route 111, four battles in a row with no healing."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_6#VS_Wally"
+
+  - id: gym3_wattson
+    order: 9
+    label: "Mauville Gym: Wattson"
+    badges_before: 2
+    trainer_consts: [TRAINER_WATTSON]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mauville-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new: []
+    notes: "Magnemite 22, Voltorb 20, Magneton 23. Rock Smash comes from a Mauville house (MauvilleCity_House1) and works with this badge."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_6#Mauville_Gym"
+
+  - id: admin_mt_chimney
+    order: 10
+    label: {ruby: "Mt. Chimney: Magma Admin Tabitha", sapphire: "Mt. Chimney: Aqua Admin Matt"}
+    badges_before: 3
+    trainer_consts: {ruby: [TRAINER_TABITHA_2], sapphire: [TRAINER_MATT_2]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mt-chimney
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new: [hoenn-route-112, fiery-path, hoenn-route-113, fallarbor-town, hoenn-route-114, meteor-falls/main, mt-chimney]
+    notes: {ruby: "Rock Smash clears the way north to Routes 111/112. The two grunts blocking Route 112's cable car leave after the Meteor Falls scene (E-01; no battle there). On the summit: a Magma Grunt (TRAINER_GRUNT_40) before Tabitha. Route 114 has Seedot, Nuzleaf and Zangoose in Ruby.", sapphire: "Rock Smash clears the way north to Routes 111/112. The two grunts blocking Route 112's cable car leave after the Meteor Falls scene (E-01; no battle there). On the summit: an Aqua Grunt (TRAINER_GRUNT_13) before Matt. In Sapphire Team Aqua is at Mt. Chimney (Emerald: Magma). Route 114 has Lotad, Lombre and Seviper in Sapphire."}
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_9#Mt._Chimney"
+
+  - id: leader_mt_chimney
+    order: 11
+    label: {ruby: "Mt. Chimney: Magma Leader Maxie", sapphire: "Mt. Chimney: Aqua Leader Archie"}
+    badges_before: 3
+    trainer_consts: {ruby: [TRAINER_MAXIE_3], sapphire: [TRAINER_ARCHIE_3]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: mt-chimney
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new: []
+    notes: {ruby: "Straight after Tabitha: Mightyena 24, Golbat 24, Camerupt 25.", sapphire: "Straight after Matt: Mightyena 24, Golbat 24, Sharpedo 25."}
+    source: {ruby: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_9#VS_Maxie_(Ruby)", sapphire: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_9#VS_Archie_(Sapphire)"}
+
+  - id: gym4_flannery
+    order: 12
+    label: "Lavaridge Gym: Flannery"
+    badges_before: 3
+    trainer_consts: [TRAINER_FLANNERY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: lavaridge-town
+    hm_gates_open: [cut, flash, rock-smash]
+    key_items: [old-rod, pokeblock-case]
+    areas_new: [jagged-pass, lavaridge-town]
+    notes: "Slugma 26, Slugma 26, Torkoal 28. Lavaridge's gift is a Wynaut Egg from the old woman by the sand baths. The rival hands over the Go-Goggles in Lavaridge after this gym (the gym sets VAR_LAVARIDGE_RIVAL_STATE). Jagged Pass has no hideout in Ruby/Sapphire."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_9#Lavaridge_Gym"
+
+  - id: gym5_norman
+    order: 13
+    label: "Petalburg Gym: Norman"
+    badges_before: 4
+    trainer_consts: [TRAINER_NORMAN]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: petalburg-city
+    hm_gates_open: [cut, flash, rock-smash, strength]
+    key_items: [old-rod, pokeblock-case, go-goggles]
+    areas_new: [{area: hoenn-route-111, methods: [walk]}]
+    notes: "Slaking 28, Vigoroth 30, Slaking 31. The Go-Goggles open the Route 111 desert. There's no Mirage Tower in Ruby/Sapphire: the Root Fossil (Lileep) and Claw Fossil (Anorith) lie on the desert floor and taking one hides the other (Route111 scripts). Strength comes from Rusturf Tunnel once Wanda's boyfriend can reach her, usable with the Heat Badge."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_10#Petalburg_Gym"
+
+  - id: admin_weather_institute
+    order: 14
+    label: {ruby: "Weather Institute: Magma Admin Courtney", sapphire: "Weather Institute: Aqua Admin Shelly"}
+    badges_before: 5
+    trainer_consts: {ruby: [TRAINER_COURTNEY_1], sapphire: [TRAINER_SHELLY_1]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: hoenn-route-119
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, pokeblock-case, go-goggles]
+    areas_new:
+      - hoenn-route-105
+      - hoenn-route-107
+      - hoenn-route-108
+      - abandoned-ship
+      - new-mauville
+      - hoenn-route-123
+      - hoenn-route-119/main
+      - {area: hoenn-route-115, methods: [walk, surf]}
+    notes: {ruby: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Magma Grunts (TRAINER_GRUNT_43, _52, _44, _45) before Courtney.", sapphire: "Surf (Wally's father, PetalburgCity_WallysHouse) opens the water on earlier routes. Good Rod: fisherman on Route 118 (Route118 giveitem). New Mauville: Wattson waits outside his gym after Norman and gives the Basement Key; its three Voltorb are Lv25 statics. Feebas: up to six tiles on Route 119 (duplicates aren't re-rolled), which move when the Dewford trendy phrase changes; fishing on one gives Feebas half the time. In the Weather Institute: four Aqua Grunts (TRAINER_GRUNT_16, _25, _17, _18) before Shelly."}
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_11#Weather_Institute"
+
+  - id: rival3_route119
+    order: 15
+    label: "Route 119: Rival"
+    badges_before: 5
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_6, brendan: TRAINER_BRENDAN_6}
+      torchic: {may: TRAINER_MAY_9, brendan: TRAINER_BRENDAN_9}
+      mudkip: {may: TRAINER_MAY_3, brendan: TRAINER_BRENDAN_3}
+    battle_format: single
+    optional: false
+    location: hoenn-route-119
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, pokeblock-case, go-goggles]
+    areas_new: [hoenn-route-119/weather-institute]
+    notes: "May and Brendan have the same teams here (Emerald's Mudkip variant differs). The rival gives HM02 Fly afterwards (usable from the 6th badge). Castform (Lv25, holding Mystic Water) is the Weather Institute's gift for beating the admin."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_11#Rival_Battle_3"
+
+  - id: gym6_winona
+    order: 16
+    label: "Fortree Gym: Winona"
+    badges_before: 5
+    trainer_consts: [TRAINER_WINONA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: fortree-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf]
+    key_items: [old-rod, good-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new:
+      - fortree-city
+      - hoenn-route-120
+      - scorched-slab
+      - hoenn-route-121
+      - hoenn-route-122
+      - lilycove-city
+      - mt-pyre
+      - hoenn-safari-zone/sw
+      - hoenn-safari-zone/se
+      - hoenn-safari-zone/nwmach-bike-area
+      - hoenn-safari-zone/neacro-bike-area
+      - {ruby: team-magma-hideout, sapphire: team-aqua-hideout}
+    notes: {ruby: "Swellow 31, Pelipper 30, Skarmory 32, Altaria 33. Steven gives the Devon Scope on Route 120; it reveals the Kecleon blocking the gym and the Kecleon on Routes 119/120. The same scope opens the way east (Route 121, Lilycove, the Safari Zone, Mt. Pyre by Surf via Route 122); none of it checks this badge. Lilycove's hideout (the Magma Hideout in Ruby) needs two events first: Mt. Pyre's summit (E-03) and the submarine theft at Slateport Harbor (E-04), which removes the grunts blocking its entrance; before Winona that means walking back to Slateport (Fly needs this badge). Its only encounters are two Lv30 Electrode statics in B1F, and it closes for good after the Mind Badge (E-06), so its Electrode and items (the Master Ball, Max Elixir, Nugget, Nest Ball) are missable. Fortree's trade gives Skitty for your Pikachu.", sapphire: "Swellow 31, Pelipper 30, Skarmory 32, Altaria 33. Steven gives the Devon Scope on Route 120; it reveals the Kecleon blocking the gym and the Kecleon on Routes 119/120. The same scope opens the way east (Route 121, Lilycove, the Safari Zone, Mt. Pyre by Surf via Route 122); none of it checks this badge. Lilycove's hideout (the Aqua Hideout in Sapphire) needs two events first: Mt. Pyre's summit (E-03) and the submarine theft at Slateport Harbor (E-04), which removes the grunts blocking its entrance; before Winona that means walking back to Slateport (Fly needs this badge). Its only encounters are two Lv30 Electrode statics in B1F, and it closes for good after the Mind Badge (E-06), so its Electrode and items (the Master Ball, Max Elixir, Nugget, Nest Ball) are missable. Fortree's trade gives Skitty for your Pikachu."}
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_11#Fortree_Gym"
+
+  - id: rival4_lilycove
+    order: 17
+    label: "Lilycove City: Rival (optional)"
+    badges_before: 6
+    trainer_consts: null
+    starter_variants:
+      treecko: {may: TRAINER_MAY_LILYCOVE_TREECKO, brendan: TRAINER_BRENDAN_LILYCOVE_TREECKO}
+      torchic: {may: TRAINER_MAY_LILYCOVE_TORCHIC, brendan: TRAINER_BRENDAN_LILYCOVE_TORCHIC}
+      mudkip: {may: TRAINER_MAY_LILYCOVE_MUDKIP, brendan: TRAINER_BRENDAN_LILYCOVE_MUDKIP}
+    battle_format: single
+    optional: true
+    location: lilycove-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: "The rival is outside the Department Store and asks to battle; declining is allowed (FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). The constants here are named after the player's starter."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_13#Rival_Battle_4"
+
+  - id: admin_hideout
+    order: 18
+    label: {ruby: "Magma Hideout: Magma Admin Tabitha", sapphire: "Aqua Hideout: Aqua Admin Matt"}
+    badges_before: 6
+    trainer_consts: {ruby: [TRAINER_TABITHA_1], sapphire: [TRAINER_MATT_1]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: {ruby: team-magma-hideout, sapphire: team-aqua-hideout}
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: {ruby: "Lilycove's hideout, entered by Surf from the cove (Ruby's warp at (71,5) leads to the Magma Hideout maps). First Mt. Pyre's summit (three Magma Grunts, TRAINER_GRUNT_49 to _51; the orb is stolen), then the submarine theft at Slateport Harbor, which hides the two grunts blocking the hideout's entrance (E-03, E-04). Inside: grunts on 1F, B1F and B2F before Tabitha. Clearing it sends the team off in the submarine and the Wailmer east of Lilycove leave (E-05). The hideout closes after the Mind Badge (E-06).", sapphire: "Lilycove's hideout, entered by Surf from the cove (Sapphire's warp at (70,5) leads to the Aqua Hideout maps). First Mt. Pyre's summit (three Aqua Grunts, TRAINER_GRUNT_22 to _24; the orb is stolen), then the submarine theft at Slateport Harbor, which hides the two grunts blocking the hideout's entrance (E-03, E-04). Inside: grunts on 1F, B1F and B2F before Matt. Clearing it sends the team off in the submarine and the Wailmer east of Lilycove leave (E-05). The hideout closes after the Mind Badge (E-06)."}
+    source: {ruby: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_14#Team_Magma_Hideout_(Ruby)", sapphire: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_14#Team_Aqua_Hideout_(Sapphire)"}
+
+  - id: gym7_tate_liza
+    order: 19
+    label: "Mossdeep Gym: Tate & Liza"
+    badges_before: 6
+    trainer_consts: [TRAINER_TATE_AND_LIZA]
+    starter_variants: null
+    battle_format: double
+    optional: false
+    location: mossdeep-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new:
+      - hoenn-route-124/main
+      - mossdeep-city/main
+      - hoenn-route-125
+      - shoal-cave
+      - hoenn-route-126/main
+      - hoenn-route-127
+      - hoenn-route-128
+      - hoenn-route-129
+      - hoenn-route-130
+      - mirage-island
+      - hoenn-route-131
+      - pacifidlog-town
+      - hoenn-route-132
+      - hoenn-route-133
+      - hoenn-route-134
+    notes: "Double battle against just two Pokémon, Lunatone 42 and Solrock 42, holding nothing (Emerald adds Claydol and Xatu and gives both Sitrus Berries). Super Rod: Mossdeep fisherman (MossdeepCity_House3). The eastern sea opens by Surf once the Wailmer leave (E-05), as in Emerald; Routes 132-134's currents run west only. There's no Space Center battle after this gym in Ruby/Sapphire. Pacifidlog's trade gives Corsola for your Bellossom. Mirage Island appears only on days when the daily value matches a party Pokémon's personality value."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_15#Mossdeep_Gym"
+
+  - id: admin_seafloor_cavern
+    order: 20
+    label: {ruby: "Seafloor Cavern: Magma Admin Courtney", sapphire: "Seafloor Cavern: Aqua Admin Shelly"}
+    badges_before: 7
+    trainer_consts: {ruby: [TRAINER_COURTNEY_2], sapphire: [TRAINER_SHELLY_2]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: seafloor-cavern
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new:
+      - hoenn-route-124/underwater
+      - hoenn-route-126/underwater
+      - seafloor-cavern
+      - sootopolis-city
+      - desert-ruins
+      - island-cave
+      - ancient-tomb
+    notes: "Steven gives HM08 Dive in his Mossdeep house after Tate & Liza. Seaweed underwater holds Chinchou, Clamperl and Relicanth. Sootopolis (dive down on Route 126) can be reached now, but every door in it, the gym's too, stays shut until the Cave of Origin battle (E-08). Two grunts in Seafloor Cavern's first room before the admin. The Regi caves open with no story gate, by the Ruby/Sapphire puzzles: in the Sealed Chamber (Surf to Route 134, then Dive) use Dig, then read the inner wall with Relicanth first and Wailord last in the party (Emerald's order is the reverse). Regirock: Strength in Desert Ruins (Route 111 desert, Go-Goggles). Regice: wait two minutes without pressing a button in Island Cave (Route 105). Registeel: Fly in the middle of Ancient Tomb (Route 120)."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Seafloor_Cavern"
+
+  - id: leader_seafloor_cavern
+    order: 21
+    label: {ruby: "Seafloor Cavern: Magma Leader Maxie", sapphire: "Seafloor Cavern: Aqua Leader Archie"}
+    badges_before: 7
+    trainer_consts: {ruby: [TRAINER_MAXIE_2], sapphire: [TRAINER_ARCHIE_2]}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: seafloor-cavern
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: {ruby: "One more grunt between Courtney and Maxie. Afterwards Groudon wakes and leaves for the Cave of Origin (FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN, E-07).", sapphire: "One more grunt between Shelly and Archie. Afterwards Kyogre wakes and leaves for the Cave of Origin (FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN, E-07)."}
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Chamber_10"
+
+  - id: legendary_cave_of_origin
+    order: 22
+    label: {ruby: "Cave of Origin: Groudon (Lv45)", sapphire: "Cave of Origin: Kyogre (Lv45)"}
+    badges_before: 7
+    trainer_consts: []
+    wild: {ruby: {species: groudon, level: 45}, sapphire: {species: kyogre, level: 45}}
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: cave-of-origin
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new:
+      - cave-of-origin/entrance
+      - cave-of-origin/1f
+      - cave-of-origin/b1f
+      - cave-of-origin/b2f
+      - cave-of-origin/b3f
+      - cave-of-origin/b4f
+    notes: {ruby: "A required wild battle, not in Emerald: Sootopolis's doors (gym included) stay shut until FLAG_LEGENDARY_BATTLE_COMPLETED, which is set however it ends (caught, knocked out or fled), and Wallace then goes to his gym. It's the only chance at Groudon: the trigger is disabled afterwards. The Expert at the entrance steps aside after the Seafloor Cavern (E-07). HM07 Waterfall is an item ball on B3F on the way (usable only with the Rain Badge). For challenge runs, report three things rather than pick a rule: the battle is required but catching isn't; B4F is the same location (cave-of-origin) as the wild floors 1F-B3F (Zubat, Golbat, Mawile), so under a strict first-encounter-per-location rule an earlier wild encounter there uses it up unless statics are counted separately; and at Lv45 it's above Wallace's ace (Milotic 43), so under a next-leader level cap it can't be used against Wallace.", sapphire: "A required wild battle, not in Emerald: Sootopolis's doors (gym included) stay shut until FLAG_LEGENDARY_BATTLE_COMPLETED, which is set however it ends (caught, knocked out or fled), and Wallace then goes to his gym. It's the only chance at Kyogre: the trigger is disabled afterwards. The Expert at the entrance steps aside after the Seafloor Cavern (E-07). HM07 Waterfall is an item ball on B3F on the way (usable only with the Rain Badge). For challenge runs, report three things rather than pick a rule: the battle is required but catching isn't; B4F is the same location (cave-of-origin) as the wild floors 1F-B3F (Zubat, Golbat, Sableye), so under a strict first-encounter-per-location rule an earlier wild encounter there uses it up unless statics are counted separately; and at Lv45 it's above Wallace's ace (Milotic 43), so under a next-leader level cap it can't be used against Wallace."}
+    source: {ruby: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#VS_Groudon_(Ruby)", sapphire: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#VS_Kyogre_(Sapphire)"}
+
+  - id: gym8_wallace
+    order: 23
+    label: "Sootopolis Gym: Wallace"
+    badges_before: 7
+    trainer_consts: [TRAINER_WALLACE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: sootopolis-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Wallace is the 8th leader in Ruby/Sapphire (Emerald: Juan); Luvdisc 40, Whiscash 42, Sealeo 40, Seaking 42, Milotic 43. He gives TM03 Water Pulse. Sootopolis's houses open after the Cave of Origin battle too (TM31 Brick Break). Sky Pillar is postgame in Ruby/Sapphire (Route 131 changes layout only after the Hall of Fame), so Rayquaza is out of reach before the Champion. Waterfall needs this badge, so Meteor Falls' back rooms (Bagon) open at the next battle."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_17#Sootopolis_Gym"
+
+  - id: wally_victory_road
+    order: 24
+    label: "Victory Road: Wally"
+    badges_before: 8
+    trainer_consts: [TRAINER_WALLY_1]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: hoenn-victory-road
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: [ever-grande-city, hoenn-victory-road, meteor-falls/b1f, meteor-falls/back, meteor-falls/backsmall-room]
+    notes: "Wally stops you at Victory Road's entrance (TRAINER_WALLY_1; TRAINER_WALLY_3 is the postgame rematch). Bagon is only in Meteor Falls' back small room (B1F 2R), behind Waterfall. Victory Road has Meditite and Medicham in Ruby/Sapphire."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_21#VS_Wally"
+
+  - id: e4_sidney
+    order: 25
+    label: "Elite Four: Sidney"
+    badges_before: 8
+    trainer_consts: [TRAINER_SIDNEY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: "The Elite Four and Champion are a gauntlet: no Pokémon Center and no catching between these five fights. Bag items still work. Sidney has Sharpedo 48 where Emerald's has Crawdaunt."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_22#Battle_1"
+
+  - id: e4_phoebe
+    order: 26
+    label: "Elite Four: Phoebe"
+    badges_before: 8
+    trainer_consts: [TRAINER_PHOEBE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_22#Battle_2"
+
+  - id: e4_glacia
+    order: 27
+    label: "Elite Four: Glacia"
+    badges_before: 8
+    trainer_consts: [TRAINER_GLACIA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_22#Battle_3"
+
+  - id: e4_drake
+    order: 28
+    label: "Elite Four: Drake"
+    badges_before: 8
+    trainer_consts: [TRAINER_DRAKE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Two Flygon 53 where Emerald's Drake has Kingdra and Flygon."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_22#Battle_4"
+
+  - id: champion_steven
+    order: 29
+    label: "Champion: Steven"
+    badges_before: 8
+    trainer_consts: [TRAINER_STEVEN]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: ever-grande-city
+    hm_gates_open: [cut, flash, rock-smash, strength, surf, fly, dive, waterfall]
+    key_items: [old-rod, good-rod, super-rod, pokeblock-case, go-goggles, devon-scope]
+    areas_new: []
+    notes: "Ruby/Sapphire's Champion is Steven (Emerald: Wallace): Skarmory 57, Claydol 55, Aggron 56, Cradily 56, Armaldo 56, Metagross 58 @ Sitrus Berry."
+    source: "guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_22#Champion"
+
+# Story milestones that aren't battles but gate areas or encounters (review packet E-01..E-09).
+# `after` is the battle the event can first happen after; `opens` / `closes` say what changes.
+events:
+  - {id: meteor_falls_scene, after: gym3_wattson, flag: FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR, opens: "Route 112's cable car to Mt. Chimney (the two grunts blocking it leave)", source: "decomp:data/maps/MeteorFalls_1F_1R/scripts.inc"}
+  - {id: museum_cleared, after: grunts_oceanic_museum, flag: FLAG_HIDE_EVIL_TEAM_ROUTE110, opens: "Route 110 north of the grunt line", source: "decomp:data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc"}
+  - {id: mt_pyre_orb_stolen, after: rival3_route119, flag: FLAG_MT_PYRE_ORB_STOLEN, opens: "the Slateport Harbor scene (VAR_SLATEPORT_HARBOR_STATE = 1); no badge check, fires on reaching the summit", source: "decomp:data/maps/MtPyre_Summit/scripts.inc"}
+  - {id: slateport_submarine_theft, after: rival3_route119, flag: FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, opens: "Lilycove's hideout (the grunts blocking its entrance leave); needs mt_pyre_orb_stolen, then entering Slateport Harbor", source: "decomp:data/maps/SlateportCity_Harbor/scripts.inc"}
+  - {id: hideout_cleared, after: admin_hideout, flag: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, opens: "the sea east of Lilycove (the Wailmer leave)", source: "decomp:data/maps/AquaHideout_B2F/scripts.inc"}
+  - {id: hideout_closed, after: gym7_tate_liza, flag: FLAG_BADGE07_GET, closes: "Lilycove's hideout for good: its two Electrode, the Master Ball, Max Elixir, Nugget and Nest Ball are missable", source: "decomp:data/maps/LilycoveCity/scripts.inc"}
+  - {id: legend_escaped, after: leader_seafloor_cavern, flag: FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN, opens: "Cave of Origin (the Expert at its entrance steps aside)", source: "decomp:data/maps/SootopolisCity/scripts.inc"}
+  - {id: legendary_battle_done, after: legendary_cave_of_origin, flag: FLAG_LEGENDARY_BATTLE_COMPLETED, opens: "Sootopolis's doors and gym; Wallace appears", source: "decomp:data/maps/CaveOfOrigin_B4F/scripts.inc"}
+  - {id: hall_of_fame, after: champion_steven, flag: FLAG_SYS_GAME_CLEAR, opens: "Sky Pillar (Rayquaza), the Beldum gift, the roaming Latios/Latias, the S.S. Tidal", source: "decomp:data/scripts/hall_of_fame.inc"}
+
+# Encounters that can't be had before the Champion (see data/progression.yaml).
+never_reachable:
+  - {area: mossdeep-city/stevens-house, methods: [gift], reason: "you visit Steven's house for HM08 Dive before the Champion; only the Beldum gift comes after the Hall of Fame (hall_of_fame.inc)"}
+  - {area: sky-pillar, reason: "postgame in Ruby/Sapphire: Route 131 opens the way only after the Hall of Fame (Route131_MapScripts)"}
+  - {area: roaming-hoenn, reason: "the roaming Latios (Ruby) / Latias (Sapphire) appears after the Hall of Fame"}
+  - {area: southern-island, reason: "Eon Ticket event"}
+  - {area: hoenn-pokecenter, reason: "Colosseum bonus disc gift (event)"}

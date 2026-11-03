@@ -9,10 +9,25 @@ VANILLA_KINDS = {
 }
 
 
+# One line per game on how it differs, so no agent answers from another game's memory.
+GAME_LINES = {
+    "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
+    "ruby": ("Game: Pokémon Ruby (Game Boy Advance, not Omega Ruby). The villain is Team Magma only; the 8th gym "
+             "leader is Wallace and the Champion is Steven; there are no move tutors; Groudon (Lv45) is a required "
+             "battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. Teams and "
+             "encounters differ from Emerald's: trust the tools, not Emerald memory."),
+    "sapphire": ("Game: Pokémon Sapphire (Game Boy Advance, not Alpha Sapphire). The villain is Team Aqua only; the "
+                 "8th gym leader is Wallace and the Champion is Steven; there are no move tutors; Kyogre (Lv45) is a "
+                 "required battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. "
+                 "Teams and encounters differ from Emerald's: trust the tools, not Emerald memory."),
+}
+
+
 def state_brief(ctx: RequestContext) -> str:
     s = ctx.state
     p = ctx.progress if s.badges is not None else None
     lines = [
+        GAME_LINES[s.game],
         f"Starter: {s.starter or 'not given'}. Rival: {s.rival or 'not given'}.",
         f"Badges held: {', '.join(s.badges) if s.badges else ('none yet' if s.badges == [] else 'not given')}.",
     ]

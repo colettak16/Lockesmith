@@ -14,7 +14,7 @@ Course: IEOR E4570 Agentic AI, Project 2 (Deep Research path). Solo. Due **Wed N
 - The `/chat` contract in section 8 is fixed by Project 1 and the assignment text, so build to it now.
 - Items marked **OPEN** are decisions I haven't made. Ask me before resolving them.
 - Every phase in section 13 has acceptance checks. Don't mark a phase done until they pass.
-- Keep scope tight. Out of scope: other games, ROM hacks, the Battle Frontier and other postgame content, team-building for competitive play.
+- Keep scope tight. Out of scope: games other than Emerald, Ruby and Sapphire (Ruby and Sapphire were added after the Emerald build; see docs/decisions.md D13), ROM hacks, the Battle Frontier, Battle Tower and other postgame content, team-building for competitive play.
 
 ---
 

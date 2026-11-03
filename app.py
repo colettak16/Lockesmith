@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 from agent import observability, pipeline
 from agent.catalog import catalog as build_catalog
 from agent.examples import EXAMPLES
+from agent.games import get as get_game
 from agent.session import SESSIONS
 from agent.state import RunState
 
@@ -147,10 +148,14 @@ async def chat_stream(req: ChatRequest, request: Request) -> StreamingResponse:
 
 
 @app.get("/catalog")
-def catalog() -> dict:
-    """Species, moves, battles, badges, types and Nuzlocke places for the run-state form, and
-    whether a banner video (static/media/banner.mp4) is there to replace the still banner art."""
-    return {**build_catalog(), "banner_video": (STATIC / "media" / "banner.mp4").exists()}
+def catalog(game: str = "emerald") -> dict:
+    """Species, moves, battles, badges, types and Nuzlocke places for one game's run-state form,
+    and whether a banner video (static/media/banner.mp4) is there to replace the still banner art."""
+    try:
+        data = build_catalog(get_game(game).id)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
+    return {**data, "banner_video": (STATIC / "media" / "banner.mp4").exists()}
 
 
 @app.get("/examples")

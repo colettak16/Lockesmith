@@ -3,8 +3,9 @@
     uv run python build/fetch_sources.py            # use SHAs in data/sources.lock.json
     uv run python build/fetch_sources.py --update   # re-resolve to the latest upstream commits
 
-PokeAPI CSVs come from raw.githubusercontent.com at a fixed commit. pokeemerald is
-a sparse, blobless git checkout of only the directories the build reads.
+PokeAPI CSVs come from raw.githubusercontent.com at a fixed commit. The two decomps
+(pokeemerald for Emerald, pokeruby for Ruby and Sapphire) are sparse, blobless git
+checkouts of only the directories the build reads.
 """
 
 import argparse
@@ -23,6 +24,7 @@ USER_AGENT = "Lockesmith/0.1 (IEOR E4570 course project)"
 
 POKEAPI_REPO = "PokeAPI/pokeapi"
 POKEEMERALD_REPO = "pret/pokeemerald"
+POKERUBY_REPO = "pret/pokeruby"
 
 POKEAPI_CSVS = [
     "abilities", "ability_flavor_text", "ability_names",
@@ -65,6 +67,37 @@ POKEEMERALD_PATHS = [
     "data/event_scripts.s",
 ]
 
+# pokeruby keeps the same data under other names (base_stats.h, battle_moves.c, *_en.h, asm .inc
+# tables) and adds constants/version.inc, the Ruby/Sapphire alias table (docs/decisions.md D13).
+POKERUBY_PATHS = [
+    "src/data/trainer_parties.h",
+    "src/data/trainers_en.h",
+    "src/data/pokemon",
+    "src/data/battle_moves.c",
+    "src/data/wild_encounters.json",
+    "src/data/text/species_names_en.h",
+    "src/data/text/trainer_class_names_en.h",
+    "src/data/text/move_names_en.h",
+    "src/data/region_map",
+    "src/party_menu.c",
+    "src/pokemon_3.c",
+    "src/battle_controllers.c",
+    "src/trade.c",
+    "src/tv.c",
+    "src/wild_encounter.c",
+    "src/braille_puzzles.c",
+    "src/time_events.c",
+    "include/constants",
+    "constants/version.inc",
+    "data/maps",
+    "data/scripts",
+    "data/text/ability_names.inc",
+    "data/type_effectiveness.inc",
+    "data/item_ball_scripts.inc",
+    "data/event_scripts.s",
+]
+DECOMPS = {"pokeemerald": (POKEEMERALD_REPO, POKEEMERALD_PATHS), "pokeruby": (POKERUBY_REPO, POKERUBY_PATHS)}
+
 
 def latest_sha(repo: str) -> str:
     r = httpx.get(
@@ -99,23 +132,24 @@ def git(*args: str, cwd: Path) -> str:
     return subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, text=True).stdout
 
 
-def fetch_pokeemerald(sha: str) -> None:
-    out = CACHE / "pokeemerald"
+def fetch_decomp(name: str, sha: str) -> None:
+    repo, paths = DECOMPS[name]
+    out = CACHE / name
     if (out / ".git").exists():
         head = git("rev-parse", "HEAD", cwd=out).strip()
         wanted = git("sparse-checkout", "list", cwd=out).split()
-        if head == sha and wanted == POKEEMERALD_PATHS:
-            print(f"pokeemerald: cached at {sha[:10]}")
+        if head == sha and wanted == paths:
+            print(f"{name}: cached at {sha[:10]}")
             return
     else:
         out.mkdir(parents=True, exist_ok=True)
         git("init", "-q", cwd=out)
-        git("remote", "add", "origin", f"https://github.com/{POKEEMERALD_REPO}.git", cwd=out)
+        git("remote", "add", "origin", f"https://github.com/{repo}.git", cwd=out)
         git("config", "core.autocrlf", "false", cwd=out)
-    git("sparse-checkout", "set", "--no-cone", *POKEEMERALD_PATHS, cwd=out)
+    git("sparse-checkout", "set", "--no-cone", *paths, cwd=out)
     git("fetch", "-q", "--depth", "1", "--filter=blob:none", "origin", sha, cwd=out)
     git("checkout", "-q", "--force", "FETCH_HEAD", cwd=out)
-    print(f"pokeemerald: checked out {sha[:10]}")
+    print(f"{name}: checked out {sha[:10]}")
 
 
 def main() -> None:
@@ -124,13 +158,17 @@ def main() -> None:
     args = ap.parse_args()
 
     lock = json.loads(LOCK.read_text()) if LOCK.exists() else {}
-    if args.update or "pokeapi" not in lock or "pokeemerald" not in lock:
+    if args.update or "pokeapi" not in lock:
         lock["pokeapi"] = {"repo": POKEAPI_REPO, "sha": latest_sha(POKEAPI_REPO), "path": "data/v2/csv"}
-        lock["pokeemerald"] = {"repo": POKEEMERALD_REPO, "sha": latest_sha(POKEEMERALD_REPO)}
         lock["resolved_on"] = date.today().isoformat()
+    for name, (repo, _) in DECOMPS.items():
+        if args.update or name not in lock:
+            lock[name] = {"repo": repo, "sha": latest_sha(repo)}
+            lock["resolved_on"] = date.today().isoformat()
 
     fetch_pokeapi(lock["pokeapi"]["sha"])
-    fetch_pokeemerald(lock["pokeemerald"]["sha"])
+    for name in DECOMPS:
+        fetch_decomp(name, lock[name]["sha"])
 
     LOCK.parent.mkdir(parents=True, exist_ok=True)
     LOCK.write_text(json.dumps(lock, indent=2) + "\n")

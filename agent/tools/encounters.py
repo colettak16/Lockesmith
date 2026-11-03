@@ -172,7 +172,7 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
     if len(species_out) > MAX_SPECIES:
         result["note"] = f"Showing {MAX_SPECIES} of {len(species_out)}; pass types or species to narrow."
     if target and not found:
-        result["why_not"] = blocked.get(next(iter(blocked), ""), [])[:6] or ["no Emerald encounter for this species"]
+        result["why_not"] = blocked.get(next(iter(blocked), ""), [])[:6] or [f"no {ctx.game.short} encounter for this species"]
     return result
 
 
@@ -184,7 +184,7 @@ def encounter_odds(ctx: RequestContext, location: str, method: str | None = None
     sql = ENCOUNTER_SQL + " WHERE e.location = ?" + (" AND e.method = ?" if method else "")
     data = rows(cur, sql, [loc, method] if method else [loc])
     if not data:
-        raise ToolError(f"no Emerald encounters at {location!r}" + (f" by {method}" if method else ""))
+        raise ToolError(f"no {ctx.game.short} encounters at {location!r}" + (f" by {method}" if method else ""))
     groups: dict[tuple, dict] = {}
     for r in data:
         g = groups.setdefault(

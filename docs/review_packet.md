@@ -80,9 +80,11 @@ costs more than a missed one.
   happens. How often an encounter happens is a separate per-map rate (the `rate=` of each table).
   Mirage Island's grass is stored as one Wynaut slot at 100%, because every slot there is Wynaut.
 - **M-11** `[decomp]` Fishing: each map has one 10-slot fishing table split by rod: Old Rod slots 0–1,
-  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has 6 Feebas tiles
-  chosen from a save-specific seed; fishing on one gives Feebas 50% of the time, otherwise the normal
-  table (`wild_encounter.c`, `NUM_FEEBAS_SPOTS`).
+  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has up to 6 Feebas
+  tiles drawn from a seed (the current Dewford trendy phrase); tile numbers 1-3 are re-rolled as
+  inaccessible and duplicates aren't, so there can be fewer than six, and they move when the phrase
+  changes. Fishing on one gives Feebas 50% of the time, otherwise the normal table
+  (`wild_encounter.c` `CheckFeebas`, `NUM_FEEBAS_SPOTS`).
 - **M-12** `[decomp]` Field-move badge requirements (an HM is usable outside battle only with the
   badge): Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat, Surf: Balance,
   Fly: Feather, Dive: Mind, Waterfall: Rain. Only Waterfall was checked in code

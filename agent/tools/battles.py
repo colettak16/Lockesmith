@@ -38,7 +38,31 @@ def move_table(cur) -> dict[str, dict]:
     }
 
 
+def wild_team(ctx: RequestContext, b: Battle) -> list[dict]:
+    """A required wild battle (Ruby/Sapphire's Cave of Origin legendary) as a one-Pokémon team:
+    wild Pokémon know their species' last four level-up moves at their level, like trainers'
+    defaults, and have random IVs."""
+    cur = ctx.cursor()
+    sp = rows(cur, "SELECT species_id, identifier, name, type1, type2, ability1, ability2 FROM species WHERE identifier = ?",
+              [b.wild["species"]])[0]
+    src = rows(cur, "SELECT source_id FROM encounters WHERE species_id = ? AND location = ? AND method = 'static' LIMIT 1",
+               [sp["species_id"], b.location])
+    moves = level_up_default(cur, sp["species_id"], b.wild["level"])
+    table = move_table(cur)
+    return [{
+        "trainer_const": None, "class_name": "Wild", "trainer_name": sp["name"], "slot": 1,
+        "species_id": sp["species_id"], "identifier": sp["identifier"], "species": sp["name"],
+        "types": [t for t in (sp["type1"], sp["type2"]) if t], "level": b.wild["level"], "held_item": None,
+        "ability": sp["ability1"] if not sp["ability2"] else f"{sp['ability1']} or {sp['ability2']}",
+        "moves": moves, "moves_source": "default (a wild Pokémon's level-up moves)", "iv_value": None,
+        "source_id": src[0]["source_id"] if src else f"progression:{b.id}",
+        "move_details": [table[m] for m in moves if m in table],
+    }]
+
+
 def team(ctx: RequestContext, b: Battle) -> tuple[list[dict], str | None]:
+    if b.wild is not None:
+        return wild_team(ctx, b), "A required wild battle, not a trainer: it can be caught, knocked out or fled from."
     consts, note = trainer_consts(ctx, b)
     cur = ctx.cursor()
     mons = rows(cur, TEAM_SQL.format(marks=", ".join("?" * len(consts))), consts)

@@ -10,14 +10,16 @@ import duckdb
 from agent.db import connect_readonly, session_cursor
 from agent.entities import EntityIndex
 from agent.evidence import Ledger
-from agent.progression import Progression, load
+from agent.games import DEFAULT, Game
+from agent.games import get as get_game
+from agent.progression import Progression, load_game
 from agent.state import Progress, RunState, progress
 
 
 @cache
-def shared_index() -> EntityIndex:
-    """Name matching over the vanilla tables, built once per process."""
-    return EntityIndex(connect_readonly())
+def shared_index(game_id: str = DEFAULT) -> EntityIndex:
+    """Name matching over one game's vanilla tables, built once per process."""
+    return EntityIndex(connect_readonly(get_game(game_id)))
 
 
 class CallLog(list):
@@ -35,9 +37,9 @@ class CallLog(list):
 class RequestContext:
     state: RunState
     con: duckdb.DuckDBPyConnection  # the session connection (vanilla attached read-only + overlays)
-    prog: Progression = field(default_factory=load)
-    index: EntityIndex = field(default_factory=shared_index)
-    ledger: Ledger = field(default_factory=Ledger)
+    prog: Progression | None = None  # the game's progression, from state.game unless given
+    index: EntityIndex | None = None
+    ledger: Ledger | None = None
     excluded_species: set[str] = field(default_factory=set)  # picks the user rejected this session
     tool_calls: list[dict] = field(default_factory=CallLog)
     usage: list[dict] = field(default_factory=list)
@@ -50,6 +52,21 @@ class RequestContext:
     def __post_init__(self) -> None:
         if isinstance(self.tool_calls, CallLog):
             self.tool_calls.listener = self.listener
+        self.prog = self.prog or load_game(self.game)
+        self.index = self.index or shared_index(self.game.id)
+        self.ledger = self.ledger or Ledger(self.game)
+
+    @property
+    def game(self) -> Game:
+        return get_game(self.state.game)
+
+    def refresh_game(self, con: duckdb.DuckDBPyConnection) -> None:
+        """After the run state's game changed mid-turn: the game's connection, progression and names.
+        The ledger keeps its entries (none are cited across a game switch) but labels for the new game."""
+        self.con = con
+        self.prog = load_game(self.game)
+        self.index = shared_index(self.game.id)
+        self.ledger.game = self.game
 
     def emit(self, event: dict) -> None:
         if self.listener:

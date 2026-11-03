@@ -361,3 +361,86 @@ GPT's sample log was from Pokémon X, though. Its "Surf/Old Rod" set labels don'
   The parser now reads both and keeps a per-kind `changes` record, so tools only answer from vanilla when the log never mentions that data or says it's unchanged.
 
 Still open, with no verdict possible without a real Emerald log: whether real logs match the R-03/R-05 numbering and the exact grammar across UPR versions.
+
+## D13. Ruby and Sapphire support (2026-11-02 to 11-03)
+
+The user asked for Ruby and Sapphire after the Emerald build was finished. Both are built as a **delta from Emerald**:
+- `docs/review_packet_rs.md` lists what carries over unchanged (C), what differs (X) and a draft story order per version, all read from pret/pokeruby.
+- It went through two GPT review rounds, each point re-checked in the decomp before anything changed.
+- Round 1 caught a wrong hideout gate (the Slateport Harbor scene, not Mt. Pyre, opens it), a reversed Sealed Chamber order, and the hideout closing for good after the Mind Badge.
+- Round 2 caught a Birch's-rescue species error (Poochyena, not Zigzagoon) and a postgame-only HM08 item ball.
+
+**What carries over is checked, not assumed.** Diffing pokeruby against pokeemerald shows identical:
+- species (types, stats, abilities)
+- moves (type, power, accuracy, PP)
+- the type chart and slot rates
+- egg moves, evolutions and TM compatibility
+- the trainer IV, ability and default-moveset rules
+- every level-up learnset except Deoxys (Normal Forme in Ruby/Sapphire)
+
+The Gen 3 correction layer and its tests therefore apply as they stand, and `tests/test_rs_facts.py` cross-checks each Ruby/Sapphire database against the decomp the same way Emerald's are.
+
+**Data: one database per game** (`agent/games.py`).
+- `data/emerald.duckdb`, `ruby.duckdb` and `sapphire.duckdb` share one schema, so every tool, the Verifier and the randomizer overlays read whichever one the session attached. Two game columns in one database would have touched every query.
+- `build_db.py` builds all three, or one with `--game`.
+- pokeruby compiles either version from one tree, so the parsers take the version:
+  - wild tables come in `_Ruby`/`_Sapphire` pairs
+  - scripts branch on `.ifdef SAPPHIRE` (`decomp.script_lines`)
+  - `constants/version.inc` aliases resolve, e.g. `TRAINER_MT_CHIMNEY_GRUNT_3` is Maxie in Ruby and Archie in Sapphire, and `SPECIES_GROUDON_OR_KYOGRE`
+  - the Lilycove hideout exists as two map sets, and each version keeps its own
+- The same data lives in different files and syntax:
+  - `base_stats.h`, `battle_moves.c`, `*_en.h` text, asm `.inc` tables
+  - positional arrays for learnset pointers, trainer classes and ability names
+  - `gTrainerParty_X` with `.level` and unbraced move lists
+  - `TMHMMoves[]`, and `ITEM_TM01_FOCUS_PUNCH` item names
+- **Emerald's database is unchanged:** rebuilt with the refactored code, it matches the earlier build table for table, apart from a new `build_info` row naming the game.
+
+**PokeAPI for Ruby (version 7) and Sapphire (8), version group 5.** Its wild tables match the decomp slot for slot, when maps are matched by region-map index. Fixed in the build:
+- **Statics:** Ruby lists New Mauville's Voltorb twice and Electrode under New Mauville; Sapphire puts Electrode in the Magma Hideout. `reconcile_statics_with_rom` now:
+  - resolves version branches and aliases
+  - counts shared scripts (`static_pokemon.inc`) for the maps that reach them, following `goto` chains (Route 119's Kecleon go through three labels)
+- **Roamers:** the Hall of Fame condition sits on the water rows only, the reverse of Emerald, so every roaming row now gets the union of its species' conditions.
+- **Friendship:** 160 is corrected to 220, which pokeruby hard-codes in `pokemon_3.c`.
+- **Location mapping (`MAPSEC_OVERRIDES`):**
+  - one region-map section holds whichever hideout the version has
+  - pokeruby's `MAPSEC_UNDERWATER_125` is the map under Route 126
+  - index 58 is the Battle Tower, not the Frontier
+- **Encounter conditions** (`RS_ROM_CONDITIONS`):
+  - the Ruby/Sapphire Regi puzzles: Strength, a two-minute wait, Fly
+  - Relicanth first and Wailord last in the Sealed Chamber (Emerald's order is the reverse)
+  - postgame Sky Pillar
+  - the one-time Cave of Origin legendary
+
+**Story: `data/progression_rs.yaml`, one file for both versions.**
+- Any value written as `{ruby: ..., sapphire: ...}` resolves when the file is loaded for a version, so the 29 steps, areas and notes aren't duplicated.
+- Steps are Emerald's reviewed ones minus the Rustboro rival, the Magma Hideout and the Space Center. Areas carry over because map connections and warps match on all 348 shared maps.
+- New fields:
+  - `wild` makes the required Lv45 Groudon/Kyogre a step; `tools.battles.team` presents it as a one-Pokémon team with its level-up moves
+  - `events` lists the non-battle gates (cable car, museum, Mt. Pyre, Slateport Harbor, the hideout closing, Cave of Origin, the Hall of Fame), as round 1 asked
+- Walkthrough citations point at Bulbapedia's 23-part Ruby and Sapphire walkthrough, in `data/guide_rs`. Its chunks list the versions they describe, so Sapphire searches skip Ruby-only sections.
+
+**Agent: the run state names the game** (`RunState.game`, default `emerald`).
+- **Session:** it reconnects when the game changes, and drops a loaded log, since that was for the other game.
+- **Context and citations:** the request context derives its progression, name index and ledger from the game. Citations link to that game's decomp and walkthrough.
+- **Badges:** they map to the game's gyms. Leader names are per game, because Wallace is Emerald's Champion but Ruby/Sapphire's 8th leader.
+- **Clarifier:** it covers all three games and reads "I'm playing Sapphire" into the state. It still declines Omega Ruby/Alpha Sapphire and FireRed/LeafGreen.
+- **Prompts:** they no longer name Emerald. The run-state brief opens with a line on how the player's game differs.
+- **Page:** the front end has a Game picker, and the examples list has a Sapphire and a Ruby Nuzlocke question. The README samples stay Emerald.
+
+**Randomizer.**
+- UPR ZX prints the ROM's name only in its closing footer, so the parser reads the game there. Uploading a Sapphire log makes the session a Sapphire run.
+- Steven's partner pseudo-trainer is Emerald-only.
+- Wild-set names are compared after removing the `\c` that UPR's text table probably prints for pokeruby's `{NAME_END}` code.
+- No real Ruby or Sapphire log has been parsed. The test log is hand-made from UPR's source, so the set count, static list and name rendering (packet R-12 to R-14) stay predictions.
+
+**Found for Emerald along the way, now fixed in `data/progression.yaml`:**
+- Its Aqua Hideout has the same harbor gate: two entrance grunts until the Slateport submarine scene, which the Magma Hideout arms. The note now says so; the placement was already right.
+- "6 Feebas tiles" is "up to 6". The six draws aren't de-duplicated, and they move when the Dewford trendy phrase changes.
+
+**Not done yet:**
+- live model runs of the Ruby/Sapphire examples
+- a script-level comparison of the remaining event gates between the two decomps (packet Q-08)
+- real Ruby and Sapphire randomizer logs
+- deploying the two new databases (about 7 MB each) and `data/guide_rs`
+
+Tests: 332 pass, 5 skipped. New ones are in `tests/test_rs_facts.py`, `test_progression_rs.py`, `test_rs_agent.py` and `test_rs_randomizer.py`.

@@ -10,8 +10,13 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const SESSION_KEY = "lockesmith.session";
 const MAX_LOG_BYTES = 4_000_000;
 
+const GAMES = ["emerald", "ruby", "sapphire"];
+const GAME_NAMES = { emerald: "Emerald", ruby: "Ruby", sapphire: "Sapphire" };
+
 const ui = {
-  catalog: null,
+  game: "emerald",
+  catalogs: {}, // game -> /catalog?game=... (badges, battles and places differ by game)
+  catalog: null, // the current game's
   examples: [],
   speciesByName: new Map(),
   battleLabel: new Map(),
@@ -142,19 +147,41 @@ function tagPicker({ listId, items, options, max = Infinity, placeholder, more =
 
 /* ---- the run form ---------------------------------------------------------------------- */
 
-function buildForm() {
+/* The parts of the form that differ by game: badge leaders, the story battles, Nuzlocke places. */
+function applyCatalog() {
   const c = ui.catalog;
-  $("#species-list").innerHTML = c.species.map((s) => `<option value="${esc(s.name)}">`).join("");
-  for (const s of c.species) ui.speciesByName.set(s.name.toLowerCase(), s);
-  for (const b of c.battles) ui.battleLabel.set(b.id, b.label);
-
+  ui.battleLabel = new Map(c.battles.map((b) => [b.id, b.label]));
   $("#badges").innerHTML = c.badges.map((b) => {
     const leader = b.label.split(": ")[1] || b.label;
     const name = b.id[0].toUpperCase() + b.id.slice(1);
     return `<button type="button" class="badge-btn" data-badge="${b.id}" aria-pressed="false" title="${esc(b.label)}">
       <span class="b-name">${esc(name)}</span><span class="b-leader">${esc(leader)}</span></button>`;
   }).join("");
-  $("#last-battle").insertAdjacentHTML("beforeend", c.battles.map((b) => `<option value="${b.id}">${esc(b.label)}</option>`).join(""));
+  $("#last-battle").innerHTML = `<option value="">From my badges</option>`
+    + c.battles.map((b) => `<option value="${b.id}">${esc(b.label)}</option>`).join("");
+}
+
+/* Switch the form to another game. Badges keep their names across games; a last battle that
+   doesn't exist in the new game (Emerald's Space Center) is cleared. */
+function setGame(game) {
+  game = GAMES.includes(game) ? game : "emerald";
+  for (const el of document.querySelectorAll('input[name="game"]')) el.checked = el.value === game;
+  if (game === ui.game && ui.catalog) return;
+  const last = $("#last-battle").value;
+  ui.game = game;
+  ui.catalog = ui.catalogs[game];
+  applyCatalog();
+  $("#last-battle").value = ui.battleLabel.has(last) ? last : "";
+  renderUsedList();
+  paintBadges();
+}
+
+function buildForm() {
+  const c = ui.catalog;
+  $("#species-list").innerHTML = c.species.map((s) => `<option value="${esc(s.name)}">`).join("");
+  for (const s of c.species) ui.speciesByName.set(s.name.toLowerCase(), s);
+  applyCatalog();
+  $("#game").addEventListener("change", (e) => { if (e.target.name === "game") { setGame(e.target.value); updateStatus(); } });
   $("#move-list").innerHTML = c.moves.map((m) => `<option value="${esc(m.name)}">`).join("");
   ui.options.species = optionMap(c.species);
   ui.options.moves = optionMap(c.moves);
@@ -255,7 +282,7 @@ function readForm() {
     moves: row.querySelector(".moves").getValues(),
   })).filter((m) => m.species && m.level >= 1 && m.level <= 100);
   return {
-    starter, rival,
+    game: ui.game, starter, rival,
     badges: ui.badgesSet ? ui.catalog.badges.map((b) => b.id).filter((b) => ui.badges.has(b)) : null,
     last_battle: $("#last-battle").value || null,
     party,
@@ -279,6 +306,7 @@ function readForm() {
 
 function fillForm(rs = {}, { highlight = false } = {}) {
   const before = highlight ? JSON.stringify(readForm()) : null;
+  setGame(rs.game || "emerald");
   for (const el of document.querySelectorAll('input[name="starter"]')) el.checked = el.value === rs.starter;
   for (const el of document.querySelectorAll('input[name="rival"]')) el.checked = el.value === (rs.rival || "");
   ui.badges = new Set(rs.badges || []);
@@ -338,6 +366,10 @@ async function uploadLog(text, name) {
   if (text.length > MAX_LOG_BYTES) throw new Error("That file is too big for a randomizer log (over 4 MB).");
   const summary = await api("/upload_log", { log_text: text, name, session_id: ui.sessionId });
   ui.log = summary;
+  if (summary.game && summary.game !== ui.game) { // the server read the log's game from its footer
+    setGame(summary.game);
+    $("#run-status").textContent = `Switched to ${GAME_NAMES[summary.game]} (the log's game)`;
+  }
   renderLog();
   return summary;
 }
@@ -808,7 +840,12 @@ async function init() {
   try { stored = localStorage.getItem(SESSION_KEY); } catch { /* storage blocked */ }
   if (stored) { ui.sessionId = stored; $("#session-id").textContent = stored.slice(0, 8); } else newSessionId();
 
-  [ui.catalog, ui.examples] = await Promise.all([api("/catalog"), api("/examples")]);
+  const [catalogs, examples] = await Promise.all([
+    Promise.all(GAMES.map((g) => api(`/catalog?game=${g}`))), api("/examples"),
+  ]);
+  GAMES.forEach((g, i) => { ui.catalogs[g] = catalogs[i]; });
+  ui.examples = examples;
+  ui.catalog = ui.catalogs.emerald;
   buildForm();
   renderExamples();
   setUpAbout();

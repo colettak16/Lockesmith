@@ -40,6 +40,27 @@ EXAMPLES = [
         "sample_log": "fire-tate-liza.log",
     },
     {
+        "id": "sapphire-wallace", "title": "Sapphire: into Wallace", "tag": "sapphire",
+        "blurb": "Ruby/Sapphire data: Wallace is the 8th leader, and Kyogre comes first.",
+        "message": "What should I catch to beat Wallace?",
+        "run_state": {
+            "game": "sapphire", "starter": "treecko", "rival": "may", "badges": SEVEN,
+            "party": [{"species": "Sceptile", "level": 43}, {"species": "Pelipper", "level": 39},
+                      {"species": "Manectric", "level": 40}, {"species": "Breloom", "level": 39}],
+        },
+    },
+    {
+        "id": "ruby-nuzlocke-groudon", "title": "Ruby Nuzlocke: Groudon?", "tag": "ruby",
+        "blurb": "The forced Lv45 legendary, level caps and Nuzlocke rules in Ruby.",
+        "message": "Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?",
+        "run_state": {
+            "game": "ruby", "starter": "mudkip", "rival": "may", "badges": SEVEN,
+            "party": [{"species": "Swampert", "level": 41}, {"species": "Breloom", "level": 38},
+                      {"species": "Swellow", "level": 38}, {"species": "Manectric", "level": 37}],
+            "ruleset": {"nuzlocke": True, "level_caps": True},
+        },
+    },
+    {
         "id": "monotype", "title": "Custom rules in chat", "tag": "rules",
         "blurb": "Rules typed in plain words become checked constraints.",
         "message": "I'm doing a Water monotype run with no legendaries. What should I catch before Juan?",

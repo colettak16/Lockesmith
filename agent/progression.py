@@ -1,4 +1,10 @@
-"""Load data/progression.yaml: the ordered story battles and what's reachable before each.
+"""Load a progression file: the ordered story battles and what's reachable before each.
+
+Emerald's is data/progression.yaml; Ruby and Sapphire share data/progression_rs.yaml,
+where any value written as `{ruby: ..., sapphire: ...}` is resolved for the version
+being loaded (the villain fights, hideouts and legendary differ). A step can be a
+required wild battle (`wild: {species, level}`, the Cave of Origin legendary in
+Ruby/Sapphire), and `events` lists the non-battle story milestones that gate areas.
 
 An area spec in the YAML is `location` (every area), `location/area` (one PokeAPI
 area) or `location/main` (the unnamed main area), optionally as a mapping
@@ -14,7 +20,10 @@ from pathlib import Path
 
 import yaml
 
-PATH = Path(__file__).resolve().parent.parent / "data" / "progression.yaml"
+from agent.games import EMERALD, Game
+
+PATH = EMERALD.progression_path
+VERSIONS = ("ruby", "sapphire")
 ALL = "*"
 STARTERS = ("treecko", "torchic", "mudkip")
 RIVALS = ("may", "brendan")
@@ -62,12 +71,15 @@ class Battle:
     notes: str | None = None
     review: str | None = None
     partner: dict | None = None
+    wild: dict | None = None  # a required wild battle: {"species": "groudon", "level": 45}
 
     def trainers_for(self, starter: str | None = None, rival: str | None = None) -> list[str]:
         """Trainer consts for this fight. Rival fights need the player's starter; the rival
         (May or Brendan) only matters for the two fights where their teams differ."""
         if self.trainer_consts is not None:
             return list(self.trainer_consts)
+        if self.wild is not None:
+            return []
         if starter not in STARTERS:
             raise ValueError(f"{self.id} depends on the player's starter")
         variants = self.starter_variants[starter]
@@ -78,6 +90,7 @@ class Battle:
 class Progression:
     battles: list[Battle]
     never_reachable: list[tuple[AreaSpec, str]] = field(default_factory=list)
+    events: list[dict] = field(default_factory=list)  # story milestones that aren't battles
 
     def get(self, battle_id: str) -> Battle:
         return next(b for b in self.battles if b.id == battle_id)
@@ -131,15 +144,34 @@ def _battle(raw: dict) -> Battle:
         notes=raw.get("notes"),
         review=raw.get("review"),
         partner=raw.get("partner"),
+        wild=raw.get("wild"),
     )
 
 
+def resolve_versions(value, version: str | None):
+    """Replace every `{ruby: x, sapphire: y}` mapping with the value for `version`."""
+    if isinstance(value, dict):
+        if value and set(value) <= set(VERSIONS):
+            if version not in value:
+                raise ValueError(f"no {version!r} value in {value}")
+            return resolve_versions(value[version], version)
+        return {k: resolve_versions(v, version) for k, v in value.items()}
+    if isinstance(value, list):
+        return [resolve_versions(v, version) for v in value]
+    return value
+
+
 @cache
-def load(path: Path = PATH) -> Progression:
-    data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+def load(path: Path = PATH, version: str | None = None) -> Progression:
+    data = resolve_versions(yaml.safe_load(Path(path).read_text(encoding="utf-8")), version)
     battles = sorted((_battle(b) for b in data["battles"]), key=lambda b: b.order)
     never = [
         (parse_area({"area": n["area"], "methods": n["methods"]} if "methods" in n else n["area"]), n["reason"])
         for n in data.get("never_reachable") or []
     ]
-    return Progression(battles, never)
+    return Progression(battles, never, data.get("events") or [])
+
+
+def load_game(game: Game = EMERALD) -> Progression:
+    """The progression for a game: Emerald's file, or the shared Ruby/Sapphire file resolved for the version."""
+    return load(game.progression_path, game.id if game.is_rs else None)

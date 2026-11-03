@@ -1,8 +1,11 @@
-"""Trainer parties from pokeemerald -> `trainers` and `trainer_mons` tables.
+"""Trainer parties from the decomp -> `trainers` and `trainer_mons` tables.
 
 Sources: src/data/trainers.h (one struct per trainer, with the party symbol and
 the double-battle flag), src/data/trainer_parties.h (854 party arrays) and
 include/constants/opponents.h (TRAINER_X -> id; the randomizer log uses these ids).
+pokeruby has the same data as trainers_en.h and trainer_parties.h (693 trainers,
+`gTrainerParty_X` arrays with `.level` and unbraced move lists); both versions
+share it, and version.inc's aliases decide which villain trainers a version fights.
 
 Parties with default moves get what the game gives them at creation time
 (GiveBoxMonInitialMoveset in src/pokemon.c): walk the species' level-up learnset in
@@ -50,6 +53,8 @@ def split_top_level(body: str) -> list[str]:
 
 
 def parse_parties(decomp_dir: Path) -> dict[str, list[dict]]:
+    if decomp.is_rs(decomp_dir):
+        return parse_parties_rs(decomp_dir)
     text = strip_comments(decomp.read(decomp_dir, "src/data/trainer_parties.h"))
     parties = {}
     for struct, symbol, body in re.findall(
@@ -72,14 +77,40 @@ def parse_parties(decomp_dir: Path) -> dict[str, list[dict]]:
     return parties
 
 
+def parse_parties_rs(decomp_dir: Path) -> dict[str, list[dict]]:
+    """pokeruby's party arrays: one field per line, and custom moves as a bare comma list."""
+    text = strip_comments(decomp.read(decomp_dir, "src/data/trainer_parties.h"))
+    parties = {}
+    for struct, symbol, body in re.findall(
+        r"const struct (TrainerMon\w+) (gTrainerParty_\w+)\[\]\s*=\s*\{(.*?)\n\};", text, flags=re.S
+    ):
+        mons = []
+        for chunk in split_top_level(body):
+            f = dict(re.findall(r"\.(\w+)\s*=\s*([^\n]+?)\s*,?\s*$", chunk, flags=re.M))
+            moves = [m.strip() for m in f["moves"].split(",")] if "moves" in f else None
+            mons.append(
+                {
+                    "iv": int(f["iv"]),
+                    "level": int(f["level"]),
+                    "species_const": f["species"],
+                    "held_item": item_identifier(f.get("heldItem", "ITEM_NONE"), rs=True),
+                    "move_consts": [m for m in moves if m and m != "MOVE_NONE"] if moves is not None else None,
+                    "struct": struct,
+                }
+            )
+        parties[symbol] = mons
+    return parties
+
+
 def parse_trainers(decomp_dir: Path) -> list[dict]:
+    rs = decomp.is_rs(decomp_dir)
     ids = {k: v for k, v in decomp.defines(decomp_dir, "include/constants/opponents.h").items() if k.startswith("TRAINER_")}
     class_names = decomp.trainer_class_names(decomp_dir)
-    text = strip_comments(decomp.read(decomp_dir, "src/data/trainers.h"))
+    text = strip_comments(decomp.read(decomp_dir, "src/data/trainers_en.h" if rs else "src/data/trainers.h"))
     out = []
     for const, body in bracket_blocks(text, "TRAINER_").items():
         f = fields(body)
-        party = re.search(r"\((sParty_\w+)\)", f.get("party", ""))
+        party = re.search(r"\b(sParty_\w+|gTrainerParty_\w+)\b", f.get("party", ""))
         name = re.search(r'_\("([^"]*)"\)', f["trainerName"]).group(1)
         trainer_class = f["trainerClass"]
         out.append(
@@ -91,7 +122,7 @@ def parse_trainers(decomp_dir: Path) -> list[dict]:
                 "name": name.title(),
                 "is_female": "F_TRAINER_FEMALE" in f.get("encounterMusic_gender", ""),
                 "is_double": f.get("doubleBattle") == "TRUE",
-                "items": [i for i in (item_identifier(x) for x in brace_list(f.get("items", "{}"))) if i],
+                "items": [i for i in (item_identifier(x, rs=rs) for x in brace_list(f.get("items", "{}"))) if i],
                 "ai_flags": f.get("aiFlags", "0"),
                 "party_symbol": party.group(1) if party else None,
             }
