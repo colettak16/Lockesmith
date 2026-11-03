@@ -466,3 +466,29 @@ D13's first and last open items are done: both databases are deployed, and the t
   Abilities count: Levitate, Volt/Water Absorb, Flash Fire, Thick Fat and Wonder Guard. A claim that holds under any reading of its sentence passes, so only clear mistakes go to the Writer as corrections.
 
   Run over the 9 saved drafts, it flags exactly the two real errors and nothing else.
+
+## D15. Hedged Flash calls; invented citation ids dropped, not repaired (2026-11-03)
+
+The live Ruby and Sapphire runs took 186 s and 127 s, against about 80 s for the Emerald samples. LangFuse's record of 185 successful Flash calls shows where the extra time went:
+- **Rate limits cost almost nothing.** A 429 fails in about 0.5–1 s and goes straight to the fallback model.
+- **Stalls cost the most.** The longest real answers (1,000+ tokens) all finished within 14.6 s. Everything slower was a short reply that had stalled (68 s for 76 tokens). A stall past 25 s hit the timeout, and the call started over on the fallback model. A stall under 25 s, like Sapphire's 21 s Clarifier call, just waited.
+- **Ruby also lost about 50 s to a repair round.** The Lead cited `assess_candidates#Lanturn` and `#Magneton`, which no tool returned. Both picks failed the citation check, and the repair returned the same picks.
+
+Fixes:
+- **Hedging** (`runtime.FallbackModel`, `HEDGE_AFTER_S`). A Flash call with no answer after 12 s (13% of calls) also goes to the fallback model. The first answer wins, and the other is cancelled.
+  - The original keeps running, so a long answer that's nearly done still wins. Nothing is cut off.
+  - The cost is the extra tokens on hedged calls.
+  - The 25 s timeout stays as a backstop.
+  - Pro isn't hedged: it hasn't stalled, and its fallback is a weaker model.
+  - Lowering the timeout to 15 s was the simpler option. It was rejected because it throws away a nearly-done answer and doesn't help with 12–15 s stalls.
+- **Invented citation ids.** A pick that cites real sources plus an invented id keeps the real ones. The invented id is dropped and recorded in the trace as `drop_unknown_citations`. Only a pick with no real source left goes back to the Lead.
+
+**After both fixes,** the same two examples ran live in 50 s (Sapphire) and 92 s (Ruby):
+- **Sapphire:** no call stalled.
+- **Ruby:**
+  - One hedge fired; the original answered first.
+  - A Pro call was rate-limited and went to the fallback, as before.
+  - There was no repair round.
+- **The Verifier:** its extended matchup check (D14) caught a new wrong claim, "Magneton resists Water" (Water does 1x to Electric/Steel).
+
+One run each can't separate the fixes from Vertex's load that day. The 25 s timeout cost is gone by construction; the latency gain needs more runs to measure.

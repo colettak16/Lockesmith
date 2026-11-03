@@ -184,7 +184,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 
 ![LangFuse timeline of one LockeSmith question](docs/images/langfuse-timeline.png)
 
-*Timeline.* The whole turn took 2 min 10 s and cost $0.23 across 19 model calls. The Clarifier took 2.8 s. The Lead's `dispatch_researchers` ran four researchers at once; three finished in 11.5–21.9 s, but the round took 78 s because one of the story researcher's model calls stalled for 68 s. Its other calls took 2–3 s. That trace is why every model call now has a time limit (25 s for Flash, 60 s for Pro), after which it goes to the fallback model ([D12](docs/decisions.md)).
+*Timeline.* The whole turn took 2 min 10 s and cost $0.23 across 19 model calls. The Clarifier took 2.8 s. The Lead's `dispatch_researchers` ran four researchers at once; three finished in 11.5–21.9 s, but the round took 78 s because one of the story researcher's model calls stalled for 68 s. Its other calls took 2–3 s. That trace is why every model call now has a time limit (25 s for Flash, 60 s for Pro), after which it goes to the fallback model ([D12](docs/decisions.md)). A Flash call still unanswered after 12 s is also sent to the fallback model, and the first answer wins ([D15](docs/decisions.md)).
 
 ![LangFuse agent graph of the same question](docs/images/langfuse-agent-graph.png)
 
@@ -201,7 +201,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 387 tests (5 wait for a real randomizer log), no model calls
+uv run pytest                           # 392 tests (5 wait for a real randomizer log), no model calls
 ```
 
 Scripts:
