@@ -217,7 +217,7 @@ battles:
 
   - id: rockets_pokemon_tower
     order: 12
-    label: "Pokémon Tower 7F: Team Rocket (Mr. Fuji)"
+    label: "Pokémon Tower 6F-7F: the ghost Marowak and Team Rocket (Mr. Fuji)"
     badges_before: 4
     trainer_consts: [TRAINER_TEAM_ROCKET_GRUNT_19, TRAINER_TEAM_ROCKET_GRUNT_20, TRAINER_TEAM_ROCKET_GRUNT_21]
     starter_variants: null
@@ -227,7 +227,7 @@ battles:
     hm_gates_open: [cut, flash, fly]
     key_items: [old-rod, bicycle, tea, silph-scope]
     areas_new: [pokemon-tower]
-    notes: "Three grunts, one after another. On 6F the Marowak ghost is a scripted battle (StartMarowakBattle) that can't be caught. Rescuing Mr. Fuji gives the Poké Flute and opens Silph Co.: its door guard falls asleep (FLAG_RESCUED_MR_FUJI)."
+    notes: "On 6F the ghost Marowak (Lv30) blocks the stairs (two trigger tiles, PokemonTower_6F); the Silph Scope reveals it, and it's a scripted battle (StartMarowakBattle) that can't be caught. Then three Rocket grunts on 7F, one after another. Rescuing Mr. Fuji gives the Poké Flute and opens Silph Co.: its door guard falls asleep (FLAG_RESCUED_MR_FUJI)."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_9#Pokemon_Tower"
 
   - id: gym5_koga
@@ -240,7 +240,7 @@ battles:
     optional: false
     location: fuchsia-city
     hm_gates_open: [cut, flash, fly, strength]
-    key_items: [old-rod, bicycle, tea, silph-scope, poke-flute, good-rod, super-rod]
+    key_items: [old-rod, bicycle, tea, silph-scope, poke-flute, good-rod, super-rod, card-key]
     areas_new: [kanto-route-12, kanto-route-13, kanto-route-14, kanto-route-15, kanto-route-17, kanto-route-18, fuchsia-city, kanto-safari-zone, kanto-sea-route-19]
     notes: "Koffing 37, Muk 39, Koffing 37, Weezing 43. TM06 Toxic. Fuchsia is past a Snorlax either way (Route 12 from Lavender, or Route 16 and Cycling Road from Celadon): wake one with the Poké Flute. The Safari Zone gives HM03 Surf (Secret House) and the Gold Teeth for HM04 Strength (the Warden)."
     review: "Strength listed here since the Rainbow Badge is held and the Warden is in Fuchsia. Rods confirmed in the decomp: Old Rod VermilionCity_House1, Good Rod FuchsiaCity_House2, Super Rod Route12_FishingHouse."
@@ -321,7 +321,7 @@ battles:
     hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
     key_items: [old-rod, bicycle, tea, silph-scope, poke-flute, good-rod, super-rod, card-key, secret-key, tri-pass]
     areas_new: [one-island, kindle-road, treasure-beach, mt-ember/main, mt-ember/cave, mt-ember/inside, mt-ember/summit, two-island, cape-brink]
-    notes: "After Blaine, Bill offers a trip to One Island; you can decline and come back later. Before these fights: Rock Smash (HM06, Kindle Road's Ember Spa), Moltres at Mt. Ember's summit (the direct route needs Strength), and the Cape Brink tutor (starter's ultimate move, friendship 255). The PC is off from the first meeting with Celio until you reach Three Island (ThreeIsland_Port clears FLAG_SYS_PC_STORAGE_DISABLED); Fly can't take you back to Kanto. Mt. Ember's PokeAPI areas match the decomp's wild tables on species and level ladders: main = Exterior, cave = Summit Path 1F/3F (Lv29-33), inside = Summit Path 2F (Lv30-34), summit = Summit; the Ruby Path (1F cave, B1F-B3F, Lv32-44) is postgame."
+    notes: "After Blaine, Bill offers a trip to One Island; you can decline and come back later. Before these fights: Rock Smash (HM06, Kindle Road's Ember Spa), Moltres at Mt. Ember's summit (the direct route needs Strength), and the Cape Brink tutor (starter's ultimate move, friendship 255). Once you take Bill's trip, this step and the next are the way back to Kanto. The PC is off from the first meeting with Celio until you reach Three Island (ThreeIsland_Port clears FLAG_SYS_PC_STORAGE_DISABLED); Fly can't take you back to Kanto. Mt. Ember's PokeAPI areas match the decomp's wild tables on species and level ladders: main = Exterior, cave = Summit Path 1F/3F (Lv29-33), inside = Summit Path 2F (Lv30-34), summit = Summit; the Ruby Path (1F cave, B1F-B3F, Lv32-44) is postgame."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_14#Three_Island"
 
   - id: sevii_berry_forest
@@ -453,7 +453,7 @@ battles:
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Champion"
 
 closes:
-  - {area: ss-anne, after: rival4_ss_anne, reason: "the S.S. Anne leaves when you step off with HM01 (VAR_MAP_SCENE_VERMILION_CITY = 3); after that Vermilion's harbor sailor turns you away unless you have a Sevii pass, so the dock's fishing (SSAnne_Exterior) is only before the ship's rival"}
+  - {area: ss-anne, after: rival4_ss_anne, reason: "the S.S. Anne leaves when you step off it after the Captain gives HM01 (he sets VAR_MAP_SCENE_VERMILION_CITY to 1, and SSAnne_Exterior's ExitSSAnne runs on the dock); the rival fight itself closes nothing, but the ship is gone by Surge, and Vermilion's harbor sailor turns you away after that unless you have a Sevii pass"}
 
 never_reachable:
   - {area: pallet-town, methods: [gift], reason: "not a catch: the starter is your choice at Oak's Lab (the run state's starter)"}

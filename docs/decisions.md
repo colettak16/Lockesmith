@@ -566,3 +566,15 @@ Every encounter area is either opened by a step or marked never reachable.
 Not applied:
 - **Route 23 mid-game.** Its badge guards let you fish and surf part of it before eight badges. That's not modeled; the whole route opens with the League.
 - **Mt. Ember's area names.** Codex would also compare levels and slots, not only species. It's left as a `review:` note.
+
+**Review round 2** (`docs/review_frlg_round2_codex.md`). Codex confirmed all 14 round-1 changes and found no HM listed too early. Applied after checking each:
+- **S.S. Anne.** The ship leaves when you step off it after the Captain's HM01: he sets Vermilion's scene to 1, and the dock's `ExitSSAnne` runs on it. The `closes` entry already had that timing; its reason now says so.
+- **Pokémon Tower.** The ghost Marowak on 6F blocks the stairs (two trigger tiles) and is now named in the Tower step.
+- **Card Key.** It can be had before Koga, since Silph Co. opens with Mr. Fuji's rescue.
+- **Mimic.** The tutor also takes a Poké Doll (`EventScript_MimicTutor`).
+- **Sevii.** Once you take Bill's trip, both Sevii steps are the way back to Kanto.
+
+Not changed, since Codex misread them:
+- `pallet-town` is excluded only for the starter gift; its fishing opens at the Route 22 step.
+- `kanto-route-3/pokemon-center` is marked as PokeAPI's duplicate of the Route 4 Magikarp salesman.
+- Key items stay the ones the tools gate on, not every key item.

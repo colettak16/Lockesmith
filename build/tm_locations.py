@@ -127,7 +127,7 @@ FRLG_REQUIRES = {(tm, "gift", CELADON_ROOF): THIRSTY_GIRL for tm in ("TM16", "TM
 FRLG_TUTOR_REQUIRES = {
     "SaffronCity_CopycatsHouse_2F": (
         "a Rocket stands below the Copycat's door (SaffronCity map.json (22,15), FLAG_HIDE_SAFFRON_ROCKETS) until "
-        "Giovanni leaves Silph Co."
+        "Giovanni leaves Silph Co., and the Copycat wants a Poke Doll for it (EventScript_MimicTutor removes one)"
     ),
 }
 # Cape Brink (Two Island) teaches the lead Pokemon its starter's ultimate move (field_specials.c)
