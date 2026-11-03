@@ -1,6 +1,6 @@
 # Lockesmith: Pokémon Emerald facts for cross-checking
 
-Generated 2026-11-01 by `build/review_packet.py` from the database built 2026-11-02: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
+Generated 2026-11-03 by `build/review_packet.py` from the database built 2026-11-03: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
 
 Two previous review rounds were applied after re-verification; docs/decisions.md D7 says what changed. Fresh eyes on sections 4, 5 and 7 are still the most useful.
 
@@ -80,9 +80,11 @@ costs more than a missed one.
   happens. How often an encounter happens is a separate per-map rate (the `rate=` of each table).
   Mirage Island's grass is stored as one Wynaut slot at 100%, because every slot there is Wynaut.
 - **M-11** `[decomp]` Fishing: each map has one 10-slot fishing table split by rod: Old Rod slots 0–1,
-  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has 6 Feebas tiles
-  chosen from a save-specific seed; fishing on one gives Feebas 50% of the time, otherwise the normal
-  table (`wild_encounter.c`, `NUM_FEEBAS_SPOTS`).
+  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has up to 6 Feebas
+  tiles drawn from a seed (the current Dewford trendy phrase); tile numbers 1-3 are re-rolled as
+  inaccessible and duplicates aren't, so there can be fewer than six, and they move when the phrase
+  changes. Fishing on one gives Feebas 50% of the time, otherwise the normal table
+  (`wild_encounter.c` `CheckFeebas`, `NUM_FEEBAS_SPOTS`).
 - **M-12** `[decomp]` Field-move badge requirements (an HM is usable outside battle only with the
   badge): Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat, Surf: Balance,
   Fly: Feather, Dive: Mind, Waterfall: Rain. Only Waterfall was checked in code
@@ -662,8 +664,9 @@ This is the most judgement-heavy section and the one we most want checked.
   battle count, so an area can open before the walkthrough visits it. An area counts only once the
   player can *stand* in it (riding Mr. Briney's boat across open water doesn't count). An entry can be
   limited to some encounter methods, e.g. Route 115's beach opens for fishing before its grass.
-  "Reachable before X" is the accumulation of `areas_new` up to and including X. Item and HM gates
-  still apply on top (Surf, rods, Rock Smash, Dive for seaweed).
+  "Reachable before X" is the accumulation of `areas_new` up to and including X, minus the areas that
+  have closed by then (P-R10). Item and HM gates still apply on top (Surf, rods, Rock Smash, Dive for
+  seaweed).
 - **P-R3** An HM counts as open (`hm_gates_open`) when the player holds it *and* has the badge that
   allows its field use (M-12), at the point the walkthrough hands it over.
 - **P-R4** `[decomp]` **Badge order is looser than this list.** Only Norman's gym checks earlier badges:
@@ -689,6 +692,10 @@ This is the most judgement-heavy section and the one we most want checked.
   Brawly, its water after the museum; Route 111's pond and rocks from Mauville, its desert grass after
   the Go-Goggles). `never_reachable` entries can be method-limited the same way, so a postgame gift
   doesn't make its town unreachable.
+- **P-R10** Areas can also close for good (`closes`, listed as CL below). One with a battle is still
+  reachable before that battle and gone for every later one, so the tools stop offering its
+  encounters; until then they flag them as missable. One without a battle closes on something the
+  player does, so it's only flagged.
 
 ### Battles in order
 
@@ -778,7 +785,7 @@ This is the most judgement-heavy section and the one we most want checked.
   - Trainers: TRAINER_SHELLY_WEATHER_INSTITUTE (teams: K-shelly_weather_institute)
   - HMs usable: cut, flash, rock-smash, strength, surf; key items: old-rod, good-rod, go-goggles
   - Areas newly reachable before this battle: hoenn-route-105, hoenn-route-107, hoenn-route-108, abandoned-ship, new-mauville, hoenn-route-123, hoenn-route-119/main, hoenn-route-115 (walk, surf only)
-  - Notes: Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has 6 Feebas tiles, chosen from a save-specific seed, and fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly.
+  - Notes: Surf (Wally's father, after Norman) opens the water on earlier routes too: Routes 105, 107 and 108 become explorable, and Route 115's Surf-only north holds its one patch of grass (Bulbapedia: Route 115; walkthrough Part 8). Good Rod: fisherman on Route 118's east bank. New Mauville needs Wattson's Basement Key. Feebas: Route 119 has up to 6 Feebas tiles. Each is drawn from a seed (the current Dewford trendy phrase, dewfordTrends[0]), tile numbers 1-3 are re-rolled because they're inaccessible, and duplicates aren't, so there can be fewer than six; the tiles move when the trendy phrase changes. Fishing on one gives Feebas half the time; elsewhere the normal table applies (wild_encounter.c CheckFeebas, NUM_FEEBAS_SPOTS). In the Weather Institute: five Aqua Grunts (TRAINER_GRUNT_WEATHER_INST_1 to _5) before Shelly.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_10#Looking_for_Answers`
 - **P-16** Route 119: Rival (`rival4_route119`, at `hoenn-route-119`): badges before: 5, single, required.
   - Trainers: depend on starter and rival (teams: K-rival4_route119)
@@ -796,7 +803,7 @@ This is the most judgement-heavy section and the one we most want checked.
   - Trainers: depend on starter and rival (teams: K-rival5_lilycove)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
-  - Notes: The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout.
+  - Notes: The rival is in Lilycove from your first visit until the Hall of Fame (only the Hall of Fame script sets FLAG_HIDE_LILYCOVE_CITY_RIVAL), and the battle has no badge check; only the rival's parting line changes with your badges. Placed at the usual first visit, after Winona; it can come even before Winona once you have the Devon Scope. The walkthrough fights it after the Magma Hideout. Optional, but the rival stands on (27,7), the only tile below the Department Store's door, and declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle; only RivalFlyAway removes them), so the store and its 4F TMs (TM14, 15, 16, 17, 20, 25, 33, 38) need this battle.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_13#Rival_Battle_5_(optional)`
 - **P-19** Magma Hideout: Magma Admin Tabitha (`tabitha_magma_hideout`, at `magma-hideout`): badges before: 6, single, required.
   - Trainers: TRAINER_TABITHA_MAGMA_HIDEOUT (teams: K-tabitha_magma_hideout)
@@ -814,7 +821,7 @@ This is the most judgement-heavy section and the one we most want checked.
   - Trainers: TRAINER_MATT (teams: K-matt_aqua_hideout)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly; key items: old-rod, good-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: team-aqua-hideout
-  - Notes: The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked.
+  - Notes: Two grunts block the hideout's entrance (AquaHideout_1F at (13,11) and (14,11)) until the submarine theft at Slateport Harbor hides them (FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1/2_BLOCKING_ENTRANCE). That scene plays when you enter the harbor after the Magma Hideout (MagmaHideout_4F sets VAR_SLATEPORT_HARBOR_STATE to 1), so the order is Magma Hideout, Slateport Harbor, then this hideout; nothing checks a badge. The hideout's two Electrode are disguised as items. More Aqua grunts stand along the way; which of them can't be avoided hasn't been checked.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_13#Submarine_room_2`
 - **P-22** Mossdeep Gym: Tate & Liza (`gym7_tate_liza`, at `mossdeep-city`): badges before: 6, double, required.
   - Trainers: TRAINER_TATE_AND_LIZA_1 (teams: K-gym7_tate_liza)
@@ -839,6 +846,7 @@ This is the most judgement-heavy section and the one we most want checked.
   - Trainers: TRAINER_ARCHIE (teams: K-archie_seafloor_cavern)
   - HMs usable: cut, flash, rock-smash, strength, surf, fly, dive; key items: old-rod, good-rod, super-rod, go-goggles, devon-scope, pokeblock-case
   - Areas newly reachable before this battle: none
+  - Notes: From here until Rayquaza's scene in Sootopolis, Sootopolis's surfing and Sweet Scent water encounters are off (FLAG_LEGENDARIES_IN_SOOTOPOLIS, set in SeafloorCavern_Room9 and cleared by the Rayquaza scene; AreLegendariesInSootopolisPreventingEncounters in wild_encounter.c). Fishing there still works. Ruby/Sapphire have no such block.
   - Source: `guide:Walkthrough:Pokemon_Emerald/Part_15#VS_Archie`
 - **P-26** Sootopolis Gym: Juan (`gym8_juan`, at `sootopolis-city`): badges before: 7, single, required.
   - Trainers: TRAINER_JUAN_1 (teams: K-gym8_juan)
@@ -892,7 +900,7 @@ This is the most judgement-heavy section and the one we most want checked.
 - **N-08** `desert-underpass`: opens after the Hall of Fame
 - **N-09** `marine-cave`: postgame (Kyogre)
 - **N-10** `terra-cave`: postgame (Groudon)
-- **N-11** `roaming-hoenn`: Latios/Latias start roaming after the Hall of Fame
+- **N-11** `roaming-hoenn`: Latios/Latias start roaming after the Hall of Fame: entering your house plays the TV news, and the color you tell Mom picks which one roams (players_house.inc, InitRoamer)
 - **N-12** `artisan-cave`: Battle Frontier (postgame)
 - **N-13** `hoenn-battle-frontier`: Battle Frontier (postgame)
 - **N-14** `southern-island`: Eon Ticket event
@@ -900,6 +908,11 @@ This is the most judgement-heavy section and the one we most want checked.
 - **N-16** `birth-island`: Aurora Ticket event
 - **N-17** `navel-rock`: Mystic Ticket event
 - **N-18** `hoenn-pokecenter`: Colosseum bonus disc (Japan) gift
+
+### Areas that close for good (CL)
+
+- **CL-01** `cave-of-origin`, gone after `gym8_juan`: open only during the Groudon/Kyogre crisis: the Expert at its entrance steps aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, until Wallace leaves for Sky Pillar), so catch there on the way to Wallace in the cave or not at all
+- **CL-02** `mirage-tower`, closes on a player action: collapses for good once you take a fossil from its top floor (MirageTower_4F sets VAR_MIRAGE_TOWER_STATE), and until then it shows on Route 111 only about half the times you arrive (SetMirageTowerVisibility)
 
 ## 5. Locations and encounter mapping
 
@@ -1347,19 +1360,19 @@ This is the most judgement-heavy section and the one we most want checked.
 | TM-TM12 | Taunt | gift | hoenn-route-110 | Route110_TrickHouseEntrance | — | a Trick House puzzle prize |
 | TM-TM13 | Ice Beam | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
 | TM-TM13 | Ice Beam | item-ball | abandoned-ship | AbandonedShip_Room_B1F | — | the Storage Key from the Captain's Office unlocks this room (FLAG_USED_STORAGE_KEY) |
-| TM-TM14 | Blizzard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
-| TM-TM15 | Hyper Beam | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
-| TM-TM16 | Light Screen | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
-| TM-TM17 | Protect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM14 | Blizzard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
+| TM-TM15 | Hyper Beam | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
+| TM-TM16 | Light Screen | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
+| TM-TM17 | Protect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
 | TM-TM18 | Rain Dance | item-ball | abandoned-ship | AbandonedShip_HiddenFloorRooms | — | Dive to reach the Abandoned Ship's hidden floor |
 | TM-TM19 | Giga Drain | gift | hoenn-route-123 | Route123 | — | a Grass-type Pokemon in the party (IsGrassTypeInParty) |
-| TM-TM20 | Safeguard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM20 | Safeguard | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
 | TM-TM21 | Frustration | gift | pacifidlog-town | PacifidlogTown_House2 | — | once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK) |
 | TM-TM22 | Solar Beam | item-ball | hoenn-safari-zone | SafariZone_Northwest | — | — |
 | TM-TM23 | Iron Tail | item-ball | meteor-falls | MeteorFalls_1F_1R | — | — |
 | TM-TM24 | Thunderbolt | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
 | TM-TM24 | Thunderbolt | gift | mauville-city | MauvilleCity | — | Wattson gives it after you finish New Mauville with his Basement Key |
-| TM-TM25 | Thunder | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM25 | Thunder | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
 | TM-TM26 | Earthquake | item-ball | seafloor-cavern | SeafloorCavern_Room9 | — | inside Seafloor Cavern (Dive) |
 | TM-TM27 | Return | gift | fallarbor-town | FallarborTown_CozmosHouse | — | Professor Cozmo gives it once you hand over the Meteorite (from Mt. Chimney) |
 | TM-TM27 | Return | gift | pacifidlog-town | PacifidlogTown_House2 | — | once a week, judged on the lead Pokemon's friendship: 150+ gets TM27 Return, under 50 gets TM21 Frustration, in between gets nothing (GetLeadMonFriendshipScore, FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK) |
@@ -1370,12 +1383,12 @@ This is the most judgement-heavy section and the one we most want checked.
 | TM-TM31 | Brick Break | gift | sootopolis-city | SootopolisCity_House1 | — | — |
 | TM-TM32 | Double Team | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
 | TM-TM32 | Double Team | hidden-item | hoenn-route-113 | Route113 | — | — |
-| TM-TM33 | Reflect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | — |
+| TM-TM33 | Reflect | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
 | TM-TM34 | Shock Wave | gift | mauville-city | MauvilleCity_Gym | after defeating TRAINER_WATTSON_1 | — |
 | TM-TM35 | Flamethrower | game-corner | mauville-city | MauvilleCity_GameCorner | — | — |
 | TM-TM36 | Sludge Bomb | gift | dewford-town | DewfordTown_Hall | — | — |
 | TM-TM37 | Sandstorm | item-ball | hoenn-route-111 | Route111 | — | — |
-| TM-TM38 | Fire Blast | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | — |
+| TM-TM38 | Fire Blast | mart | lilycove-city | LilycoveCity_DepartmentStore_4F | LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs | the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle |
 | TM-TM39 | Rock Tomb | gift | rustboro-city | RustboroCity_Gym | after defeating TRAINER_ROXANNE_1 | — |
 | TM-TM40 | Aerial Ace | gift | fortree-city | FortreeCity_Gym | after defeating TRAINER_WINONA_1 | — |
 | TM-TM41 | Torment | gift | slateport-city | SlateportCity_BattleTentLobby | — | — |

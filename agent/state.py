@@ -8,38 +8,42 @@ turns that into the battles already behind the player and the ones still ahead.
 from dataclasses import dataclass, field
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
+from agent.games import DEFAULT, GAMES
+from agent.games import get as get_game
 from agent.progression import RIVALS, STARTERS, Battle, Progression
 
-# Badge -> the gym battle that awards it. Leader names and battle ids are accepted too.
-BADGES = {
-    "stone": "gym1_roxanne",
-    "knuckle": "gym2_brawly",
-    "dynamo": "gym3_wattson",
-    "heat": "gym4_flannery",
-    "balance": "gym5_norman",
-    "feather": "gym6_winona",
-    "mind": "gym7_tate_liza",
-    "rain": "gym8_juan",
+GameId = Literal["emerald", "ruby", "sapphire"]
+BADGE_ORDER = ("stone", "knuckle", "dynamo", "heat", "balance", "feather", "mind", "rain")
+# Badge -> the gym battle that awards it, per game (the 8th leader is Juan in Emerald, Wallace
+# in Ruby/Sapphire). Leader names and battle ids are accepted too.
+GYM_IDS = ("gym1_roxanne", "gym2_brawly", "gym3_wattson", "gym4_flannery", "gym5_norman", "gym6_winona", "gym7_tate_liza")
+BADGE_GYMS = {
+    game: dict(zip(BADGE_ORDER, (*GYM_IDS, "gym8_juan" if game == "emerald" else "gym8_wallace"))) for game in GAMES
 }
-LEADERS = {
+BADGES = BADGE_GYMS[DEFAULT]
+SHARED_LEADERS = {
     "roxanne": "stone", "brawly": "knuckle", "wattson": "dynamo", "flannery": "heat", "norman": "balance",
-    "winona": "feather", "tate": "mind", "liza": "mind", "tate and liza": "mind", "tate & liza": "mind", "juan": "rain",
+    "winona": "feather", "tate": "mind", "liza": "mind", "tate and liza": "mind", "tate & liza": "mind",
 }
+# "Wallace" is Emerald's Champion but Ruby/Sapphire's 8th leader, so leader names are per game.
+GAME_LEADERS = {game: {**SHARED_LEADERS, ("juan" if game == "emerald" else "wallace"): "rain"} for game in GAMES}
+LEADERS = GAME_LEADERS[DEFAULT]
 GYM_TO_BADGE = {gym: badge for badge, gym in BADGES.items()}
 
 
-def normalize_badge(value: str) -> str:
+def normalize_badge(value: str, game: str = DEFAULT) -> str:
     v = value.strip().lower().removesuffix(" badge").replace("_", " ")
-    if v in BADGES:
+    if v in BADGE_GYMS[game]:
         return v
-    if v in LEADERS:
-        return LEADERS[v]
+    if v in GAME_LEADERS[game]:
+        return GAME_LEADERS[game][v]
+    gyms = {gym: badge for badge, gym in BADGE_GYMS[game].items()}
     gym = value.strip().lower()
-    if gym in GYM_TO_BADGE:
-        return GYM_TO_BADGE[gym]
-    raise ValueError(f"unknown badge {value!r}; use one of {sorted(BADGES)}")
+    if gym in gyms:
+        return gyms[gym]
+    raise ValueError(f"unknown badge {value!r}; use one of {list(BADGE_ORDER)}")
 
 
 class PartyMember(BaseModel):
@@ -124,6 +128,7 @@ class Ruleset(BaseModel):
 
 
 class RunState(BaseModel):
+    game: GameId = Field(default=DEFAULT, description="Which game: emerald, ruby or sapphire")
     starter: Literal["treecko", "torchic", "mudkip"] | None = None
     badges: list[str] | None = Field(default=None, description="Badges held; [] means none yet, null means not given")
     rival: Literal["may", "brendan"] | None = None
@@ -133,6 +138,11 @@ class RunState(BaseModel):
     ruleset: Ruleset = Field(default_factory=Ruleset)
     randomizer_log_id: str | None = None
 
+    @field_validator("game", mode="before")
+    @classmethod
+    def _game(cls, v):
+        return get_game(v).id if isinstance(v, str) or v is None else v
+
     @field_validator("starter", "rival", mode="before")
     @classmethod
     def _lower(cls, v):
@@ -140,10 +150,11 @@ class RunState(BaseModel):
 
     @field_validator("badges", mode="before")
     @classmethod
-    def _badges(cls, v):
+    def _badges(cls, v, info: ValidationInfo):
         if v is None:
             return None
-        return sorted({normalize_badge(b) for b in v}, key=list(BADGES).index)
+        game = info.data.get("game", DEFAULT)
+        return sorted({normalize_badge(b, game) for b in v}, key=BADGE_ORDER.index)
 
     def missing_required(self) -> list[str]:
         return [name for name, value in (("starter", self.starter), ("badges", self.badges)) if value is None]
@@ -172,7 +183,7 @@ def progress(state: RunState, prog: Progression) -> Progress:
     lets Brawly wait until Norman), which stay ahead as deferred.
     """
     assumptions = []
-    held = {BADGES[b] for b in state.badges or []}
+    held = {BADGE_GYMS[state.game][b] for b in state.badges or []}
     frontier = 0
     for b in prog.battles:
         if b.id in held:

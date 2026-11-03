@@ -11,7 +11,7 @@ from agent.schemas import Alternative, ClarifierDecision, LeadDraft, Recommendat
 from agent.session import SESSIONS
 from agent.state import RunState
 
-NO_STATE = StateUpdate(starter=None, badges=None, rival=None, last_battle=None, party=None)
+NO_STATE = StateUpdate(game=None, starter=None, badges=None, rival=None, last_battle=None, party=None)
 NO_RULES = RuleUpdate(nuzlocke=None, encounter_scope=None, gifts_count_as_encounter=None, dupes_clause=None,
                       level_caps=None, level_cap_offset=None, allowed_types=None, no_legendaries=None, wild_only=None,
                       add_banned_species=[], add_banned_types=[], add_used_routes=[], add_notes=[])
@@ -92,6 +92,21 @@ def test_full_turn_cites_ledger_ids_and_flags_unknown(models):
     assert body["response"] == "Catch Sharpedo [1]. It's great ."
     assert body["citations"][0]["source_id"] == "progression:gym7_tate_liza"
     assert body["plan"]["citation_warnings"] == ["[[made:up]] isn't a source any tool returned"]
+
+
+def test_rules_lookup_cites_the_game_line(models):
+    # A rules question answered from the brief's game line (round-4 live run: Synchronize/Pickup in Ruby)
+    calls, script = models
+    script["clarifier"] = decision(intent="lookup")
+    script["lead"] = LeadDraft(intent="lookup", headline="h", recommendations=[], battle_notes=[], assumptions=[],
+                               follow_up_questions=[], unresolved=[],
+                               steps=[{"title": "No Synchronize effect", "detail": "Emerald-only", "source_ids": ["rules:game"]}])
+    script["writer"] = "Synchronize does nothing outside battle in Ruby [[rules:game]]."
+    body = chat("does synchronize work?", "p-rules", RunState(game="ruby", starter="mudkip", badges=["stone"]))
+    assert calls == ["clarifier", "lead", "writer"]
+    assert [c for c in body["tool_calls"] if c["name"] == "verify"][0]["result"] == "all checks passed"
+    assert body["response"].endswith("[1].") and body["citations"][0]["source_id"] == "rules:game"
+    assert body["citations"][0]["label"].startswith("LockeSmith's Ruby rules") and body["citations"][0]["url"].endswith("engine.txt")
 
 
 def test_citation_retry_fixes_an_uncited_pick(models):

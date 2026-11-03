@@ -152,9 +152,11 @@ MECHANICS = """\
   happens. How often an encounter happens is a separate per-map rate (the `rate=` of each table).
   Mirage Island's grass is stored as one Wynaut slot at 100%, because every slot there is Wynaut.
 - **M-11** `[decomp]` Fishing: each map has one 10-slot fishing table split by rod: Old Rod slots 0–1,
-  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has 6 Feebas tiles
-  chosen from a save-specific seed; fishing on one gives Feebas 50% of the time, otherwise the normal
-  table (`wild_encounter.c`, `NUM_FEEBAS_SPOTS`).
+  Good Rod 2–4, Super Rod 5–9 (`wild_encounters.json` groups). Feebas: Route 119 has up to 6 Feebas
+  tiles drawn from a seed (the current Dewford trendy phrase); tile numbers 1-3 are re-rolled as
+  inaccessible and duplicates aren't, so there can be fewer than six, and they move when the phrase
+  changes. Fishing on one gives Feebas 50% of the time, otherwise the normal table
+  (`wild_encounter.c` `CheckFeebas`, `NUM_FEEBAS_SPOTS`).
 - **M-12** `[decomp]` Field-move badge requirements (an HM is usable outside battle only with the
   badge): Cut: Stone, Flash: Knuckle, Rock Smash: Dynamo, Strength: Heat, Surf: Balance,
   Fly: Feather, Dive: Mind, Waterfall: Rain. Only Waterfall was checked in code
@@ -212,8 +214,9 @@ This is the most judgement-heavy section and the one we most want checked.
   battle count, so an area can open before the walkthrough visits it. An area counts only once the
   player can *stand* in it (riding Mr. Briney's boat across open water doesn't count). An entry can be
   limited to some encounter methods, e.g. Route 115's beach opens for fishing before its grass.
-  "Reachable before X" is the accumulation of `areas_new` up to and including X. Item and HM gates
-  still apply on top (Surf, rods, Rock Smash, Dive for seaweed).
+  "Reachable before X" is the accumulation of `areas_new` up to and including X, minus the areas that
+  have closed by then (P-R10). Item and HM gates still apply on top (Surf, rods, Rock Smash, Dive for
+  seaweed).
 - **P-R3** An HM counts as open (`hm_gates_open`) when the player holds it *and* has the badge that
   allows its field use (M-12), at the point the walkthrough hands it over.
 - **P-R4** `[decomp]` **Badge order is looser than this list.** Only Norman's gym checks earlier badges:
@@ -239,6 +242,10 @@ This is the most judgement-heavy section and the one we most want checked.
   Brawly, its water after the museum; Route 111's pond and rocks from Mauville, its desert grass after
   the Go-Goggles). `never_reachable` entries can be method-limited the same way, so a postgame gift
   doesn't make its town unreachable.
+- **P-R10** Areas can also close for good (`closes`, listed as CL below). One with a battle is still
+  reachable before that battle and gone for every later one, so the tools stop offering its
+  encounters; until then they flag them as missable. One without a battle closes on something the
+  player does, so it's only flagged.
 """
 
 RANDOMIZER = """\
@@ -543,6 +550,13 @@ def progression(con) -> str:
         f"- **N-{i:02d}** `{n['area']}`" + (f" ({', '.join(n['methods'])} only)" if n.get("methods") else "")
         + f": {n['reason']}"
         for i, n in enumerate(raw["never_reachable"], 1)
+    ]
+    out.append("\n### Areas that close for good (CL)\n")
+    out += [
+        f"- **CL-{i:02d}** `{c['area']}`" + (f" ({', '.join(c['methods'])} only)" if c.get("methods") else "")
+        + (f", gone after `{c['after']}`" if c.get("after") else ", closes on a player action")
+        + f": {c['reason']}"
+        for i, c in enumerate(raw.get("closes") or [], 1)
     ]
     return "\n".join(out)
 

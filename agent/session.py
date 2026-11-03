@@ -13,6 +13,8 @@ from dataclasses import dataclass, field
 import duckdb
 
 from agent.db import connect_session
+from agent.games import EMERALD
+from agent.games import get as get_game
 from agent.state import RunState, Ruleset
 from agent.schemas import RuleUpdate
 
@@ -29,6 +31,20 @@ class Session:
     excluded: set[str] = field(default_factory=set)
     learned_rules: list[RuleUpdate] = field(default_factory=list)
     randomizer: dict | None = None  # overlay.summary() of the loaded randomizer log
+    con_game: str = EMERALD.id  # the game whose database `con` has attached
+
+    def sync_game(self) -> bool:
+        """Point the connection at the run state's game. Switching games drops a loaded
+        randomizer log (it was for the other game). True if the game changed."""
+        if self.state.game == self.con_game:
+            return False
+        self.con.close()
+        self.con = connect_session(get_game(self.state.game))
+        self.con_game = self.state.game
+        if self.randomizer:
+            self.randomizer = None
+            self.state = self.state.model_copy(update={"randomizer_log_id": None})
+        return True
 
 
 def apply_rules(rules: Ruleset, u: RuleUpdate) -> Ruleset:

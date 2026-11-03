@@ -1,7 +1,8 @@
-"""Gen 3 correction layer: PokeAPI's modern tables -> Emerald-accurate tables.
+"""Gen 3 correction layer: PokeAPI's modern tables -> tables accurate for one Gen 3 Hoenn game.
 
 Expects the PokeAPI CSVs loaded into schema `raw` (see build_db.load_raw) and
-creates the corrected tables in `main`. PLAN.md section 4.2 lists the rules; each
+creates the corrected tables in `main`, for the game given (agent/games.py: its
+PokeAPI version and version group pick encounters, learnsets and machine rows). PLAN.md section 4.2 lists the rules; each
 function below says which one it implements.
 
 PokeAPI's *_past tables record a value together with the last generation it
@@ -14,11 +15,12 @@ from pathlib import Path
 
 import duckdb
 
+from agent.games import EMERALD, Game
 from build import decomp
 
 GEN = 3
-EMERALD_VERSION_ID = 9
-EMERALD_VERSION_GROUP_ID = 6
+EMERALD_VERSION_ID = EMERALD.version_id
+EMERALD_VERSION_GROUP_ID = EMERALD.version_group_id
 ENGLISH = 9
 MAX_SPECIES = 386
 
@@ -36,12 +38,12 @@ SPECIAL_TYPES = ("fire", "water", "grass", "electric", "psychic", "ice", "dragon
 GEN3_TYPES = PHYSICAL_TYPES + SPECIAL_TYPES
 
 
-def apply(con: duckdb.DuckDBPyConnection) -> None:
+def apply(con: duckdb.DuckDBPyConnection, game: Game = EMERALD) -> None:
     for step in (types, type_efficacy, abilities, species, moves, learnsets, machines, evolutions, locations, encounters):
-        step(con)
+        step(con, game)
 
 
-def types(con):
+def types(con, game: Game = EMERALD):
     """17 types, no Fairy. Gen 3 damage class is a property of the type."""
     con.execute(
         f"""
@@ -65,7 +67,7 @@ def types(con):
     assert disagree == 0, "PokeAPI types.damage_class_id disagrees with the Gen 3 type split"
 
 
-def type_efficacy(con):
+def type_efficacy(con, game: Game = EMERALD):
     """Modern chart minus Fairy, with Gen 2-5 values restored (Steel resists Ghost and Dark)."""
     con.execute(
         f"""
@@ -87,8 +89,8 @@ def type_efficacy(con):
     )
 
 
-def abilities(con):
-    """Abilities introduced in Gen 3 or earlier, with Emerald's in-game description."""
+def abilities(con, game: Game = EMERALD):
+    """Abilities introduced in Gen 3 or earlier, with the game's in-game description."""
     con.execute(
         f"""
         CREATE TABLE abilities AS
@@ -96,14 +98,14 @@ def abilities(con):
         FROM raw.abilities a
         JOIN raw.ability_names n ON n.ability_id = a.id AND n.local_language_id = {ENGLISH}
         LEFT JOIN raw.ability_flavor_text f
-               ON f.ability_id = a.id AND f.version_group_id = {EMERALD_VERSION_GROUP_ID} AND f.language_id = {ENGLISH}
+               ON f.ability_id = a.id AND f.version_group_id = {game.version_group_id} AND f.language_id = {ENGLISH}
         WHERE a.generation_id <= {GEN} AND a.is_main_series = 1
         ORDER BY a.id
         """
     )
 
 
-def species(con):
+def species(con, game: Game = EMERALD):
     """National Dex #1-386 with Gen 3 types, base stats and abilities.
 
     - Types: the whole typing is replaced by the applicable pokemon_types_past rows.
@@ -215,7 +217,7 @@ def species(con):
     )
 
 
-def moves(con):
+def moves(con, game: Game = EMERALD):
     """Moves #1-354 with post-Gen-3 changes reverted and the type-based damage class.
 
     move_changelog rows hold the values a move had *before* the version group in
@@ -266,18 +268,18 @@ def moves(con):
         LEFT JOIN types t ON t.type_id = m.type_id
         LEFT JOIN raw.move_targets tg ON tg.id = m.target_id
         LEFT JOIN raw.move_flavor_text f
-               ON f.move_id = m.move_id AND f.version_group_id = {EMERALD_VERSION_GROUP_ID} AND f.language_id = {ENGLISH}
+               ON f.move_id = m.move_id AND f.version_group_id = {game.version_group_id} AND f.language_id = {ENGLISH}
         ORDER BY m.move_id
         """
     )
 
 
-def learnsets(con):
-    """Emerald (version group 6) learnsets: level-up, machine, tutor, egg.
+def learnsets(con, game: Game = EMERALD):
+    """The game's version-group learnsets (Emerald 6, Ruby/Sapphire 5): level-up, machine, tutor, egg.
 
     Normally the default form holds them, but Emerald's Deoxys is the Speed Forme and
     PokeAPI files its Emerald learnset under that form, so take whichever form of each
-    species has the most Emerald rows.
+    species has the most rows for the version group (Ruby/Sapphire's is Normal Forme).
     """
     con.execute(
         f"""
@@ -285,7 +287,7 @@ def learnsets(con):
         WITH form_rows AS (
             SELECT p.id AS pokemon_id, p.species_id, p.is_default, count(*) AS n
             FROM raw.pokemon_moves pm JOIN raw.pokemon p ON p.id = pm.pokemon_id
-            WHERE pm.version_group_id = {EMERALD_VERSION_GROUP_ID} AND p.species_id <= {MAX_SPECIES}
+            WHERE pm.version_group_id = {game.version_group_id} AND p.species_id <= {MAX_SPECIES}
             GROUP BY 1, 2, 3
         ),
         form AS (
@@ -300,30 +302,30 @@ def learnsets(con):
         JOIN form f ON f.pokemon_id = pm.pokemon_id
         JOIN raw.pokemon p ON p.id = pm.pokemon_id
         JOIN raw.pokemon_move_methods mm ON mm.id = pm.pokemon_move_method_id
-        WHERE pm.version_group_id = {EMERALD_VERSION_GROUP_ID}
+        WHERE pm.version_group_id = {game.version_group_id}
           AND pm.move_id IN (SELECT move_id FROM moves)
         ORDER BY p.species_id, mm.id, level, pm."order", pm.move_id
         """
     )
 
 
-def machines(con):
-    """TM01-TM50 and HM01-HM08 as they are in Emerald."""
+def machines(con, game: Game = EMERALD):
+    """TM01-TM50 and HM01-HM08 as they are in the game (the same 58 in all three)."""
     con.execute(
         f"""
         CREATE TABLE machines AS
         SELECT CASE WHEN x.machine_number > 100 THEN 'HM' || lpad(CAST(x.machine_number - 100 AS VARCHAR), 2, '0')
                     ELSE 'TM' || lpad(CAST(x.machine_number AS VARCHAR), 2, '0') END AS label,
                x.machine_number, x.move_id, i.identifier AS item,
-               'pokeapi:machines#' || x.machine_number || '/{EMERALD_VERSION_GROUP_ID}' AS source_id
+               'pokeapi:machines#' || x.machine_number || '/{game.version_group_id}' AS source_id
         FROM raw.machines x JOIN raw.items i ON i.id = x.item_id
-        WHERE x.version_group_id = {EMERALD_VERSION_GROUP_ID}
+        WHERE x.version_group_id = {game.version_group_id}
         ORDER BY x.machine_number
         """
     )
 
 
-def evolutions(con):
+def evolutions(con, game: Game = EMERALD):
     """Evolution methods that existed in Gen 3, between Gen 1-3 species.
 
     pokemon_evolution also carries rows for later games (Alolan Raticate at night,
@@ -352,8 +354,8 @@ def evolutions(con):
     )
 
 
-def locations(con):
-    """Locations and areas that have Emerald encounters."""
+def locations(con, game: Game = EMERALD):
+    """Locations and areas that have encounters in the game's version."""
     con.execute(
         f"""
         CREATE TABLE location_areas AS
@@ -364,7 +366,7 @@ def locations(con):
         JOIN raw.locations l ON l.id = a.location_id
         LEFT JOIN raw.location_names ln ON ln.location_id = l.id AND ln.local_language_id = {ENGLISH}
         LEFT JOIN raw.location_area_prose ap ON ap.location_area_id = a.id AND ap.local_language_id = {ENGLISH}
-        WHERE e.version_id = {EMERALD_VERSION_ID}
+        WHERE e.version_id = {game.version_id}
         ORDER BY location, area
         """
     )
@@ -381,8 +383,8 @@ def locations(con):
     )
 
 
-def encounters(con):
-    """Every Emerald encounter row (version 9) with its slot rarity and method."""
+def encounters(con, game: Game = EMERALD):
+    """Every encounter row of the game's version (Emerald 9, Ruby 7, Sapphire 8) with its slot rarity and method."""
     con.execute(
         f"""
         CREATE TABLE encounters AS
@@ -401,17 +403,21 @@ def encounters(con):
         JOIN raw.encounter_slots es ON es.id = e.encounter_slot_id
         JOIN raw.encounter_methods em ON em.id = es.encounter_method_id
         LEFT JOIN cond ON cond.encounter_id = e.id
-        WHERE e.version_id = {EMERALD_VERSION_ID} AND e.pokemon_id <= {MAX_SPECIES}
+        WHERE e.version_id = {game.version_id} AND e.pokemon_id <= {MAX_SPECIES}
         ORDER BY la.location, la.area, em.id, es.slot, e.id
         """
     )
-    # PokeAPI puts the Hall of Fame and TV-choice conditions only on the roaming-grass rows.
-    # The roaming-water rows are the same roaming Latias/Latios, so they share them.
+    # The roaming grass and water rows are the same roaming Latias/Latios, but PokeAPI puts the
+    # conditions on one kind only: Emerald's Hall of Fame and TV choice on the grass rows,
+    # Ruby/Sapphire's Hall of Fame on the water rows. Every roaming row gets the union.
     con.execute(
         """
-        UPDATE encounters SET conditions = g.conditions
-        FROM (SELECT DISTINCT species_id, conditions FROM encounters WHERE method = 'roaming-grass') g
-        WHERE encounters.method = 'roaming-water' AND encounters.species_id = g.species_id
+        UPDATE encounters SET conditions = u.conditions
+        FROM (
+            SELECT species_id, list_sort(list_distinct(flatten(list(conditions)))) AS conditions
+            FROM encounters WHERE method IN ('roaming-grass', 'roaming-water') GROUP BY 1
+        ) u
+        WHERE encounters.method IN ('roaming-grass', 'roaming-water') AND encounters.species_id = u.species_id
           AND len(encounters.conditions) = 0
         """
     )
@@ -475,12 +481,66 @@ ROM_CONDITION_ROWS = {
 }
 
 
-def add_rom_conditions(con, decomp_dir: Path) -> None:
-    """Attach the ROM_CONDITIONS gates to their encounter rows and describe them in `rom_conditions`."""
+# Ruby/Sapphire (docs/review_packet_rs.md X-08, X-10, X-14): the Regi puzzles are Strength, waiting
+# and Fly; the Sealed Chamber wants Relicanth first, Wailord last; Sky Pillar is postgame; the
+# Cave of Origin legendary is a one-time story battle before the Sootopolis Gym.
+RS_ROM_CONDITIONS = {
+    "sealed-chamber-opened": (
+        "FLAG_REGI_DOORS_OPENED",
+        "Sealed Chamber (underwater, Route 134): use Dig on the outer room's wall, then read the inner wall "
+        "with Relicanth first and Wailord last in the party (Emerald's order is the reverse)",
+    ),
+    "regirock-puzzle": ("FLAG_SYS_BRAILLE_STRENGTH", "Desert Ruins: use Strength where the braille says"),
+    "regice-puzzle": (
+        "FLAG_SYS_BRAILLE_WAIT",
+        "Island Cave: read the braille, then wait two minutes without pressing a button (a frame counter, "
+        "not the clock)",
+    ),
+    "registeel-puzzle": ("FLAG_SYS_BRAILLE_FLY", "Ancient Tomb: use Fly in the middle of the room"),
+    "sky-pillar-postgame": (
+        "FLAG_SYS_GAME_CLEAR",
+        "Postgame: Route 131 only opens the way to Sky Pillar after the Hall of Fame (Route131_MapScripts); "
+        "the cracked floors need the Mach Bike",
+    ),
+    "mirage-island-visible": ROM_CONDITIONS["mirage-island-visible"],
+    "legendary-story-battle": (
+        "FLAG_LEGENDARY_BATTLE_COMPLETED",
+        "A required story battle before the Sootopolis Gym, and the only chance at it: catching it, knocking it "
+        "out or fleeing all complete it. Cave of Origin opens after the Seafloor Cavern "
+        "(FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN)",
+    ),
+    "lati-tv-report": (
+        "FLAG_LATIOS_OR_LATIAS_ROAMING",
+        "Postgame: the Hall of Fame only turns on the news (FLAG_SYS_TV_LATI); the roamer starts when you check "
+        "the TV on your house's 1F (tv.inc runs InitRoamer). Nothing plays automatically and there's no color "
+        "question: Ruby's roamer is Latios, Sapphire's Latias (review packet E-10)",
+    ),
+}
+
+
+def rom_condition_rows(game: Game) -> dict[tuple[str, str, str | None], list[str]]:
+    if not game.is_rs:
+        return ROM_CONDITION_ROWS
+    legendary = "groudon" if game.rom_version == "RUBY" else "kyogre"
+    return {
+        ("desert-ruins", "static", "regirock"): ["sealed-chamber-opened", "regirock-puzzle"],
+        ("island-cave", "static", "regice"): ["sealed-chamber-opened", "regice-puzzle"],
+        ("ancient-tomb", "static", "registeel"): ["sealed-chamber-opened", "registeel-puzzle"],
+        ("sky-pillar", "static", "rayquaza"): ["sky-pillar-postgame"],
+        ("mirage-island", "walk", None): ["mirage-island-visible"],
+        ("cave-of-origin", "static", legendary): ["legendary-story-battle"],
+        ("roaming-hoenn", "roaming-grass", None): ["lati-tv-report"],
+        ("roaming-hoenn", "roaming-water", None): ["lati-tv-report"],
+    }
+
+
+def add_rom_conditions(con, decomp_dir: Path, game: Game = EMERALD) -> None:
+    """Attach the game's ROM-condition gates to their encounter rows and describe them in `rom_conditions`."""
+    conditions_table = RS_ROM_CONDITIONS if game.is_rs else ROM_CONDITIONS
     constants = decomp.read(decomp_dir, "include/constants/flags.h") + decomp.read(decomp_dir, "include/constants/vars.h")
-    for name, (symbol, _) in ROM_CONDITIONS.items():
+    for name, (symbol, _) in conditions_table.items():
         assert symbol in constants or not symbol.isupper(), f"{name}: {symbol} not in the decomp's flags/vars"
-    for (location, method, species), conditions in ROM_CONDITION_ROWS.items():
+    for (location, method, species), conditions in rom_condition_rows(game).items():
         n = con.execute(
             "UPDATE encounters SET conditions = list_concat(conditions, ?) WHERE location = ? AND method = ? "
             "AND (? IS NULL OR species_id = (SELECT species_id FROM species WHERE identifier = ?))",
@@ -489,7 +549,7 @@ def add_rom_conditions(con, decomp_dir: Path) -> None:
         assert n > 0, f"no encounter rows for {location} {method} {species}"
     con.execute("CREATE TABLE rom_conditions (condition VARCHAR PRIMARY KEY, decomp_symbol VARCHAR, description VARCHAR)")
     con.executemany(
-        "INSERT INTO rom_conditions VALUES (?, ?, ?)", [(k, s, d) for k, (s, d) in ROM_CONDITIONS.items()]
+        "INSERT INTO rom_conditions VALUES (?, ?, ?)", [(k, s, d) for k, (s, d) in conditions_table.items()]
     )
 
 
@@ -497,9 +557,9 @@ def reconcile_evolutions_with_rom(con, decomp_dir: Path) -> None:
     """Friendship thresholds and the evolution conditions PokeAPI's columns can't express.
 
     PokeAPI stores the Gen 8+ friendship threshold (160) for most friendship evolutions;
-    Emerald's EVO_FRIENDSHIP* checks use FRIENDSHIP_EVO_THRESHOLD from pokemon.c (220).
+    the Gen 3 EVO_FRIENDSHIP* checks use 220 (decomp.friendship_threshold).
     """
-    threshold = int(re.search(r"#define FRIENDSHIP_EVO_THRESHOLD (\d+)", decomp.read(decomp_dir, "src/pokemon.c")).group(1))
+    threshold = decomp.friendship_threshold(decomp_dir)
     con.execute("UPDATE evolutions SET min_happiness = ? WHERE min_happiness IS NOT NULL", [threshold])
     con.execute("ALTER TABLE evolutions ADD COLUMN note VARCHAR")
     for (frm, to), note in EVOLUTION_NOTES.items():
@@ -510,26 +570,93 @@ def reconcile_evolutions_with_rom(con, decomp_dir: Path) -> None:
         )
 
 
-def reconcile_statics_with_rom(con, decomp_dir: Path) -> None:
-    """Fix PokeAPI's Emerald static encounters against the ROM's `setwildbattle` scripts.
+def rom_static_locations(decomp_dir: Path, game: Game, mapsec_location: dict[str, str]) -> set[tuple[str, int]]:
+    """(PokeAPI location, species id) for every `setwildbattle` the game's scripts compile.
 
-    PokeAPI lists New Mauville's three Voltorb twice, and puts the Aqua Hideout's two
-    Electrode in New Mauville and team-magma-hideout as well. For every species the ROM
-    sets up with `setwildbattle`, keep a static row only where the ROM has one, and drop
-    exact duplicates. Legendaries placed some other way (event islands) are untouched.
-    Needs `map_sections`.
+    A map's own scripts.inc counts directly. In pokeruby some static battles live in shared
+    scripts (data/scripts/static_pokemon.inc: the hideout Electrode, Kecleon), which count
+    for every map whose events call their label. Ruby/Sapphire branches and aliases
+    (SPECIES_GROUDON_OR_KYOGRE) are resolved for the game's version.
     """
     dex = decomp.national_dex(decomp_dir)
-    mapsec_location = dict(con.execute("SELECT mapsec, location FROM map_sections").fetchall())
+    aliases = decomp.version_aliases(decomp_dir, game.rom_version)
+    maps = decomp.maps(decomp_dir, game.rom_version)
+
+    def species_in(lines: list[str]) -> list[str]:
+        found = re.findall(r"setwildbattle\s+(SPECIES_\w+)", "\n".join(lines))
+        return [aliases.get(s, s) for s in found]
+
     rom = set()
-    for map_id, m in decomp.maps(decomp_dir).items():
+    for m in maps.values():
         path = Path(decomp_dir) / "data" / "maps" / m["folder"] / "scripts.inc"
         if not path.exists():
             continue
-        for species in re.findall(r"setwildbattle\s+(SPECIES_\w+)", path.read_text(encoding="utf-8")):
+        lines = decomp.script_lines(decomp.read(path.parent, "scripts.inc"), game.rom_version)
+        for species in species_in(lines):
             location = mapsec_location.get(m["region_map_section"])
             if location and species in dex:
                 rom.add((location, dex[species]))
+    if game.is_rs:
+        # Labels a map can reach: its events' scripts, plus every word of its own scripts.inc
+        # (Route 119's Kecleon objects `goto EventScript_BattleKecleon`).
+        refs = {}
+        for map_id, m in maps.items():
+            path = Path(decomp_dir) / "data" / "maps" / m["folder"] / "scripts.inc"
+            text = "\n".join(decomp.script_lines(decomp.read(path.parent, "scripts.inc"), game.rom_version)) if path.exists() else ""
+            refs[map_id] = set(re.findall(r"\w+", text)) | {
+                e.get("script") for key in ("object_events", "bg_events", "coord_events") for e in m.get(key) or []
+            }
+        for path in sorted((Path(decomp_dir) / "data" / "scripts").glob("*.inc")):
+            if path.name == "debug.inc":
+                continue
+            lines = decomp.script_lines(decomp.read(path.parent, path.name), game.rom_version)
+            parts = re.split(r"^(\w+)::?.*$", "\n".join(lines), flags=re.M)
+            order = [parts[i] for i in range(1, len(parts) - 1, 2)]
+            bodies = {parts[i]: parts[i + 1] for i in range(1, len(parts) - 1, 2)}
+            if not any(species_in(b.splitlines()) for b in bodies.values()):
+                continue
+            # A label reaches the labels it jumps to or calls in this file, and the next one when
+            # it can fall through (no unconditional end/return/goto). Route 119's Kecleon objects
+            # run Route119_EventScript_Kecleon1 -> EventScript_Kecleon -> EventScript_BattleKecleon.
+            edges = {}
+            for i, label in enumerate(order):
+                body = bodies[label]
+                edges[label] = {w for w in re.findall(r"\w+", body) if w in bodies}
+                if i + 1 < len(order) and not re.search(r"^\s*(end|return|goto\s|releaseall\s*$)", body, flags=re.M):
+                    edges[label].add(order[i + 1])
+
+            def reachable(start: set[str]) -> set[str]:
+                seen, todo = set(), list(start)
+                while todo:
+                    label = todo.pop()
+                    if label not in seen:
+                        seen.add(label)
+                        todo.extend(edges.get(label, ()))
+                return seen
+
+            for map_id, m in maps.items():
+                entry = refs[map_id] & set(bodies)
+                if not entry:
+                    continue
+                location = mapsec_location.get(m["region_map_section"])
+                for label in reachable(entry):
+                    for species in species_in(bodies[label].splitlines()):
+                        if location and species in dex:
+                            rom.add((location, dex[species]))
+    return rom
+
+
+def reconcile_statics_with_rom(con, decomp_dir: Path, game: Game = EMERALD) -> None:
+    """Fix PokeAPI's static encounters against the ROM's `setwildbattle` scripts.
+
+    PokeAPI lists New Mauville's three Voltorb twice (Emerald and Ruby), and puts the
+    hideout's two Electrode in New Mauville and in the other team's hideout as well. For
+    every species the ROM sets up with `setwildbattle`, keep a static row only where the
+    ROM has one, and drop exact duplicates. Legendaries placed some other way (event
+    islands) are untouched. Needs `map_sections`.
+    """
+    mapsec_location = dict(con.execute("SELECT mapsec, location FROM map_sections").fetchall())
+    rom = rom_static_locations(decomp_dir, game, mapsec_location)
     rom_species = {sid for _, sid in rom}
     con.execute("CREATE TEMP TABLE rom_statics (location VARCHAR, species_id INTEGER)")
     con.executemany("INSERT INTO rom_statics VALUES (?, ?)", sorted(rom))

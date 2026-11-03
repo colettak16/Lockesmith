@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LockeSmith</title>
-<meta name="description" content="A research agent for Pokémon Emerald runs, including Nuzlocke and randomized runs: what to catch, what to do next and how to beat the rest of the game, checked against the game's own data.">
+<meta name="description" content="A research agent for Pokémon Emerald, Ruby and Sapphire runs, including Nuzlocke and randomized runs: what to catch, what to do next and how to beat the rest of the game, checked against the game's own data.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='11' cy='16' r='7' fill='none' stroke='%231d7a57' stroke-width='3'/%3E%3Cpath d='M18 16h11M25 16v5M29 16v4' stroke='%231d7a57' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="16" r="7"/><path d="M18 16h11M25 16v5M29 16v4"/></svg>
       <div class="title-text">
         <h1>Locke<span>Smith</span></h1>
-        <p class="tagline">Pokémon Emerald research desk</p>
+        <p class="tagline">Pokémon Emerald, Ruby &amp; Sapphire research desk</p>
       </div>
       <button type="button" class="about-btn" id="about-open" aria-expanded="false" aria-controls="about">What is this?</button>
     </div>
@@ -35,16 +35,16 @@
   </div>
   <section>
     <h3>What it explores</h3>
-    <p>Which Pokémon to catch next, what to do next and how to beat the rest of Emerald. Researcher agents check every answer against the game's own data: trainer teams, encounter tables, TMs and the walkthrough. Every claim is cited.</p>
+    <p>Which Pokémon to catch next, what to do next and how to beat the rest of Emerald, Ruby or Sapphire. Researcher agents check every answer against that game's own data: trainer teams, encounter tables, TMs and the walkthrough. Every claim is cited.</p>
   </section>
   <section>
     <h3>Who it's for</h3>
-    <p>Players partway through Emerald, including Nuzlocke, custom-rule and randomized runs (upload your Universal Pokémon Randomizer log).</p>
+    <p>Players partway through Emerald, Ruby or Sapphire (the Game Boy Advance games), including Nuzlocke, custom-rule and randomized runs (upload your Universal Pokémon Randomizer log).</p>
   </section>
   <section>
     <h3>How to use it</h3>
     <ol>
-      <li>Fill in your run on the left, or click one of the examples under the question box.</li>
+      <li>Pick your game and fill in your run on the left, or click one of the examples under the question box.</li>
       <li>Ask a question. A catch plan takes about a minute and a half; the researchers' progress shows live.</li>
       <li>Read the cited plan. Open the research trace to see how it got there.</li>
     </ol>
@@ -60,6 +60,15 @@
     <details class="run-details" open>
       <summary><h2 id="run-title">Your run</h2><span class="run-status" id="run-status"></span></summary>
       <form id="run-form" autocomplete="off">
+        <fieldset>
+          <legend>Game</legend>
+          <div class="seg seg-small" id="game">
+            <label><input type="radio" name="game" value="emerald" checked><span>Emerald</span></label>
+            <label><input type="radio" name="game" value="ruby"><span>Ruby</span></label>
+            <label><input type="radio" name="game" value="sapphire"><span>Sapphire</span></label>
+          </div>
+        </fieldset>
+
         <fieldset>
           <legend>Starter <span class="req">required</span></legend>
           <div class="seg" id="starter">
@@ -162,10 +171,10 @@
 </main>
 
 <footer class="colophon">
-  <p><strong>Data:</strong> trainer teams, encounters and TMs from the <a href="https://github.com/pret/pokeemerald">pret/pokeemerald</a> decompilation;
+  <p><strong>Data:</strong> trainer teams, encounters and TMs from the <a href="https://github.com/pret/pokeemerald">pret/pokeemerald</a> and <a href="https://github.com/pret/pokeruby">pret/pokeruby</a> decompilations;
     species, moves and learnsets from <a href="https://pokeapi.co">PokeAPI</a>, corrected to Gen III;
-    walkthrough passages from <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald">Bulbapedia</a> (CC BY-NC-SA 2.5).</p>
-  <p><strong>Covers</strong> Emerald's main story through the Champion. <strong>Doesn't cover</strong> other games, ROM hacks, the postgame or Battle Frontier, or exact damage rolls.
+    walkthrough passages from Bulbapedia's <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald">Emerald</a> and <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Ruby_and_Sapphire">Ruby and Sapphire</a> walkthroughs (CC BY-NC-SA 2.5).</p>
+  <p><strong>Covers</strong> the main story of Emerald, Ruby and Sapphire through the Champion. <strong>Doesn't cover</strong> other games (including Omega Ruby and Alpha Sapphire), ROM hacks, the postgame, Battle Frontier or Battle Tower, or exact damage rolls.
     A non-commercial course project for IEOR E4570. Banner: Pokémon Emerald's ending. Pokémon is © Nintendo, Game Freak and Creatures.</p>
   <p class="session-line">Session <code id="session-id"></code> · <button type="button" class="link-btn" id="clear-chat">Clear conversation</button></p>
 </footer>

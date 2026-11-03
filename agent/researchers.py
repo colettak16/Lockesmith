@@ -9,10 +9,12 @@ from agent.schemas import Finding
 from agent.tools import BATTLE_TOOLS, CATCH_TOOLS, MOVES_TOOLS, STORY_TOOLS
 
 COMMON = """\
-You are a researcher for LockeSmith, which helps a player partway through Pokémon Emerald (Gen III).
-Use your tools for every fact; never rely on memory for teams, levels, locations, move data or
-types (Emerald differs from other games, and Gen III has no Fairy type and decides physical/special
-by move type). The run state is already known to the tools: don't pass it in.
+You are a researcher for LockeSmith, which helps a player partway through a Gen III Hoenn game:
+Pokémon Emerald, Ruby or Sapphire (the run state's first line says which, and the tools read that
+game's data). Use your tools for every fact; never rely on memory for teams, levels, locations, move
+data or types (the three games' teams, encounters and story differ from each other and from later
+games, and Gen III has no Fairy type and decides physical/special by move type). The run state is
+already known to the tools: don't pass it in.
 
 Work efficiently: your first tools each answer a whole step in one call (they take lists), so plan
 your calls, make them together, and report as soon as you can answer. Usually that's one round of

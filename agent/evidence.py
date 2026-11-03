@@ -10,49 +10,62 @@ import re
 from functools import cache
 from pathlib import Path
 
+from agent.games import EMERALD, Game
+
 ROOT = Path(__file__).resolve().parent.parent
-CHUNKS = ROOT / "data" / "guide" / "chunks.jsonl"
+CHUNKS = EMERALD.guide_dir / "chunks.jsonl"
 LOCK = ROOT / "data" / "sources.lock.json"
+# Short file names in trainer source ids -> the file in each decomp.
 DECOMP_FILES = {
-    "trainer_parties.h": "src/data/trainer_parties.h",
-    "trainers.h": "src/data/trainers.h",
+    "pokeemerald": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers.h"},
+    "pokeruby": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers_en.h"},
 }
+TYPE_CHART_FILE = {"pokeemerald": "gTypeEffectiveness", "pokeruby": "data/type_effectiveness.inc"}
+AUDIT_REPORTS = "https://github.com/colettak16/Lockesmith/blob/main/docs/audit"
 CITE_RE = re.compile(r"\[\[([^\[\]]+?)\]\]")
 
 
+def chunks_path(game: Game = EMERALD) -> Path:
+    return game.guide_dir / "chunks.jsonl"
+
+
 @cache
-def guide_urls() -> dict[str, tuple[str, str]]:
+def guide_urls(game: Game = EMERALD) -> dict[str, tuple[str, str]]:
     out = {}
-    for line in CHUNKS.read_text(encoding="utf-8").splitlines():
+    for line in chunks_path(game).read_text(encoding="utf-8").splitlines():
         c = json.loads(line)
         out[c["source_id"]] = (f"Bulbapedia: {c['page']} § {c['section']}", c["url"])
     return out
 
 
 @cache
-def decomp_sha() -> str:
+def decomp_sha(game: Game = EMERALD) -> str:
     lock = json.loads(LOCK.read_text(encoding="utf-8"))
-    entry = next(v for k, v in lock.items() if "emerald" in k.lower())
+    entry = lock[game.decomp]
     return entry["sha"] if isinstance(entry, dict) else entry
 
 
-def describe(source_id: str) -> tuple[str, str | None]:
-    """(label, url) for a source id."""
+def describe(source_id: str, game: Game = EMERALD) -> tuple[str, str | None]:
+    """(label, url) for a source id, in the given game's sources."""
     kind, _, rest = source_id.partition(":")
-    if kind == "guide" and source_id in guide_urls():
-        return guide_urls()[source_id]
+    if kind == "guide" and source_id in guide_urls(game):
+        return guide_urls(game)[source_id]
     if kind == "decomp":
         path, _, anchor = rest.partition("#")
-        path = DECOMP_FILES.get(path, path)
-        url = f"https://github.com/pret/pokeemerald/blob/{decomp_sha()}/{path}" if "/" in path else None
-        return f"pokeemerald {path}" + (f" ({anchor})" if anchor else ""), url
+        path = DECOMP_FILES[game.decomp].get(path, path)
+        url = f"https://github.com/{game.repo}/blob/{decomp_sha(game)}/{path}" if "/" in path else None
+        return f"{game.decomp} {path}" + (f" ({anchor})" if anchor else ""), url
     if kind == "pokeapi":
         table, _, row = rest.partition("#")
         return f"PokeAPI {table}" + (f" row {row}" if row else ""), None
     if kind == "progression":
-        return f"data/progression.yaml: {rest}", None
+        return f"{game.progression_path.relative_to(ROOT).as_posix()}: {rest}", None
     if kind == "rules":
-        return {"gen3_type_chart": "Gen 3 type chart (pokeemerald gTypeEffectiveness)"}.get(rest, f"rules: {rest}"), None
+        if rest == "game":  # agent/brief.py's game line; Ruby/Sapphire's field-ability rules are checked in the audit
+            url = f"{AUDIT_REPORTS}/engine.txt" if game.is_rs else None
+            return f"LockeSmith's {game.short} rules (agent/brief.py" + (", checked in docs/audit/engine.txt)" if url else ")"), url
+        chart = f"Gen 3 type chart ({game.decomp} {TYPE_CHART_FILE[game.decomp]})"
+        return {"gen3_type_chart": chart}.get(rest, f"rules: {rest}"), None
     if kind == "log":
         return f"your randomizer log: {rest}", None
     if kind == "sql":
@@ -84,28 +97,29 @@ ROW_LABELS = {
 
 
 @cache
-def _vanilla():
+def _vanilla(game: Game = EMERALD):
     from agent.db import connect_readonly  # here, not at import: evidence is imported by the build too
 
-    return connect_readonly()
+    return connect_readonly(game)
 
 
 @cache
-def readable(source_id: str) -> str | None:
+def readable(source_id: str, game: Game = EMERALD) -> str | None:
     """A plain-words label for a cited row, or None to keep `describe`'s."""
     kind, _, rest = source_id.partition(":")
     try:
         if kind == "pokeapi":
             for sql, template in ROW_LABELS.values():
-                row = _vanilla().cursor().execute(sql, [source_id]).fetchone()
+                row = _vanilla(game).cursor().execute(sql, [source_id]).fetchone()
                 if row:
                     return template.format(*row)
         if kind == "progression":
-            from agent.progression import load
+            from agent.progression import load_game
 
-            return f"Story progression (data/progression.yaml): {load().get(rest).label}"
+            path = game.progression_path.relative_to(ROOT).as_posix()
+            return f"Story progression ({path}): {load_game(game).get(rest).label}"
         if kind == "log" and rest.startswith("trainers#"):
-            row = _vanilla().cursor().execute(
+            row = _vanilla(game).cursor().execute(
                 "SELECT class_name, name FROM trainers WHERE trainer_id = ?", [int(rest.split("#")[1])]).fetchone()
             if row:
                 return f"Your randomizer log: {row[0]} {row[1].title()}'s team"
@@ -115,12 +129,13 @@ def readable(source_id: str) -> str | None:
 
 
 class Ledger:
-    def __init__(self) -> None:
+    def __init__(self, game: Game = EMERALD) -> None:
         self.entries: dict[str, dict] = {}
+        self.game = game
 
     def add(self, source_id: str, detail: str | None = None) -> None:
         if source_id and source_id not in self.entries:
-            label, url = describe(source_id)
+            label, url = describe(source_id, self.game)
             self.entries[source_id] = {"label": label, "url": url, "detail": detail}
 
     def __contains__(self, source_id: str) -> bool:
@@ -158,7 +173,7 @@ class Ledger:
 
         text = CITE_RE.sub(sub, markdown)
         citations = [
-            {"n": n, "source_id": sid, "label": readable(sid) or self.entries[sid]["label"], "url": self.entries[sid]["url"]}
+            {"n": n, "source_id": sid, "label": readable(sid, self.game) or self.entries[sid]["label"], "url": self.entries[sid]["url"]}
             for sid, n in numbers.items()
         ]
         return text, citations, unknown

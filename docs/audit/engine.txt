@@ -1,0 +1,231 @@
+# audit.engine: pret/pokeruby@5784633ce4ef vs pret/pokeemerald@731ad5bfd6e6
+# regenerate with `uv run python -m audit` (see audit/README.md)
+== 1. Metatile behavior numbering
+0x6 RS MB_UNUSED_DEEP_SAND | E MB_DEEP_SAND
+0x8 RS MB_UNUSED_CAVE | E MB_CAVE
+0xd RS MB_SECRET_BASE_GLITTER_MATTTLE_PYRAMID_WARP | E MB_BATTLE_PYRAMID_WARP
+0x11 RS MB_SEMI_DEEP_WATER | E MB_INTERIOR_DEEP_WATER
+0x12 RS MB_UNUSED_DEEP_WATER | E MB_DEEP_WATER
+0x50 RS MB_UNUSED_EASTWARD_CURRENT | E MB_EASTWARD_CURRENT
+0x62 RS MB_UNUSED_EAST_ARROW_WARP | E MB_EAST_ARROW_WARP
+0x6e RS MB_UNUSED_DEEP_SOUTH_WARP | E MB_DEEP_SOUTH_WARP
+0x70 RS MB_WARP_OR_BRIDGE | E MB_BRIDGE_OVER_OCEAN
+0x71 RS MB_UNUSED_71 | E MB_BRIDGE_OVER_POND_LOW
+0x72 RS MB_ROUTE120_NORTH_BRIDGE_1 | E MB_BRIDGE_OVER_POND_MED
+0x73 RS MB_ROUTE120_NORTH_BRIDGE_2 | E MB_BRIDGE_OVER_POND_HIGH
+0x74 RS MB_PACIFIDLOG_VERTICAL_LOG_1 | E MB_PACIFIDLOG_VERTICAL_LOG_TOP
+0x75 RS MB_PACIFIDLOG_VERTICAL_LOG_2 | E MB_PACIFIDLOG_VERTICAL_LOG_BOTTOM
+0x76 RS MB_PACIFIDLOG_HORIZONTAL_LOG_1 | E MB_PACIFIDLOG_HORIZONTAL_LOG_LEFT
+0x77 RS MB_PACIFIDLOG_HORIZONTAL_LOG_2 | E MB_PACIFIDLOG_HORIZONTAL_LOG_RIGHT
+0x7a RS MB_ROUTE120_SOUTH_BRIDGE_1 | E MB_BRIDGE_OVER_POND_MED_EDGE_1
+0x7b RS MB_ROUTE120_SOUTH_BRIDGE_2 | E MB_BRIDGE_OVER_POND_MED_EDGE_2
+0x7c RS MB_ROUTE120_NORTH_BRIDGE_3 | E MB_BRIDGE_OVER_POND_HIGH_EDGE_1
+0x7d RS MB_ROUTE120_NORTH_BRIDGE_4 | E MB_BRIDGE_OVER_POND_HIGH_EDGE_2
+0x7e RS MB_UNUSED_7E | E MB_UNUSED_BRIDGE
+0x7f RS MB_ROUTE110_BRIDGE | E MB_BIKE_BRIDGE_OVER_BARRIER
+0x84 RS MB_LINK_BATTLE_RECORDS | E MB_CABLE_BOX_RESULTS_1
+0x8e RS MB_RUNNING_SHOES_MANUAL | E MB_RUNNING_SHOES_INSTRUCTION
+0x96 RS MB_SECRET_BASE_SPOT_TREE_1 | E MB_SECRET_BASE_SPOT_TREE_LEFT
+0x97 RS MB_SECRET_BASE_SPOT_TREE_1_OPEN | E MB_SECRET_BASE_SPOT_TREE_LEFT_OPEN
+0x9c RS MB_SECRET_BASE_SPOT_TREE_2 | E MB_SECRET_BASE_SPOT_TREE_RIGHT
+0x9d RS MB_SECRET_BASE_SPOT_TREE_2_OPEN | E MB_SECRET_BASE_SPOT_TREE_RIGHT_OPEN
+0xb1 RS MB_RECORD_MIXING_SECRET_BASE_PC | E MB_SECRET_BASE_REGISTER_PC
+0xb2 RS MB_SECRET_BASE_UNUSED | E MB_SECRET_BASE_SCENERY
+0xb3 RS MB_BLOCK_DECORATION | E MB_SECRET_BASE_TRAINER_SPOT
+0xb5 RS MB_SECRET_BASE_LARGE_MAT_EDGE | E MB_HOLDS_SMALL_DECORATION
+0xbd RS MB_SECRET_BASE_MUSIC_NOTE_MAT | E MB_SECRET_BASE_SOUND_MAT
+0xc3 RS MB_LARGE_MAT_CENTER | E MB_HOLDS_LARGE_DECORATION
+0xc4 RS MB_SECRET_BASE_SHIELD_OR_TOY_TV | E MB_SECRET_BASE_TV_SHIELD
+0xc6 RS MB_UNUSED_C6 | E MB_SECRET_BASE_DECORATION_BASE
+0xc7 RS MB_UNUSED_C7 | E MB_SECRET_BASE_POSTER
+0xe7 RS MB_UNUSED_E7 | E MB_CABLE_BOX_RESULTS_2
+0xe8 RS MB_UNUSED_E8 | E MB_WIRELESS_BOX_RESULTS
+0xe9 RS MB_UNUSED_E9 | E MB_TRAINER_HILL_TIMER
+0xea RS MB_UNUSED_EA | E MB_SKY_PILLAR_CLOSED_DOOR
+behaviors named: RS 241, E 240
+
+== 2. Tile bits per behavior
+0xd MB_SECRET_BASE_GLITTER_MATTTLE_PYRAMID_WARP RS=0 E=4
+0xe MB_MOSSDEEP_GYM_WARP RS=0 E=4
+0x7a MB_ROUTE120_SOUTH_BRIDGE_1 RS=0 E=4
+0x7b MB_ROUTE120_SOUTH_BRIDGE_2 RS=0 E=4
+0x7c MB_ROUTE120_NORTH_BRIDGE_3 RS=0 E=4
+0x7d MB_ROUTE120_NORTH_BRIDGE_4 RS=0 E=4
+0x7e MB_UNUSED_7E RS=0 E=4
+0x7f MB_ROUTE110_BRIDGE RS=0 E=4
+(bits: 4 unused, 2 surfable, 1 has encounters); behaviors with different bits: 8
+
+== 3. Behavior predicates
+DIFF MetatileBehavior_GetBridgeType -> MetatileBehavior_GetBridgeType
+  RS: { u8 result = metatileBehavior - 0x70; if (result > 3) result = 0; return result; }
+  E : { if (metatileBehavior >= 0x70 && metatileBehavior <= 0x73) return metatileBehavior - 0x70; if (metatileBehavior >= 0x7a && metatileBehavior <= 0x7b) return BRIDGE_TYPE_POND_MED; if (metatileBehavior >= 0x7c && metatileBehavior <= 0x7d) return BRIDGE_TYPE_POND_HIGH; return BRIDGE_TYPE_OCEAN; }
+RS only MetatileBehavior_IsBlockDecoration: { if (metatileBehavior == 0xb3) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsBridge -> MetatileBehavior_IsBridgeOverWater
+  RS: { if (metatileBehavior >= 0x70 && metatileBehavior <= 0x73) return TRUE; else return FALSE; }
+  E : { if ((metatileBehavior == 0x70 || metatileBehavior == 0x71 || metatileBehavior == 0x72 || metatileBehavior == 0x73) || (metatileBehavior == 0x7c || metatileBehavior == 0x7d || metatileBehavior == 0x7e || metatileBehavior == 0x7f)) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsEncounterTile -> MetatileBehavior_IsEncounterTile
+  RS: { if (sTileBitAttributes[metatileBehavior] & 1) return TRUE; else return FALSE; }
+  E : { if ((sTileBitAttributes[metatileBehavior] & TILE_FLAG_HAS_ENCOUNTERS)) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsFeebasEncounterable: { if (MetatileBehavior_IsSurfableWaterOrUnderwater(metatileBehavior) && MetatileBehavior_IsWaterfall(metatileBehavior) == FALSE) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsLargeMatCenter: { if (metatileBehavior == 0xc3) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsLinkBattleRecords: { if (metatileBehavior == 0x84) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsNotSurfacable -> MetatileBehavior_IsUnableToEmerge
+  RS: { if (metatileBehavior == 0x19 || metatileBehavior == 0x2a) return TRUE; else return FALSE; }
+  E : { if (metatileBehavior == 0x19 || metatileBehavior == 0x2a #ifdef BUGFIX || metatileBehavior == 0x6c #endif ) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsOceanWater: { if (metatileBehavior == 0x15 || metatileBehavior == 0x11 || metatileBehavior == 0x12) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsPacifidlogHorizontalLog1: { if (metatileBehavior == 0x76) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsPacifidlogHorizontalLog2: { if (metatileBehavior == 0x77) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsPacifidlogLog -> MetatileBehavior_IsPacifidlogLog
+  RS: { if (metatileBehavior >= 0x74 && metatileBehavior <= 0x77) return TRUE; else return FALSE; }
+  E : { if (metatileBehavior == 0x74 || metatileBehavior == 0x75 || metatileBehavior == 0x76 || metatileBehavior == 0x77) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsPacifidlogVerticalLog1: { if (metatileBehavior == 0x74) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsPacifidlogVerticalLog2: { if (metatileBehavior == 0x75) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsRunningDisallowed -> MetatileBehavior_IsRunningDisallowed
+  RS: { if (metatileBehavior == 0xa || metatileBehavior == 0x3 || metatileBehavior == 0x28 || MetatileBehavior_IsPacifidlogLog(metatileBehavior)) return TRUE; else return FALSE; }
+  E : { if (metatileBehavior == 0xa || metatileBehavior == 0x3 || metatileBehavior == 0x28 || MetatileBehavior_IsPacifidlogLog(metatileBehavior) != FALSE) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsSecretBaseLargeMatEdge: { if (metatileBehavior == 0xb5) return TRUE; else return FALSE; }
+RS only MetatileBehavior_IsSecretBaseMusicNoteMat: { if (metatileBehavior == 0xbd) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsSurfableFishableWater -> MetatileBehavior_IsSurfableFishableWater
+  RS: { if (metatileBehavior == 0x10 || metatileBehavior == 0x15 || metatileBehavior == 0x11 || metatileBehavior == 0x12 || metatileBehavior == 0x14 || (metatileBehavior >= 0x50 && metatileBehavior <= 0x53)) return TRUE; else return FALSE; }
+  E : { if (metatileBehavior == 0x10 || metatileBehavior == 0x15 || metatileBehavior == 0x11 || metatileBehavior == 0x12 || metatileBehavior == 0x14 || (metatileBehavior == 0x50 || metatileBehavior == 0x51 || metatileBehavior == 0x52 || metatileBehavior == 0x53)) return TRUE; else return FALSE; }
+DIFF MetatileBehavior_IsSurfableWaterOrUnderwater -> MetatileBehavior_IsSurfableWaterOrUnderwater
+  RS: { if ((sTileBitAttributes[metatileBehavior] & 2) != 0) return TRUE; else return FALSE; }
+  E : { if ((sTileBitAttributes[metatileBehavior] & TILE_FLAG_SURFABLE)) return TRUE; else return FALSE; }
+RS only Unref_MetatileBehavior_IsArrowWarp: { u8 isArrowWarp = FALSE; if (MetatileBehavior_IsEastArrowWarp(metatileBehavior) || MetatileBehavior_IsWestArrowWarp(metatileBehavior) || MetatileBehavior_IsNorthArrowWarp(metatileBehavior) || Metatil
+RS only Unref_MetatileBehavior_IsSecretBaseUnused_B2: { if (metatileBehavior == 0xb2) return TRUE; else return FALSE; }
+RS only Unref_MetatileBehavior_IsSecretBaseUnused_B2_2: { if (metatileBehavior == 0xb2) return TRUE; else return FALSE; }
+E only MetatileBehavior_HoldsLargeDecoration: { if (metatileBehavior == 0xc3) return TRUE; else return FALSE; }
+E only MetatileBehavior_HoldsSmallDecoration: { if (metatileBehavior == 0xb5) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsBattlePyramidWarp: { if (metatileBehavior == 0xd) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsBridgeOverWaterNoEdge: { if (metatileBehavior >= 0x70 && metatileBehavior <= 0x73) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsCableBoxResults1: { if (metatileBehavior == 0x84) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsCableBoxResults2: { if (playerDir != CONNECTION_NORTH) return FALSE; else if (tile == 0xe7) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsDeepOrOceanWater: { if (metatileBehavior == 0x15 || metatileBehavior == 0x11 || metatileBehavior == 0x12) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsLongGrassSouthEdge: { if (metatileBehavior == 0x9) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsLongGrass_Duplicate: { if (metatileBehavior == 0x3) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsMossdeepGymWarp: { if (metatileBehavior == 0xe) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsPacifidlogHorizontalLogLeft: { if (metatileBehavior == 0x76) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsPacifidlogHorizontalLogRight: { if (metatileBehavior == 0x77) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsPacifidlogVerticalLogBottom: { if (metatileBehavior == 0x75) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsPacifidlogVerticalLogTop: { if (metatileBehavior == 0x74) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsPlayerFacingWirelessBoxResults: { if (playerDir != CONNECTION_NORTH) return FALSE; else if (tile == 0xe8) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsQuestionnaire: { if (metatileBehavior == 0x8f) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBaseDecorationBase: { if (metatileBehavior == 0xc6) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBasePoster: { if (metatileBehavior == 0xc7) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBaseScenery1: { if (metatileBehavior == 0xb2) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBaseScenery2: { if (metatileBehavior == 0xb2) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBaseSoundMat: { if (metatileBehavior == 0xbd) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSecretBaseTrainerSpot: { if (metatileBehavior == 0xb3) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSkyPillarClosedDoor: { if (metatileBehavior == 0xea) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsSurfableAndNotWaterfall: { if (MetatileBehavior_IsSurfableWaterOrUnderwater(metatileBehavior) && MetatileBehavior_IsWaterfall(metatileBehavior) == FALSE) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsTrainerHillTimer: { if (metatileBehavior == 0xe9) return TRUE; else return FALSE; }
+E only MetatileBehavior_IsUnionRoomWarp: { if (metatileBehavior == 0x70) return TRUE; else return FALSE; }
+predicates: RS 131, E 143, identical after renumbering: 109
+
+== 4. Map headers on shared maps
+== map_type: 12 differ
+   MAGMA_HIDEOUT_1F: RS MAP_TYPE_INDOOR | E MAP_TYPE_UNDERGROUND
+   ROUTE124: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE125: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE126: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE127: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE128: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE129: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE130: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE131: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE132: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE133: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+   ROUTE134: RS MAP_TYPE_6 | E MAP_TYPE_OCEAN_ROUTE
+== weather: 13 differ
+   ABANDONED_SHIP_UNDERWATER1: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+   ABANDONED_SHIP_UNDERWATER2: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+   CAVE_OF_ORIGIN_B1F: RS WEATHER_NONE | E WEATHER_FOG_HORIZONTAL
+   LAVARIDGE_TOWN_GYM_1F: RS WEATHER_FOG_1 | E WEATHER_FOG_HORIZONTAL
+   LAVARIDGE_TOWN_GYM_B1F: RS WEATHER_FOG_1 | E WEATHER_FOG_HORIZONTAL
+   MT_CHIMNEY: RS WEATHER_ASH | E WEATHER_VOLCANIC_ASH
+   MT_PYRE_SUMMIT: RS WEATHER_FOG_1 | E WEATHER_FOG_HORIZONTAL
+   RUSTURF_TUNNEL: RS WEATHER_FOG_1 | E WEATHER_FOG_HORIZONTAL
+   SEAFLOOR_CAVERN_ROOM9: RS WEATHER_FOG_1 | E WEATHER_FOG_HORIZONTAL
+   UNDERWATER_ROUTE134: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+   UNDERWATER_SEAFLOOR_CAVERN: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+   UNDERWATER_SEALED_CHAMBER: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+   UNDERWATER_SOOTOPOLIS_CITY: RS WEATHER_BUBBLES | E WEATHER_UNDERWATER_BUBBLES
+== requires_flash: 2 differ
+   CAVE_OF_ORIGIN_1F: RS True | E False
+   CAVE_OF_ORIGIN_B1F: RS True | E False
+== region_map_section: 5 differ
+   AQUA_HIDEOUT_1F: RS MAPSEC_EVIL_TEAM_HIDEOUT | E MAPSEC_AQUA_HIDEOUT
+   AQUA_HIDEOUT_B1F: RS MAPSEC_EVIL_TEAM_HIDEOUT | E MAPSEC_AQUA_HIDEOUT
+   AQUA_HIDEOUT_B2F: RS MAPSEC_EVIL_TEAM_HIDEOUT | E MAPSEC_AQUA_HIDEOUT
+   MAGMA_HIDEOUT_1F: RS MAPSEC_EVIL_TEAM_HIDEOUT | E MAPSEC_MAGMA_HIDEOUT
+   UNDERWATER_SEAFLOOR_CAVERN: RS MAPSEC_UNDERWATER_128 | E MAPSEC_UNDERWATER_SEAFLOOR_CAVERN
+== battle_scene: 25 differ
+   MAGMA_HIDEOUT_1F: RS MAP_BATTLE_SCENE_MAGMA | E MAP_BATTLE_SCENE_NORMAL
+   SECRET_BASE_BLUE_CAVE1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BLUE_CAVE2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BLUE_CAVE3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BLUE_CAVE4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BROWN_CAVE1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BROWN_CAVE2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BROWN_CAVE3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_BROWN_CAVE4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_RED_CAVE1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_RED_CAVE2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_RED_CAVE3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_RED_CAVE4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_SHRUB1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_SHRUB2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_SHRUB3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_SHRUB4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_TREE1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_TREE2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_TREE3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_TREE4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_YELLOW_CAVE1: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_YELLOW_CAVE2: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_YELLOW_CAVE3: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+   SECRET_BASE_YELLOW_CAVE4: RS MAP_BATTLE_SCENE_BATTLE_TOWER | E MAP_BATTLE_SCENE_FRONTIER
+
+== 5. Bike, Escape Rope/Dig and running permissions
+== cycling: 10 shared maps differ
+   ABANDONED_SHIP_UNDERWATER1 (MAP_TYPE_UNDERWATER): RS False | E True
+   ABANDONED_SHIP_UNDERWATER2 (MAP_TYPE_UNDERWATER): RS False | E True
+   CAVE_OF_ORIGIN_B1F (MAP_TYPE_UNDERGROUND): RS True | E False
+   MAGMA_HIDEOUT_1F (MAP_TYPE_INDOOR): RS False | E True
+   ROUTE104_PROTOTYPE (MAP_TYPE_ROUTE): RS True | E False
+   SKY_PILLAR_TOP (MAP_TYPE_ROUTE): RS True | E False
+   UNDERWATER_ROUTE134 (MAP_TYPE_UNDERWATER): RS False | E True
+   UNDERWATER_SEAFLOOR_CAVERN (MAP_TYPE_UNDERWATER): RS False | E True
+   UNDERWATER_SEALED_CHAMBER (MAP_TYPE_UNDERWATER): RS False | E True
+   UNDERWATER_SOOTOPOLIS_CITY (MAP_TYPE_UNDERWATER): RS False | E True
+== escaping (Escape Rope, Dig): 1 shared maps differ
+   MAGMA_HIDEOUT_1F (MAP_TYPE_INDOOR): RS False | E True
+== running: 2 shared maps differ
+   MAGMA_HIDEOUT_1F (MAP_TYPE_INDOOR): RS False | E True
+   ROUTE104_PROTOTYPE (MAP_TYPE_ROUTE): RS True | E False
+
+== 6. Heal locations
+HEAL_LOCATION_BATTLE_FRONTIER_OUTSIDE_EAST: RS None | E {'map': 'MAP_BATTLE_FRONTIER_OUTSIDE_EAST', 'x': 3, 'y': 52}
+HEAL_LOCATION_BATTLE_TOWER_OUTSIDE: RS {'map': 'MAP_BATTLE_TOWER_OUTSIDE', 'x': 14, 'y': 9} | E None
+heal locations: RS 22, E 22, differing: 2
+
+== 7. Abilities that act outside battle
+wild encounters                  RS ABILITY_ILLUMINATE, ABILITY_STENCH
+wild encounters                  E  ABILITY_ARENA_TRAP, ABILITY_CUTE_CHARM, ABILITY_HUSTLE, ABILITY_ILLUMINATE, ABILITY_INFLUENCED_WILD_MON_INDEX, ABILITY_INTIMIDATE, ABILITY_KEEN_EYE, ABILITY_MAGNET_PULL, ABILITY_PRESSURE, ABILITY_SAND_VEIL, ABILITY_STATIC, ABILITY_STENCH, ABILITY_SYNCHRONIZE, ABILITY_VITAL_SPIRIT, ABILITY_WHITE_SMOKE
+fishing (field_player_avatar.c)  RS none
+fishing (field_player_avatar.c)  E  ABILITY_STICKY_HOLD, ABILITY_SUCTION_CUPS
+daycare                          RS none
+daycare                          E  none
+egg hatching                     RS none
+egg hatching                     E  ABILITY_FLAME_BODY, ABILITY_MAGMA_ARMOR
+Pickup (atkE5_pickup)            RS abilities: ABILITY_PICKUP; uses level: False; sPickupItems: ITEM_SUPER_POTION, 30, ITEM_FULL_HEAL, 40, ITEM_ULTRA_BALL, 50, ITEM_RARE_CANDY, 60, ITEM_FULL_RESTORE, 70, ITEM_REVIVE, 80, ITEM_NUGGET, 90, ITEM_PROTEIN, 95, ITEM_PP_UP, 99, ITEM_KINGS_ROCK, 1
+Pickup (Cmd_pickup)              E  abilities: ABILITY_NUM, ABILITY_PICKUP; uses level: True; sPickupItems: ITEM_POTION, ITEM_ANTIDOTE, ITEM_SUPER_POTION, ITEM_GREAT_BALL, ITEM_REPEL, ITEM_ESCAPE_ROPE, ITEM_X_ATTACK, ITEM_FULL_HEAL, ITEM_ULTRA_BALL, ITEM_HYPER_POTION, ITEM_RARE_CANDY, ITEM_PROTEIN, ITEM_REVIVE, ITEM_HP_UP, ITEM_FULL_RESTORE, ITEM_MAX_REVIVE, ITEM_PP_UP, ITEM_MAX_ELIXIR
+SetWildMonHeldItem               RS abilities: none; rolls: rnd > 44, rnd <= 94
+SetWildMonHeldItem               E  abilities: ABILITY_COMPOUND_EYES; rolls: chanceNoItem = 45, chanceNotRare = 95, chanceNoItem = 20, chanceNotRare = 80
+
+== 8. Wild-encounter functions in one game only
+RS only: ['ChooseWildMonIndex_Water', 'DoGlobalWildEncounterDiceRoll', 'DoWildEncounterRateDiceRoll', 'DoWildEncounterTest', 'FeebasDebug_GetTrueNumberOfWaterTilesInMapThird', 'GenerateWildMon', 'GetCurrentMapWildMonHeader', 'GetRoute119WaterTileNum', 'ScrSpecial_RockSmashWildEncounter', 'debug_sub_809283C']
+E only:  ['AllowWildCheckOnNewMetatile', 'AreLegendariesInSootopolisPreventingEncounters', 'ChooseWildMonIndex_WaterRock', 'EncounterOddsCheck', 'GetCurrentMapWildMonHeaderId', 'GetFeebasFishingSpotId', 'IsAbilityAllowingEncounter', 'RockSmashWildEncounter', 'TryGenerateWildMon', 'TryGetAbilityInfluencedWildMonIndex', 'TryGetRandomWildMonIndexByType', 'WildEncounterCheck']
+(names only; Emerald renamed some pokeruby functions, so read both files for any that matter)
+
+(map types in pokeruby: {'MAP_TYPE_6': 11, 'MAP_TYPE_CITY': 9, 'MAP_TYPE_INDOOR': 234, 'MAP_TYPE_ROUTE': 38, 'MAP_TYPE_SECRET_BASE': 24, 'MAP_TYPE_TOWN': 7, 'MAP_TYPE_UNDERGROUND': 61, 'MAP_TYPE_UNDERWATER': 10})

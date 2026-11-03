@@ -130,12 +130,12 @@ def test_every_encounter_area_is_placed(prog, db):
     rows = db.execute("SELECT DISTINCT location, area, method FROM encounters").fetchall()
     unplaced = [
         (loc, area, method) for loc, area, method in rows
-        if not prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method) is None
+        if not prog.opened("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method) is None
     ]
     assert unplaced == []
     overlap = [
         (loc, area, method) for loc, area, method in rows
-        if prog.is_reachable("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method)
+        if prog.opened("champion_wallace", loc, area, method) and prog.never_reason(loc, area, method)
     ]
     assert overlap == []
 
@@ -231,3 +231,16 @@ def test_tm_and_tutor_places_open(prog, db):
     opened = {s[0] for b in prog.battles for s in b.areas_new}
     places = {l for (l,) in db.execute("SELECT location FROM tm_locations UNION SELECT location FROM move_tutors").fetchall() if l}
     assert places - opened == {"ss-tidal"}  # the S.S. Ticket comes after the Hall of Fame
+
+
+def test_cave_of_origin_is_open_only_during_the_crisis(prog):
+    assert not prog.is_reachable("archie_seafloor_cavern", "cave-of-origin", "1f")
+    assert prog.is_reachable("gym8_juan", "cave-of-origin", "1f")
+    assert prog.missable_reason("gym8_juan", "cave-of-origin", "1f")
+    assert not prog.is_reachable("wally_victory_road", "cave-of-origin", "1f")
+    assert "crisis" in prog.closed_reason("champion_wallace", "cave-of-origin", "b1f")
+
+
+def test_mirage_tower_is_flagged_not_removed(prog):
+    assert prog.is_reachable("champion_wallace", "mirage-tower", None)  # falls on the player's action, not a battle
+    assert "fossil" in prog.missable_reason("champion_wallace", "mirage-tower", None)

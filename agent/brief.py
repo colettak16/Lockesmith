@@ -9,10 +9,38 @@ VANILLA_KINDS = {
 }
 
 
+# One line per game on how it differs, so no agent answers from another game's memory.
+# Ruby/Sapphire's field-ability rules are from pokeruby (docs/audit/engine.txt): wild_encounter.c checks only
+# Stench and Illuminate; SetWildMonHeldItem (pokemon_3.c), the fishing bite (field_player_avatar.c) and egg steps
+# (daycare.c) check none; Pickup (atkE5_pickup, battle_script_commands.c) runs after every won battle from one
+# fixed table, where Emerald's Cmd_pickup picks from level-based tables.
+RS_FIELD_ABILITIES = (
+    "A lead Pokémon's ability changes wild encounters only through the encounter rate (Stench lowers it, "
+    "Illuminate raises it): Synchronize, Cute Charm, Magnet Pull, Static, Intimidate, Keen Eye, Compound Eyes, "
+    "Suction Cups, Flame Body and the other field effects start in Emerald, so don't suggest them here. Pickup "
+    "does work: after each battle you win, every party Pokémon with Pickup holding nothing has a 10% chance to "
+    "find an item, from one table at every level (Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full "
+    "Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%). Emerald's table depends on level."
+)
+GAME_SOURCE = "rules:game"  # the line below, citable: the pipeline puts it in every request's ledger
+GAME_LINES = {
+    "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
+    "ruby": ("Game: Pokémon Ruby (Game Boy Advance, not Omega Ruby). The villain is Team Magma only; the 8th gym "
+             "leader is Wallace and the Champion is Steven; there are no move tutors; Groudon (Lv45) is a required "
+             "battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. Teams and "
+             "encounters differ from Emerald's: trust the tools, not Emerald memory. " + RS_FIELD_ABILITIES),
+    "sapphire": ("Game: Pokémon Sapphire (Game Boy Advance, not Alpha Sapphire). The villain is Team Aqua only; the "
+                 "8th gym leader is Wallace and the Champion is Steven; there are no move tutors; Kyogre (Lv45) is a "
+                 "required battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. "
+                 "Teams and encounters differ from Emerald's: trust the tools, not Emerald memory. " + RS_FIELD_ABILITIES),
+}
+
+
 def state_brief(ctx: RequestContext) -> str:
     s = ctx.state
     p = ctx.progress if s.badges is not None else None
     lines = [
+        f"{GAME_LINES[s.game]} [source id for this line: {GAME_SOURCE}]",
         f"Starter: {s.starter or 'not given'}. Rival: {s.rival or 'not given'}.",
         f"Badges held: {', '.join(s.badges) if s.badges else ('none yet' if s.badges == [] else 'not given')}.",
     ]

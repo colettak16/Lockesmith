@@ -1,0 +1,325 @@
+# audit.encounter_scripts: pret/pokeruby@5784633ce4ef vs pret/pokeemerald@731ad5bfd6e6
+# regenerate with `uv run python -m audit` (see audit/README.md)
+# encounter-starting scripts: RS 24, E 31
+
+== Rock Smash encounter (RockSmashWildEncounter)
+ RS
+  scripts/field_move_scripts.inc: DoRockSmashMovement: special ScrSpecial_RockSmashWildEncounter
+    checks before, in DoRockSmashMovement: specialvar VAR_RESULT, TryUpdateRusturfTunnelState; compare VAR_RESULT, 1; goto_if_eq DoRockSmashMovement_Done
+    checks after: compare VAR_RESULT, 0; goto_if_eq DoRockSmashMovement_Done
+    reached from S_BreakableRock: goto_if_unset FLAG_BADGE03_GET, CannotUseRockSmash; checkpartymove MOVE_ROCK_SMASH; compare VAR_RESULT, 6; goto_if_eq CannotUseRockSmash; compare VAR_RESULT, NO; goto_if_eq RockSmash_ChoseNo
+    reached from S_UseRockSmash
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_11 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_12 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_13 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_14 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_15 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_16 (visible at a new game; cleared by []; set by ['Route130'])
+    ... and 34 more objects
+ E
+  scripts/field_move_scripts.inc: EventScript_SmashRock: special RockSmashWildEncounter
+    checks before, in EventScript_SmashRock: specialvar VAR_RESULT, TryUpdateRusturfTunnelState; goto_if_eq VAR_RESULT, TRUE, EventScript_EndSmash
+    checks after: goto_if_eq VAR_RESULT, FALSE, EventScript_EndSmash
+    reached from EventScript_RockSmash: goto_if_unset FLAG_BADGE03_GET, EventScript_CantSmashRock; checkpartymove MOVE_ROCK_SMASH; goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantSmashRock; goto_if_eq VAR_RESULT, NO, EventScript_CancelSmash
+    reached from EventScript_UseRockSmash
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_11 (visible at a new game; cleared by []; set by [])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_12 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_13 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_14 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_15 (visible at a new game; cleared by []; set by ['Route130'])
+    object on GRANITE_CAVE_B2F: BREAKABLE_ROCK, FLAG_TEMP_16 (visible at a new game; cleared by []; set by ['Route130'])
+    ... and 38 more objects
+
+== SPECIES_ANORITH
+ RS
+  RustboroCity_DevonCorp_2F: RustboroCity_DevonCorp_2F_EventScript_AnorithReady: givemon SPECIES_ANORITH, 20, ITEM_NONE
+    checks before, in RustboroCity_DevonCorp_2F_EventScript_AnorithReady: getpartysize; compare VAR_RESULT, 6; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_TooManyPokemon
+    checks after: compare VAR_RESULT, YES; call_if_eq Common_EventScript_NameReceivedPartyMon
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilMonReady: compare VAR_WHICH_FOSSIL_REVIVED, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_LileepReady; compare VAR_WHICH_FOSSIL_REVIVED, 2; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_AnorithReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilScientist: compare VAR_FOSSIL_RESURRECTION_STATE, 2; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_FossilMonReady; compare VAR_FOSSIL_RESURRECTION_STATE, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_StillRegenerating; checkitem ITEM_ROOT_FOSSIL, 1; compare VAR_RESULT, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_NoticeRootFossil; checkitem ITEM_CLAW_FOSSIL, 1; compare VAR_RESULT, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_NoticeClawFossil
+    object on RUSTBORO_CITY_DEVON_CORP_2F: SCIENTIST_1, no hide flag
+ E
+  RustboroCity_DevonCorp_2F: RustboroCity_DevonCorp_2F_EventScript_ReceiveAnorith: givemon SPECIES_ANORITH, 20
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, RustboroCity_DevonCorp_2F_EventScript_ReceiveAnorithParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, RustboroCity_DevonCorp_2F_EventScript_ReceiveAnorithPC
+    reached from RustboroCity_DevonCorp_2F_EventScript_AnorithReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilMonReady: goto_if_eq VAR_WHICH_FOSSIL_REVIVED, 1, RustboroCity_DevonCorp_2F_EventScript_LileepReady; goto_if_eq VAR_WHICH_FOSSIL_REVIVED, 2, RustboroCity_DevonCorp_2F_EventScript_AnorithReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilScientist: goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 2, RustboroCity_DevonCorp_2F_EventScript_FossilMonReady; goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 1, RustboroCity_DevonCorp_2F_EventScript_StillRegenerating; checkitem ITEM_ROOT_FOSSIL; goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeRootFossil; checkitem ITEM_CLAW_FOSSIL; goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeClawFossil
+    object on RUSTBORO_CITY_DEVON_CORP_2F: SCIENTIST_1, no hide flag
+
+== SPECIES_BELDUM
+ RS
+  MossdeepCity_StevensHouse: MossdeepCity_StevensHouse_EventScript_BeldumPokeball: givemon SPECIES_BELDUM, 5, ITEM_NONE
+    checks before, in MossdeepCity_StevensHouse_EventScript_BeldumPokeball: compare VAR_RESULT, NO; goto_if_eq MossdeepCity_StevensHouse_EventScript_LeaveBeldum; getpartysize; compare VAR_RESULT, 6; goto_if_eq MossdeepCity_StevensHouse_EventScript_GiveBeldum
+    checks after: compare VAR_RESULT, YES; call_if_eq Common_EventScript_NameReceivedPartyMon
+    object on MOSSDEEP_CITY_STEVENS_HOUSE: ITEM_BALL, FLAG_HIDE_BELDUM_BALL_STEVENS_HOUSE (hidden at a new game; cleared by ['scripts/hall_of_fame.inc']; set by ['MossdeepCity_StevensHouse'])
+ E
+  MossdeepCity_StevensHouse: MossdeepCity_StevensHouse_EventScript_GiveBeldum: givemon SPECIES_BELDUM, 5
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, MossdeepCity_StevensHouse_EventScript_SendBeldumParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, MossdeepCity_StevensHouse_EventScript_SendBeldumPC
+    reached from MossdeepCity_StevensHouse_EventScript_BeldumPokeball: goto_if_eq VAR_RESULT, NO, MossdeepCity_StevensHouse_EventScript_LeaveBeldum
+    object on MOSSDEEP_CITY_STEVENS_HOUSE: ITEM_BALL, FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_BELDUM_POKEBALL (hidden at a new game; cleared by ['scripts/hall_of_fame.inc']; set by ['MossdeepCity_StevensHouse'])
+
+== SPECIES_CASTFORM
+ RS
+  Route119_WeatherInstitute_2F: Route119_WeatherInstitute_2F_EventScript_163D7A: givemon SPECIES_CASTFORM, 25, ITEM_MYSTIC_WATER
+    checks before, in Route119_WeatherInstitute_2F_EventScript_163D7A: getpartysize; compare VAR_RESULT, 6; goto_if_eq Route119_WeatherInstitute_2F_EventScript_163DB4
+    reached from Route119_WeatherInstitute_2F_EventScript_163D45
+    reached from Route119_WeatherInstitute_2F_EventScript_163DCC: goto_if_set FLAG_RECEIVED_CASTFORM, Route119_WeatherInstitute_2F_EventScript_163DBE
+    object on ROUTE119_WEATHER_INSTITUTE_2F: SCIENTIST_1, no hide flag
+ E
+  Route119_WeatherInstitute_2F: Route119_WeatherInstitute_2F_EventScript_ReceiveCastform: givemon SPECIES_CASTFORM, 25, ITEM_MYSTIC_WATER
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, Route119_WeatherInstitute_2F_EventScript_ReceiveCastformParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, Route119_WeatherInstitute_2F_EventScript_ReceiveCastformPC
+    reached from Route119_WeatherInstitute_2F_EventScript_ShellyDefeated
+    reached from Route119_WeatherInstitute_2F_EventScript_WeatherScientist: goto_if_set FLAG_RECEIVED_CASTFORM, Route119_WeatherInstitute_2F_EventScript_ScientistMentionWeather
+    object on ROUTE119_WEATHER_INSTITUTE_2F: SCIENTIST_1, no hide flag
+
+== SPECIES_CHIKORITA  (only in E)
+ E
+  LittlerootTown_ProfessorBirchsLab: LittlerootTown_ProfessorBirchsLab_EventScript_GiveChikorita: givemon SPECIES_CHIKORITA, 5
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, LittlerootTown_ProfessorBirchsLab_EventScript_SendChikoritaToParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, LittlerootTown_ProfessorBirchsLab_EventScript_SendChikoritaToPC
+    reached from LittlerootTown_ProfessorBirchsLab_EventScript_Chikorita: goto_if_ge VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 6, LittlerootTown_ProfessorBirchsLab_EventScript_AlreadyChoseJohtoStarter; goto_if_eq VAR_RESULT, NO, LittlerootTown_ProfessorBirchsLab_EventScript_TakeYourTime
+    object on LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB: ITEM_BALL, FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_POKEBALL_CHIKORITA (hidden at a new game; cleared by []; set by [])
+
+== SPECIES_CYNDAQUIL  (only in E)
+ E
+  LittlerootTown_ProfessorBirchsLab: LittlerootTown_ProfessorBirchsLab_EventScript_GiveCyndaquil: givemon SPECIES_CYNDAQUIL, 5
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, LittlerootTown_ProfessorBirchsLab_EventScript_SendCyndaquilToParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, LittlerootTown_ProfessorBirchsLab_EventScript_SendCyndaquilToPC
+    reached from LittlerootTown_ProfessorBirchsLab_EventScript_Cyndaquil: goto_if_ge VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 6, LittlerootTown_ProfessorBirchsLab_EventScript_AlreadyChoseJohtoStarter; goto_if_eq VAR_RESULT, NO, LittlerootTown_ProfessorBirchsLab_EventScript_TakeYourTime
+    object on LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB: ITEM_BALL, FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_POKEBALL_CYNDAQUIL (hidden at a new game; cleared by []; set by [])
+
+== SPECIES_ELECTRODE
+ RS
+  scripts/static_pokemon.inc: Hideout_B1F_EventScript_Electrode1: setwildbattle SPECIES_ELECTRODE, 30, ITEM_NONE
+    object on AQUA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_ELECTRODE_1_HIDEOUT (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on MAGMA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_ELECTRODE_1_HIDEOUT (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+ RS
+  scripts/static_pokemon.inc: Hideout_B1F_EventScript_Electrode2: setwildbattle SPECIES_ELECTRODE, 30, ITEM_NONE
+    object on AQUA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_ELECTRODE_2_HIDEOUT (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on MAGMA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_ELECTRODE_2_HIDEOUT (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+ E
+  AquaHideout_B1F: AquaHideout_B1F_EventScript_Electrode1: setwildbattle SPECIES_ELECTRODE, 30
+    object on AQUA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_AQUA_HIDEOUT_B1F_ELECTRODE_1 (visible at a new game; cleared by ['AquaHideout_B1F']; set by [])
+ E
+  AquaHideout_B1F: AquaHideout_B1F_EventScript_Electrode2: setwildbattle SPECIES_ELECTRODE, 30
+    object on AQUA_HIDEOUT_B1F: ITEM_BALL, FLAG_HIDE_AQUA_HIDEOUT_B1F_ELECTRODE_2 (visible at a new game; cleared by ['AquaHideout_B1F']; set by [])
+
+== SPECIES_GROUDON/KYOGRE
+ RS
+  CaveOfOrigin_B4F: CaveOfOrigin_B4F_EventScript_15DDD7: setwildbattle SPECIES_GROUDON_OR_KYOGRE, 45, ITEM_NONE
+ E
+  MarineCave_End: MarineCave_End_EventScript_Kyogre: setwildbattle SPECIES_KYOGRE, 70
+    checks after: specialvar VAR_RESULT, GetBattleOutcome
+ E
+  TerraCave_End: TerraCave_End_EventScript_Groudon: setwildbattle SPECIES_GROUDON, 70
+    checks after: specialvar VAR_RESULT, GetBattleOutcome
+
+== SPECIES_KECLEON
+ RS
+  Route120: Route120_EventScript_15189D: setwildbattle SPECIES_KECLEON, 30, ITEM_NONE
+    checks before, in Route120_EventScript_15189D: compare VAR_FACING, 2; call_if_eq Route120_EventScript_15197F; compare VAR_FACING, 3; call_if_eq Route120_EventScript_15198A
+    reached from Route120_EventScript_151853: goto_if_set FLAG_NOT_READY_FOR_BATTLE_ROUTE120, Route120_EventScript_151884; compare VAR_RESULT, NO; goto_if_eq Route120_EventScript_151877
+    reached from Route120_EventScript_151884: compare VAR_RESULT, NO; goto_if_eq Route120_EventScript_151877
+    object on ROUTE120: STEVEN, FLAG_HIDE_STEVEN_ROUTE120 (visible at a new game; cleared by []; set by [])
+ RS
+  scripts/static_pokemon.inc: EventScript_BattleKecleon: setwildbattle SPECIES_KECLEON, 30, ITEM_NONE
+    checks after: compare VAR_0x8004, 1; call_if_eq Route120_EventScript_HideKecleon1; compare VAR_0x8004, 2; call_if_eq Route120_EventScript_HideKecleon2; compare VAR_0x8004, 3
+    reached from EventScript_AskUseDevonScope: compare VAR_RESULT, YES; goto_if_eq EventScript_BattleKecleon
+    reached from EventScript_Kecleon: checkitem ITEM_DEVON_SCOPE, 1; compare VAR_RESULT, 1; goto_if_eq EventScript_AskUseDevonScope
+    reached from Route119_EventScript_Kecleon1
+    reached from Route119_EventScript_Kecleon2
+    reached from Route120_EventScript_Kecleon1
+    reached from Route120_EventScript_Kecleon2
+    reached from Route120_EventScript_Kecleon3
+    reached from Route120_EventScript_Kecleon4
+    reached from Route120_EventScript_Kecleon5
+    object on ROUTE119: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE119_1 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on ROUTE119: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE119_2 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on ROUTE120: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE120_3 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on ROUTE120: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE120_4 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on ROUTE120: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE120_5 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    object on ROUTE120: KECLEON_1, FLAG_HIDE_KECLEON_ROUTE120_6 (visible at a new game; cleared by []; set by ['scripts/static_pokemon.inc'])
+    ... and 1 more objects
+ E
+  Route120: Route120_EventScript_StevenBattleKecleon: setwildbattle SPECIES_KECLEON, 30
+    checks before, in Route120_EventScript_StevenBattleKecleon: call_if_eq VAR_FACING, DIR_NORTH, Route120_EventScript_PlayerApproachKecleonNorth; call_if_eq VAR_FACING, DIR_WEST, Route120_EventScript_PlayerApproachKecleonWest
+    checks after: specialvar VAR_RESULT, GetBattleOutcome
+    reached from Route120_EventScript_Steven: goto_if_set FLAG_NOT_READY_FOR_BATTLE_ROUTE_120, Route120_EventScript_StevenAskReadyForBattle; goto_if_eq VAR_RESULT, NO, Route120_EventScript_StevenNotReady
+    reached from Route120_EventScript_StevenAskReadyForBattle: goto_if_eq VAR_RESULT, NO, Route120_EventScript_StevenNotReady
+    object on ROUTE120: STEVEN, FLAG_HIDE_ROUTE_120_STEVEN (visible at a new game; cleared by []; set by [])
+ E
+  scripts/kecleon.inc: EventScript_BattleKecleon: setwildbattle SPECIES_KECLEON, 30
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, EventScript_RemoveKecleon
+    reached from EventScript_AskUseDevonScope: goto_if_eq VAR_RESULT, YES, EventScript_BattleKecleon
+    reached from EventScript_Kecleon: checkitem ITEM_DEVON_SCOPE; goto_if_eq VAR_RESULT, TRUE, EventScript_AskUseDevonScope
+    reached from Route119_EventScript_Kecleon1
+    reached from Route119_EventScript_Kecleon2
+    reached from Route120_EventScript_Kecleon1
+    reached from Route120_EventScript_Kecleon2
+    reached from Route120_EventScript_Kecleon3
+    reached from Route120_EventScript_Kecleon4
+    reached from Route120_EventScript_Kecleon5
+    object on ROUTE119: KECLEON, FLAG_HIDE_ROUTE_119_KECLEON_1 (visible at a new game; cleared by []; set by [])
+    object on ROUTE119: KECLEON, FLAG_HIDE_ROUTE_119_KECLEON_2 (visible at a new game; cleared by []; set by [])
+    object on ROUTE120: KECLEON, FLAG_HIDE_ROUTE_120_KECLEON_1 (visible at a new game; cleared by []; set by [])
+    object on ROUTE120: KECLEON, FLAG_HIDE_ROUTE_120_KECLEON_2 (visible at a new game; cleared by []; set by [])
+    object on ROUTE120: KECLEON, FLAG_HIDE_ROUTE_120_KECLEON_3 (visible at a new game; cleared by []; set by [])
+    object on ROUTE120: KECLEON, FLAG_HIDE_ROUTE_120_KECLEON_4 (visible at a new game; cleared by []; set by [])
+    ... and 1 more objects
+
+== SPECIES_LATIAS/LATIOS  (only in RS)
+ RS
+  SouthernIsland_Interior: SouthernIsland_Interior_EventScript_160BA7: setwildbattle SPECIES_LATIAS_OR_LATIOS, 50, ITEM_SOUL_DEW
+    checks before, in SouthernIsland_Interior_EventScript_160BA7: goto_if_set FLAG_ENCOUNTERED_LATIAS_OR_LATIOS, SouthernIsland_Interior_EventScript_160C08; goto_if_unset FLAG_SYS_HAS_EON_TICKET, SouthernIsland_Interior_EventScript_160C08
+    reached from SouthernIsland_Interior_EventScript_160B9B
+
+== SPECIES_LILEEP
+ RS
+  RustboroCity_DevonCorp_2F: RustboroCity_DevonCorp_2F_EventScript_LileepReady: givemon SPECIES_LILEEP, 20, ITEM_NONE
+    checks before, in RustboroCity_DevonCorp_2F_EventScript_LileepReady: getpartysize; compare VAR_RESULT, 6; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_TooManyPokemon
+    checks after: compare VAR_RESULT, YES; call_if_eq Common_EventScript_NameReceivedPartyMon
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilMonReady: compare VAR_WHICH_FOSSIL_REVIVED, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_LileepReady; compare VAR_WHICH_FOSSIL_REVIVED, 2; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_AnorithReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilScientist: compare VAR_FOSSIL_RESURRECTION_STATE, 2; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_FossilMonReady; compare VAR_FOSSIL_RESURRECTION_STATE, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_StillRegenerating; checkitem ITEM_ROOT_FOSSIL, 1; compare VAR_RESULT, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_NoticeRootFossil; checkitem ITEM_CLAW_FOSSIL, 1; compare VAR_RESULT, 1; goto_if_eq RustboroCity_DevonCorp_2F_EventScript_NoticeClawFossil
+    object on RUSTBORO_CITY_DEVON_CORP_2F: SCIENTIST_1, no hide flag
+ E
+  RustboroCity_DevonCorp_2F: RustboroCity_DevonCorp_2F_EventScript_ReceiveLileep: givemon SPECIES_LILEEP, 20
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, RustboroCity_DevonCorp_2F_EventScript_ReceiveLileepParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, RustboroCity_DevonCorp_2F_EventScript_ReceiveLileepPC
+    reached from RustboroCity_DevonCorp_2F_EventScript_LileepReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilMonReady: goto_if_eq VAR_WHICH_FOSSIL_REVIVED, 1, RustboroCity_DevonCorp_2F_EventScript_LileepReady; goto_if_eq VAR_WHICH_FOSSIL_REVIVED, 2, RustboroCity_DevonCorp_2F_EventScript_AnorithReady
+    reached from RustboroCity_DevonCorp_2F_EventScript_FossilScientist: goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 2, RustboroCity_DevonCorp_2F_EventScript_FossilMonReady; goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 1, RustboroCity_DevonCorp_2F_EventScript_StillRegenerating; checkitem ITEM_ROOT_FOSSIL; goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeRootFossil; checkitem ITEM_CLAW_FOSSIL; goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeClawFossil
+    object on RUSTBORO_CITY_DEVON_CORP_2F: SCIENTIST_1, no hide flag
+
+== SPECIES_PICHU  (only in E)
+ E
+  scripts/gift_pichu.inc: SurfPichu_GiveEgg: giveegg SPECIES_PICHU
+
+== SPECIES_RAYQUAZA
+ RS
+  SkyPillar_Top: SkyPillar_Top_EventScript_15F316: setwildbattle SPECIES_RAYQUAZA, 70, ITEM_NONE
+    object on SKY_PILLAR_TOP: RAYQUAZA, FLAG_HIDE_RAYQUAZA (visible at a new game; cleared by []; set by ['SkyPillar_Top'])
+ E
+  SkyPillar_Top: SkyPillar_Top_EventScript_Rayquaza: setwildbattle SPECIES_RAYQUAZA, 70
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, SkyPillar_Top_EventScript_DefeatedRayquaza
+    object on SKY_PILLAR_TOP: RAYQUAZA_STILL, FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL (hidden at a new game; cleared by ['SkyPillar_Top']; set by [])
+
+== SPECIES_REGICE
+ RS
+  IslandCave: IslandCave_EventScript_15EF9D: setwildbattle SPECIES_REGICE, 40, ITEM_NONE
+    object on ISLAND_CAVE: REGICE, FLAG_HIDE_REGICE (visible at a new game; cleared by []; set by ['IslandCave'])
+ E
+  IslandCave: IslandCave_EventScript_Regice: setwildbattle SPECIES_REGICE, 40
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, IslandCave_EventScript_DefeatedRegice
+    object on ISLAND_CAVE: REGICE, FLAG_HIDE_REGICE (visible at a new game; cleared by ['IslandCave']; set by [])
+
+== SPECIES_REGIROCK
+ RS
+  DesertRuins: DesertRuins_EventScript_15CB85: setwildbattle SPECIES_REGIROCK, 40, ITEM_NONE
+    object on DESERT_RUINS: REGIROCK, FLAG_HIDE_REGIROCK (visible at a new game; cleared by []; set by ['DesertRuins'])
+ E
+  DesertRuins: DesertRuins_EventScript_Regirock: setwildbattle SPECIES_REGIROCK, 40
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, DesertRuins_EventScript_DefeatedRegirock
+    object on DESERT_RUINS: REGIROCK, FLAG_HIDE_REGIROCK (visible at a new game; cleared by ['DesertRuins']; set by [])
+
+== SPECIES_REGISTEEL
+ RS
+  AncientTomb: AncientTomb_EventScript_15F050: setwildbattle SPECIES_REGISTEEL, 40, ITEM_NONE
+    object on ANCIENT_TOMB: REGISTEEL, FLAG_HIDE_REGISTEEL (visible at a new game; cleared by []; set by ['AncientTomb'])
+ E
+  AncientTomb: AncientTomb_EventScript_Registeel: setwildbattle SPECIES_REGISTEEL, 40
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, AncientTomb_EventScript_DefeatedRegisteel
+    object on ANCIENT_TOMB: REGISTEEL, FLAG_HIDE_REGISTEEL (visible at a new game; cleared by ['AncientTomb']; set by [])
+
+== SPECIES_SUDOWOODO  (only in E)
+ E
+  BattleFrontier_OutsideEast: BattleFrontier_OutsideEast_EventScript_WaterSudowoodo: setwildbattle SPECIES_SUDOWOODO, 40
+    checks after: specialvar VAR_RESULT, GetBattleOutcome; goto_if_eq VAR_RESULT, B_OUTCOME_WON, BattleFrontier_OutsideEast_EventScript_DefeatedSudowoodo
+
+== SPECIES_TOTODILE  (only in E)
+ E
+  LittlerootTown_ProfessorBirchsLab: LittlerootTown_ProfessorBirchsLab_EventScript_GiveTotodile: givemon SPECIES_TOTODILE, 5
+    checks after: goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, LittlerootTown_ProfessorBirchsLab_EventScript_SendTotodileToParty; goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, LittlerootTown_ProfessorBirchsLab_EventScript_SendTotodileToPC
+    reached from LittlerootTown_ProfessorBirchsLab_EventScript_Totodile: goto_if_ge VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 6, LittlerootTown_ProfessorBirchsLab_EventScript_AlreadyChoseJohtoStarter; goto_if_eq VAR_RESULT, NO, LittlerootTown_ProfessorBirchsLab_EventScript_TakeYourTime
+    object on LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB: ITEM_BALL, FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_POKEBALL_TOTODILE (hidden at a new game; cleared by []; set by [])
+
+== SPECIES_VOLTORB
+ RS
+  NewMauville_Inside: NewMauville_Inside_EventScript_15E900: setwildbattle SPECIES_VOLTORB, 25, ITEM_NONE
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_VOLTORB_1_NEW_MAUVILLE (visible at a new game; cleared by []; set by ['NewMauville_Inside'])
+ RS
+  NewMauville_Inside: NewMauville_Inside_EventScript_15E91E: setwildbattle SPECIES_VOLTORB, 25, ITEM_NONE
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_VOLTORB_2_NEW_MAUVILLE (visible at a new game; cleared by []; set by ['NewMauville_Inside'])
+ RS
+  NewMauville_Inside: NewMauville_Inside_EventScript_15E93C: setwildbattle SPECIES_VOLTORB, 25, ITEM_NONE
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_VOLTORB_3_NEW_MAUVILLE (visible at a new game; cleared by []; set by ['NewMauville_Inside'])
+ E
+  NewMauville_Inside: NewMauville_Inside_EventScript_Voltorb1: setwildbattle SPECIES_VOLTORB, 25
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_NEW_MAUVILLE_VOLTORB_1 (visible at a new game; cleared by ['NewMauville_Inside']; set by [])
+ E
+  NewMauville_Inside: NewMauville_Inside_EventScript_Voltorb2: setwildbattle SPECIES_VOLTORB, 25
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_NEW_MAUVILLE_VOLTORB_2 (visible at a new game; cleared by ['NewMauville_Inside']; set by [])
+ E
+  NewMauville_Inside: NewMauville_Inside_EventScript_Voltorb3: setwildbattle SPECIES_VOLTORB, 25
+    object on NEW_MAUVILLE_INSIDE: ITEM_BALL, FLAG_HIDE_NEW_MAUVILLE_VOLTORB_3 (visible at a new game; cleared by ['NewMauville_Inside']; set by [])
+
+== SPECIES_WYNAUT
+ RS
+  LavaridgeTown: LavaridgeTown_EventScript_EggWoman: giveegg SPECIES_WYNAUT
+    checks before, in LavaridgeTown_EventScript_EggWoman: goto_if_set FLAG_RECEIVED_LAVARIDGE_EGG, LavaridgeTown_EventScript_ReceivedEgg; compare VAR_RESULT, NO; goto_if_eq LavaridgeTown_EventScript_DeclineEgg; getpartysize; compare VAR_RESULT, 6; goto_if_eq LavaridgeTown_EventScript_NoRoomForEgg
+    object on LAVARIDGE_TOWN: OLD_WOMAN_1, no hide flag
+ E
+  LavaridgeTown: LavaridgeTown_EventScript_EggWoman: giveegg SPECIES_WYNAUT
+    checks before, in LavaridgeTown_EventScript_EggWoman: goto_if_set FLAG_RECEIVED_LAVARIDGE_EGG, LavaridgeTown_EventScript_ReceivedEgg; goto_if_eq VAR_RESULT, NO, LavaridgeTown_EventScript_DeclineEgg; getpartysize; goto_if_eq VAR_RESULT, PARTY_SIZE, LavaridgeTown_EventScript_NoRoomForEgg
+    object on LAVARIDGE_TOWN: EXPERT_F, no hide flag
+
+== daycare egg (GiveEggFromDaycare)
+ RS
+  scripts/day_care.inc: Route117_EventScript_1B22B2: special GiveEggFromDaycare
+    reached from Route117_EventScript_1B2298: specialvar VAR_RESULT, CalculatePlayerPartyCount; compare VAR_RESULT, 6; goto_if_ne Route117_EventScript_1B22B2
+    reached from Route117_EventScript_1B2262: compare VAR_RESULT, YES; goto_if_eq Route117_EventScript_1B2298; compare VAR_RESULT, YES; goto_if_eq Route117_EventScript_1B2298
+    reached from Route117_EventScript_1B222D: specialvar VAR_RESULT, GetDaycareState; compare VAR_RESULT, 1; goto_if_eq Route117_EventScript_1B2262; compare VAR_RESULT, 2; goto_if_eq Route117_EventScript_1B22E7; compare VAR_RESULT, 3; goto_if_eq Route117_EventScript_1B22FE
+    object on ROUTE117: OLD_MAN_2, no hide flag
+ E
+  scripts/day_care.inc: Route117_EventScript_DaycareReceiveEgg: special GiveEggFromDaycare
+    reached from Route117_EventScript_DaycareAcceptEgg: specialvar VAR_RESULT, CalculatePlayerPartyCount; goto_if_ne VAR_RESULT, PARTY_SIZE, Route117_EventScript_DaycareReceiveEgg
+    reached from Route117_EventScript_DaycareEggWaiting: goto_if_eq VAR_RESULT, YES, Route117_EventScript_DaycareAcceptEgg; goto_if_eq VAR_RESULT, YES, Route117_EventScript_DaycareAcceptEgg
+    reached from Route117_EventScript_DaycareMan: specialvar VAR_RESULT, GetDaycareState; goto_if_eq VAR_RESULT, DAYCARE_EGG_WAITING, Route117_EventScript_DaycareEggWaiting; goto_if_eq VAR_RESULT, DAYCARE_ONE_MON, Route117_EventScript_CheckOnOneMon; goto_if_eq VAR_RESULT, DAYCARE_TWO_MONS, Route117_EventScript_CheckOnTwoMons
+    object on ROUTE117: OLD_MAN, no hide flag
+
+== in-game trade (CreateInGameTradePokemon)
+ RS
+  FortreeCity_House1: FortreeCity_House1_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in FortreeCity_House1_EventScript_Trader: goto_if_set FLAG_FORTREE_NPC_TRADE_COMPLETED, FortreeCity_House1_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; compare VAR_RESULT, NO; goto_if_eq FortreeCity_House1_EventScript_DeclineTrade; compare VAR_0x8004, 255; goto_if_eq FortreeCity_House1_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; compare VAR_RESULT, VAR_0x8009; goto_if_ne FortreeCity_House1_EventScript_NotRequestedMon
+    object on FORTREE_CITY_HOUSE1: WOMAN_1, no hide flag
+ RS
+  PacifidlogTown_House3: PacifidlogTown_House3_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in PacifidlogTown_House3_EventScript_Trader: goto_if_set FLAG_PACIFIDLOG_NPC_TRADE_COMPLETED, PacifidlogTown_House3_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; compare VAR_RESULT, NO; goto_if_eq PacifidlogTown_House3_EventScript_DeclineTrade; compare VAR_0x8004, 255; goto_if_eq PacifidlogTown_House3_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; compare VAR_RESULT, VAR_0x8009; goto_if_ne PacifidlogTown_House3_EventScript_NotRequestedMon
+    object on PACIFIDLOG_TOWN_HOUSE3: WOMAN_5, no hide flag
+ RS
+  RustboroCity_House1: RustboroCity_House1_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in RustboroCity_House1_EventScript_Trader: goto_if_set FLAG_RUSTBORO_NPC_TRADE_COMPLETED, RustboroCity_House1_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; compare VAR_RESULT, NO; goto_if_eq RustboroCity_House1_EventScript_DeclineTrade; compare VAR_0x8004, 255; goto_if_eq RustboroCity_House1_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; compare VAR_RESULT, VAR_0x8009; goto_if_ne RustboroCity_House1_EventScript_NotRequestedMon
+    object on RUSTBORO_CITY_HOUSE1: LITTLE_BOY_1, no hide flag
+ E
+  BattleFrontier_Lounge6: BattleFrontier_Lounge6_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in BattleFrontier_Lounge6_EventScript_Trader: goto_if_set FLAG_BATTLE_FRONTIER_TRADE_DONE, BattleFrontier_Lounge6_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; goto_if_eq VAR_RESULT, NO, BattleFrontier_Lounge6_EventScript_DeclineTrade; goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, BattleFrontier_Lounge6_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; goto_if_ne VAR_RESULT, VAR_0x8009, BattleFrontier_Lounge6_EventScript_NotRequestedMon
+    object on BATTLE_FRONTIER_LOUNGE6: BEAUTY, no hide flag
+ E
+  FortreeCity_House1: FortreeCity_House1_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in FortreeCity_House1_EventScript_Trader: goto_if_set FLAG_FORTREE_NPC_TRADE_COMPLETED, FortreeCity_House1_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; goto_if_eq VAR_RESULT, NO, FortreeCity_House1_EventScript_DeclineTrade; goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, FortreeCity_House1_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; goto_if_ne VAR_RESULT, VAR_0x8009, FortreeCity_House1_EventScript_NotRequestedMon
+    object on FORTREE_CITY_HOUSE1: NINJA_BOY, no hide flag
+ E
+  PacifidlogTown_House3: PacifidlogTown_House3_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in PacifidlogTown_House3_EventScript_Trader: goto_if_set FLAG_PACIFIDLOG_NPC_TRADE_COMPLETED, PacifidlogTown_House3_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; goto_if_eq VAR_RESULT, NO, PacifidlogTown_House3_EventScript_DeclineTrade; goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, PacifidlogTown_House3_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; goto_if_ne VAR_RESULT, VAR_0x8009, PacifidlogTown_House3_EventScript_NotRequestedMon
+    object on PACIFIDLOG_TOWN_HOUSE3: MAN_3, no hide flag
+ E
+  RustboroCity_House1: RustboroCity_House1_EventScript_Trader: special CreateInGameTradePokemon
+    checks before, in RustboroCity_House1_EventScript_Trader: goto_if_set FLAG_RUSTBORO_NPC_TRADE_COMPLETED, RustboroCity_House1_EventScript_TradeCompleted; specialvar VAR_RESULT, GetInGameTradeSpeciesInfo; goto_if_eq VAR_RESULT, NO, RustboroCity_House1_EventScript_DeclineTrade; goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, RustboroCity_House1_EventScript_DeclineTrade; specialvar VAR_RESULT, GetTradeSpecies; goto_if_ne VAR_RESULT, VAR_0x8009, RustboroCity_House1_EventScript_NotRequestedMon
+    object on RUSTBORO_CITY_HOUSE1: CAMPER, no hide flag
+
+== roamer (InitRoamer)
+ RS
+  scripts/tv.inc: EventScript_1A6F0B: special InitRoamer
+    reached from Event_TV: specialvar VAR_RESULT, CheckForBigMovieOrEmergencyNewsOnTV; compare VAR_RESULT, 2; goto_if_eq EventScript_1A6F01; compare VAR_RESULT, 1; goto_if_eq EventScript_1A6F0B; goto_if_unset FLAG_SYS_TV_START, EventScript_1A6EF1; goto_if_set FLAG_SYS_TV_WATCH, EventScript_1A6EF1; specialvar VAR_RESULT, IsTVShowInSearchOfTrainersAiring; compare VAR_RESULT, 1; goto_if_eq EventScript_1A6F66
+ E
+  scripts/players_house.inc: PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV: special InitRoamer
+    checks before, in PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV: call_if_eq VAR_RESULT, MALE, PlayersHouse_1F_EventScript_SetUpObjectEventVarsMale; call_if_eq VAR_RESULT, FEMALE, PlayersHouse_1F_EventScript_SetUpObjectEventVarsFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_PlayerEnterRoomMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_PlayerEnterRoomFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_DadApproachPlayerMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_DadApproachPlayerFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomApproachDadMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomApproachDadFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_DadExitsMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_DadExitsFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomApproachPlayerMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomApproachPlayerFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomNoticesLatiBroadcastMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomNoticesLatiBroadcastFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_PlayerApproachTVForLatiMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_PlayerApproachTVForLatiFemale; call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomApproachPlayerAfterTVMale; call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomApproachPlayerAfterTVFemale
+ E
+  scripts/tv.inc: EventScript_PlayersHouseLatiNewsFlash: special InitRoamer
+    reached from EventScript_TV: specialvar VAR_RESULT, CheckForPlayersHouseNews; goto_if_eq VAR_RESULT, PLAYERS_HOUSE_TV_MOVIE, EventScript_PlayersHouseMovie; goto_if_eq VAR_RESULT, PLAYERS_HOUSE_TV_LATI, EventScript_PlayersHouseLatiNewsFlash; goto_if_unset FLAG_SYS_TV_START, EventScript_MomDadMightLikeThis1; goto_if_set FLAG_SYS_TV_WATCH, EventScript_MomDadMightLikeThis1; specialvar VAR_RESULT, IsGabbyAndTyShowOnTheAir; goto_if_eq VAR_RESULT, TRUE, EventScript_DoInSearchOfTrainers

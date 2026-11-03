@@ -1,21 +1,24 @@
-"""Static lists the front end needs (GET /catalog): species and moves for autocomplete, the
-battles, badges and types for the run-state form, and the places a Nuzlocke encounter can be
-used up in. Vanilla data; built once per process."""
+"""Static lists the front end needs (GET /catalog?game=...): species and moves for autocomplete,
+the battles, badges and types for the run-state form, and the places a Nuzlocke encounter can be
+used up in. Vanilla data for one game; built once per process per game."""
 
 from functools import cache
 
 from agent.db import connect_readonly
-from agent.progression import load
-from agent.state import BADGES
+from agent.games import DEFAULT, GAMES
+from agent.games import get as get_game
+from agent.progression import load_game
+from agent.state import BADGE_GYMS
 from agent.tools.outlook import TYPES
 
 WILD = ("walk", "surf", "old-rod", "good-rod", "super-rod", "rock-smash", "seaweed")
 
 
 @cache
-def catalog() -> dict:
-    con = connect_readonly()
-    prog = load()
+def catalog(game_id: str = DEFAULT) -> dict:
+    game = get_game(game_id)
+    con = connect_readonly(game)
+    prog = load_game(game)
     species = [{"id": i, "name": n, "types": [t for t in (t1, t2) if t]} for i, n, t1, t2 in con.execute(
         "SELECT identifier, name, type1, type2 FROM species ORDER BY species_id").fetchall()]
     moves = [{"id": i, "name": n} for i, n in con.execute("SELECT identifier, name FROM moves ORDER BY name").fetchall()]
@@ -32,10 +35,12 @@ def catalog() -> dict:
     )
     labels = {b.id: b.label for b in prog.battles}
     return {
+        "game": game.id,
+        "games": [{"id": g.id, "name": g.name} for g in GAMES.values()],
         "species": species,
         "moves": moves,
         "types": TYPES,
-        "badges": [{"id": badge, "gym": gym, "label": labels[gym]} for badge, gym in BADGES.items()],
+        "badges": [{"id": badge, "gym": gym, "label": labels[gym]} for badge, gym in BADGE_GYMS[game.id].items()],
         "battles": [{"id": b.id, "label": b.label, "order": b.order, "optional": b.optional} for b in prog.battles],
         "places": places,
     }

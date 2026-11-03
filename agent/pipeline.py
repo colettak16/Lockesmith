@@ -13,12 +13,14 @@ import logging
 from pydantic import ValidationError
 
 from agent import observability, overlay, runtime
-from agent.brief import state_brief
+from agent.brief import GAME_LINES, GAME_SOURCE, state_brief
 from agent.chart import coverage_chart
 from agent.clarifier import make_clarifier, missing_question
 from agent.context import RequestContext, shared_index
+from agent.games import get as get_game
 from agent.lead import make_lead
-from agent.randomizer_log import load_overlay, parse_log
+from agent.progression import load_game
+from agent.randomizer_log import detect_game, load_overlay, parse_log
 from agent.schemas import ClarifierDecision, LeadDraft, StateUpdate
 from agent.session import SESSIONS, Session, apply_rules
 from agent.state import RunState
@@ -33,11 +35,14 @@ HISTORY_TURNS = 3
 
 def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunState:
     data = state.model_dump()
+    if getattr(u, "game", None) and u.game != state.game:
+        # A different game: progress and party were for the other one unless restated now.
+        data.update(game=u.game, last_battle=None)
     for key in ("starter", "badges", "rival"):
         if getattr(u, key) is not None:
             data[key] = getattr(u, key)
     if u.last_battle:
-        ids = {b.id for b in ctx.prog.battles}
+        ids = {b.id for b in load_game(get_game(data["game"])).battles}
         if u.last_battle in ids:
             data["last_battle"] = u.last_battle
     if u.party is not None:
@@ -146,6 +151,10 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
 
     session.state = apply_state(session.state, decision.state_updates, ctx)
     session.state = session.state.model_copy(update={"ruleset": apply_rules(session.state.ruleset, decision.rule_updates)})
+    if session.sync_game():  # the player said which game they're playing ("I'm on Sapphire")
+        ctx.state = session.state
+        ctx.randomizer = session.randomizer
+        ctx.refresh_game(session.con)
     session.learned_rules.append(decision.rule_updates)
     for name in decision.reject_species:
         match = ctx.index.resolve(name, "species", cutoff=80)
@@ -160,6 +169,8 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
         return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing),
                 "plan": None, "intent": "clarify"}
 
+    # The game line of the brief is a source in its own right: rules questions can be answered from it
+    ctx.ledger.add(GAME_SOURCE, GAME_LINES[ctx.state.game])
     lead_input = (
         f"PLAYER QUESTION\n{message}\n\nINTENT: {decision.intent}\nGATEKEEPER BRIEF: {decision.research_brief}\n\n"
         f"RUN STATE\n{state_brief(ctx)}"
@@ -220,9 +231,10 @@ def apply_form_state(session: Session, run_state: RunState) -> None:
     state = run_state
     for u in session.learned_rules:
         state = state.model_copy(update={"ruleset": apply_rules(state.ruleset, u)})
-    if session.randomizer:
+    if session.randomizer and state.game == session.con_game:
         state = state.model_copy(update={"randomizer_log_id": session.randomizer["log_id"]})
     session.state = state
+    session.sync_game()
 
 
 def clear_log(session_id: str) -> bool:
@@ -239,7 +251,11 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
     """Parse a UPR ZX log into the session: overlay tables, then views that shadow the vanilla
     tables it changed (agent/overlay.py). Replaces any log the session had."""
     session = SESSIONS.get(session_id)
-    log = parse_log(text, session.con, shared_index())
+    game = detect_game(text)
+    if game and game != session.state.game:  # a Sapphire log makes this a Sapphire run
+        session.state = session.state.model_copy(update={"game": game, "last_battle": None})
+        session.sync_game()
+    log = parse_log(text, session.con, shared_index(session.con_game))
     if not (log.sections or log.statuses):
         raise ValueError("that doesn't look like a Universal Pokemon Randomizer log (no --Section-- headers)")
     log_id = (name or "log").strip()[:80] or "log"
@@ -247,7 +263,7 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
     overlay.uninstall(session.con)
     session.randomizer = overlay.summary(log, log_id, overlay.install(session.con, log, log_id))
     session.state = session.state.model_copy(update={"randomizer_log_id": log_id})
-    return {"session_id": session.id, **session.randomizer}
+    return {"session_id": session.id, "game": session.state.game, **session.randomizer}
 
 
 def trace_tags(session: Session) -> list[str]:

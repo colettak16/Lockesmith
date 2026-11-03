@@ -1,28 +1,28 @@
 """DuckDB connections for the agent.
 
-The shipped data/emerald.duckdb is opened read-only. A session connection is an
-in-memory database with the shipped one attached as `base` and on the search
-path, so per-session tables (randomizer overlays) live in memory while plain
-table names still resolve to the vanilla data.
+Each game's shipped database (data/emerald.duckdb, ruby.duckdb, sapphire.duckdb) is
+opened read-only. A session connection is an in-memory database with the game's one
+attached as `base` and on the search path, so per-session tables (randomizer
+overlays) live in memory while plain table names still resolve to the vanilla data.
 """
-
-from pathlib import Path
 
 import duckdb
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "emerald.duckdb"
+from agent.games import EMERALD, Game
+
+DB_PATH = EMERALD.db_path
 
 
-def connect_readonly() -> duckdb.DuckDBPyConnection:
-    return duckdb.connect(str(DB_PATH), read_only=True)
+def connect_readonly(game: Game = EMERALD) -> duckdb.DuckDBPyConnection:
+    return duckdb.connect(str(game.db_path), read_only=True)
 
 
 SEARCH_PATH = "SET search_path = 'memory.main,base.main'"
 
 
-def connect_session() -> duckdb.DuckDBPyConnection:
+def connect_session(game: Game = EMERALD) -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
-    con.execute(f"ATTACH '{DB_PATH.as_posix()}' AS base (READ_ONLY)")
+    con.execute(f"ATTACH '{game.db_path.as_posix()}' AS base (READ_ONLY)")
     con.execute(SEARCH_PATH)
     return con
 
