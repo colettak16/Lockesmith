@@ -37,10 +37,10 @@ FRLG_FIELD_ABILITIES = (
 FRLG_COMMON = (
     "Region: Kanto. The rival picks the starter strong against yours, and their team follows it all game; the "
     "rival is the Champion. Team Rocket's boss Giovanni is fought at the Rocket Hideout and Silph Co. and is the "
-    "8th gym leader (Viridian). Before the National Dex, which comes after the Hall of Fame, no Pokémon can evolve "
+    "8th gym leader (Viridian). Before the National Dex (postgame: Oak gives it after the Hall of Fame once you've caught 60 species and visited One Island), no Pokémon can evolve "
     "into a species past #151 (no Crobat, Bellossom, Politoed, Slowking, Steelix, Scizor, Kingdra, Blissey, "
     "Porygon2), and Espeon and Umbreon never evolve (no clock). The Sevii Islands 1-3 trip Bill offers after Blaine "
-    "is optional, Islands 4-7 are postgame, and the PC is off on the islands. Move tutors teach once each. Wild "
+    "is optional (the PC is off from the first meeting on One Island until you reach Three Island), Islands 4-7 are postgame. Move tutors teach once each. Wild "
     "Pokémon differ between FireRed and LeafGreen: trust the tools. " + FRLG_FIELD_ABILITIES
 )
 GAME_SOURCE = "rules:game"  # the line below, citable: the pipeline puts it in every request's ledger

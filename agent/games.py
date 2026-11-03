@@ -67,7 +67,8 @@ class Game:
     cast: Cast
     region: str = "hoenn"
     # FireRed/LeafGreen cancel any evolution into a species past #151 (Mew) until the National Dex,
-    # which comes after the Hall of Fame (evolution_scene.c, party_menu.c MonCanEvolve)
+    # which Oak gives after the Hall of Fame once 60 species are caught and One Island visited
+    # (evolution_scene.c, party_menu.c MonCanEvolve; PalletTown_ProfessorOaksLab)
     evolution_limit: int | None = None
 
     @property

@@ -511,7 +511,7 @@ The user wants LockeSmith to grow past the class, so FireRed/LeafGreen went in a
 The databases match the decomp on every cross-check: species, moves, type chart, learnsets, evolutions, every wild table (`tests/test_frlg_facts.py`). Emerald, Ruby and Sapphire rebuild row-for-row identical, apart from a new empty `move_tutors.requires` column.
 
 **What FireRed/LeafGreen add, each read from the code:**
-- **National Dex gate.** Until the National Dex, which comes after the Hall of Fame, any evolution into a species past #151 is cancelled: level-up, friendship and trade (`evolution_scene.c`). The party menu also refuses stones that would do it (`MonCanEvolve`). Espeon and Umbreon never evolve, since the day/night friendship cases are commented out.
+- **National Dex gate.** Until the National Dex (Oak gives it after the Hall of Fame once you've caught 60 species and visited One Island), any evolution into a species past #151 is cancelled: level-up, friendship and trade (`evolution_scene.c`). The party menu also refuses stones that would do it (`MonCanEvolve`). Espeon and Umbreon never evolve, since the day/night friendship cases are commented out.
   - Games carry this as `evolution_limit`.
   - `assess_candidates` stops evolution lines there.
   - The Verifier fails a pick that needs a gated evolution.
@@ -546,3 +546,23 @@ Every encounter area is either opened by a step or marked never reachable.
 **Walkthrough corpus.** Bulbapedia's 20-part FireRed/LeafGreen walkthrough (360 passages). Its version marks render as "(FireRed)" and "(LeafGreen)".
 
 **Review.** `docs/review_packet_frlg.md` goes through Codex (ChatGPT) rounds, run from an empty folder with decomp excerpts in the packet. Every claim gets checked in the decomp before anything changes.
+
+**Review round 1** (`docs/review_frlg_round1_codex.md`). Codex confirmed 20 of the 21 claims. Each correction below was checked at the pinned commit before it was applied:
+- **PC storage.** The PC comes back at Three Isle Port (`ThreeIsland_Port` clears `FLAG_SYS_PC_STORAGE_DISABLED`), not in the postgame.
+- **National Dex.** Oak gives it only once you've caught 60 species and visited One Island (`PalletTown_ProfessorOaksLab`).
+- **New steps:**
+  - Mt. Moon's Super Nerd Miguel.
+  - Pokémon Tower 7F's three Rockets. Rescuing Mr. Fuji gives the Poké Flute and opens Silph Co.'s door (`FLAG_RESCUED_MR_FUJI` in `SaffronCity`).
+  - Three Island's bikers and Cue Ball Paxton, before Bond Bridge and Berry Forest.
+- **Earlier access:**
+  - Cerulean's exits open with Bill's S.S. Ticket (`FLAG_GOT_SS_TICKET`), so Route 5 south, Vermilion and the S.S. Anne's dock come before Misty.
+  - Cut opens Route 16's north branch, Celadon's Tea, Saffron's Fighting Dojo and Route 12's north-end fishing before Surge.
+  - Route 19's shore fishing comes before Koga.
+  - Cinnabar's lab, the Card Key and the Secret Key come with Surf.
+- **Postgame.** Three Isle Port's grass is behind the Dunsparce Tunnel, dug out only with the National Dex.
+- **Rainbow Pass.** It comes from Celio for the Ruby, which needs the National Dex.
+- **Tri-Pass.** It stays a key item after the Sevii steps.
+
+Not applied:
+- **Route 23 mid-game.** Its badge guards let you fish and surf part of it before eight badges. That's not modeled; the whole route opens with the League.
+- **Mt. Ember's area names.** Codex would also compare levels and slots, not only species. It's left as a `review:` note.
