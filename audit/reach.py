@@ -9,6 +9,9 @@ water and fishable water are reached. Prints the maps where any entrance differs
 games. Story NPCs are left to audit.chokepoints; Cut trees, Rock Smash rocks and Strength
 boulders need their move.
 
+Each ability set carries one bike, Mach or Acro, since you can't swap bikes inside a map; the
+report ends with the entrances where the two bikes reach different things.
+
 Map data is the same for Ruby and Sapphire (pokeruby has one set of map.json files), so this
 runs once for both.
 """
@@ -23,13 +26,11 @@ from pathlib import Path
 
 from audit.sources import tree
 
-CAPS = {
-    "none": frozenset(),
-    "cut": frozenset({"cut"}),
-    "+smash": frozenset({"cut", "rock-smash", "bike"}),
-    "+strength": frozenset({"cut", "rock-smash", "bike", "strength"}),
-    "+surf": frozenset({"cut", "rock-smash", "bike", "strength", "surf"}),
-    "+waterfall": frozenset({"cut", "rock-smash", "bike", "strength", "surf", "waterfall"}),
+# Ability sets, each with one bike: the player can't switch bikes inside a map (Rydel's shop is in Mauville).
+_STEPS = {"+smash": {"cut", "rock-smash"}, "+strength": {"cut", "rock-smash", "strength"},
+          "+surf": {"cut", "rock-smash", "strength", "surf"}, "+waterfall": {"cut", "rock-smash", "strength", "surf", "waterfall"}}
+CAPS = {"none": frozenset(), "cut": frozenset({"cut"})} | {
+    f"{step}/{bike}": frozenset(moves | {bike}) for step, moves in _STEPS.items() for bike in ("mach", "acro")
 }
 OBSTACLES = {"OBJ_EVENT_GFX_CUTTABLE_TREE": "cut", "OBJ_EVENT_GFX_BREAKABLE_ROCK": "rock-smash",
              "OBJ_EVENT_GFX_PUSHABLE_BOULDER": "strength"}
@@ -112,7 +113,48 @@ def summarize(g: Game, map_id: str, m: dict | None = None, caps: dict = CAPS) ->
     ledge = {mb["MB_JUMP_EAST"]: (1, 0), mb["MB_JUMP_WEST"]: (-1, 0), mb["MB_JUMP_NORTH"]: (0, -1), mb["MB_JUMP_SOUTH"]: (0, 1)}
     waterfall = mb["MB_WATERFALL"]
     door = mb["MB_ANIMATED_DOOR"]
-    bike_mbs = {v for k, v in mb.items() if any(s in k for s in ("MUDDY_SLOPE", "CRACKED_FLOOR", "RAIL", "BUMPY_SLOPE"))}
+    # Bike tiles (bike.c, field_player_avatar.c, field_tasks.c; the same in both games):
+    # - muddy slope: climbing north needs the Mach Bike at top speed; any other move slides you south
+    #   (ForcedMovement_MuddySlope), so entering from the side or above is fine but you leave southward
+    # - cracked floor: only the Mach Bike at top speed crosses before it breaks (CrackedFloorPerStepCallback);
+    #   anyone slower falls to the floor below, and a hole drops you. Falls aren't counted as exits
+    # - bumpy slope: Acro Bike only (COLLISION_WHEELIE_HOP, crossed in a wheelie)
+    # - long rails: either bike rides onto them (COLLISION_*_RAIL >= COLLISION_VERTICAL_RAIL isn't a
+    #   collision for bikes); walking can't. On a rail, riding only goes along it (CanBikeFaceDirOnMetatile)
+    # - single-tile (isolated) rails: no ride lands on one; only the Acro Bike's side jump does
+    # - the side jump (AcroBikeTransition_SideJump, Acro only) moves one tile in any direction, off a rail
+    #   too, onto a plain tile or a rail lying across the jump (WillPlayerCollideWithCollision), never onto
+    #   a bumpy slope or a rail lying along it
+    # Elevation is checked before any of this, so a rail at another height is a wall.
+    muddy, cracked, bumpy = mb["MB_MUDDY_SLOPE"], mb["MB_CRACKED_FLOOR"], mb["MB_BUMPY_SLOPE"]
+    hole = mb.get("MB_CRACKED_FLOOR_HOLE")
+    vertical = {mb["MB_VERTICAL_RAIL"], mb["MB_ISOLATED_VERTICAL_RAIL"]}
+    horizontal = {mb["MB_HORIZONTAL_RAIL"], mb["MB_ISOLATED_HORIZONTAL_RAIL"]}
+    isolated = {mb["MB_ISOLATED_VERTICAL_RAIL"], mb["MB_ISOLATED_HORIZONTAL_RAIL"]}
+    rail_axis = {**{v: "v" for v in vertical}, **{h: "h" for h in horizontal}}
+
+    def bike_ok(b, nb, dx, dy, caps):
+        """May the player step from a tile with behavior b onto one with nb, in direction (dx, dy)?"""
+        mach, acro = "mach" in caps, "acro" in caps
+        if b == muddy and not (dy == 1 or dy == -1 and mach):
+            return False  # on a slope you slide south unless climbing it on the Mach Bike
+        if nb == muddy and dy == -1 and not mach:
+            return False
+        if nb == hole or nb == cracked and not mach:
+            return False
+        move = "v" if dy else "h"
+        if rail_axis.get(b, move) == move:  # riding (or walking): on a rail, only along it
+            if nb == bumpy:
+                return acro
+            if nb in isolated:
+                pass  # only a side jump lands here
+            elif nb in rail_axis:
+                if mach or acro:
+                    return True
+            else:
+                return True
+        # the Acro Bike's side jump
+        return acro and nb != bumpy and rail_axis.get(nb, None) != move
     surfable = lambda b: bool(g.flags.get(b, 0) & 2)  # noqa: E731
     land_enc = lambda b: bool(g.flags.get(b, 0) & 1) and not surfable(b)  # noqa: E731
     obstacles = {(o["x"], o["y"]): ("never" if o["graphics_id"] == WALL else OBSTACLES[o["graphics_id"]])
@@ -188,7 +230,7 @@ def summarize(g: Game, map_id: str, m: dict | None = None, caps: dict = CAPS) ->
                     continue
                 if mismatch(elev, nx, ny):
                     continue
-                if nb in bike_mbs and "bike" not in caps:
+                if not bike_ok(b, nb, dx, dy, caps):
                     continue
                 q.append((nx, ny, keep, False))
         return frozenset(exits), enc, water, fish
@@ -238,9 +280,33 @@ def report(rs: Game, em: Game, ids: list[str]) -> list[str]:
     return out
 
 
+def bike_gates(g: Game, ids: list[str]) -> list[str]:
+    """Entrances where the Mach and Acro Bike passes (with every other field move) reach different things."""
+    out = []
+    for mid in ids:
+        try:
+            res = summarize(g, mid)
+        except Exception:  # noqa: BLE001 (reported by report())
+            continue
+        for (ent, cname), a in sorted(res.items(), key=str):
+            if cname != "+waterfall/mach":
+                continue
+            b = res[(ent, "+waterfall/acro")]
+            if a != b:
+                name = lambda e: e[1].removeprefix("MAP_")  # noqa: E731
+                out.append(f"  {mid[4:]:30} from {ent[0]} {name(ent):30} Mach only: {sorted(map(name, a[0] - b[0]))}  "
+                           f"Acro only: {sorted(map(name, b[0] - a[0]))}  (grass, surf, fish: Mach {a[1:]}, Acro {b[1:]})")
+    return out
+
+
 def main(argv: list[str]) -> list[str]:
     rs, em = Game(tree("pokeruby"), True), Game(tree("pokeemerald"), False)
-    return report(rs, em, argv or sorted(set(rs.maps) & set(em.maps)))
+    ids = argv or sorted(set(rs.maps) & set(em.maps))
+    out = report(rs, em, ids)
+    for name, g in (("Ruby/Sapphire", rs), ("Emerald", em)):
+        out += ["", f"== Where the bike matters in {name} (every field move, Mach Bike vs Acro Bike)",
+                *bike_gates(g, argv or sorted(g.maps))]
+    return out
 
 
 if __name__ == "__main__":

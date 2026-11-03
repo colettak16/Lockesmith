@@ -2,8 +2,13 @@
 
     uv run python -m audit.encounter_scripts RUBY|SAPPHIRE
 
-Finds every `setwildbattle`, `givemon`, `giveegg` and `special InitRoamer` outside the debug
-scripts. For each one it walks back up the labels that lead to it (up to four levels of
+Finds every `setwildbattle`, `givemon` and `giveegg` outside the debug scripts, and every call
+of the specials that create a Pokémon or start a wild encounter from a script: InitRoamer (the
+roamer), CreateInGameTradePokemon (in-game trades), GiveEggFromDaycare (the daycare egg) and
+(ScrSpecial_)RockSmashWildEncounter (Rock Smash). The specials that start the legendary and
+Regi battles always follow a `setwildbattle`, so they're covered by it. Encounters that start
+in C without any script (walking, surfing and fishing in the wild tables, and Feebas) aren't
+here; audit.engine compares that code. For each one it walks back up the labels that lead to it (up to four levels of
 goto/call within the same file) and prints the checks on the way: flags, variables, items,
 party size and the battle or gift outcome. When a label in that chain is an object's script,
 it also prints the object's hide flag and whether a new game starts with it set. Prints both
@@ -18,13 +23,17 @@ from collections import defaultdict
 from audit.maps import VERSIONS, flag_writers, labels, load_maps, load_scripts
 from audit.sources import tree
 
-START = re.compile(r"^\s*(setwildbattle|givemon|giveegg)\s+(SPECIES_\w+)|^\s*special\s+(InitRoamer)\b")
+START = re.compile(r"^\s*(setwildbattle|givemon|giveegg)\s+(SPECIES_\w+)|^\s*special\s+"
+                   r"(InitRoamer|CreateInGameTradePokemon|GiveEggFromDaycare|ScrSpecial_RockSmashWildEncounter|RockSmashWildEncounter)\b")
 GATE = re.compile(r"^(checkflag|checkitem|checkpartymove|getpartysize|compare|specialvar|"
                   r"(?:goto|call)_if_(?:set|unset|eq|ne|lt|ge|le|gt))\b")
 JUMP = re.compile(r"^(?:goto|call)(?:_if_\w+)?\s+(?:.*,\s*)?(\w+)\s*$")
 SPECIES_ALIASES = {"SPECIES_GROUDON_OR_KYOGRE": "SPECIES_GROUDON/KYOGRE", "SPECIES_GROUDON": "SPECIES_GROUDON/KYOGRE",
                    "SPECIES_KYOGRE": "SPECIES_GROUDON/KYOGRE", "SPECIES_LATIAS_OR_LATIOS": "SPECIES_LATIAS/LATIOS",
-                   "InitRoamer": "roamer (InitRoamer)"}
+                   "InitRoamer": "roamer (InitRoamer)", "CreateInGameTradePokemon": "in-game trade (CreateInGameTradePokemon)",
+                   "GiveEggFromDaycare": "daycare egg (GiveEggFromDaycare)",
+                   "ScrSpecial_RockSmashWildEncounter": "Rock Smash encounter (RockSmashWildEncounter)",
+                   "RockSmashWildEncounter": "Rock Smash encounter (RockSmashWildEncounter)"}
 
 
 def callers(body_of: dict[str, list[str]]) -> dict[str, set[str]]:
@@ -83,12 +92,14 @@ def scan(root, version) -> dict[str, list[str]]:
                             chain.append(f"    reached from {c}" + (f": {'; '.join(g)}" if g else ""))
                     frontier = nxt
                 entry += chain[:12]
-                for lab in seen:
+                objects = []
+                for lab in sorted(seen):
                     for mapname, gfx, flag in objs.get(lab, []):
                         state = "hidden at a new game" if flag in init else "visible at a new game"
                         flag_note = (f"{flag} ({state}; cleared by {sorted(clearers.get(flag, []))}; set by {sorted(setters.get(flag, []))[:4]})"
                                      if flag.startswith("FLAG_") else "no hide flag")
-                        entry.append(f"    object on {mapname}: {gfx}, {flag_note}")
+                        objects.append(f"    object on {mapname}: {gfx}, {flag_note}")
+                entry += objects[:6] + ([f"    ... and {len(objects) - 6} more objects"] if len(objects) > 6 else [])
                 found[species].append("\n".join(entry))
     return found
 

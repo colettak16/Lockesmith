@@ -16,13 +16,13 @@ The reports are committed in [docs/audit/](../docs/audit/), so you can read the 
 
 | Module | Report | Packet | What it compares |
 |---|---|---|---|
-| `reach.py` | `reach.txt` | V-01, V-06 | Per-map reachability. For every shared map, every entrance and six sets of field abilities, a flood fill under the engine's movement rules: ledges, elevation, Surf start and stop, doors, waterfalls and bike tiles. It records the exits, walkable encounter tiles, water and fishing reached. Lists the maps where any entrance differs; the result is the 9 maps in V-06. |
+| `reach.py` | `reach.txt` | V-01, V-06 | Per-map reachability. For every shared map, every entrance and each set of field moves (the ones with a bike run once with the Mach Bike and once with the Acro Bike), a flood fill under the engine's movement rules: ledges, elevation, Surf start and stop, doors, waterfalls, and each bike's tiles (muddy slopes, cracked floors, bumpy slopes, rails, the Acro side jump). It records the exits, walkable encounter tiles, water and fishing reached. Lists the maps where any entrance differs (the 9 in V-06), then where the two bikes reach different things in each game. |
 | `layouts.py` | `layouts.txt` | V-06 | Which shared maps have any different blocks (127 of 348), before reachability decides whether a difference matters. |
 | `chokepoints.py` | `chokepoints_{ruby,sapphire}.txt` | V-02, V-07 | Walls off each object visible at a new game, one hide flag at a time. It reports the ones whose removal costs some entrance an exit, encounters or water, and which scripts remove them in each game. Result: 14 groups in Ruby/Sapphire, 20 in Emerald. |
 | `story_gates.py` | `story_gates_{ruby,sapphire}.txt` | V-02 (the rest), V-03, V-08 | Blockers hidden by `setflag` that stand on the same tile in both games, and whether their removing scripts live in the same place: 540, of which 517 do, and the other 23 are Mt. Chimney's scene and Cozmo. Also lists step triggers on a story variable that only one game has. |
 | `map_changes.py` | `map_changes_{ruby,sapphire}.txt` | V-04, V-09 | Every conditional branch in a map's scripts, and what its target changes: tiles, layout, an NPC's permanent position, or warps. It reads both branch syntaxes (pokeruby's `compare` plus a one-argument `goto_if_eq`). |
-| `engine.py` | `engine.txt` | V-10, V-11 | Metatile behavior numbering and tile bits, the `MetatileBehavior_Is*` predicates, map headers, bike/Escape Rope/running permissions, heal locations, abilities that act outside battle, and wild-encounter functions that only one game has. |
-| `encounter_scripts.py` | `encounter_scripts_{ruby,sapphire}.txt` | Q-10, SE-10, E-10 | Every `setwildbattle`, `givemon`, `giveegg` and `InitRoamer`, with the checks on the way to it and the object's hide flag, side by side per species. This one is for reading: flag names differ between the decomps. |
+| `engine.py` | `engine.txt` | V-10, V-11 | Metatile behavior numbering and tile bits, the `MetatileBehavior_Is*` predicates, map headers, bike/Escape Rope/running permissions, heal locations, abilities that act outside battle (with Pickup's item table and whether it depends on level), and wild-encounter functions that only one game has. |
+| `encounter_scripts.py` | `encounter_scripts_{ruby,sapphire}.txt` | Q-10, SE-10, E-10 | Every `setwildbattle`, `givemon` and `giveegg`, and the specials that create a Pokémon or start an encounter from a script (the roamer, in-game trades, the daycare egg, Rock Smash). Each comes with the checks on the way to it and the object's hide flag, side by side per species. This one is for reading: flag names differ between the decomps. Encounters that start in C with no script (the wild tables, fishing, Feebas) are left to `engine.py`. |
 | `core_data.py` | `core_data.txt` | section 2 (C) | Species data, moves, learnsets, TM/HM compatibility, egg moves, evolutions, the type chart and the encounter slot rates. Most of the differences it prints are renamed constants. |
 
 `python -m audit` also checks V-13: the four version-dependent reports are identical for Ruby and Sapphire.
@@ -37,4 +37,6 @@ The reports are committed in [docs/audit/](../docs/audit/), so you can read the 
   - Arrow warps count in any direction.
   - Rotating gates and script-changed tiles are covered by `map_changes.py` and the engine reading, not by the flood fill.
   - `map_changes.py` follows each branch one label deep.
+  - Each map is checked on its own: an edge entrance starts from every open tile on that edge, so a gate in the neighbouring map shows up on that map, not this one.
+  - Falling through cracked floors and holes isn't counted as an exit.
   - Nothing was run in an emulator.

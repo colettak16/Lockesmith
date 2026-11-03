@@ -16,7 +16,7 @@ tm/hm compat: ruby 412 emerald 412 differ 124: [('SPECIES_AGGRON', ['SOLARBEAM']
 egg moves: ruby 166 emerald 166 differ 0: []; only ruby [] only emerald []
 evolutions: ruby 172 emerald 172 differ 0: []
 type chart: ruby 110 entries, emerald 112 entries, identical in order: False
-  set diff: {('TYPE_FORESIGHT', 'TYPE_FORESIGHT', '0'), ('TYPE_ENDTABLE', 'TYPE_ENDTABLE', '0')}
+  set diff: [('TYPE_ENDTABLE', 'TYPE_ENDTABLE', '0'), ('TYPE_FORESIGHT', 'TYPE_FORESIGHT', '0')]
 slot rates equal: True
   ruby land_mons ([20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1], None)
   ruby water_mons ([60, 30, 5, 4, 1], None)

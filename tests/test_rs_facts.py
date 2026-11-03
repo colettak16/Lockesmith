@@ -120,9 +120,12 @@ def test_rayquaza_is_postgame(db):
     assert rows(db, "SELECT conditions FROM encounters e JOIN species s USING (species_id) WHERE s.identifier = 'rayquaza'") == [(["sky-pillar-postgame"],)]
 
 
-def test_roamer_rows_share_the_hall_of_fame_condition(db, game):
+def test_roamer_needs_the_hall_of_fame_and_the_tv_report(db, game):
+    # E-10: the Hall of Fame only turns the news on; checking the home TV starts the roamer
     got = rows(db, "SELECT DISTINCT s.identifier, e.conditions FROM encounters e JOIN species s USING (species_id) WHERE e.method LIKE 'roaming-%'")
-    assert got == [(ROAMER[game.id], ["story-progress-hall-of-fame"])]
+    assert got == [(ROAMER[game.id], ["story-progress-hall-of-fame", "lati-tv-report"])]
+    (desc,) = db.execute("SELECT description FROM rom_conditions WHERE condition = 'lati-tv-report'").fetchone()
+    assert "check the TV" in desc and "InitRoamer" in desc
 
 
 def test_regi_puzzles_are_ruby_sapphire_ones(db):

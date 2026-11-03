@@ -123,6 +123,7 @@ def available_rows(ctx: RequestContext, b, target: str | None = None, wanted: se
             continue
         r["condition_note"] = needs[1] if needs else None
         r["missable"] = ctx.prog.missable_reason(b.id, r["location"], r["area"], r["method"])
+        r["needs_events"] = [f"{e['id']}: {e['opens']}" for e in ctx.prog.events_needed(b.id, r["location"], r["area"], r["method"])]
         out.append(r)
     return out, blocked, removed
 
@@ -156,6 +157,8 @@ def catchable(ctx: RequestContext, before_battle: str | None = None, species: st
             place["note"] = needs
         if r["missable"]:
             place["missable"] = r["missable"]
+        if r["needs_events"]:
+            place["only_after_story_events"] = r["needs_events"]
         place["rate_pct"] += r["rarity"] or 0
         place["lv"] = [min(place["lv"][0], r["min_level"]), max(place["lv"][1], r["max_level"])]
     species_out = []

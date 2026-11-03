@@ -138,3 +138,13 @@ def test_brief_rules_out_emerald_field_abilities(con, game):
     from agent.brief import state_brief
     text = state_brief(ctx_for(con, game, starter="mudkip"))
     assert "Synchronize" in text and "Compound Eyes" in text and "Stench" in text
+    assert "Pickup does work" in text and "King's Rock 1%" in text  # review round 4: Pickup is Ruby/Sapphire too
+
+
+def test_hideout_electrode_needs_the_slateport_scene_until_the_hideout(con, game):
+    # Reaching Lilycove isn't enough: E-03 then E-04 must have happened, which the run state can't show
+    early = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES[:6]), "gym6_winona", species="electrode")
+    hideout = [p for p in early["species"][0]["places"] if p["method"] == "static"]
+    assert hideout and hideout[0]["only_after_story_events"][0].startswith("slateport_submarine_theft")
+    later = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES[:6]), "gym7_tate_liza", species="electrode")
+    assert "only_after_story_events" not in [p for p in later["species"][0]["places"] if p["method"] == "static"][0]

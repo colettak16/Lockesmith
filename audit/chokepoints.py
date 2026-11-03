@@ -6,7 +6,7 @@ Candidates: every object visible at a new game (its hide flag isn't set by new_g
 item balls and field-move obstacles, so objects removed by `setflag`, by `removeobject` (which
 sets the object's flag) or never are all included. Objects sharing a hide flag are walled off
 together; flagless objects one at a time. A candidate is a chokepoint if walling it costs any
-entrance an exit, walkable encounter tiles or water, with every field ability (audit.reach).
+entrance an exit, walkable encounter tiles or water, with every field move and either bike (audit.reach).
 
 Prints the chokepoints in only one game (matched by map and tiles), and for those in both,
 whether the scripts that remove them live in the same place. Per-game group counts go to stderr.
@@ -25,7 +25,7 @@ from audit.maps import VERSIONS, flag_writers, load_scripts
 from audit.sources import tree
 
 SKIP = ("ITEM_BALL", "CUTTABLE_TREE", "BREAKABLE_ROCK", "PUSHABLE_BOULDER")
-ALL_ABILITIES = {"+waterfall": reach.CAPS["+waterfall"]}
+ALL_ABILITIES = {k: v for k, v in reach.CAPS.items() if k.startswith("+waterfall/")}  # every move, with each bike
 
 
 def removers(root: Path, scripts: dict[str, list[str]]) -> dict[str, set[str]]:

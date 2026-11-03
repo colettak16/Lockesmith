@@ -13,7 +13,8 @@
    (Overworld_IsBikingAllowed and the map-type tests) against Emerald's allow_* header fields.
 6. Heal locations (Fly and whiteout targets).
 7. Abilities that act outside battle: every ABILITY_ constant named in the wild-encounter,
-   fishing, daycare and egg code, and in SetWildMonHeldItem.
+   fishing, daycare and egg code, in SetWildMonHeldItem, and in the Pickup battle command (with
+   its item table and whether it reads the Pokémon's level).
 8. Wild-encounter functions only one game has (src/wild_encounter.c).
 
 The movement rules in audit.reach (ledges, elevation, Surf, doors) were read from
@@ -167,6 +168,13 @@ def field_abilities(R, E) -> list[str]:
             p = root / rel
             found = sorted(set(re.findall(r"ABILITY_\w+", strip_c(p.read_text())))) if p.exists() else ["(file missing)"]
             out.append(f"{what:32} {name:2} {', '.join(found) or 'none'}")
+    for name, root, fn in (("RS", R, "atkE5_pickup"), ("E", E, "Cmd_pickup")):
+        src = strip_c((root / "src/battle_script_commands.c").read_text())
+        body = function_body(src, fn)
+        table = re.search(r"sPickupItems\[\]\s*=\s*\{(.*?)\};", src, re.S)
+        items = re.findall(r"ITEM_\w+(?:,\s*\d+)?", table.group(1)) if table else []
+        out.append(f"{'Pickup (' + fn + ')':32} {name:2} abilities: {', '.join(sorted(set(re.findall(r'ABILITY_\w+', body))))}; "
+                   f"uses level: {'MON_DATA_LEVEL' in body}; sPickupItems: {', '.join(items)}")
     for name, root, rel in (("RS", R, "src/pokemon_3.c"), ("E", E, "src/pokemon.c")):
         body = function_body(strip_c((root / rel).read_text()), "SetWildMonHeldItem")
         rolls = re.findall(r"rnd\s*[<>]=?\s*\d+|chance\w*\s*=\s*\d+", body)

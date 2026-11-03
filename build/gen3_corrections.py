@@ -509,6 +509,12 @@ RS_ROM_CONDITIONS = {
         "out or fleeing all complete it. Cave of Origin opens after the Seafloor Cavern "
         "(FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN)",
     ),
+    "lati-tv-report": (
+        "FLAG_LATIOS_OR_LATIAS_ROAMING",
+        "Postgame: the Hall of Fame only turns on the news (FLAG_SYS_TV_LATI); the roamer starts when you check "
+        "the TV on your house's 1F (tv.inc runs InitRoamer). Nothing plays automatically and there's no color "
+        "question: Ruby's roamer is Latios, Sapphire's Latias (review packet E-10)",
+    ),
 }
 
 
@@ -523,6 +529,8 @@ def rom_condition_rows(game: Game) -> dict[tuple[str, str, str | None], list[str
         ("sky-pillar", "static", "rayquaza"): ["sky-pillar-postgame"],
         ("mirage-island", "walk", None): ["mirage-island-visible"],
         ("cave-of-origin", "static", legendary): ["legendary-story-battle"],
+        ("roaming-hoenn", "roaming-grass", None): ["lati-tv-report"],
+        ("roaming-hoenn", "roaming-water", None): ["lati-tv-report"],
     }
 
 

@@ -130,6 +130,14 @@ class Progression:
         return next((c.reason for c in self.closes if (c.after is None or self.get(c.after).order >= target)
                      and area_matches(c.spec, location, area, method)), None)
 
+    def events_needed(self, battle_id: str, location: str, area: str | None, method: str | None = None) -> list[dict]:
+        """Story events (not battles) this area still needs before `battle_id`: those with `areas`
+        whose `required_by` battle isn't behind the player yet. Whether the player has done them
+        is unknown, so callers present them as conditions."""
+        target = self.get(battle_id).order
+        return [e for e in self.events if e.get("areas") and self.get(e["required_by"]).order >= target
+                and any(area_matches(parse_area(a), location, area, method) for a in e["areas"])]
+
     def is_reachable(self, battle_id: str, location: str, area: str | None, method: str | None = None) -> bool:
         """Can the player be in this area before `battle_id`, with this encounter method open?
 

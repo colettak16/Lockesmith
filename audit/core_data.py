@@ -196,7 +196,7 @@ def main() -> list[str]:
     etc = [(a, d, mul.get(m, m)) for a, d, m in zip(tok[0::3], tok[1::3], tok[2::3])]
     rtc = [(a, d, str(int(m))) for a, d, m in rtc]
     say(f"type chart: ruby {len(rtc)} entries, emerald {len(etc)} entries, identical in order: {[(a,d,str(int(m)) if m.isdigit() else m) for a,d,m in etc] == rtc}")
-    say("  set diff:", set(rtc) ^ {(a, d, str(int(m)) if m.isdigit() else m) for a, d, m in etc})
+    say("  set diff:", sorted(set(rtc) ^ {(a, d, str(int(m)) if m.isdigit() else m) for a, d, m in etc}))
 
     # ---- encounter slot rates
     def rates(root):

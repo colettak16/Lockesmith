@@ -34,3 +34,15 @@ def test_reach_finds_the_packets_differences():
     assert "MAP_JAGGED_PASS:" in out and "MAP_SEAFLOOR_CAVERN_ROOM3:" in out
     assert "MAP_ROUTE110:" not in out and "MAP_LILYCOVE_CITY:" not in out
     assert out.endswith("maps with reachability differences: 2 of 4")
+
+
+@pytest.mark.skipif(not have_trees, reason="needs the full decomps: uv run python -m audit.sources")
+def test_each_bike_opens_its_own_safari_zone_area():
+    # Review round 4: the Mach and Acro Bike are separate passes. Northwest: Mach up the muddy slope;
+    # northeast: Acro side jumps onto the rails (Ruby/Sapphire's "Southeast" is Emerald's "South").
+    for root, rs, east in ((CACHE / "pokeruby", True, "SAFARI_ZONE_SOUTHEAST"), (CACHE / "pokeemerald", False, "SAFARI_ZONE_SOUTH")):
+        g = reach.Game(root, rs)
+        gates = "\n".join(reach.bike_gates(g, [f"MAP_{east}", "MAP_SAFARI_ZONE_SOUTHWEST", "MAP_JAGGED_PASS"]))
+        assert f"{east}" in gates and "Acro only: ['up']" in gates
+        assert "SAFARI_ZONE_SOUTHWEST" in gates and "Mach only: ['up']" in gates
+        assert "JAGGED_PASS" in gates and "Acro only: ['MT_CHIMNEY']" in gates.replace("'MAGMA_HIDEOUT_1F', ", "")

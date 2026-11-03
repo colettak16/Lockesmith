@@ -26,11 +26,18 @@ def load_maps(root: Path) -> dict[str, dict]:
 
 
 def load_scripts(root: Path, version: str | None) -> dict[str, list[str]]:
-    """Where -> script lines: a map folder name, or "scripts/<file>" for data/scripts/*.inc."""
+    """Where -> script lines: a map folder name, or "scripts/<file>" for the shared scripts.
+
+    The shared scripts are data/scripts/*.inc plus the ones written straight into
+    data/event_scripts.s and, in pokeruby, the data/*_scripts.inc files Emerald later moved into
+    data/scripts/ (field moves, item balls). All are keyed "scripts/<file>" so both games match.
+    """
     out = {}
     for p in sorted(glob.glob(str(root / "data/maps/*/scripts.inc"))):
         out[Path(p).parent.name] = script_lines(Path(p).read_text(errors="replace"), version)
-    for p in sorted(glob.glob(str(root / "data/scripts/*.inc"))):
+    shared = sorted(glob.glob(str(root / "data/scripts/*.inc")) + glob.glob(str(root / "data/*_scripts.inc"))
+                    + [str(root / "data/event_scripts.s")])
+    for p in shared:
         out["scripts/" + Path(p).name] = script_lines(Path(p).read_text(errors="replace"), version)
     return out
 

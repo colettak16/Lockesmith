@@ -226,3 +226,13 @@ TRANSITIONS = [
 @pytest.mark.parametrize("battle, location, area, method, expected", TRANSITIONS)
 def test_story_transitions(prog, battle, location, area, method, expected):
     assert prog.is_reachable(battle, location, area, method) is expected
+
+
+def test_event_gated_areas_name_real_battles_and_areas(prog, db):
+    ids = {b.id for b in prog.battles}
+    locations = {l for (l,) in db.execute("SELECT identifier FROM locations").fetchall()}
+    gated = [e for e in prog.events if e.get("areas")]
+    assert [e["id"] for e in gated] == ["slateport_submarine_theft"]
+    for e in gated:
+        assert e["required_by"] in ids and prog.get(e["required_by"]).order > prog.get(e["after"]).order
+        assert all(a in locations for a in e["areas"])

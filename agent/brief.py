@@ -10,12 +10,17 @@ VANILLA_KINDS = {
 
 
 # One line per game on how it differs, so no agent answers from another game's memory.
-# Ruby/Sapphire's lead-ability rule is from pokeruby: wild_encounter.c checks only Stench and Illuminate;
-# SetWildMonHeldItem (pokemon_3.c), the fishing bite (field_player_avatar.c) and egg steps (daycare.c) check none.
+# Ruby/Sapphire's field-ability rules are from pokeruby (docs/audit/engine.txt): wild_encounter.c checks only
+# Stench and Illuminate; SetWildMonHeldItem (pokemon_3.c), the fishing bite (field_player_avatar.c) and egg steps
+# (daycare.c) check none; Pickup (atkE5_pickup, battle_script_commands.c) runs after every won battle from one
+# fixed table, where Emerald's Cmd_pickup picks from level-based tables.
 RS_FIELD_ABILITIES = (
-    "Outside battle, a lead Pokémon's ability changes nothing but the encounter rate (Stench lowers it, Illuminate "
-    "raises it): Synchronize, Cute Charm, Magnet Pull, Static, Intimidate, Keen Eye, Compound Eyes, Suction Cups, "
-    "Flame Body and the other field effects start in Emerald, so don't suggest them here."
+    "A lead Pokémon's ability changes wild encounters only through the encounter rate (Stench lowers it, "
+    "Illuminate raises it): Synchronize, Cute Charm, Magnet Pull, Static, Intimidate, Keen Eye, Compound Eyes, "
+    "Suction Cups, Flame Body and the other field effects start in Emerald, so don't suggest them here. Pickup "
+    "does work: after each battle you win, every party Pokémon with Pickup holding nothing has a 10% chance to "
+    "find an item, from one table at every level (Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full "
+    "Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%). Emerald's table depends on level."
 )
 GAME_LINES = {
     "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
