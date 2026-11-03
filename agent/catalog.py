@@ -34,9 +34,12 @@ def catalog(game_id: str = DEFAULT) -> dict:
         key=lambda p: (opened.get(p["id"], 99), p["name"]),
     )
     labels = {b.id: b.label for b in prog.battles}
+    by_id = {s["id"]: s for s in species}
     return {
         "game": game.id,
-        "games": [{"id": g.id, "name": g.name} for g in GAMES.values()],
+        "games": [{"id": g.id, "name": g.name, "short": g.short, "region": g.region} for g in GAMES.values()],
+        "starters": [{"id": s, "name": by_id[s]["name"], "type": by_id[s]["types"][0]} for s in game.cast.starters],
+        "rivals": [{"id": r, "name": r.title()} for r in game.cast.rivals],
         "species": species,
         "moves": moves,
         "types": TYPES,

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LockeSmith</title>
-<meta name="description" content="A research agent for Pokémon Emerald, Ruby and Sapphire runs, including Nuzlocke and randomized runs: what to catch, what to do next and how to beat the rest of the game, checked against the game's own data.">
+<meta name="description" content="A research agent for Pokémon Emerald, Ruby, Sapphire, FireRed and LeafGreen runs, including Nuzlocke and randomized runs: what to catch, what to do next and how to beat the rest of the game, checked against the game's own data.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='11' cy='16' r='7' fill='none' stroke='%231d7a57' stroke-width='3'/%3E%3Cpath d='M18 16h11M25 16v5M29 16v4' stroke='%231d7a57' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="16" r="7"/><path d="M18 16h11M25 16v5M29 16v4"/></svg>
       <div class="title-text">
         <h1>Locke<span>Smith</span></h1>
-        <p class="tagline">Pokémon Emerald, Ruby &amp; Sapphire research desk</p>
+        <p class="tagline">Pokémon Game Boy Advance research desk: Hoenn &amp; Kanto</p>
       </div>
       <button type="button" class="about-btn" id="about-open" aria-expanded="false" aria-controls="about">What is this?</button>
     </div>
@@ -35,11 +35,11 @@
   </div>
   <section>
     <h3>What it explores</h3>
-    <p>Which Pokémon to catch next, what to do next and how to beat the rest of Emerald, Ruby or Sapphire. Researcher agents check every answer against that game's own data: trainer teams, encounter tables, TMs and the walkthrough. Every claim is cited.</p>
+    <p>Which Pokémon to catch next, what to do next and how to beat the rest of Emerald, Ruby, Sapphire, FireRed or LeafGreen. Researcher agents check every answer against that game's own data: trainer teams, encounter tables, TMs and the walkthrough. Every claim is cited.</p>
   </section>
   <section>
     <h3>Who it's for</h3>
-    <p>Players partway through Emerald, Ruby or Sapphire (the Game Boy Advance games), including Nuzlocke, custom-rule and randomized runs (upload your Universal Pokémon Randomizer log).</p>
+    <p>Players partway through Emerald, Ruby, Sapphire, FireRed or LeafGreen (the Game Boy Advance games), including Nuzlocke, custom-rule and randomized runs (upload your Universal Pokémon Randomizer log).</p>
   </section>
   <section>
     <h3>How to use it</h3>
@@ -66,16 +66,14 @@
             <label><input type="radio" name="game" value="emerald" checked><span>Emerald</span></label>
             <label><input type="radio" name="game" value="ruby"><span>Ruby</span></label>
             <label><input type="radio" name="game" value="sapphire"><span>Sapphire</span></label>
+            <label><input type="radio" name="game" value="firered"><span>FireRed</span></label>
+            <label><input type="radio" name="game" value="leafgreen"><span>LeafGreen</span></label>
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Starter <span class="req">required</span></legend>
-          <div class="seg" id="starter">
-            <label><input type="radio" name="starter" value="treecko"><span class="type-dot grass"></span>Treecko</label>
-            <label><input type="radio" name="starter" value="torchic"><span class="type-dot fire"></span>Torchic</label>
-            <label><input type="radio" name="starter" value="mudkip"><span class="type-dot water"></span>Mudkip</label>
-          </div>
+          <div class="seg" id="starter"></div>
         </fieldset>
 
         <fieldset>
@@ -85,13 +83,9 @@
           <p class="hint" id="badge-hint">Not set yet: pick the badges you hold, or "No badges yet".</p>
         </fieldset>
 
-        <fieldset>
+        <fieldset id="rival-field">
           <legend>Rival <span class="opt">optional</span></legend>
-          <div class="seg seg-small" id="rival">
-            <label><input type="radio" name="rival" value=""><span>Not sure</span></label>
-            <label><input type="radio" name="rival" value="may"><span>May</span></label>
-            <label><input type="radio" name="rival" value="brendan"><span>Brendan</span></label>
-          </div>
+          <div class="seg seg-small" id="rival"></div>
         </fieldset>
 
         <fieldset>
@@ -171,10 +165,10 @@
 </main>
 
 <footer class="colophon">
-  <p><strong>Data:</strong> trainer teams, encounters and TMs from the <a href="https://github.com/pret/pokeemerald">pret/pokeemerald</a> and <a href="https://github.com/pret/pokeruby">pret/pokeruby</a> decompilations;
+  <p><strong>Data:</strong> trainer teams, encounters and TMs from the <a href="https://github.com/pret/pokeemerald">pret/pokeemerald</a>, <a href="https://github.com/pret/pokeruby">pret/pokeruby</a> and <a href="https://github.com/pret/pokefirered">pret/pokefirered</a> decompilations;
     species, moves and learnsets from <a href="https://pokeapi.co">PokeAPI</a>, corrected to Gen III;
-    walkthrough passages from Bulbapedia's <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald">Emerald</a> and <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Ruby_and_Sapphire">Ruby and Sapphire</a> walkthroughs (CC BY-NC-SA 2.5).</p>
-  <p><strong>Covers</strong> the main story of Emerald, Ruby and Sapphire through the Champion. <strong>Doesn't cover</strong> other games (including Omega Ruby and Alpha Sapphire), ROM hacks, the postgame, Battle Frontier or Battle Tower, or exact damage rolls.
+    walkthrough passages from Bulbapedia's <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald">Emerald</a> and <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Ruby_and_Sapphire">Ruby and Sapphire</a> and <a href="https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_FireRed_and_LeafGreen">FireRed and LeafGreen</a> walkthroughs (CC BY-NC-SA 2.5).</p>
+  <p><strong>Covers</strong> the main story of Emerald, Ruby, Sapphire, FireRed and LeafGreen through the Champion. <strong>Doesn't cover</strong> other games (including Omega Ruby, Alpha Sapphire and Let's Go), ROM hacks, the postgame (the Battle Frontier, Battle Tower and Sevii Islands 4-7), or exact damage rolls.
     A non-commercial course project for IEOR E4570. Banner: Pokémon Emerald's ending. Pokémon is © Nintendo, Game Freak and Creatures.</p>
   <p class="session-line">Session <code id="session-id"></code> · <button type="button" class="link-btn" id="clear-chat">Clear conversation</button></p>
 </footer>

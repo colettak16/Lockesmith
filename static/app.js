@@ -10,8 +10,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const SESSION_KEY = "lockesmith.session";
 const MAX_LOG_BYTES = 4_000_000;
 
-const GAMES = ["emerald", "ruby", "sapphire"];
-const GAME_NAMES = { emerald: "Emerald", ruby: "Ruby", sapphire: "Sapphire" };
+const GAMES = ["emerald", "ruby", "sapphire", "firered", "leafgreen"];
+const GAME_NAMES = { emerald: "Emerald", ruby: "Ruby", sapphire: "Sapphire", firered: "FireRed", leafgreen: "LeafGreen" };
 
 const ui = {
   game: "emerald",
@@ -147,9 +147,17 @@ function tagPicker({ listId, items, options, max = Infinity, placeholder, more =
 
 /* ---- the run form ---------------------------------------------------------------------- */
 
-/* The parts of the form that differ by game: badge leaders, the story battles, Nuzlocke places. */
+/* The parts of the form that differ by game: starters, rival, badge leaders, the story battles,
+   Nuzlocke places. A starter or rival choice the new game also has stays picked. */
 function applyCatalog() {
   const c = ui.catalog;
+  const starter = document.querySelector('input[name="starter"]:checked')?.value;
+  $("#starter").innerHTML = c.starters.map((s) => `<label><input type="radio" name="starter" value="${s.id}"${s.id === starter ? " checked" : ""}>`
+    + `<span class="type-dot ${s.type}"></span>${esc(s.name)}</label>`).join("");
+  const rival = document.querySelector('input[name="rival"]:checked')?.value || "";
+  $("#rival-field").hidden = !c.rivals.length; // Kanto's rival isn't a choice
+  $("#rival").innerHTML = [{ id: "", name: "Not sure" }, ...c.rivals].map((r) =>
+    `<label><input type="radio" name="rival" value="${r.id}"${r.id === rival ? " checked" : ""}><span>${esc(r.name)}</span></label>`).join("");
   ui.battleLabel = new Map(c.battles.map((b) => [b.id, b.label]));
   $("#badges").innerHTML = c.badges.map((b) => {
     const leader = b.label.split(": ")[1] || b.label;
@@ -161,8 +169,9 @@ function applyCatalog() {
     + c.battles.map((b) => `<option value="${b.id}">${esc(b.label)}</option>`).join("");
 }
 
-/* Switch the form to another game. Badges keep their names across games; a last battle that
-   doesn't exist in the new game (Emerald's Space Center) is cleared. */
+/* Switch the form to another game. Hoenn's badges keep their names across Emerald, Ruby and
+   Sapphire; badges, a starter or a last battle the new game doesn't have (Kanto's, Emerald's Space
+   Center) are cleared. */
 function setGame(game) {
   game = GAMES.includes(game) ? game : "emerald";
   for (const el of document.querySelectorAll('input[name="game"]')) el.checked = el.value === game;
@@ -172,6 +181,11 @@ function setGame(game) {
   ui.catalog = ui.catalogs[game];
   applyCatalog();
   $("#last-battle").value = ui.battleLabel.has(last) ? last : "";
+  const badgeIds = new Set(ui.catalog.badges.map((b) => b.id));
+  if ([...ui.badges].some((b) => !badgeIds.has(b))) {
+    ui.badges = new Set([...ui.badges].filter((b) => badgeIds.has(b)));
+    if (!ui.badges.size) ui.badgesSet = false;
+  }
   renderUsedList();
   paintBadges();
 }
