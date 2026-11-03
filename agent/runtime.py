@@ -14,8 +14,11 @@ VERTEXAI_PROJECT / VERTEXAI_LOCATION (defaults: lockesmith, global).
 Rate limits: Vertex serves these models from shared capacity, so bursts of parallel
 researchers get "429 Resource exhausted". Rather than wait that out, a rate-limited call
 goes straight to the fallback model, which has its own capacity (docs/decisions.md D10).
+Stalls: a fast-tier call with no answer after HEDGE_AFTER_S is also sent to the fallback
+model, and whichever answers first is used (docs/decisions.md D15).
 """
 
+import asyncio
 import json
 import logging
 import os
@@ -52,6 +55,12 @@ RETRY = ModelRetrySettings(
 # tokens, and Pro within 35 s; slower ones had stalled (68 s for a 76-token reply), holding up the
 # whole parallel round. A call past its limit goes to the fallback model instead (docs/decisions.md D12).
 CALL_TIMEOUT_S = {"fast": 25, "strong": 60}
+# Hedging. In 185 LangFuse Flash calls, every answer of 1,000+ tokens came within 14.6 s, and the
+# slower ones were short replies that had stalled (68 s for 76 tokens). Past 12 s (13% of calls), the
+# same request also goes to the fallback model; the first answer wins and the other is cancelled.
+# The original keeps running, so a long answer that's nearly done still finishes. Pro isn't hedged:
+# it hasn't stalled, and its fallback is a weaker model.
+HEDGE_AFTER_S = {"fast": 12}
 
 
 def model_name(tier: str) -> str:
@@ -63,22 +72,45 @@ def model_name(tier: str) -> str:
 
 
 class FallbackModel(LitellmModel):
-    """A LiteLLM model that sends a rate-limited or stalled call to a second model instead of waiting."""
+    """A LiteLLM model that sends a rate-limited or stalled call to a second model instead of
+    waiting. With `hedge_after`, a call still unanswered by then races the second model too."""
 
-    def __init__(self, model: str, fallback: str | None):
+    def __init__(self, model: str, fallback: str | None, hedge_after: float | None = None):
         super().__init__(model=model)
         self.fallback = LitellmModel(model=fallback) if fallback and fallback != model else None
+        self.hedge_after = hedge_after
+
+    async def _fallback_response(self, *args, **kwargs):
+        response = await self.fallback.get_response(*args, **kwargs)
+        response.lockesmith_fallback = self.fallback.model  # surfaced by ToolCallRecorder.on_llm_end
+        return response
 
     async def get_response(self, *args, **kwargs):
-        try:
+        if self.fallback is None:
             return await super().get_response(*args, **kwargs)
-        except (RateLimitError, Timeout) as e:
-            if self.fallback is None:
-                raise
-            log.warning("%s on %s; using %s", type(e).__name__, self.model, self.fallback.model)
-            response = await self.fallback.get_response(*args, **kwargs)
-            response.lockesmith_fallback = self.fallback.model  # surfaced by ToolCallRecorder.on_llm_end
-            return response
+        primary = asyncio.ensure_future(super().get_response(*args, **kwargs))
+        running = {primary}
+        try:
+            done, _ = await asyncio.wait(running, timeout=self.hedge_after)
+            if done:
+                try:
+                    return primary.result()
+                except (RateLimitError, Timeout) as e:
+                    log.warning("%s on %s; using %s", type(e).__name__, self.model, self.fallback.model)
+                    return await self._fallback_response(*args, **kwargs)
+            log.warning("no answer from %s after %ss; racing %s", self.model, self.hedge_after, self.fallback.model)
+            running.add(asyncio.ensure_future(self._fallback_response(*args, **kwargs)))
+            error = None
+            while running:
+                done, running = await asyncio.wait(running, return_when=asyncio.FIRST_COMPLETED)
+                for task in done:
+                    if task.exception() is None:
+                        return task.result()
+                    error = error or task.exception()  # the other may still answer
+            raise error
+        finally:
+            for task in running:  # the race's loser, or both if the turn itself was cancelled
+                task.cancel()
 
 
 def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=None, effort: str | None = None) -> Agent:
@@ -87,7 +119,7 @@ def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=No
     return Agent(
         name=name,
         instructions=instructions,
-        model=FallbackModel(model_name(tier), model_name("fallback")),
+        model=FallbackModel(model_name(tier), model_name("fallback"), HEDGE_AFTER_S.get(tier)),
         model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY,
                                      extra_args={"timeout": CALL_TIMEOUT_S.get(tier, 60)}),
         tools=list(tools),

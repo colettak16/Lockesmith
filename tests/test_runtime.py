@@ -35,3 +35,62 @@ def test_agents_get_a_per_call_timeout():
     strong = runtime.make_agent("y", "be brief", "strong")
     assert fast.model_settings.extra_args == {"timeout": runtime.CALL_TIMEOUT_S["fast"]}
     assert strong.model_settings.extra_args == {"timeout": runtime.CALL_TIMEOUT_S["strong"]}
+    assert fast.model.hedge_after == runtime.HEDGE_AFTER_S["fast"] and strong.model.hedge_after is None
+
+
+@pytest.fixture
+def timed_models(monkeypatch):
+    """Fake models that answer after a set delay (or raise); records starts, finishes and cancellations."""
+    delays, events = {}, []
+
+    class Response:
+        pass
+
+    async def fake_get_response(self, *args, **kwargs):
+        events.append(("start", self.model))
+        try:
+            await asyncio.sleep(delays[self.model])
+        except asyncio.CancelledError:
+            events.append(("cancelled", self.model))
+            raise
+        if self.model.startswith("broken"):
+            raise litellm.Timeout("timed out", model=self.model, llm_provider="vertex_ai")
+        events.append(("answered", self.model))
+        return Response()
+
+    monkeypatch.setattr(LitellmModel, "get_response", fake_get_response)
+    return delays, events
+
+
+def test_a_stalled_call_races_the_fallback_and_the_loser_is_cancelled(timed_models):
+    delays, events = timed_models
+    delays.update(primary=5, backup=0.05)
+    response = asyncio.run(runtime.FallbackModel("primary", "backup", hedge_after=0.05).get_response())
+    assert response.lockesmith_fallback == "backup"
+    assert events == [("start", "primary"), ("start", "backup"), ("answered", "backup"), ("cancelled", "primary")]
+
+
+def test_a_slow_call_that_finishes_first_still_wins(timed_models):
+    """A long answer that was nearly done when the hedge started isn't thrown away."""
+    delays, events = timed_models
+    delays.update(primary=0.1, backup=5)
+    response = asyncio.run(runtime.FallbackModel("primary", "backup", hedge_after=0.05).get_response())
+    assert not hasattr(response, "lockesmith_fallback")
+    assert events[-2:] == [("answered", "primary"), ("cancelled", "backup")]
+
+
+def test_no_hedge_when_the_call_answers_in_time(timed_models):
+    delays, events = timed_models
+    delays.update(primary=0.01, backup=0.01)
+    asyncio.run(runtime.FallbackModel("primary", "backup", hedge_after=1).get_response())
+    assert events == [("start", "primary"), ("answered", "primary")]
+
+
+def test_a_failed_racer_leaves_the_other_to_answer(timed_models):
+    delays, events = timed_models
+    delays.update(broken=0.1, backup=0.2)
+    response = asyncio.run(runtime.FallbackModel("broken", "backup", hedge_after=0.05).get_response())
+    assert response.lockesmith_fallback == "backup"
+    delays.update({"broken-too": 0.2})
+    with pytest.raises(litellm.Timeout):
+        asyncio.run(runtime.FallbackModel("broken", "broken-too", hedge_after=0.05).get_response())

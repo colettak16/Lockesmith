@@ -73,11 +73,21 @@ def record(ctx: RequestContext, agent: str, name: str, args: dict, result) -> No
     observability.step(name, args, result)
 
 
-def sanitize_citations(ctx: RequestContext, draft: LeadDraft) -> LeadDraft:
-    """Strip ids no tool returned from steps and battle notes (picks with bad ids go through repair)."""
+def sanitize_citations(ctx: RequestContext, draft: LeadDraft) -> tuple[LeadDraft, list[str]]:
+    """Strip ids no tool returned from picks, backups, steps and battle notes. (A pick citing only
+    such ids failed the Verifier and went through repair.) Returns the draft and the ids dropped."""
+    dropped: list[str] = []
+
+    def keep(ids: list[str]) -> list[str]:
+        dropped.extend(s for s in ids if s not in ctx.ledger)
+        return [s for s in ids if s in ctx.ledger]
+
     def clean(items):
-        return [i.model_copy(update={"source_ids": [s for s in i.source_ids if s in ctx.ledger]}) for i in items]
-    return draft.model_copy(update={"steps": clean(draft.steps), "battle_notes": clean(draft.battle_notes)})
+        return [i.model_copy(update={"source_ids": keep(i.source_ids)}) for i in items]
+    recs = [r.model_copy(update={"source_ids": keep(r.source_ids), "alternatives": clean(r.alternatives)})
+            for r in draft.recommendations]
+    return draft.model_copy(update={"recommendations": recs, "steps": clean(draft.steps),
+                                    "battle_notes": clean(draft.battle_notes)}), dropped
 
 
 async def verify_and_repair(ctx: RequestContext, draft: LeadDraft, lead_input: str) -> tuple[LeadDraft, list[Violation]]:
@@ -116,7 +126,10 @@ async def verify_and_repair(ctx: RequestContext, draft: LeadDraft, lead_input: s
     draft, fixes = correct_places(ctx, draft)
     if fixes:
         record(ctx, "verifier", "correct_where", {}, fixes)
-    return sanitize_citations(ctx, draft), [v for v in violations if v.severity == WARNING]
+    draft, dropped = sanitize_citations(ctx, draft)
+    if dropped:
+        record(ctx, "verifier", "drop_unknown_citations", {}, sorted(set(dropped)))
+    return draft, [v for v in violations if v.severity == WARNING]
 
 
 def picks_changed(before: LeadDraft, after: LeadDraft) -> LeadDraft:

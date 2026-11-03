@@ -231,7 +231,9 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
     if not pick.source_ids:
         add("UNCITED_CLAIM", "the pick has no source ids")
     missing = [s for s in pick.source_ids if s not in ctx.ledger]
-    if missing:
+    # Only when nothing real is left: a pick citing real sources plus an invented id (a live Ruby run's
+    # assess_candidates#Lanturn) keeps the real ones, and the pipeline strips the rest without a repair round
+    if missing and len(missing) == len(pick.source_ids):
         add("CITATION_NOT_IN_EVIDENCE", f"no tool returned {', '.join(missing[:3])}")
     return out
 

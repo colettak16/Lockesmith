@@ -129,6 +129,20 @@ def test_rules_lookup_cites_the_game_line(models):
     assert body["citations"][0]["label"].startswith("LockeSmith's Ruby rules") and body["citations"][0]["url"].endswith("engine.txt")
 
 
+def test_an_invented_id_beside_real_ones_is_dropped_without_a_repair_round(models):
+    # Live Ruby run: picks citing assess_candidates#Lanturn (no tool returned it) went back to the Lead
+    # for ~50 s and came back unchanged
+    calls, script = models
+    script["clarifier"] = decision()
+    script["lead"] = draft(rec("Sharpedo").model_copy(update={"source_ids": [*CITED, "assess_candidates#Sharpedo"]}))
+    script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]."
+    body = chat("what for Tate & Liza?", "p-invented-id", STATE)
+    assert calls == ["clarifier", "lead", "writer"]
+    ids = body["plan"]["recommendations"][0]["source_ids"]  # correct_places adds the encounter rows it used
+    assert ids[0] == CITED[0] and "assess_candidates#Sharpedo" not in ids
+    assert [c["result"] for c in body["tool_calls"] if c["name"] == "drop_unknown_citations"] == ['["assess_candidates#Sharpedo"]']
+
+
 def test_citation_retry_fixes_an_uncited_pick(models):
     calls, script = models
     script["clarifier"] = decision()

@@ -121,6 +121,8 @@ def test_citations(con):
     ctx = ctx_for(con)
     assert "UNCITED_CLAIM" in found(ctx, pick("Absol", source_ids=[]))
     assert "CITATION_NOT_IN_EVIDENCE" in found(ctx, pick("Absol", source_ids=["made:up"]))
+    # Real sources plus an invented one: the pipeline strips the invented id, no repair round
+    assert "CITATION_NOT_IN_EVIDENCE" not in found(ctx, pick("Absol", source_ids=[*CITED, "assess_candidates#Absol"]))
 
 
 def test_move_unverifiable_when_the_log_hides_movesets(con):
