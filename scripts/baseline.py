@@ -22,6 +22,7 @@ import litellm  # noqa: E402
 
 from agent import runtime  # noqa: E402,F401  (loads .env and the Vertex settings)
 from agent.examples import EXAMPLES  # noqa: E402
+from agent.games import get as get_game  # noqa: E402
 from agent.pricing import cost_usd  # noqa: E402
 from agent.runtime import model_name  # noqa: E402
 
@@ -31,7 +32,8 @@ OUT = ROOT / "docs" / "baseline"
 
 def state_in_words(ex: dict) -> str:
     """The run state as a player would type it."""
-    rs, parts = ex["run_state"], ["I'm playing Pokémon Emerald."]
+    rs = ex["run_state"]
+    parts = [f"I'm playing {get_game(rs.get('game')).name}."]
     if rs.get("starter"):
         parts.append(f"My starter was {rs['starter'].title()}" + (f" and my rival is {rs['rival'].title()}." if rs.get("rival") else "."))
     if rs.get("badges") is not None:

@@ -90,7 +90,7 @@ Ruby and Sapphire need no extra Gen III rules. Their species, moves, type chart,
 
 ## Sample queries
 
-Each sample is one click on the site: **Examples 1, 2 and 3** (marked ★) under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. All three are Emerald runs. The example list also has a Sapphire catch plan and a Ruby Nuzlocke question; those haven't been compared with a baseline. For each sample, the table below gives:
+Each sample is one click on the site: **Examples 1, 2 and 3** (marked ★) under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. All three are Emerald runs. The example list also has a Sapphire catch plan and a Ruby Nuzlocke question; their answers and baselines are in [docs/samples/](docs/samples/) and [docs/baseline/](docs/baseline/), not in the table. For each sample, the table below gives:
 - the **expected answer**, generated from the database by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md))
 - the **baseline**: Gemini 3.1 Pro, the Lead's model, with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py), full answers in [docs/baseline/](docs/baseline/))
 - **LockeSmith's answer** ([`scripts/run_samples.py`](scripts/run_samples.py), full answers and traces in [docs/samples/](docs/samples/))
