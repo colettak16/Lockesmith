@@ -321,8 +321,7 @@ battles:
     hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
     key_items: [old-rod, bicycle, tea, silph-scope, poke-flute, good-rod, super-rod, card-key, secret-key, tri-pass]
     areas_new: [one-island, kindle-road, treasure-beach, mt-ember/main, mt-ember/cave, mt-ember/inside, mt-ember/summit, two-island, cape-brink]
-    notes: "After Blaine, Bill offers a trip to One Island; you can decline and come back later. Before these fights: Rock Smash (HM06, Kindle Road's Ember Spa), Moltres at Mt. Ember's summit (the direct route needs Strength), and the Cape Brink tutor (starter's ultimate move, friendship 255). The PC is off from the first meeting with Celio until you reach Three Island (ThreeIsland_Port clears FLAG_SYS_PC_STORAGE_DISABLED); Fly can't take you back to Kanto."
-    review: "Mt. Ember's PokeAPI areas were matched to the decomp's wild tables by species (main = Exterior, cave/inside = Summit Path floors, summit = Summit); Codex would also compare levels and slots."
+    notes: "After Blaine, Bill offers a trip to One Island; you can decline and come back later. Before these fights: Rock Smash (HM06, Kindle Road's Ember Spa), Moltres at Mt. Ember's summit (the direct route needs Strength), and the Cape Brink tutor (starter's ultimate move, friendship 255). The PC is off from the first meeting with Celio until you reach Three Island (ThreeIsland_Port clears FLAG_SYS_PC_STORAGE_DISABLED); Fly can't take you back to Kanto. Mt. Ember's PokeAPI areas match the decomp's wild tables on species and level ladders: main = Exterior, cave = Summit Path 1F/3F (Lv29-33), inside = Summit Path 2F (Lv30-34), summit = Summit; the Ruby Path (1F cave, B1F-B3F, Lv32-44) is postgame."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_14#Three_Island"
 
   - id: sevii_berry_forest
