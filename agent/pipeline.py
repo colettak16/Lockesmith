@@ -36,8 +36,12 @@ HISTORY_TURNS = 3
 def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunState:
     data = state.model_dump()
     if getattr(u, "game", None) and u.game != state.game:
-        # A different game: progress and party were for the other one unless restated now.
+        # A different game: progress and party were for the other one unless restated now. In
+        # another region (Sapphire -> FireRed) the starter, badges and rival don't carry over either.
         data.update(game=u.game, last_battle=None)
+        new, old = get_game(u.game).cast, get_game(state.game).cast
+        if (new.starters, new.badges) != (old.starters, old.badges):
+            data.update(starter=None, badges=None, rival=None, party=[])
     for key in ("starter", "badges", "rival"):
         if getattr(u, key) is not None:
             data[key] = getattr(u, key)

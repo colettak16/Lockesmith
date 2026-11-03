@@ -29,10 +29,10 @@ import yaml
 from agent.games import EMERALD, Game
 
 PATH = EMERALD.progression_path
-VERSIONS = ("ruby", "sapphire")
+VERSIONS = ("ruby", "sapphire", "firered", "leafgreen")
 ALL = "*"
-STARTERS = ("treecko", "torchic", "mudkip")
-RIVALS = ("may", "brendan")
+STARTERS = EMERALD.cast.starters  # Hoenn's; each game's are in agent/games.py
+RIVALS = EMERALD.cast.rivals
 
 
 AreaSpec = tuple[str, str | None, tuple[str, ...] | None]  # (location, area or ALL/None, methods or None = all)
@@ -80,16 +80,19 @@ class Battle:
     wild: dict | None = None  # a required wild battle: {"species": "groudon", "level": 45}
 
     def trainers_for(self, starter: str | None = None, rival: str | None = None) -> list[str]:
-        """Trainer consts for this fight. Rival fights need the player's starter; the rival
-        (May or Brendan) only matters for the two fights where their teams differ."""
+        """Trainer consts for this fight. Rival fights need the player's starter. A starter's
+        variant is one trainer (Kanto's rival) or one per rival the player picks (Hoenn's May or
+        Brendan, whose teams differ in only two fights)."""
         if self.trainer_consts is not None:
             return list(self.trainer_consts)
         if self.wild is not None:
             return []
-        if starter not in STARTERS:
+        if starter not in (self.starter_variants or {}):
             raise ValueError(f"{self.id} depends on the player's starter")
         variants = self.starter_variants[starter]
-        return [variants[rival]] if rival in RIVALS else sorted(set(variants.values()))
+        if isinstance(variants, str):
+            return [variants]
+        return [variants[rival]] if rival in variants else sorted(set(variants.values()))
 
 
 @dataclass(frozen=True)

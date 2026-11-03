@@ -23,6 +23,8 @@ def trainer_consts(ctx: RequestContext, b: Battle) -> tuple[list[str], str | Non
     if starter is None:
         raise ToolError(f"{b.label} depends on the player's starter, which the run state doesn't have")
     variants = b.starter_variants[starter]
+    if isinstance(variants, str):  # Kanto: one rival, whose team follows the player's starter
+        return [variants], None
     rival = rival_for(ctx.state)
     if rival:
         return [variants[rival]], None

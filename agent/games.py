@@ -18,6 +18,44 @@ FILE_SUFFIX = {"emerald": "", "rs": "_rs", "frlg": "_frlg"}
 
 
 @dataclass(frozen=True)
+class Cast:
+    """What a game's run state names: its starters, the rival the player picks (if any), and its
+    badges in the game's own order (FLAG_BADGE01..08_GET) with the progression battle that
+    awards each and the names players call its leader."""
+    starters: tuple[str, ...]
+    rivals: tuple[str, ...]  # () when there's no choice: Kanto's rival is one character
+    badges: tuple[str, ...]
+    gyms: tuple[str, ...]  # progression battle id for each badge
+    leaders: tuple[tuple[str, str], ...]  # (leader name as typed, badge)
+
+
+def hoenn(gym8: str, leader8: str) -> Cast:
+    """Hoenn's cast; the eighth leader is Juan in Emerald, Wallace in Ruby/Sapphire."""
+    return Cast(
+        starters=("treecko", "torchic", "mudkip"),
+        rivals=("may", "brendan"),
+        badges=("stone", "knuckle", "dynamo", "heat", "balance", "feather", "mind", "rain"),
+        gyms=("gym1_roxanne", "gym2_brawly", "gym3_wattson", "gym4_flannery", "gym5_norman", "gym6_winona",
+              "gym7_tate_liza", gym8),
+        leaders=(("roxanne", "stone"), ("brawly", "knuckle"), ("wattson", "dynamo"), ("flannery", "heat"),
+                 ("norman", "balance"), ("winona", "feather"), ("tate", "mind"), ("liza", "mind"),
+                 ("tate and liza", "mind"), ("tate & liza", "mind"), (leader8, "rain")),
+    )
+
+
+KANTO = Cast(
+    starters=("bulbasaur", "charmander", "squirtle"),
+    rivals=(),
+    badges=("boulder", "cascade", "thunder", "rainbow", "soul", "marsh", "volcano", "earth"),
+    gyms=("gym1_brock", "gym2_misty", "gym3_lt_surge", "gym4_erika", "gym5_koga", "gym6_sabrina", "gym7_blaine",
+          "gym8_giovanni"),
+    leaders=(("brock", "boulder"), ("misty", "cascade"), ("lt. surge", "thunder"), ("lt surge", "thunder"),
+             ("surge", "thunder"), ("erika", "rainbow"), ("koga", "soul"), ("sabrina", "marsh"),
+             ("blaine", "volcano"), ("giovanni", "earth")),
+)
+
+
+@dataclass(frozen=True)
 class Game:
     id: str  # "emerald" | "ruby" | "sapphire" | "firered" | "leafgreen"
     short: str  # "Emerald"
@@ -26,6 +64,7 @@ class Game:
     version_id: int  # PokeAPI version
     version_group_id: int  # PokeAPI version group
     rom_version: str | None  # the decomp's build flag for two-version trees; None for Emerald
+    cast: Cast
     region: str = "hoenn"
 
     @property
@@ -59,12 +98,14 @@ class Game:
 
 
 GAMES = {
-    "emerald": Game("emerald", "Emerald", "pokeemerald", "pret/pokeemerald", 9, 6, None),
-    "ruby": Game("ruby", "Ruby", "pokeruby", "pret/pokeruby", 7, 5, "RUBY"),
-    "sapphire": Game("sapphire", "Sapphire", "pokeruby", "pret/pokeruby", 8, 5, "SAPPHIRE"),
-    "firered": Game("firered", "FireRed", "pokefirered", "pret/pokefirered", 10, 7, "FIRERED", "kanto"),
-    "leafgreen": Game("leafgreen", "LeafGreen", "pokefirered", "pret/pokefirered", 11, 7, "LEAFGREEN", "kanto"),
+    "emerald": Game("emerald", "Emerald", "pokeemerald", "pret/pokeemerald", 9, 6, None, hoenn("gym8_juan", "juan")),
+    "ruby": Game("ruby", "Ruby", "pokeruby", "pret/pokeruby", 7, 5, "RUBY", hoenn("gym8_wallace", "wallace")),
+    "sapphire": Game("sapphire", "Sapphire", "pokeruby", "pret/pokeruby", 8, 5, "SAPPHIRE", hoenn("gym8_wallace", "wallace")),
+    "firered": Game("firered", "FireRed", "pokefirered", "pret/pokefirered", 10, 7, "FIRERED", KANTO, "kanto"),
+    "leafgreen": Game("leafgreen", "LeafGreen", "pokefirered", "pret/pokefirered", 11, 7, "LEAFGREEN", KANTO, "kanto"),
 }
+ALL_STARTERS = tuple(dict.fromkeys(s for g in GAMES.values() for s in g.cast.starters))
+ALL_RIVALS = tuple(dict.fromkeys(r for g in GAMES.values() for r in g.cast.rivals))
 DEFAULT = "emerald"
 EMERALD = GAMES["emerald"]
 

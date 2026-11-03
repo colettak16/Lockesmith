@@ -12,23 +12,16 @@ from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_va
 
 from agent.games import DEFAULT, GAMES
 from agent.games import get as get_game
-from agent.progression import RIVALS, STARTERS, Battle, Progression
+from agent.progression import Battle, Progression
 
-GameId = Literal["emerald", "ruby", "sapphire"]
-BADGE_ORDER = ("stone", "knuckle", "dynamo", "heat", "balance", "feather", "mind", "rain")
-# Badge -> the gym battle that awards it, per game (the 8th leader is Juan in Emerald, Wallace
-# in Ruby/Sapphire). Leader names and battle ids are accepted too.
-GYM_IDS = ("gym1_roxanne", "gym2_brawly", "gym3_wattson", "gym4_flannery", "gym5_norman", "gym6_winona", "gym7_tate_liza")
-BADGE_GYMS = {
-    game: dict(zip(BADGE_ORDER, (*GYM_IDS, "gym8_juan" if game == "emerald" else "gym8_wallace"))) for game in GAMES
-}
+GameId = Literal["emerald", "ruby", "sapphire", "firered", "leafgreen"]
+# Per game, from its cast (agent/games.py): badge -> the gym battle that awards it, and the leader
+# names players type ("Wallace" is Emerald's Champion but Ruby/Sapphire's 8th leader). Leader names
+# and battle ids are accepted as badges too.
+BADGE_GYMS = {game: dict(zip(g.cast.badges, g.cast.gyms)) for game, g in GAMES.items()}
+GAME_LEADERS = {game: dict(g.cast.leaders) for game, g in GAMES.items()}
+BADGE_ORDER = GAMES[DEFAULT].cast.badges
 BADGES = BADGE_GYMS[DEFAULT]
-SHARED_LEADERS = {
-    "roxanne": "stone", "brawly": "knuckle", "wattson": "dynamo", "flannery": "heat", "norman": "balance",
-    "winona": "feather", "tate": "mind", "liza": "mind", "tate and liza": "mind", "tate & liza": "mind",
-}
-# "Wallace" is Emerald's Champion but Ruby/Sapphire's 8th leader, so leader names are per game.
-GAME_LEADERS = {game: {**SHARED_LEADERS, ("juan" if game == "emerald" else "wallace"): "rain"} for game in GAMES}
 LEADERS = GAME_LEADERS[DEFAULT]
 GYM_TO_BADGE = {gym: badge for badge, gym in BADGES.items()}
 
@@ -43,7 +36,7 @@ def normalize_badge(value: str, game: str = DEFAULT) -> str:
     gym = value.strip().lower()
     if gym in gyms:
         return gyms[gym]
-    raise ValueError(f"unknown badge {value!r}; use one of {list(BADGE_ORDER)}")
+    raise ValueError(f"unknown badge {value!r}; use one of {list(GAMES[game].cast.badges)}")
 
 
 class PartyMember(BaseModel):
@@ -128,10 +121,10 @@ class Ruleset(BaseModel):
 
 
 class RunState(BaseModel):
-    game: GameId = Field(default=DEFAULT, description="Which game: emerald, ruby or sapphire")
-    starter: Literal["treecko", "torchic", "mudkip"] | None = None
+    game: GameId = Field(default=DEFAULT, description="Which game: emerald, ruby, sapphire, firered or leafgreen")
+    starter: str | None = Field(default=None, description="One of the game's starters (agent/games.py cast)")
     badges: list[str] | None = Field(default=None, description="Badges held; [] means none yet, null means not given")
-    rival: Literal["may", "brendan"] | None = None
+    rival: str | None = Field(default=None, description="May or Brendan in Hoenn; Kanto has no choice")
     last_battle: str | None = Field(default=None, description="Id of the last major battle beaten (progression.yaml)")
     party: list[PartyMember] = Field(default_factory=list)
     current_location: str | None = None
@@ -143,10 +136,27 @@ class RunState(BaseModel):
     def _game(cls, v):
         return get_game(v).id if isinstance(v, str) or v is None else v
 
-    @field_validator("starter", "rival", mode="before")
+    @field_validator("starter", mode="before")
     @classmethod
-    def _lower(cls, v):
-        return v.strip().lower() if isinstance(v, str) else v
+    def _starter(cls, v, info: ValidationInfo):
+        if not isinstance(v, str):
+            return v
+        v, game = v.strip().lower(), GAMES[info.data.get("game", DEFAULT)]
+        if v not in game.cast.starters:
+            raise ValueError(f"{game.short}'s starters are {', '.join(game.cast.starters)}, not {v!r}")
+        return v
+
+    @field_validator("rival", mode="before")
+    @classmethod
+    def _rival(cls, v, info: ValidationInfo):
+        if not isinstance(v, str):
+            return v
+        v, game = v.strip().lower(), GAMES[info.data.get("game", DEFAULT)]
+        if not game.cast.rivals:
+            return None  # nothing to pick (Kanto); a leftover choice from another game's form is dropped
+        if v not in game.cast.rivals:
+            raise ValueError(f"{game.short}'s rival is {' or '.join(game.cast.rivals)}, not {v!r}")
+        return v
 
     @field_validator("badges", mode="before")
     @classmethod
@@ -154,7 +164,7 @@ class RunState(BaseModel):
         if v is None:
             return None
         game = info.data.get("game", DEFAULT)
-        return sorted({normalize_badge(b, game) for b in v}, key=BADGE_ORDER.index)
+        return sorted({normalize_badge(b, game) for b in v}, key=GAMES[game].cast.badges.index)
 
     def missing_required(self) -> list[str]:
         return [name for name, value in (("starter", self.starter), ("badges", self.badges)) if value is None]
@@ -204,8 +214,8 @@ def progress(state: RunState, prog: Progression) -> Progress:
 
 
 def rival_for(state: RunState) -> str | None:
-    return state.rival if state.rival in RIVALS else None
+    return state.rival if state.rival in GAMES[state.game].cast.rivals else None
 
 
 def starter_for(state: RunState) -> str | None:
-    return state.starter if state.starter in STARTERS else None
+    return state.starter if state.starter in GAMES[state.game].cast.starters else None
