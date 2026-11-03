@@ -94,6 +94,21 @@ def test_full_turn_cites_ledger_ids_and_flags_unknown(models):
     assert body["plan"]["citation_warnings"] == ["[[made:up]] isn't a source any tool returned"]
 
 
+def test_rules_lookup_cites_the_game_line(models):
+    # A rules question answered from the brief's game line (round-4 live run: Synchronize/Pickup in Ruby)
+    calls, script = models
+    script["clarifier"] = decision(intent="lookup")
+    script["lead"] = LeadDraft(intent="lookup", headline="h", recommendations=[], battle_notes=[], assumptions=[],
+                               follow_up_questions=[], unresolved=[],
+                               steps=[{"title": "No Synchronize effect", "detail": "Emerald-only", "source_ids": ["rules:game"]}])
+    script["writer"] = "Synchronize does nothing outside battle in Ruby [[rules:game]]."
+    body = chat("does synchronize work?", "p-rules", RunState(game="ruby", starter="mudkip", badges=["stone"]))
+    assert calls == ["clarifier", "lead", "writer"]
+    assert [c for c in body["tool_calls"] if c["name"] == "verify"][0]["result"] == "all checks passed"
+    assert body["response"].endswith("[1].") and body["citations"][0]["source_id"] == "rules:game"
+    assert body["citations"][0]["label"].startswith("LockeSmith's Ruby rules") and body["citations"][0]["url"].endswith("engine.txt")
+
+
 def test_citation_retry_fixes_an_uncited_pick(models):
     calls, script = models
     script["clarifier"] = decision()

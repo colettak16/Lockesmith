@@ -13,7 +13,7 @@ import logging
 from pydantic import ValidationError
 
 from agent import observability, overlay, runtime
-from agent.brief import state_brief
+from agent.brief import GAME_LINES, GAME_SOURCE, state_brief
 from agent.chart import coverage_chart
 from agent.clarifier import make_clarifier, missing_question
 from agent.context import RequestContext, shared_index
@@ -169,6 +169,8 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
         return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing),
                 "plan": None, "intent": "clarify"}
 
+    # The game line of the brief is a source in its own right: rules questions can be answered from it
+    ctx.ledger.add(GAME_SOURCE, GAME_LINES[ctx.state.game])
     lead_input = (
         f"PLAYER QUESTION\n{message}\n\nINTENT: {decision.intent}\nGATEKEEPER BRIEF: {decision.research_brief}\n\n"
         f"RUN STATE\n{state_brief(ctx)}"

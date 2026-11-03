@@ -97,7 +97,7 @@ A code Verifier checks every pick and backup against the data before the answer 
 obtainable before before_battle, evolution reachable in time (no trade evolutions), key moves
 learnable by then, the player's rules, Gen III facts, and that every source id came from a tool.
 - steps: for next_steps/plan, ordered steps with detail and source_ids. For lookups, put the answer
-  in steps.
+  in steps. A fact taken from the run state's game line cites that line's source id (rules:game).
 - battle_notes: per relevant battle, the threat and how to handle it, with source_ids. Take type
   multipliers (2x, 4x, immune) from the battle finding's matchups; don't work them out yourself.
 - assumptions: what you assumed (from researcher findings and the run state).

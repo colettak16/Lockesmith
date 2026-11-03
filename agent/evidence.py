@@ -21,6 +21,7 @@ DECOMP_FILES = {
     "pokeruby": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers_en.h"},
 }
 TYPE_CHART_FILE = {"pokeemerald": "gTypeEffectiveness", "pokeruby": "data/type_effectiveness.inc"}
+AUDIT_REPORTS = "https://github.com/colettak16/Lockesmith/blob/main/docs/audit"
 CITE_RE = re.compile(r"\[\[([^\[\]]+?)\]\]")
 
 
@@ -60,6 +61,9 @@ def describe(source_id: str, game: Game = EMERALD) -> tuple[str, str | None]:
     if kind == "progression":
         return f"{game.progression_path.relative_to(ROOT).as_posix()}: {rest}", None
     if kind == "rules":
+        if rest == "game":  # agent/brief.py's game line; Ruby/Sapphire's field-ability rules are checked in the audit
+            url = f"{AUDIT_REPORTS}/engine.txt" if game.is_rs else None
+            return f"LockeSmith's {game.short} rules (agent/brief.py" + (", checked in docs/audit/engine.txt)" if url else ")"), url
         chart = f"Gen 3 type chart ({game.decomp} {TYPE_CHART_FILE[game.decomp]})"
         return {"gen3_type_chart": chart}.get(rest, f"rules: {rest}"), None
     if kind == "log":

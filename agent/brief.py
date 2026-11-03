@@ -22,6 +22,7 @@ RS_FIELD_ABILITIES = (
     "find an item, from one table at every level (Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full "
     "Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%). Emerald's table depends on level."
 )
+GAME_SOURCE = "rules:game"  # the line below, citable: the pipeline puts it in every request's ledger
 GAME_LINES = {
     "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
     "ruby": ("Game: Pokémon Ruby (Game Boy Advance, not Omega Ruby). The villain is Team Magma only; the 8th gym "
@@ -39,7 +40,7 @@ def state_brief(ctx: RequestContext) -> str:
     s = ctx.state
     p = ctx.progress if s.badges is not None else None
     lines = [
-        GAME_LINES[s.game],
+        f"{GAME_LINES[s.game]} [source id for this line: {GAME_SOURCE}]",
         f"Starter: {s.starter or 'not given'}. Rival: {s.rival or 'not given'}.",
         f"Badges held: {', '.join(s.badges) if s.badges else ('none yet' if s.badges == [] else 'not given')}.",
     ]
