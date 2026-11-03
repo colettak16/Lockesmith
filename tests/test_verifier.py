@@ -4,7 +4,7 @@ import pytest
 
 from agent.context import RequestContext
 from agent.db import connect_session, session_cursor
-from agent.schemas import Alternative, LeadDraft, Recommendation
+from agent.schemas import Alternative, BattleNote, LeadDraft, Recommendation, Step
 from agent.state import PartyMember, RunState, Ruleset
 from agent.verifier import CODES, ERROR, WARNING, check_pick, correct_places, promote_backups, verify
 
@@ -142,6 +142,43 @@ def test_wrong_type_claims_are_flagged(con):
     right = pick("Spheal", "gym8_juan", evolve_to="Walrein", why="It tanks Kingdra, resisting Water and taking 1/4x damage from Ice. "
                  "Their team is weak to Grass.")
     assert "TYPE_CLAIM_WRONG" not in found(ctx, right)
+
+
+def test_abilities_count_in_type_claims(con):
+    """Live Ruby run: Lanturn's Volt Absorb immunity to Electric was flagged as wrong. Live Sapphire
+    run: "With Volt Absorb, it resists or absorbs Water" wasn't flagged."""
+    ctx = ctx_for(con, badges=SIX_BADGES + ["mind"])
+    right = pick("Chinchou", "gym8_juan", evolve_to="Lanturn", why="Volt Absorb gives it immunity to Electric.")
+    assert "TYPE_CLAIM_WRONG" not in found(ctx, right)
+    wrong = pick("Chinchou", "gym8_juan", evolve_to="Lanturn", why="With Volt Absorb, it resists or absorbs Water.")
+    details = [v.detail for v in check_pick(ctx, wrong, "gym8_juan", 0, None) if v.code == "TYPE_CLAIM_WRONG"]
+    assert details == ['says Lanturn "absorbs Water", but none of its abilities (Illuminate, Volt Absorb) absorbs Water']
+    flygon = pick("Trapinch", "gym8_juan", evolve_to="Flygon", why="Levitate makes it immune to Ground.")
+    assert "TYPE_CLAIM_WRONG" not in found(ctx, flygon)
+
+
+def matchup_flags(ctx, note: str = "", step: str = "") -> list[str]:
+    draft = LeadDraft(intent="catch", headline="h", recommendations=[], assumptions=[], follow_up_questions=[], unresolved=[],
+                      battle_notes=[BattleNote(battle_id="gym8_juan", note=note, source_ids=CITED)] if note else [],
+                      steps=[Step(title="Prepare", detail=step, source_ids=CITED)] if step else [])
+    return [f"{v.species}: {v.detail}" for v in verify(ctx, draft) if v.code == "TYPE_CLAIM_WRONG"]
+
+
+def test_battle_notes_and_steps_are_checked_for_matchups(con):
+    """The live Ruby run's note said Ice Beam does 4x to Breloom (Grass/Fighting: 2x); the Writer
+    repeated it. The Sapphire run's notes were right, in several phrasings, and must pass."""
+    ctx = ctx_for(con)
+    assert matchup_flags(ctx, note="Milotic's Ice Beam hits Breloom for 4x damage and Swellow for 2x damage. "
+                                   "Sealeo's Aurora Beam also deals 2x damage to both.") == [
+        "gym8_juan: says Ice Beam does 4x to Breloom, but Ice does 2x to Grass/Fighting in Gen III"]
+    assert matchup_flags(ctx, note=(
+        "Wallace's Whiscash knows Earthquake (immune to Electric, 2x against Electric types), making it a severe "
+        "threat to Manectric. Use Sceptile's Leaf Blade (4x effective) to defeat it. Beware of Sealeo's Aurora Beam "
+        "and Milotic's Ice Beam, which deal 2x damage to Sceptile and Breloom. Whiscash is immune to Electric attacks "
+        "and packs Earthquake, which deals 2x damage to Manectric.")) == []
+    assert matchup_flags(ctx, step="Teach Thunderbolt: Electric does 2x to Kingdra and Whiscash resists Ground.") == [
+        'Prepare: says Whiscash "resists Ground", but Ground does 1x to Water/Ground in Gen III',
+        "Prepare: says Electric does 2x to Kingdra, but Electric does 1x to Water/Dragon in Gen III"]
 
 
 def test_every_code_is_exercised():

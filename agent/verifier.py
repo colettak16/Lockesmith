@@ -27,7 +27,7 @@ CODES = {
     "MOVE_UNVERIFIABLE": "relies on a move whose learnability the randomizer log changed in a part LockeSmith can't read",
     "GEN3_SPLIT_MISMATCH": "the move's category doesn't suit the Pokémon's stronger attacking stat",
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
-    "TYPE_CLAIM_WRONG": "states a type matchup for the pick that the Gen III type chart contradicts",
+    "TYPE_CLAIM_WRONG": "states a type matchup that the Gen III type chart and abilities contradict",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
     "NUZLOCKE_DUPE": "the dupes clause forbids it",
     "RULESET_TYPE_VIOLATION": "breaks the player's allowed or banned types",
@@ -71,8 +71,8 @@ def level_limit(ctx: RequestContext, battle_id: str) -> tuple[int | None, bool]:
 def species_row(cur, identifier: str) -> dict:
     return rows(
         cur,
-        "SELECT species_id, identifier, name, type1, type2, attack, sp_attack, is_legendary, is_mythical, "
-        "evolution_chain_id FROM species WHERE identifier = ?",
+        "SELECT species_id, identifier, name, type1, type2, ability1, ability2, attack, sp_attack, is_legendary, "
+        "is_mythical, evolution_chain_id FROM species WHERE identifier = ?",
         [identifier],
     )[0]
 
@@ -222,12 +222,10 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
                     WARNING)
 
     # --- type matchups it states ----------------------------------------------------------
-    forms = [[t for t in (sp["type1"], sp["type2"]) if t], [t for t in (form["type1"], form["type2"]) if t]]
-    for word, kind, attack in type_claims(text, {sp["name"], form["name"]}):
-        actual = [effectiveness(attack, types) for types in forms]
-        if not any(CLAIM_OK[kind](m) for m in actual):
-            add("TYPE_CLAIM_WRONG", f"says {form['name']} \"{word} {attack.title()}\", but {attack.title()} does "
-                f"{actual[-1]:g}x to {'/'.join(forms[-1]).title()} in Gen III", WARNING)
+    me = Target(form["name"], tuple(tuple(t for t in (r["type1"], r["type2"]) if t) for r in (sp, form)),
+                frozenset(a for r in (sp, form) for a in (r["ability1"], r["ability2"]) if a))
+    for detail in matchup_errors(ctx, text, me, frozenset({sp["name"], form["name"]})):
+        add("TYPE_CLAIM_WRONG", detail, WARNING)
 
     # --- citations -------------------------------------------------------------------
     if not pick.source_ids:
@@ -238,45 +236,227 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
     return out
 
 
+# --- type matchups the draft states -----------------------------------------------------------
+# Two shapes, in a pick's why/long-term text, the battle notes and the steps:
+#   "Lanturn resists Ice", "it double-resists Water", "Whiscash is immune to Electric": a claim word,
+#   then the types, about the Pokémon named before it (or the pick, for "it"/"its typing")
+#   "Ice Beam hits Breloom for 4x damage", "Earthquake deals 2x damage to Manectric", "2x against
+#   Electric types": a multiplier, read with the attack named before it and what it hits
+# Abilities count (Levitate, Volt Absorb, Thick Fat, ...). A claim that holds for any reading of the
+# sentence passes, so only clear mistakes are flagged.
+
 TYPE_RE = "|".join(TYPES)
-# "resists Ice", "double-resists Water", "immune to Ground", "neutral to both Ice and Water", "4x weak
-# to Grass", "taking 1/4x damage from Ice": the claim's word, then the one or two types it's about.
 CLAIM_RE = re.compile(
-    r"(?P<word>double[- ]resists?|resists?|resisting|immune to|immunity to|neutral to|neutral against|"
+    r"(?P<word>double[- ]resists?|resists?|resisting|immune to|immunity to|neutral to|neutral against|absorbs?|absorbing|"
     r"4x weak(?:ness)? to|quadruple weak(?:ness)? to|weak(?:ness)? to|(?:1/4x?|x?0\.25x?|a quarter)(?: damage)? from)"
-    rf"\s+(?:both\s+|all\s+)?(?P<t1>{TYPE_RE})(?:[- ]type)?(?:\s*(?:,|and|&|/|or)\s*(?P<t2>{TYPE_RE}))?",
+    # a second type, unless it starts a move's name ("immune to Ground and Ice Beam is ...")
+    rf"\s+(?:both\s+|all\s+)?(?P<t1>{TYPE_RE})(?:[- ]type)?(?:\s*(?:,|and|&|/|or)\s*(?P<t2>{TYPE_RE})(?-i:(?!\s+[A-Z])))?",
     re.I,
 )
+MULT_RE = re.compile(
+    r"(?<![\w./])(?:(?P<num>4|2|1|0\.5|1/2|0\.25|1/4)\s?[x×](?!\w)|(?P<word>quadruple|double|half|quarter)(?= damage)"
+    r"|(?P<se>super[- ]effective(?:ly)?)|(?P<nve>not very effective)|(?P<none>no effect)\b)",
+    re.I,
+)
+MULT_KIND = {"4": "4x", "2": "2x", "1": "neutral", "0.5": "half", "1/2": "half", "0.25": "quarter", "1/4": "quarter",
+             "quadruple": "4x", "double": "2x", "half": "half", "quarter": "quarter"}
+# A type named as the attack: "Electric attacks", "Ice-type moves", "STAB Grass", "Ice does 2x to ..."
+TYPE_ATTACK_RE = re.compile(
+    rf"\b(?P<t>{TYPE_RE})(?:[- ]type)?\s+(?:attacks?|moves?|STAB)\b|\bSTAB\s+(?P<s>{TYPE_RE})\b"
+    rf"|\b(?P<d>{TYPE_RE})\s+(?=(?:does|deals|hits)\b)",
+    re.I,
+)
+TARGETS_RE = re.compile(r"\s*(?:damage\s+)?(?:to|against|on)\s+(?:both\s+|all\s+)?", re.I)  # "... 2x damage to"
+OWNER_RE = re.compile(r"(?:[A-Z][\w.]*(?:'s|’s)\s+)?")  # "to Wallace's Milotic"
+TYPE_TARGET_RE = re.compile(rf"(?P<a>{TYPE_RE})(?:\s*/\s*(?P<b>{TYPE_RE}))?(?P<suffix>[- ]types?|[- ]type Pokémon| Pokémon)?(?!\w)", re.I)
+LIST_SEP_RE = re.compile(r"\s*(?:,\s*(?:and\s+|or\s+)?|and\s+|or\s+|&\s*)")
+# A later item in "to Sceptile and Breloom." ends the list or continues it; "to Kingdra and Whiscash
+# resists Ground" starts a new clause, so Whiscash isn't hit by the 2x
+LIST_END_RE = re.compile(r"\s*(?:[.,;:!?)]|$|and\b|or\b|&)")
 CLAIM_OK = {
     "quarter": lambda m: m == 0.25, "immune": lambda m: m == 0, "neutral": lambda m: m == 1,
-    "resist": lambda m: m < 1, "4x": lambda m: m == 4, "weak": lambda m: m >= 2,
+    "resist": lambda m: m < 1, "4x": lambda m: m == 4, "weak": lambda m: m >= 2, "2x": lambda m: m == 2,
+    "half": lambda m: m == 0.5, "super": lambda m: m >= 2, "not-very": lambda m: 0 < m < 1,
 }
 NOT_ABOUT_PICK = re.compile(r"\b(their|they|team|opponents?|enemy|foes?)\b", re.I)
+PICK_SUBJECT = re.compile(r"\b(it|its|it's|typing)\b", re.I)
+# What an ability does to an attacking type's multiplier in Gen III
+ABILITY_EFFECT = {
+    "levitate": lambda a, m: 0 if a == "ground" else m,
+    "volt-absorb": lambda a, m: 0 if a == "electric" else m,
+    "water-absorb": lambda a, m: 0 if a == "water" else m,
+    "flash-fire": lambda a, m: 0 if a == "fire" else m,
+    "thick-fat": lambda a, m: m / 2 if a in ("fire", "ice") else m,
+    "wonder-guard": lambda a, m: m if m >= 2 else 0,
+}
+ABSORBS = {"volt-absorb": "electric", "water-absorb": "water", "flash-fire": "fire"}
 
 
 def claim_kind(word: str) -> str:
     w = word.lower()
     for prefix, kind in (("double", "quarter"), ("1/4", "quarter"), ("x0.25", "quarter"), ("0.25", "quarter"),
                          ("a quarter", "quarter"), ("immun", "immune"), ("neutral", "neutral"), ("resist", "resist"),
-                         ("4x", "4x"), ("quadruple", "4x")):
+                         ("absorb", "absorb"), ("4x", "4x"), ("quadruple", "4x")):
         if w.startswith(prefix):
             return kind
     return "weak"
 
 
-def type_claims(text: str, names: set[str]) -> list[tuple[str, str, str]]:
-    """(claim word, kind, attacking type) for each matchup the text states about the pick itself.
-    The sentence has to be about it (its name, "it", "its", "typing") and not about the
-    opponents ("their team is weak to ...")."""
-    subject = re.compile(r"\b(it|its|it's|typing|" + "|".join(re.escape(n) for n in names) + r")\b", re.I)
+def mult_kind(m: re.Match) -> str:
+    if m["num"] or m["word"]:
+        return MULT_KIND[(m["num"] or m["word"]).lower()]
+    return "super" if m["se"] else "not-very" if m["nve"] else "immune"
+
+
+def ability_name(identifier: str) -> str:
+    return identifier.replace("-", " ").title()
+
+
+@dataclass(frozen=True)
+class Target:
+    """What a matchup is stated about: a Pokémon (a pick counts as itself or its evolution) or a type."""
+    name: str
+    typings: tuple[tuple[str, ...], ...]
+    abilities: frozenset[str] = frozenset()
+
+    def takes(self, attack: str) -> list[float]:
+        """Every multiplier `attack` can do to it, with each of its abilities."""
+        out = []
+        for types in self.typings:
+            m = effectiveness(attack, list(types))
+            out += [m] + [ABILITY_EFFECT[a](attack, m) for a in self.abilities if a in ABILITY_EFFECT]
+        return out
+
+    def holds(self, kind: str, attack: str) -> bool:
+        if kind == "absorb":
+            return any(ABSORBS.get(a) == attack for a in self.abilities)
+        return any(CLAIM_OK[kind](m) for m in self.takes(attack))
+
+    def actual(self, attack: str) -> str:
+        """What `attack` really does to it, for the Writer."""
+        types = list(self.typings[-1])
+        chart = effectiveness(attack, types)
+        out = f"{attack.title()} does {chart:g}x to {'/'.join(types).title()} in Gen III"
+        changed = [f"{ABILITY_EFFECT[a](attack, chart):g}x with {ability_name(a)}" for a in sorted(self.abilities)
+                   if a in ABILITY_EFFECT and ABILITY_EFFECT[a](attack, chart) != chart]
+        return out + (f" ({'; '.join(changed)})" if changed else "")
+
+
+_NAMES: dict[str, tuple[re.Pattern, dict[str, str], re.Pattern, dict[str, str]]] = {}
+
+
+def name_patterns(ctx: RequestContext) -> tuple[re.Pattern, dict[str, str], re.Pattern, dict[str, str]]:
+    """Regexes that find species and damaging-move names in free text, and name -> identifier.
+    Case-sensitive: drafts capitalize names, and that keeps prose like "counter" or "return" out."""
+    if ctx.game.id not in _NAMES:
+        cur = ctx.cursor()
+        species = {name: i for i, name in cur.execute("SELECT identifier, name FROM species").fetchall()}
+        moves: dict[str, str] = {}
+        for i, name in cur.execute(
+            "SELECT identifier, name FROM moves WHERE power > 1 AND damage_class IN ('physical', 'special')"
+        ).fetchall():
+            moves[name] = i
+            moves.setdefault(name.replace(" ", ""), i)  # the Gen III spellings: SolarBeam, ThunderPunch
+
+        def pattern(names) -> re.Pattern:
+            return re.compile(r"(?<!\w)(" + "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True)) + r")(?!\w)")
+        _NAMES[ctx.game.id] = (pattern(species), species, pattern(moves), moves)
+    return _NAMES[ctx.game.id]
+
+
+def species_target(ctx: RequestContext, identifier: str) -> Target:
+    r = rows(ctx.cursor(), "SELECT name, type1, type2, ability1, ability2 FROM species WHERE identifier = ?", [identifier])[0]
+    return Target(r["name"], (tuple(t for t in (r["type1"], r["type2"]) if t),), frozenset(a for a in (r["ability1"], r["ability2"]) if a))
+
+
+def matchup_errors(ctx: RequestContext, text: str, pick: Target | None = None, pick_names: frozenset[str] = frozenset()) -> list[str]:
+    """What's wrong with each type matchup `text` states, as "says ..., but ..." for the Writer."""
+    species_re, species_ids, move_re, move_ids = name_patterns(ctx)
+    targets: dict[str, Target] = {}
+
+    def named(name: str) -> Target:
+        if name in pick_names and pick:
+            return pick
+        if name not in targets:
+            targets[name] = species_target(ctx, species_ids[name])
+        return targets[name]
+
+    moves_ok = not unread(ctx, "move_data")
     out = []
     for sentence in re.split(r"(?<=[.;!?])\s+", text):
+        masked = sentence
         for m in CLAIM_RE.finditer(sentence):
             before = sentence[: m.start()]
-            if not subject.search(before) or NOT_ABOUT_PICK.search(before):
+            cands = [named(s.group(1)) for s in species_re.finditer(before)]
+            if pick and PICK_SUBJECT.search(before) and not NOT_ABOUT_PICK.search(before):
+                cands.append(pick)
+            masked = masked[: m.start()] + " " * (m.end() - m.start()) + masked[m.end():]  # not an attack below
+            if not cands:
                 continue
-            out += [(m["word"].lower(), claim_kind(m["word"]), t.lower()) for t in (m["t1"], m["t2"]) if t]
+            kind, word = claim_kind(m["word"]), m["word"].lower()
+            for attack in (t.lower() for t in (m["t1"], m["t2"]) if t):
+                if not any(c.holds(kind, attack) for c in cands):
+                    t = cands[-1]
+                    out.append(f"says {t.name} \"{word} {attack.title()}\", but " + (
+                        f"none of its abilities ({', '.join(ability_name(a) for a in sorted(t.abilities))}) absorbs {attack.title()}"
+                        if kind == "absorb" else t.actual(attack)))
+
+        attacks = []  # (start, end, label, type)
+        if moves_ok:
+            for mv in move_re.finditer(masked):
+                row = rows(ctx.cursor(), "SELECT type FROM moves WHERE identifier = ?", [move_ids[mv.group(1)]])[0]
+                attacks.append((mv.start(), mv.end(), mv.group(1), row["type"]))
+        for ta in TYPE_ATTACK_RE.finditer(masked):
+            t = (ta["t"] or ta["s"] or ta["d"]).lower()
+            attacks.append((ta.start(), ta.end(), t.title(), t))
+        attacks.sort()
+        mentions = [(s.start(), s.end(), s.group(1)) for s in species_re.finditer(masked)
+                    if not masked.startswith(("'s", "’s"), s.end())]  # "Milotic's Ice Beam": the attacker
+        prev = 0
+        for mm in MULT_RE.finditer(masked):
+            since = [a for a in attacks if prev <= a[0] < mm.start()]
+            used = since or [a for a in attacks if a[0] < mm.start()][-1:]
+            if not used:
+                prev = mm.end()
+                continue
+            hit, end = targets_after(sentence, mm.end(), species_re)  # unmasked: same positions, full clauses
+            if not hit:  # "Ice Beam hits Breloom for 4x damage"
+                start = max(prev, used[-1][1])
+                hit = [("species", s[2]) for s in mentions if s[0] >= start and s[1] <= mm.start()]
+            kind = mult_kind(mm)
+            claim = (f"does {mm.group(0)}{' damage' if mm['word'] else ''} to" if mm["num"] or mm["word"]
+                     else f"is {mm.group(0).lower()} against")
+            for what, value in hit:
+                t = named(value) if what == "species" else Target(f"{'/'.join(value).title()} types", (tuple(value),))
+                if not any(t.holds(kind, a[3]) for a in used):
+                    out.append(f"says {used[-1][2]} {claim} {t.name}, but {t.actual(used[-1][3])}")
+            prev = max(mm.end(), end)
     return out
+
+
+def targets_after(text: str, pos: int, species_re: re.Pattern) -> tuple[list[tuple[str, object]], int]:
+    """What a multiplier says it hits, from "to/against ..." right after it: Pokémon or types."""
+    lead = TARGETS_RE.match(text, pos)
+    if not lead:
+        return [], pos
+    out, p, end = [], lead.end(), pos
+    while True:
+        q = OWNER_RE.match(text, p).end()
+        if m := species_re.match(text, q):
+            item = ("species", m.group(1))
+        elif (m := TYPE_TARGET_RE.match(text, q)) and (m["suffix"] or m.group(0)[0].isupper()):
+            item = ("types", [t.lower() for t in (m["a"], m["b"]) if t])
+        else:
+            break
+        if out and not LIST_END_RE.match(text, m.end()):
+            break
+        out.append(item)
+        end = m.end()
+        sep = LIST_SEP_RE.match(text, end)
+        if not sep:
+            break
+        p = sep.end()
+    return out, end
 
 
 def verify(ctx: RequestContext, draft: LeadDraft) -> list[Violation]:
@@ -296,6 +476,8 @@ def verify(ctx: RequestContext, draft: LeadDraft) -> list[Violation]:
         missing = [s for s in item.source_ids if s not in ctx.ledger]
         if missing:
             out.append(Violation("CITATION_NOT_IN_EVIDENCE", ERROR, label, f"no tool returned {', '.join(missing[:3])}"))
+        text = getattr(item, "note", None) or f"{getattr(item, 'title', '')}. {getattr(item, 'detail', '')}"
+        out += [Violation("TYPE_CLAIM_WRONG", WARNING, label, d) for d in matchup_errors(ctx, text)]
     return out
 
 

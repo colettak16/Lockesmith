@@ -444,3 +444,25 @@ The Gen 3 correction layer and its tests therefore apply as they stand, and `tes
 - deploying the two new databases (about 7 MB each) and `data/guide_rs`
 
 Tests: 332 pass, 5 skipped. New ones are in `tests/test_rs_facts.py`, `test_progression_rs.py`, `test_rs_agent.py` and `test_rs_randomizer.py`.
+
+## D14. Ruby/Sapphire live runs and the fixes they prompted (2026-11-03)
+
+D13's first and last open items are done: both databases are deployed, and the two Ruby/Sapphire examples ran live (`docs/samples/`, `docs/baseline/`). Their story facts checked out against the databases: Wallace's team, Groudon's Lv45 against Milotic's 43, and Courtney before Maxie in Seafloor Cavern. Three problems turned up, each now fixed in code.
+
+- **The Clarifier asked when nothing was missing.** A live Sapphire run had the starter, six badges and a party, and the Clarifier still asked where the player was and which routes they'd used, with no Nuzlocke on. Now:
+  - When the starter, badges and party are all set, its "ask" is overridden. The research trace shows it as `ask_overridden`.
+  - Its prompt rules out asking about story position or used routes.
+- **The baseline was told the wrong game.** `scripts/baseline.py` opened every prompt with "I'm playing Pokémon Emerald", so the Sapphire baseline answered for Emerald. It now names the example's game; the Emerald prompts are unchanged.
+- **Wrong multipliers in battle notes and ability claims.**
+  - The Ruby run's battle note said Ice Beam does 4x to Breloom (Grass/Fighting: 2x), and the Writer repeated it. D12's check read only the picks' own text, so notes weren't checked.
+  - The Sapphire run said Chinchou's Volt Absorb "absorbs Water".
+  - The original Ruby draft's correct "Lanturn has immunity to Electric" (Volt Absorb) was flagged as wrong, because the check knew only the type chart.
+
+  `TYPE_CLAIM_WRONG` now does three things:
+  - It reads battle notes and steps as well as picks.
+  - It reads claims about any Pokémon named before the claim word, not just the pick.
+  - It reads multiplier phrasing: "Ice Beam hits Breloom for 4x damage", "Earthquake deals 2x damage to Manectric", "2x against Electric types", "super-effective", "not very effective".
+
+  Abilities count: Levitate, Volt/Water Absorb, Flash Fire, Thick Fat and Wonder Guard. A claim that holds under any reading of its sentence passes, so only clear mistakes go to the Writer as corrections.
+
+  Run over the 9 saved drafts, it flags exactly the two real errors and nothing else.
