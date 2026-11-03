@@ -138,7 +138,7 @@ def move_info(ctx: Ctx, name: str) -> str:
 @function_tool
 def get_learnset(ctx: Ctx, species: str, max_level: int | None = None) -> str:
     """Level-up moves up to a level (and the next few), the default moveset at that level,
-    TM/HM compatibility and Hoenn tutor moves for a species.
+    TM/HM compatibility and move tutors for a species.
 
     Args:
         species: Species name.

@@ -70,7 +70,7 @@ def move_info(ctx: RequestContext, name: str) -> dict:
 
 def learnset(ctx: RequestContext, species: str, max_level: int | None = None) -> dict:
     """Level-up moves up to max_level (plus the next few), the default moveset at that level,
-    TM/HM compatibility and Hoenn move-tutor compatibility."""
+    TM/HM compatibility and the game's move-tutor compatibility (with what a tutor needs, if anything)."""
     sid = resolve(ctx, species, "species")
     cur = ctx.cursor()
     level_up = rows(
@@ -92,7 +92,7 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
     )
     tutors = rows(
         cur,
-        "SELECT DISTINCT m.name, m.type, t.location, l.source_id FROM learnsets l JOIN move_tutors t USING (move_id) "
+        "SELECT DISTINCT m.name, m.type, t.location, t.requires, l.source_id FROM learnsets l JOIN move_tutors t USING (move_id) "
         "JOIN moves m USING (move_id) JOIN species s USING (species_id) WHERE s.identifier = ? AND l.method = 'tutor'",
         [sid],
     )
@@ -103,12 +103,12 @@ def learnset(ctx: RequestContext, species: str, max_level: int | None = None) ->
         "next_level_up": [{k: r[k] for k in ("level", "name", "type", "source_id")} for r in level_up if r["level"] > cap][:4],
         "default_moveset_at_level": [names[m] for m in known],
         "tm_hm": [{k: r[k] for k in ("label", "name", "type", "damage_class", "power", "source_id")} for r in machines],
-        "hoenn_tutors": tutors,
+        "tutors": tutors,
     }
     # A randomized run whose log changed parts LockeSmith doesn't read: say so instead of answering from vanilla
     unknown = {}
     for kind, keys in (("movesets", ("level_up", "next_level_up", "default_moveset_at_level")),
-                       ("tm_compatibility", ("tm_hm",)), ("tutor_compatibility", ("hoenn_tutors",))):
+                       ("tm_compatibility", ("tm_hm",)), ("tutor_compatibility", ("tutors",))):
         if why := unread(ctx, kind):
             unknown[kind] = why
             for k in keys:

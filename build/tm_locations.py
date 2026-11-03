@@ -123,6 +123,13 @@ THIRSTY_GIRL = (
     "machines (the drink is in `detail`), once per drink"
 )
 FRLG_REQUIRES = {(tm, "gift", CELADON_ROOF): THIRSTY_GIRL for tm in ("TM16", "TM20", "TM33")}
+# FireRed/LeafGreen tutors with a gate the map data shows only as a blocking object
+FRLG_TUTOR_REQUIRES = {
+    "SaffronCity_CopycatsHouse_2F": (
+        "a Rocket stands below the Copycat's door (SaffronCity map.json (22,15), FLAG_HIDE_SAFFRON_ROCKETS) until "
+        "Giovanni leaves Silph Co."
+    ),
+}
 # Cape Brink (Two Island) teaches the lead Pokemon its starter's ultimate move (field_specials.c)
 CAPE_BRINK = "TwoIsland_CapeBrink_House"
 CAPE_BRINK_MOVES = {"MOVE_FRENZY_PLANT": "Venusaur", "MOVE_BLAST_BURN": "Charizard", "MOVE_HYDRO_CANNON": "Blastoise"}
@@ -272,7 +279,7 @@ def extract_tutors(decomp_dir: Path, version: str | None = None) -> list[tuple[s
         path = Path(decomp_dir) / "data" / "maps" / m["folder"] / "scripts.inc"
         refs = set(re.findall(r"\w+", path.read_text(encoding="utf-8"))) if path.exists() else set()
         refs |= {e.get("script") for key in ("object_events", "coord_events", "bg_events") for e in m.get(key) or []}
-        out += [(m["folder"], move, None) for label, move in tutors.items() if label in refs]
+        out += [(m["folder"], move, FRLG_TUTOR_REQUIRES.get(m["folder"])) for label, move in tutors.items() if label in refs]
     found = {move for _, move, _ in out}
     assert found == set(tutors.values()), f"tutors no map calls: {sorted(set(tutors.values()) - found)}"
     specials = decomp.read(decomp_dir, "src/field_specials.c")

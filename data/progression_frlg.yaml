@@ -135,8 +135,7 @@ battles:
     hm_gates_open: []
     key_items: [old-rod]
     areas_new: [ss-anne]
-    notes: "Needs the S.S. Ticket from Bill. The Captain gives HM01 Cut afterwards; the ship leaves once you disembark."
-    review: "S.S. Anne (and its fishing rows) close after you leave the ship: add a `closes` entry once confirmed in the scripts."
+    notes: "Needs the S.S. Ticket from Bill. The Captain gives HM01 Cut afterwards; the ship leaves once you disembark, and with it the dock's fishing (see closes)."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_6#Vermilion_Harbor"
 
   - id: gym3_lt_surge
@@ -217,7 +216,7 @@ battles:
     key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod]
     areas_new: [kanto-route-12, kanto-route-13, kanto-route-14, kanto-route-15, kanto-route-16, kanto-route-17, kanto-route-18, fuchsia-city, kanto-safari-zone]
     notes: "Koffing 37, Muk 39, Koffing 37, Weezing 43. TM06 Toxic. Fuchsia is past a Snorlax either way (Route 12 from Lavender, or Route 16 and Cycling Road from Celadon): wake one with the Poké Flute. The Safari Zone gives HM03 Surf (Secret House) and the Gold Teeth for HM04 Strength (the Warden)."
-    review: "Good Rod (Fuchsia) and Super Rod (Route12_FishingHouse) locations and reachability; Strength listed here since the Rainbow Badge is held."
+    review: "Strength listed here since the Rainbow Badge is held and the Warden is in Fuchsia. Rods confirmed in the decomp: Old Rod VermilionCity_House1, Good Rod FuchsiaCity_House2, Super Rod Route12_FishingHouse."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_10#Fuchsia_Gym"
 
   - id: rival6_silph
@@ -235,8 +234,7 @@ battles:
     hm_gates_open: [cut, flash, fly, strength, surf]
     key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea]
     areas_new: [saffron-city/fighting-dojo, kanto-sea-route-19, kanto-sea-route-20, kanto-sea-route-21, seafoam-islands, kanto-power-plant, cinnabar-island, pokemon-mansion]
-    notes: "Saffron's gatehouses let you in once you give a guard Tea (Celadon Condominiums 1F). The Fighting Dojo gives Hitmonlee or Hitmonchan after its master. With Surf (Soul Badge): the sea routes to Cinnabar, Seafoam Islands (Articuno; Strength boulders), and the Power Plant (Zapdos, two Electrode) by Route 10's water."
-    review: "Is the Fighting Dojo open while Rockets hold Saffron? Seafoam/Power Plant could be listed earlier by Surf timing only — fine as is."
+    notes: "Saffron's gatehouses let you in once you give a guard Tea (Celadon Condominiums 1F). The Fighting Dojo is open during the Rocket takeover (no Rocket below its door) and gives Hitmonlee or Hitmonchan after its master; the Copycat's house (Mimic tutor) has a Rocket at its door until Silph Co. is cleared. With Surf (Soul Badge): the sea routes to Cinnabar, Seafoam Islands (Articuno; Strength boulders), and the Power Plant (Zapdos, two Electrode) by Route 10's water."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#Silph_Co."
 
   - id: boss2_silph_co
@@ -413,6 +411,9 @@ battles:
     areas_new: []
     notes: "Pidgeot 59, Alakazam 57, Rhydon 59, two of Gyarados/Arcanine/Exeggutor, and the rival's starter at 63."
     source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Champion"
+
+closes:
+  - {area: ss-anne, after: rival4_ss_anne, reason: "the S.S. Anne leaves when you step off with HM01 (VAR_MAP_SCENE_VERMILION_CITY = 3); after that Vermilion's harbor sailor turns you away unless you have a Sevii pass, so the dock's fishing (SSAnne_Exterior) is only before the ship's rival"}
 
 never_reachable:
   - {area: pallet-town, methods: [gift], reason: "the starter is your choice at Oak's Lab, not a catch"}

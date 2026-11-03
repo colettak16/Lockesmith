@@ -127,7 +127,7 @@ def install(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str) -> 
         if tutors:
             con.execute("""
                 CREATE OR REPLACE VIEW memory.main.move_tutors AS
-                SELECT coalesce(r.new_move_id, t.move_id) AS move_id, t.map, t.map_folder, t.mapsec, t.location, t.one_time,
+                SELECT coalesce(r.new_move_id, t.move_id) AS move_id, t.map, t.map_folder, t.mapsec, t.location, t.one_time, t.requires,
                        coalesce(r.source_id, t.source_id) AS source_id
                 FROM base.move_tutors t LEFT JOIN memory.main.log_move_remap r ON r.kind = 'tutor' AND r.old_move_id = t.move_id
             """)
@@ -145,7 +145,7 @@ def install(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str) -> 
 
 
 def install_move_remap(con: duckdb.DuckDBPyConnection, log: RandomizerLog, log_id: str) -> None:
-    """Vanilla move -> randomized move for each TM and Hoenn tutor the log changed."""
+    """Vanilla move -> randomized move for each TM and move tutor the log changed."""
     move_ids = dict(con.execute("SELECT identifier, move_id FROM base.moves").fetchall())
     tm_moves = dict(con.execute("SELECT label, move_id FROM base.machines").fetchall())
     rows = [("machine", tm_moves[label], move_ids[new], f"log:tm#{label}") for label, new in log.tm_moves.items()
