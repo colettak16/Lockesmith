@@ -12,8 +12,9 @@ Any LiteLLM model string works. Vertex calls use Application Default Credentials
 VERTEXAI_PROJECT / VERTEXAI_LOCATION (defaults: lockesmith, global).
 
 Rate limits: Vertex serves these models from shared capacity, so bursts of parallel
-researchers get "429 Resource exhausted". Rather than wait that out, a rate-limited call
-goes straight to the fallback model, which has its own capacity (docs/decisions.md D10).
+researchers get "429 Resource exhausted". Rather than wait that out, a rate-limited Flash call
+goes straight to the fallback model, which has its own capacity (docs/decisions.md D10). The
+Lead's Pro calls are retried first (RETRY_PRIMARY_S), since their fallback is a weaker model.
 Stalls: a fast-tier call with no answer after HEDGE_AFTER_S is also sent to the fallback
 model, and whichever answers first is used (docs/decisions.md D15).
 """
@@ -61,6 +62,10 @@ CALL_TIMEOUT_S = {"fast": 25, "strong": 60}
 # The original keeps running, so a long answer that's nearly done still finishes. Pro isn't hedged:
 # it hasn't stalled, and its fallback is a weaker model.
 HEDGE_AFTER_S = {"fast": 12}
+# The Lead plans the research and drafts the picks, so it should stay on Pro: a rate-limited Pro call
+# is retried after each of these waits (a 429 comes back in under a second, and the shared capacity
+# frees up quickly), and a stalled one is retried once, before either goes to Flash.
+RETRY_PRIMARY_S = {"strong": (1, 2, 4, 8)}
 
 
 def model_name(tier: str) -> str:
@@ -73,12 +78,32 @@ def model_name(tier: str) -> str:
 
 class FallbackModel(LitellmModel):
     """A LiteLLM model that sends a rate-limited or stalled call to a second model instead of
-    waiting. With `hedge_after`, a call still unanswered by then races the second model too."""
+    waiting. With `hedge_after`, a call still unanswered by then races the second model too.
+    With `retry_waits`, the first model is retried while rate-limited (and once after a stall)
+    before the second is used."""
 
-    def __init__(self, model: str, fallback: str | None, hedge_after: float | None = None):
+    def __init__(self, model: str, fallback: str | None, hedge_after: float | None = None,
+                 retry_waits: tuple[float, ...] = ()):
         super().__init__(model=model)
         self.fallback = LitellmModel(model=fallback) if fallback and fallback != model else None
         self.hedge_after = hedge_after
+        self.retry_waits = retry_waits
+
+    async def _primary_response(self, *args, **kwargs):
+        waits, stalled = list(self.retry_waits), False
+        while True:
+            try:
+                return await super().get_response(*args, **kwargs)
+            except RateLimitError:
+                if not waits:
+                    raise
+                wait = waits.pop(0)
+            except Timeout:
+                if not self.retry_waits or stalled:
+                    raise
+                stalled, wait = True, 0
+            log.warning("no answer from %s; trying it again in %ss", self.model, wait)
+            await asyncio.sleep(wait)
 
     async def _fallback_response(self, *args, **kwargs):
         response = await self.fallback.get_response(*args, **kwargs)
@@ -87,8 +112,8 @@ class FallbackModel(LitellmModel):
 
     async def get_response(self, *args, **kwargs):
         if self.fallback is None:
-            return await super().get_response(*args, **kwargs)
-        primary = asyncio.ensure_future(super().get_response(*args, **kwargs))
+            return await self._primary_response(*args, **kwargs)
+        primary = asyncio.ensure_future(self._primary_response(*args, **kwargs))
         running = {primary}
         try:
             done, _ = await asyncio.wait(running, timeout=self.hedge_after)
@@ -119,7 +144,7 @@ def make_agent(name: str, instructions: str, tier: str, tools=(), output_type=No
     return Agent(
         name=name,
         instructions=instructions,
-        model=FallbackModel(model_name(tier), model_name("fallback"), HEDGE_AFTER_S.get(tier)),
+        model=FallbackModel(model_name(tier), model_name("fallback"), HEDGE_AFTER_S.get(tier), RETRY_PRIMARY_S.get(tier, ())),
         model_settings=ModelSettings(reasoning=Reasoning(effort=effort) if effort else None, retry=RETRY,
                                      extra_args={"timeout": CALL_TIMEOUT_S.get(tier, 60)}),
         tools=list(tools),

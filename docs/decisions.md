@@ -492,3 +492,8 @@ Fixes:
 - **The Verifier:** its extended matchup check (D14) caught a new wrong claim, "Magneton resists Water" (Water does 1x to Electric/Steel).
 
 One run each can't separate the fixes from Vertex's load that day. The 25 s timeout cost is gone by construction; the latency gain needs more runs to measure.
+
+**The Lead stays on Pro.** In the post-fix Ruby run, one 429 on Pro sent a Lead call to Flash. That was D10's rule for every tier, but the Lead plans the research and drafts the picks, so the user wants it on Pro wherever possible.
+- A rate-limited Pro call is now retried after 1, 2, 4 and 8 s, about 15 s at most, before Flash. A 429 comes back in under a second.
+- A stalled Pro call (60 s) is retried once. Pro hasn't stalled in any recorded call, and one retry still fits the 270 s request budget.
+- Flash calls still fall back at once.
