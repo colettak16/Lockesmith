@@ -128,7 +128,7 @@ def trainer_team(ctx: RequestContext, battle_ref: str) -> dict:
     teams: dict[str, dict] = {}
     for m in mons:
         t = teams.setdefault(
-            m["trainer_const"], {"trainer": f"{m['class_name']} {m['trainer_name']}", "trainer_const": m["trainer_const"], "pokemon": []}
+            m["trainer_const"], {"trainer": f"{m['class_name']} {m['trainer_name']}".strip(), "trainer_const": m["trainer_const"], "pokemon": []}
         )
         t["pokemon"].append(
             {

@@ -22,6 +22,27 @@ RS_FIELD_ABILITIES = (
     "find an item, from one table at every level (Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full "
     "Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%). Emerald's table depends on level."
 )
+# FireRed/LeafGreen's engine checks the same two abilities (pokefirered wild_encounter.c; nothing in
+# field_player_avatar.c or daycare.c), and its Pickup has its own table (battle_script_commands.c
+# sPickupItems), the only source of TM10 in those games.
+FRLG_FIELD_ABILITIES = (
+    "A lead Pokémon's ability changes wild encounters only through the encounter rate (Stench lowers it, "
+    "Illuminate raises it): Synchronize, Cute Charm, Magnet Pull, Static, Intimidate, Keen Eye, Compound Eyes, "
+    "Suction Cups, Flame Body and the other field effects start in Emerald, so don't suggest them here. Pickup "
+    "works: after each battle you win, every party Pokémon with Pickup holding nothing has a 10% chance to find "
+    "an item: Oran Berry 15%; Cheri, Chesto, Pecha, Rawst, Aspear and Persim Berry 10% each; TM10 Hidden Power, "
+    "PP Up, Rare Candy and Nugget 5% each; Spelon, Pamtre, Watmel, Durin and Belue Berry 1% each. Pickup is the "
+    "only way to get TM10 here."
+)
+FRLG_COMMON = (
+    "Region: Kanto. The rival picks the starter strong against yours, and their team follows it all game; the "
+    "rival is the Champion. Team Rocket's boss Giovanni is fought at the Rocket Hideout and Silph Co. and is the "
+    "8th gym leader (Viridian). Before the National Dex, which comes after the Hall of Fame, no Pokémon can evolve "
+    "into a species past #151 (no Crobat, Bellossom, Politoed, Slowking, Steelix, Scizor, Kingdra, Blissey, "
+    "Porygon2), and Espeon and Umbreon never evolve (no clock). The Sevii Islands 1-3 trip Bill offers after Blaine "
+    "is optional, Islands 4-7 are postgame, and the PC is off on the islands. Move tutors teach once each. Wild "
+    "Pokémon differ between FireRed and LeafGreen: trust the tools. " + FRLG_FIELD_ABILITIES
+)
 GAME_SOURCE = "rules:game"  # the line below, citable: the pipeline puts it in every request's ledger
 GAME_LINES = {
     "emerald": "Game: Pokémon Emerald. Teams Magma and Aqua both appear; the 8th gym leader is Juan and the Champion is Wallace.",
@@ -33,6 +54,8 @@ GAME_LINES = {
                  "8th gym leader is Wallace and the Champion is Steven; there are no move tutors; Kyogre (Lv45) is a "
                  "required battle in the Cave of Origin before the 8th gym; Sky Pillar and Rayquaza are postgame. "
                  "Teams and encounters differ from Emerald's: trust the tools, not Emerald memory. " + RS_FIELD_ABILITIES),
+    "firered": "Game: Pokémon FireRed (the Game Boy Advance remake of Red, not Let's Go). " + FRLG_COMMON,
+    "leafgreen": "Game: Pokémon LeafGreen (the Game Boy Advance remake of Green, not Let's Go). " + FRLG_COMMON,
 }
 
 

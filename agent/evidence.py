@@ -19,8 +19,9 @@ LOCK = ROOT / "data" / "sources.lock.json"
 DECOMP_FILES = {
     "pokeemerald": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers.h"},
     "pokeruby": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers_en.h"},
+    "pokefirered": {"trainer_parties.h": "src/data/trainer_parties.h", "trainers.h": "src/data/trainers.h"},
 }
-TYPE_CHART_FILE = {"pokeemerald": "gTypeEffectiveness", "pokeruby": "data/type_effectiveness.inc"}
+TYPE_CHART_FILE = {"pokeemerald": "gTypeEffectiveness", "pokeruby": "data/type_effectiveness.inc", "pokefirered": "gTypeEffectiveness"}
 AUDIT_REPORTS = "https://github.com/colettak16/Lockesmith/blob/main/docs/audit"
 CITE_RE = re.compile(r"\[\[([^\[\]]+?)\]\]")
 

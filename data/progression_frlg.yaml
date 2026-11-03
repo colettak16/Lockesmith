@@ -1,0 +1,453 @@
+# LockeSmith progression file for Pokémon FireRed and LeafGreen (docs/decisions.md D16)
+#
+# The ordered story steps from the first rival fight to the Champion, shared by both versions
+# (a value written as {firered: ..., leafgreen: ...} would be resolved per version; none is needed
+# yet: the versions differ in wild tables, trades and prizes, which the databases hold).
+#
+# How it was drafted (DRAFT, before review rounds)
+#   - Battles and trainer constants: every trainerbattle in pokefirered's map scripts that names a
+#     leader, Elite Four member, champion, rival or Giovanni. Rival constants are named after the
+#     RIVAL's starter (TRAINER_RIVAL_OAKS_LAB_BULBASAUR has a Bulbasaur), and the rival takes the
+#     starter strong against the player's: Bulbasaur player -> *_CHARMANDER, Charmander -> *_SQUIRTLE,
+#     Squirtle -> *_BULBASAUR (PalletTown_ProfessorOaksLab's RivalApproachForBattle branches).
+#   - Order: Bulbapedia's walkthrough (data/guide_frlg), with the gates read from the decomp:
+#       * HMs work outside battle with FLAG_BADGE01_GET + field move (party_menu.c): Flash Boulder,
+#         Cut Cascade, Fly Thunder, Strength Rainbow, Surf Soul, Rock Smash Marsh, Waterfall Volcano.
+#       * Viridian Gym opens with badges 2-7 (ViridianCity_EventScript_TryUnlockGym; Boulder isn't
+#         checked); Route 23 has a guard per badge (Route23 coord events); Saffron's four gatehouses
+#         want Tea (Celadon Condominiums 1F); a Rocket stands on the tile below Sabrina's door
+#         (SaffronCity map.json (46,13), FLAG_HIDE_SAFFRON_ROCKETS) until Giovanni at Silph Co. 11F.
+#       * The late Route 22 rival is armed by Viridian Gym (VAR_MAP_SCENE_ROUTE22 = 3) and its
+#         trigger tiles span the path to Route 23; the early one is a detour (scene 1).
+#       * The Sevii errand is optional: Bill's offer on Cinnabar can be declined
+#         (CinnabarIsland_EventScript_DeclineSailToOneIsland). Once on One Island the ferry offers
+#         Vermilion only after Bill brings you back (VAR_MAP_SCENE_CINNABAR_ISLAND = 4,
+#         seagallop.inc EventScript_ChooseDestFromOneIsland), i.e. after Lostelle's rescue and the
+#         Meteorite; PC storage is off on the islands until postgame (FLAG_SYS_PC_STORAGE_DISABLED).
+#   - Same rules as Emerald's file: an area is listed at the first battle it can be reached before,
+#     having fought only the battles above it; hm_gates_open and key_items are cumulative.
+#   - `review:` marks what still needs checking against map connections or the review rounds.
+#
+# Before the National Dex (postgame), evolutions past #151 are cancelled: agent/games.py
+# evolution_limit, not this file.
+
+version: 1
+
+battles:
+  - id: rival1_oaks_lab
+    order: 1
+    label: "Oak's Lab: Rival (first battle)"
+    badges_before: 0
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_OAKS_LAB_CHARMANDER
+      charmander: TRAINER_RIVAL_OAKS_LAB_SQUIRTLE
+      squirtle: TRAINER_RIVAL_OAKS_LAB_BULBASAUR
+    battle_format: single
+    optional: false
+    location: pallet-town
+    hm_gates_open: []
+    key_items: []
+    areas_new: []
+    notes: "The rival's Lv5 starter has the type advantage. No Poké Balls yet: Viridian's mart sells them only after you deliver Oak's Parcel."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_1#Professor_Oak's_Lab"
+
+  - id: rival2_route22
+    order: 2
+    label: "Route 22: Rival (optional)"
+    badges_before: 0
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_ROUTE22_EARLY_CHARMANDER
+      charmander: TRAINER_RIVAL_ROUTE22_EARLY_SQUIRTLE
+      squirtle: TRAINER_RIVAL_ROUTE22_EARLY_BULBASAUR
+    battle_format: single
+    optional: true
+    location: kanto-route-22
+    hm_gates_open: []
+    key_items: []
+    areas_new: [pallet-town/main, kanto-route-1, viridian-city, kanto-route-22, kanto-route-2/south-towards-viridian-city, viridian-forest]
+    notes: "Route 22 is a detour west of Viridian (the League gate needs all eight badges), so this fight is optional (VAR_MAP_SCENE_ROUTE22 = 1 after Oak's Parcel)."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_2#Route_22"
+
+  - id: gym1_brock
+    order: 3
+    label: "Pewter Gym: Brock"
+    badges_before: 0
+    trainer_consts: [TRAINER_LEADER_BROCK]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: pewter-city
+    hm_gates_open: []
+    key_items: []
+    areas_new: []
+    notes: "Geodude 12, Onix 14. TM39 Rock Tomb. The Boulder Badge lets Flash work outside battle."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_3#Pewter_Gym"
+
+  - id: rival3_cerulean
+    order: 4
+    label: "Cerulean City: Rival"
+    badges_before: 1
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_CERULEAN_CHARMANDER
+      charmander: TRAINER_RIVAL_CERULEAN_SQUIRTLE
+      squirtle: TRAINER_RIVAL_CERULEAN_BULBASAUR
+    battle_format: single
+    optional: false
+    location: cerulean-city
+    hm_gates_open: []
+    key_items: []
+    areas_new: [kanto-route-3, kanto-route-4/main, kanto-route-4/pokemon-center, mt-moon, cerulean-city]
+    notes: "Mt. Moon's fossil choice (Helix or Dome) comes before this fight; Route 4's Pokémon Center sells a Magikarp (Route4_PokemonCenter_1F)."
+    review: "Mt. Moon's Super Nerd and Rocket fights aren't modelled as steps; check none gates an area."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_5#Cerulean_City"
+
+  - id: gym2_misty
+    order: 5
+    label: "Cerulean Gym: Misty"
+    badges_before: 1
+    trainer_consts: [TRAINER_LEADER_MISTY]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: cerulean-city
+    hm_gates_open: []
+    key_items: [old-rod]
+    areas_new: [kanto-route-24, kanto-route-25, kanto-route-5, kanto-underground-path, kanto-route-6, vermilion-city, kanto-route-11, digletts-cave, kanto-route-2/north-towards-pewter-city]
+    notes: "Staryu 18, Starmie 21. TM03 Water Pulse. Nugget Bridge (Route 24) and Bill (Route 25, S.S. Ticket) follow the Cerulean rival. South of Cerulean, the Underground Path leads to Vermilion (Old Rod from the Fishing Guru) and Route 11 to Diglett's Cave, whose west end is Route 2's north part (Mr. Mime trade)."
+    review: "Route 5 / Underground Path / Vermilion / Diglett's Cave reachable before Misty? (no gate found yet in the scripts)."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_5#Cerulean_Gym"
+
+  - id: rival4_ss_anne
+    order: 6
+    label: "S.S. Anne: Rival"
+    badges_before: 2
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_SS_ANNE_CHARMANDER
+      charmander: TRAINER_RIVAL_SS_ANNE_SQUIRTLE
+      squirtle: TRAINER_RIVAL_SS_ANNE_BULBASAUR
+    battle_format: single
+    optional: false
+    location: ss-anne
+    hm_gates_open: []
+    key_items: [old-rod]
+    areas_new: [ss-anne]
+    notes: "Needs the S.S. Ticket from Bill. The Captain gives HM01 Cut afterwards; the ship leaves once you disembark."
+    review: "S.S. Anne (and its fishing rows) close after you leave the ship: add a `closes` entry once confirmed in the scripts."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_6#Vermilion_Harbor"
+
+  - id: gym3_lt_surge
+    order: 7
+    label: "Vermilion Gym: Lt. Surge"
+    badges_before: 2
+    trainer_consts: [TRAINER_LEADER_LT_SURGE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: vermilion-city
+    hm_gates_open: [cut, flash]
+    key_items: [old-rod]
+    areas_new: [kanto-route-9, kanto-route-10, rock-tunnel, kanto-route-8, kanto-route-7, celadon-city/main, celadon-city/celadon-mansion, celadon-city/prize-corner]
+    notes: "Voltorb 21, Pikachu 18, Raichu 24. TM34 Shock Wave. A Cut tree stands in front of the gym. With Cut, Route 9 (east of Cerulean) leads to Rock Tunnel and Lavender, and Routes 7-8 to Celadon (the Underground Path bypasses Saffron, whose gates want Tea)."
+    review: "Flash: HM05 from Oak's aide in Route 2's east building (needs 10 species caught) — confirm its map is reachable here."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_6#Vermilion_Gym"
+
+  - id: gym4_erika
+    order: 8
+    label: "Celadon Gym: Erika"
+    badges_before: 3
+    trainer_consts: [TRAINER_LEADER_ERIKA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: celadon-city
+    hm_gates_open: [cut, flash, fly]
+    key_items: [old-rod]
+    areas_new: []
+    notes: "Victreebel 29, Tangela 24, Vileplume 29. TM19 Giga Drain. Fly (HM02, Route 16's house west of Celadon) works with the Thunder Badge."
+    review: "Route 16's house and grass: reachable without the Poké Flute (Snorlax blocks Route 16's gatehouse)? kanto-route-16 is listed at Koga for now."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_9#Celadon_Gym"
+
+  - id: boss1_rocket_hideout
+    order: 9
+    label: "Rocket Hideout: Giovanni"
+    badges_before: 4
+    trainer_consts: [TRAINER_BOSS_GIOVANNI]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: celadon-city
+    hm_gates_open: [cut, flash, fly]
+    key_items: [old-rod]
+    areas_new: []
+    notes: "Under Celadon's Game Corner (Lift Key on B4F). Beating Giovanni gives the Silph Scope, which identifies the ghosts in Pokémon Tower."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_9#Rocket_Hideout"
+
+  - id: rival5_pokemon_tower
+    order: 10
+    label: "Pokémon Tower: Rival"
+    badges_before: 4
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_POKEMON_TOWER_CHARMANDER
+      charmander: TRAINER_RIVAL_POKEMON_TOWER_SQUIRTLE
+      squirtle: TRAINER_RIVAL_POKEMON_TOWER_BULBASAUR
+    battle_format: single
+    optional: false
+    location: pokemon-tower
+    hm_gates_open: [cut, flash, fly]
+    key_items: [old-rod, silph-scope]
+    areas_new: [pokemon-tower]
+    notes: "Ghosts can't be identified (or caught) without the Silph Scope. On 6F the Marowak ghost is a scripted battle (StartMarowakBattle) that can't be caught; past it, Mr. Fuji gives the Poké Flute."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_9#Pokemon_Tower"
+
+  - id: gym5_koga
+    order: 11
+    label: "Fuchsia Gym: Koga"
+    badges_before: 4
+    trainer_consts: [TRAINER_LEADER_KOGA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: fuchsia-city
+    hm_gates_open: [cut, flash, fly, strength]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod]
+    areas_new: [kanto-route-12, kanto-route-13, kanto-route-14, kanto-route-15, kanto-route-16, kanto-route-17, kanto-route-18, fuchsia-city, kanto-safari-zone]
+    notes: "Koffing 37, Muk 39, Koffing 37, Weezing 43. TM06 Toxic. Fuchsia is past a Snorlax either way (Route 12 from Lavender, or Route 16 and Cycling Road from Celadon): wake one with the Poké Flute. The Safari Zone gives HM03 Surf (Secret House) and the Gold Teeth for HM04 Strength (the Warden)."
+    review: "Good Rod (Fuchsia) and Super Rod (Route12_FishingHouse) locations and reachability; Strength listed here since the Rainbow Badge is held."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_10#Fuchsia_Gym"
+
+  - id: rival6_silph
+    order: 12
+    label: "Silph Co.: Rival"
+    badges_before: 5
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_SILPH_CHARMANDER
+      charmander: TRAINER_RIVAL_SILPH_SQUIRTLE
+      squirtle: TRAINER_RIVAL_SILPH_BULBASAUR
+    battle_format: single
+    optional: false
+    location: saffron-city
+    hm_gates_open: [cut, flash, fly, strength, surf]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea]
+    areas_new: [saffron-city/fighting-dojo, kanto-sea-route-19, kanto-sea-route-20, kanto-sea-route-21, seafoam-islands, kanto-power-plant, cinnabar-island, pokemon-mansion]
+    notes: "Saffron's gatehouses let you in once you give a guard Tea (Celadon Condominiums 1F). The Fighting Dojo gives Hitmonlee or Hitmonchan after its master. With Surf (Soul Badge): the sea routes to Cinnabar, Seafoam Islands (Articuno; Strength boulders), and the Power Plant (Zapdos, two Electrode) by Route 10's water."
+    review: "Is the Fighting Dojo open while Rockets hold Saffron? Seafoam/Power Plant could be listed earlier by Surf timing only — fine as is."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#Silph_Co."
+
+  - id: boss2_silph_co
+    order: 13
+    label: "Silph Co. 11F: Giovanni"
+    badges_before: 5
+    trainer_consts: [TRAINER_BOSS_GIOVANNI_2]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: saffron-city
+    hm_gates_open: [cut, flash, fly, strength, surf]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key]
+    areas_new: [saffron-city/silph-co-7f]
+    notes: "The Card Key (5F) opens Silph Co.'s doors. An employee on 7F gives a Lapras; the president gives the Master Ball after Giovanni, and Saffron's street Rockets leave (FLAG_HIDE_SAFFRON_ROCKETS)."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#Silph_Co."
+
+  - id: gym6_sabrina
+    order: 14
+    label: "Saffron Gym: Sabrina"
+    badges_before: 5
+    trainer_consts: [TRAINER_LEADER_SABRINA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: saffron-city
+    hm_gates_open: [cut, flash, fly, strength, surf]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key]
+    areas_new: []
+    notes: "Kadabra 38, Mr. Mime 37, Venomoth 38, Alakazam 43. TM04 Calm Mind. A Rocket blocks the gym door until Giovanni leaves Silph Co."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_11#Saffron_Gym"
+
+  - id: gym7_blaine
+    order: 15
+    label: "Cinnabar Gym: Blaine"
+    badges_before: 6
+    trainer_consts: [TRAINER_LEADER_BLAINE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: cinnabar-island
+    hm_gates_open: [cut, flash, fly, strength, surf]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: [cinnabar-island/cinnabar-lab]
+    notes: "Growlithe 42, Ponyta 40, Rapidash 42, Arcanine 47. TM38 Fire Blast. The gym needs the Secret Key from the Pokémon Mansion's basement. The lab revives fossils (Old Amber from Pewter's museum, Helix or Dome from Mt. Moon) and has three trades."
+    review: "Cinnabar Lab (fossils, trades) is reachable as soon as Cinnabar is; listed here for now."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_13#Cinnabar_Gym"
+
+  - id: sevii_berry_forest
+    order: 16
+    label: "Sevii Islands: Berry Forest's Hypno (optional errand)"
+    badges_before: 7
+    trainer_consts: []
+    wild: {species: hypno, level: 30}
+    starter_variants: null
+    battle_format: single
+    optional: true
+    location: berry-forest
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key, tri-pass]
+    areas_new: [one-island, kindle-road, treasure-beach, mt-ember/main, mt-ember/cave, mt-ember/inside, mt-ember/summit, two-island, cape-brink, three-isle-port, bond-bridge, berry-forest]
+    notes: "After Blaine, Bill offers a trip to One Island; you can decline and come back later. On the islands: Rock Smash (HM06, Kindle Road's Ember Spa), Moltres at Mt. Ember's summit, the Cape Brink tutor (starter's ultimate move, friendship 255), the Three Island bikers, and Lostelle in Berry Forest, kidnapped by a Hypno. The ferry back to Vermilion opens only after Bill brings you home, and the PC is off on the islands."
+    review: "Mt. Ember's PokeAPI areas match the decomp's wild tables by species: main = Exterior, cave/inside = Summit Path floors, summit = Summit (Moltres); the Ruby Path (1F cave, B1F-B3F) is postgame. Does the Summit Path need Strength or Rock Smash? Can Fly leave the islands before the errand is done?"
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_14#One_Island"
+
+  - id: gym8_giovanni
+    order: 17
+    label: "Viridian Gym: Giovanni"
+    badges_before: 7
+    trainer_consts: [TRAINER_LEADER_GIOVANNI]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: viridian-city
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Rhyhorn 45, Dugtrio 42, Nidoqueen 44, Nidoking 45, Rhyhorn 50. TM26 Earthquake. The gym opens with the Cascade through Volcano Badges (ViridianCity_EventScript_TryUnlockGym)."
+    review: "rock-smash is in hm_gates_open only if the Sevii errand was done (HM06 is on Kindle Road)."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_15#Viridian_Gym"
+
+  - id: rival7_route22
+    order: 18
+    label: "Route 22: Rival (before the League)"
+    badges_before: 8
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_RIVAL_ROUTE22_LATE_CHARMANDER
+      charmander: TRAINER_RIVAL_ROUTE22_LATE_SQUIRTLE
+      squirtle: TRAINER_RIVAL_ROUTE22_LATE_BULBASAUR
+    battle_format: single
+    optional: false
+    location: kanto-route-22
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Armed by Viridian Gym (VAR_MAP_SCENE_ROUTE22 = 3); the trigger tiles cross the path to Route 23."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_16#Route_22"
+
+  - id: e4_lorelei
+    order: 19
+    label: "Elite Four: Lorelei"
+    badges_before: 8
+    trainer_consts: [TRAINER_ELITE_FOUR_LORELEI]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: indigo-plateau
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: [kanto-route-23, kanto-victory-road-2]
+    notes: "Dewgong 52, Cloyster 51, Slowbro 52, Jynx 54, Lapras 54. Route 23's guards check each badge; Victory Road needs Strength."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Lorelei"
+
+  - id: e4_bruno
+    order: 20
+    label: "Elite Four: Bruno"
+    badges_before: 8
+    trainer_consts: [TRAINER_ELITE_FOUR_BRUNO]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: indigo-plateau
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Onix 51, Hitmonchan 53, Hitmonlee 53, Onix 54, Machamp 56."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Bruno"
+
+  - id: e4_agatha
+    order: 21
+    label: "Elite Four: Agatha"
+    badges_before: 8
+    trainer_consts: [TRAINER_ELITE_FOUR_AGATHA]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: indigo-plateau
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Gengar 54, Golbat 54, Haunter 53, Arbok 56, Gengar 58."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Agatha"
+
+  - id: e4_lance
+    order: 22
+    label: "Elite Four: Lance"
+    badges_before: 8
+    trainer_consts: [TRAINER_ELITE_FOUR_LANCE]
+    starter_variants: null
+    battle_format: single
+    optional: false
+    location: indigo-plateau
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Gyarados 56, Dragonair 54, Dragonair 54, Aerodactyl 58, Dragonite 60."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Lance"
+
+  - id: champion
+    order: 23
+    label: "Champion: Rival"
+    badges_before: 8
+    trainer_consts: null
+    starter_variants:
+      bulbasaur: TRAINER_CHAMPION_FIRST_CHARMANDER
+      charmander: TRAINER_CHAMPION_FIRST_SQUIRTLE
+      squirtle: TRAINER_CHAMPION_FIRST_BULBASAUR
+    battle_format: single
+    optional: false
+    location: indigo-plateau
+    hm_gates_open: [cut, flash, fly, strength, surf, rock-smash]
+    key_items: [old-rod, silph-scope, poke-flute, good-rod, super-rod, tea, card-key, secret-key]
+    areas_new: []
+    notes: "Pidgeot 59, Alakazam 57, Rhydon 59, two of Gyarados/Arcanine/Exeggutor, and the rival's starter at 63."
+    source: "guide:Walkthrough:Pokemon_FireRed_and_LeafGreen/Part_17#Champion"
+
+never_reachable:
+  - {area: pallet-town, methods: [gift], reason: "the starter is your choice at Oak's Lab, not a catch"}
+  - {area: kanto-route-3/pokemon-center, reason: "PokeAPI duplicate: the Magikarp salesman is in Route 4's Pokémon Center (Route4_PokemonCenter_1F); Route 3 has none"}
+  - {area: kanto-pokecenter, reason: "the Japanese Colosseum bonus disc, not part of the game"}
+  - {area: cerulean-cave, reason: "postgame: the guard steps aside once Celio's network machine works, after the Sevii Islands' Ruby and Sapphire quests (OneIsland_PokemonCenter_1F)"}
+  - {area: roaming-kanto, reason: "postgame: the roaming beast starts when Celio's network machine works (special InitRoamer)"}
+  - {area: navel-rock, reason: "event-only: needs the MysticTicket"}
+  - {area: birth-island, reason: "event-only: needs the AuroraTicket"}
+  - {area: kanto-altering-cave, reason: "postgame (Six Island), and only one table without a Mystery Gift"}
+  - {area: water-labyrinth, reason: "postgame: Five Island needs the Rainbow Pass"}
+  - {area: four-island, reason: "postgame: Islands 4-7 need the Rainbow Pass, given after the Hall of Fame"}
+  - {area: icefall-cave, reason: "postgame (Four Island)"}
+  - {area: five-island, reason: "postgame (Rainbow Pass)"}
+  - {area: five-isle-meadow, reason: "postgame (Rainbow Pass)"}
+  - {area: memorial-pillar, reason: "postgame (Rainbow Pass)"}
+  - {area: resort-gorgeous, reason: "postgame (Rainbow Pass)"}
+  - {area: water-path, reason: "postgame (Rainbow Pass)"}
+  - {area: ruin-valley, reason: "postgame (Rainbow Pass)"}
+  - {area: green-path, reason: "postgame (Rainbow Pass)"}
+  - {area: outcast-island, reason: "postgame (Rainbow Pass)"}
+  - {area: pattern-bush, reason: "postgame (Rainbow Pass)"}
+  - {area: lost-cave, reason: "postgame (Rainbow Pass)"}
+  - {area: canyon-entrance, reason: "postgame (Rainbow Pass)"}
+  - {area: sevault-canyon, reason: "postgame (Rainbow Pass)"}
+  - {area: tanoby-ruins, reason: "postgame (Rainbow Pass)"}
+  - {area: monean-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: liptoo-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: weepth-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: dilford-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: scufib-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: rixy-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: viapos-chamber, reason: "postgame (Tanoby Ruins)"}
+  - {area: trainer-tower, reason: "postgame (Seven Island)"}
+  - {area: mt-ember/1f-cave-behind-team-rocket, reason: "postgame: the caves open for the Ruby quest (VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F >= 4, MtEmber_Exterior)"}
+  - {area: mt-ember/b1f, reason: "postgame: the Ruby quest's caves"}
+  - {area: mt-ember/b2f, reason: "postgame: the Ruby quest's caves"}
+  - {area: mt-ember/b3f, reason: "postgame: the Ruby quest's caves"}

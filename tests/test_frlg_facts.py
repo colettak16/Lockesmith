@@ -112,7 +112,8 @@ def test_game_corner_prizes_differ_by_version(db, game):
 
 
 def test_every_tm_and_hm_has_a_source_but_dive_and_tm10(db):
-    """FireRed/LeafGreen have no Dive, and no script, mart or map in pokefirered gives TM10."""
+    """FireRed/LeafGreen have no Dive, and no script, mart or map gives TM10: it only comes from Pickup
+    (battle_script_commands.c sPickupItems, 5%), which the game line in agent/brief.py says."""
     missing = rows(db, "SELECT label FROM machines WHERE label NOT IN (SELECT label FROM tm_locations) ORDER BY label")
     assert missing == [("HM08",), ("TM10",)]
 

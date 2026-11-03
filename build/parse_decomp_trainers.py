@@ -102,6 +102,11 @@ def parse_parties_rs(decomp_dir: Path) -> dict[str, list[dict]]:
     return parties
 
 
+# pokefirered's rival and Champion trainers, whose name in battle is the one the player gave the rival
+# (PLACEHOLDER_ID_RIVAL)
+RIVAL_NAMED_BY_PLAYER = ("TRAINER_CLASS_RIVAL_EARLY", "TRAINER_CLASS_RIVAL_LATE", "TRAINER_CLASS_CHAMPION")
+
+
 def parse_trainers(decomp_dir: Path) -> list[dict]:
     rs = decomp.is_rs(decomp_dir)
     ids = {k: v for k, v in decomp.defines(decomp_dir, "include/constants/opponents.h").items() if k.startswith("TRAINER_")}
@@ -113,6 +118,8 @@ def parse_trainers(decomp_dir: Path) -> list[dict]:
         party = re.search(r"\b(sParty_\w+|gTrainerParty_\w+)\b", f.get("party", ""))
         name = re.search(r'_\("([^"]*)"\)', f["trainerName"]).group(1)
         trainer_class = f.get("trainerClass", "TRAINER_CLASS_NONE")  # pokefirered's TRAINER_NONE has only a name
+        if trainer_class in RIVAL_NAMED_BY_PLAYER and decomp.family(decomp_dir) == "frlg":
+            name = ""  # the stored "TERRY" never shows: battles print the rival's name (battle_message.c)
         out.append(
             {
                 "trainer_id": ids[const],
