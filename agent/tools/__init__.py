@@ -188,7 +188,7 @@ def _query_db(ctx: Ctx, sql_query: str) -> str:
 
 
 _query_db.__doc__ = (
-    "Read-only SQL over the player's game database (Emerald, Ruby or Sapphire), for questions the other tools don't cover. "
+    "Read-only SQL over the player's game database (Emerald, Ruby, Sapphire, FireRed or LeafGreen), for questions the other tools don't cover. "
     "One SELECT only, at most 50 rows.\n\n" + sql.SCHEMA + "\n\nArgs:\n    sql_query: A single SELECT statement."
 )
 query_db = function_tool(_query_db, name_override="query_db")

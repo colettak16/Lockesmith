@@ -188,7 +188,7 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
         record(ctx, "clarifier", "ask_overridden", {"reply": decision.reply}, "starter, badges and party are known; researching")
         decision = decision.model_copy(update={"action": "proceed", "reply": "", "research_brief": decision.research_brief or message})
     if decision.action == "ask" or (missing and decision.intent != "lookup"):
-        return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing),
+        return {"response": decision.reply if decision.action == "ask" and decision.reply else missing_question(missing, ctx.game.cast.starters),
                 "plan": None, "intent": "clarify"}
 
     # The game line of the brief is a source in its own right: rules questions can be answered from it
