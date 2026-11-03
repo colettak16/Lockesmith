@@ -1,22 +1,23 @@
 # LockeSmith
 
-**A deep research agent for Pokémon Emerald, Ruby and Sapphire runs.** Tell it which game you're playing and where you are, and it researches what to catch next, what to do next, or how to get through the rest of the game. It checks every recommendation against that game's own data and cites it.
+**A deep research agent for Pokémon Emerald, Ruby, Sapphire, FireRed and LeafGreen runs.** Tell it which game you're playing and where you are, and it researches what to catch next, what to do next, or how to get through the rest of the game. It checks every recommendation against that game's own data and cites it.
 
 **Live:** https://lockesmith-816944548222.us-east4.run.app (Columbia accounts, through IAP) · **Course:** IEOR E4570 Agentic AI, Project 2, Deep Research path
 
 ## Who it's for
 
-Players partway through Emerald, Ruby or Sapphire (the Game Boy Advance games), especially challenge runs:
+Players partway through Emerald, Ruby, Sapphire, FireRed or LeafGreen (the Game Boy Advance games), especially challenge runs:
 - **Normal runs:** "What should I catch to get through Tate & Liza?"
 - **Nuzlocke and custom rules:** one encounter per area, dupes clause, level caps, single-type runs, no legendaries, or any rule you type in plain words.
 - **Randomized runs:** upload your Universal Pokémon Randomizer ZX spoiler log, and every answer uses *your* game's teams, encounters, TMs and evolutions.
 
 Base models know Pokémon broadly and get the specifics wrong:
-- The three games differ more than they look:
+- The games differ more than they look:
   - Emerald's eighth gym leader is Juan; Ruby/Sapphire's is Wallace, whose Champion is Steven.
   - Every gym team differs between the games.
   - Ruby fights only Team Magma, Sapphire only Team Aqua.
   - In Ruby/Sapphire, Groudon or Kyogre is a required Lv45 battle before the eighth gym.
+  - FireRed/LeafGreen cancel every evolution past #151 (Crobat, Steelix, Kingdra, Blissey, ...) until the postgame National Dex, and their wild Pokémon differ by version.
 - Gen III decides physical vs special by a move's *type*, so Crunch is special and Sharpedo's 120 Attack can't use its own STAB.
 - There's no Fairy type.
 - Exact encounter tables, which areas a Nuzlocke has left, and anything in a randomized game.
@@ -67,15 +68,16 @@ Researchers use **composite tools** (`scout_battle`, `get_catchable`, `moves_out
 
 ## Data
 
-Built offline into one database per game, `data/emerald.duckdb`, `data/ruby.duckdb` and `data/sapphire.duckdb` (about 7 MB each, committed), by `uv run python build/build_db.py` (all three, or one with `--game ruby`). Sources are fetched at pinned commits (`data/sources.lock.json`) by `build/fetch_sources.py`. The three share one schema, and a session reads the database of its run's game.
+Built offline into one database per game, `data/emerald.duckdb`, `ruby`, `sapphire`, `firered` and `leafgreen` (about 7 MB each, committed), by `uv run python build/build_db.py` (every game, or one with `--game firered`). Sources are fetched at pinned commits (`data/sources.lock.json`) by `build/fetch_sources.py`. They share one schema, and a session reads the database of its run's game.
 
 | Source | What it gives | Version / license |
 |---|---|---|
 | [pret/pokeemerald](https://github.com/pret/pokeemerald) decompilation | Ground truth for Emerald: every trainer team (levels, held items, custom moves, AI), wild encounter tables and their ROM order, TM/HM and move-tutor locations with what each needs (HMs, keys, side quests), static-encounter conditions, the friendship threshold | commit `731ad5bf`; decompiled game code, used as reference data |
 | [pret/pokeruby](https://github.com/pret/pokeruby) decompilation | The same for Ruby and Sapphire. It builds either game from one tree, and the build reads each version's own wild tables, script branches and `constants/version.inc` aliases (e.g. Maxie vs. Archie at Mt. Chimney). | commit `5784633c`; decompiled game code, used as reference data |
+| [pret/pokefirered](https://github.com/pret/pokefirered) decompilation | The same for FireRed and LeafGreen, from one tree with pokeemerald's layout: each version's wild tables, trades and Game Corner prizes, Kanto's move tutors (Cape Brink's included), and the National Dex evolution gate | commit `ce6406d8`; decompiled game code, used as reference data |
 | [PokeAPI](https://github.com/PokeAPI/pokeapi) CSVs | Species, moves, Gen III learnsets, evolutions, encounter rows, the type chart | commit `6b8db7f3`; BSD-3-Clause, data from the games |
-| Bulbapedia's [Emerald](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald) and [Ruby and Sapphire](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Ruby_and_Sapphire) walkthroughs | 400 and 392 passages for story steps and route context, searched with BM25; Ruby/Sapphire passages are tagged with the version they describe | CC BY-NC-SA 2.5, attributed in every citation |
-| `data/progression.yaml` and `data/progression_rs.yaml` (hand-built, reviewed) | The story battles in order (32 in Emerald, 29 steps in Ruby/Sapphire), what each opens (areas, HMs, key items, encounter methods) and each game's quirks (deferred gyms, double battles, rival variants; in Ruby/Sapphire the forced legendary and the story events that gate areas) | cites the decomp and walkthrough per entry; the Ruby/Sapphire file went through two review rounds (`docs/review_packet_rs.md`) |
+| Bulbapedia's [Emerald](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Emerald), [Ruby and Sapphire](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Ruby_and_Sapphire) and [FireRed and LeafGreen](https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_FireRed_and_LeafGreen) walkthroughs | 400, 392 and 360 passages for story steps and route context, searched with BM25; passages of a version pair are tagged with the version they describe | CC BY-NC-SA 2.5, attributed in every citation |
+| `data/progression.yaml`, `progression_rs.yaml` and `progression_frlg.yaml` (hand-built, reviewed) | The story battles in order (32 in Emerald, 29 steps in Ruby/Sapphire, 26 in FireRed/LeafGreen), what each opens (areas, HMs, key items, encounter methods) and each game's quirks (deferred gyms, double battles, rival variants; in Ruby/Sapphire the forced legendary and the story events that gate areas) | cites the decomp and walkthrough per entry; the Ruby/Sapphire and FireRed/LeafGreen files went through review rounds (`docs/review_packet_rs.md`, `docs/review_packet_frlg*.md`) |
 | Your randomizer log (optional upload) | Randomized wild sets, trainer teams, TM and tutor moves, stats and types, evolutions, starters, statics | parsed per session into views over the vanilla tables (`agent/overlay.py`) |
 
 **PokeAPI is corrected to Gen III where it reflects later games** (`build/gen3_corrections.py`, tested in `tests/test_gen3_facts.py`), with the decomp as ground truth:
@@ -84,13 +86,13 @@ Built offline into one database per game, `data/emerald.duckdb`, `data/ruby.duck
 - no Fairy type
 - the 220 friendship threshold, not 160
 - regional and Gen IV evolutions removed
-- PokeAPI's wrong static encounters fixed (duplicated and misplaced Voltorb and Electrode in all three games)
+- PokeAPI's wrong static encounters fixed (duplicated and misplaced Voltorb and Electrode in the Hoenn games)
 
-Ruby and Sapphire need no extra Gen III rules. Their species, moves, type chart, learnsets (except event-only Deoxys) and evolutions match Emerald's, which `tests/test_rs_facts.py` checks against pokeruby. [docs/decisions.md](docs/decisions.md) ("Data findings" and D13) lists what the cross-checks found. To load the data yourself: `uv sync`, then open a database in DuckDB (`duckdb data/sapphire.duckdb`), or rebuild with the commands above (`build/build_guide_corpus.py` rebuilds the walkthrough passages).
+Ruby and Sapphire need no extra Gen III rules. Their species, moves, type chart, learnsets (except event-only Deoxys) and evolutions match Emerald's, which `tests/test_rs_facts.py` checks against pokeruby. FireRed and LeafGreen add one: before the National Dex, no evolution goes past #151 (`agent/games.py` `evolution_limit`, from `evolution_scene.c`); `tests/test_frlg_facts.py` checks their databases against pokefirered. [docs/decisions.md](docs/decisions.md) ("Data findings", D13 and D16) lists what the cross-checks found. To load the data yourself: `uv sync`, then open a database in DuckDB (`duckdb data/sapphire.duckdb`), or rebuild with the commands above (`build/build_guide_corpus.py` rebuilds the walkthrough passages).
 
 ## Sample queries
 
-Each sample is one click on the site: **Examples 1, 2 and 3** (marked ★) under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. All three are Emerald runs. The example list also has a Sapphire catch plan and a Ruby Nuzlocke question; their answers and baselines are in [docs/samples/](docs/samples/) and [docs/baseline/](docs/baseline/), not in the table. For each sample, the table below gives:
+Each sample is one click on the site: **Examples 1, 2 and 3** (marked ★) under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. All three are Emerald runs. The example list also has a Sapphire catch plan and a Ruby Nuzlocke question, whose answers and baselines are in [docs/samples/](docs/samples/) and [docs/baseline/](docs/baseline/), and a FireRed catch plan and a LeafGreen evolution question; none of them is in the table. For each sample, the table below gives:
 - the **expected answer**, generated from the database by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md))
 - the **baseline**: Gemini 3.1 Pro, the Lead's model, with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py), full answers in [docs/baseline/](docs/baseline/))
 - **LockeSmith's answer** ([`scripts/run_samples.py`](scripts/run_samples.py), full answers and traces in [docs/samples/](docs/samples/))
@@ -147,7 +149,7 @@ Each became a new code check: `correct_places` rewrites wrong "where" lines from
 ## What it can't answer
 
 It says so instead of guessing:
-- **Other games, ROM hacks and the postgame.** This includes FireRed/LeafGreen, the 3DS remakes Omega Ruby and Alpha Sapphire, the Battle Frontier and the Battle Tower. "What's the best EV spread for Garchomp in Sword?" is declined, with what it does cover.
+- **Other games, ROM hacks and the postgame.** This includes Red/Blue/Yellow, the 3DS remakes Omega Ruby and Alpha Sapphire, Let's Go, the Battle Frontier, the Battle Tower and FireRed/LeafGreen's Sevii Islands 4-7. "What's the best EV spread for Garchomp in Sword?" is declined, with what it does cover.
 - **Exact damage.** Matchups use the type chart and levels, not the damage formula, so "does X one-shot Y?" can only get a type-and-level answer.
 - **Randomizer data it can't read yet.** If a log randomized level-up movesets, TM compatibility or move data, those tools refuse rather than answer from the vanilla game, the Verifier marks the affected moves as unverifiable, and the answer says what's unknown. Its parser follows UPR ZX's source code, and it reads which game a log is from out of the log's footer. No real Emerald, Ruby or Sapphire log has been through it yet, so the sample log is hand-made in that format.
 - **Vague questions without a run.** "What should I catch?" with no starter or badges gets a question back, not a guess.
@@ -201,7 +203,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 395 tests (5 wait for a real randomizer log), no model calls
+uv run pytest                           # 451 tests (5 wait for a real randomizer log), no model calls
 ```
 
 Scripts:
@@ -215,4 +217,4 @@ Deployment (Cloud Run, continuous deploy from GitHub, IAP, Vertex AI permissions
 
 ## Credits
 
-Built by kc3936 for IEOR E4570, with Claude Code. Pokémon and Pokémon Emerald, Ruby and Sapphire are © Nintendo, Game Freak and Creatures. This is a non-commercial course project. Walkthrough text is from Bulbapedia (CC BY-NC-SA 2.5); species and move data are from PokeAPI; game data is from the pret/pokeemerald and pret/pokeruby decompilations.
+Built by kc3936 for IEOR E4570, with Claude Code. Pokémon and Pokémon Emerald, Ruby, Sapphire, FireRed and LeafGreen are © Nintendo, Game Freak and Creatures. This is a non-commercial course project. Walkthrough text is from Bulbapedia (CC BY-NC-SA 2.5); species and move data are from PokeAPI; game data is from the pret/pokeemerald, pret/pokeruby and pret/pokefirered decompilations.
