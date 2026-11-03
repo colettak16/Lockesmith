@@ -1,9 +1,11 @@
-"""Parse a Universal Pokemon Randomizer ZX spoiler log for Emerald (PLAN.md section 4.5).
+"""Parse a Universal Pokemon Randomizer ZX spoiler log for Emerald, Ruby or Sapphire
+(PLAN.md section 4.5). The log's footer says which game it's from (`detect_game`).
 
 The line formats follow UPR ZX's own logging code (Randomizer.java's log* methods,
 TrainerPokemon.toString, StaticEncounter.toString and Gen3RomHandler's set names),
-but no real Emerald log has been run through it yet (tests/fixtures/ is empty), so
-each section parser is tolerant and records anything it can't read in `warnings`.
+but no real log from any of the three has been run through it yet (tests/fixtures/
+is empty), so each section parser is tolerant and records anything it can't read in
+`warnings`.
 
 A log only has sections for what was randomized, but a missing section doesn't
 always mean vanilla: UPR also prints status lines between sections ("Pokemon
@@ -15,7 +17,7 @@ into per-session tables that the tools read in preference to vanilla.
 
 Wild sets are pinned to exact maps by position: UPR walks the ROM's wild-header
 table in order (grass, surf, rock smash, fishing per header), and `wild_headers`
-in emerald.duckdb holds that order. When a set's name or method disagrees with the
+in each game's database holds that order. When a set's name or method disagrees with the
 expected header, the parser falls back to a name lookup and says so.
 """
 

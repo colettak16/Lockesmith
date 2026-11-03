@@ -195,7 +195,9 @@ def test_trace_tags_and_pseudonymous_users():
 
     session = SESSIONS.get("p-tags")
     session.state = RunState(starter="mudkip", badges=[], ruleset=Ruleset(nuzlocke=True, allowed_types=["water"]))
-    assert pipeline.trace_tags(session) == ["vanilla", "nuzlocke", "custom-rules"]
+    assert pipeline.trace_tags(session) == ["emerald", "vanilla", "nuzlocke", "custom-rules"]
+    session.state = RunState(game="sapphire", starter="mudkip", badges=[])
+    assert pipeline.trace_tags(session) == ["sapphire", "vanilla"]
     uid = observability.user_id("accounts.google.com:1234567890")
     assert uid == observability.user_id("accounts.google.com:1234567890") and "1234567890" not in uid
     assert observability.user_id(None) is None

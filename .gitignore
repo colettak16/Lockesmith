@@ -20,3 +20,6 @@ tests/fixtures/*.log
 
 # Local env
 .env
+
+# macOS folder metadata
+.DS_Store

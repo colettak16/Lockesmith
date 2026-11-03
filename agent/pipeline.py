@@ -267,9 +267,10 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
 
 
 def trace_tags(session: Session) -> list[str]:
-    """What kind of run this is, known before the turn starts (LangFuse tags are fixed at creation)."""
+    """What kind of run this is, known before the turn starts (LangFuse tags are fixed at creation,
+    so a game named in the message shows in the trace's `game` metadata instead)."""
     rules = session.state.ruleset
-    tags = ["randomized" if session.randomizer else "vanilla"]
+    tags = [session.state.game, "randomized" if session.randomizer else "vanilla"]
     if rules.nuzlocke:
         tags.append("nuzlocke")
     if rules.allowed_types or rules.banned_types or rules.no_legendaries or rules.wild_only or rules.banned_species or rules.notes:
@@ -296,6 +297,7 @@ async def chat(message: str, session_id: str | None = None, run_state: RunState 
             record(ctx, "pipeline", "error", {}, f"{type(e).__name__}: {e}")
             result = {"response": "Sorry, something went wrong while researching that. Please try again.", "plan": None}
         finish(result["response"], {
+            "game": session.state.game,
             "intent": result.get("intent"),
             "picks": [r["species"] for r in (result.get("plan") or {}).get("recommendations", [])],
             "seconds": ctx.elapsed(), "model_calls": len(ctx.usage),
