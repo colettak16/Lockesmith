@@ -43,7 +43,8 @@ STATIC_SUFFIX_RE = re.compile(r"(?:\s+\(egg\))?(?:\(\d+\))?(?:\s+Lv\s*\d+(?:-\d+
 # "Pokemon Movesets: Metronome Only." / "Trainers: Unchanged.", printed between sections
 # UPR prints the ROM's name in the closing footer ("Randomization of Ruby (U) completed."); the
 # name is its gen3_offsets.ini section. Ruby and Sapphire logs are read against their own tables.
-GAME_RE = re.compile(r"^Randomization of (?:Pokemon |Pokémon )?(Ruby|Sapphire|Emerald)\b", re.I | re.M)
+# UPR names the Kanto ROMs "Fire Red (U) 1.0" and "Leaf Green (U) 1.0" (gen3_offsets.ini), with a space.
+GAME_RE = re.compile(r"^Randomization of (?:Pokemon |Pokémon )?(Ruby|Sapphire|Emerald|Fire ?Red|Leaf ?Green)\b", re.I | re.M)
 STATUS_RE = re.compile(r"^(?P<what>[A-Z][A-Za-z ]+): (?P<status>Unchanged|Metronome Only)\.$")
 # EvolutionUpdate.toString: "EEVEE -> ESPEON by reaching high happiness", or the condensed
 # "NINCADA now also evolves into SHEDINJA at minimum level 20"
@@ -210,7 +211,7 @@ def split_sections(text: str) -> tuple[list[str], dict[str, list[str]], dict[str
 def detect_game(text: str) -> str | None:
     """Which game a UPR log was made from, or None if its footer is missing."""
     m = GAME_RE.search(text)
-    return m.group(1).lower() if m else None
+    return m.group(1).lower().replace(" ", "") if m else None
 
 
 def norm_map_name(name: str) -> str:

@@ -69,3 +69,12 @@ def test_kanto_evolutions_stop_at_mew_before_the_national_dex():
     zubat, golbat, crobat = 41, 42, 169
     assert [f for f, _ in final_forms(con, zubat, GAMES["firered"].evolution_limit)] == [golbat]
     assert [f for f, _ in final_forms(con, zubat, GAMES["emerald"].evolution_limit)] == [crobat]
+
+
+def test_randomizer_logs_name_their_game_in_the_footer():
+    """UPR prints the ROM's name: "Fire Red (U) 1.0", "Leaf Green (U) 1.0" (gen3_offsets.ini)."""
+    from agent.randomizer_log import detect_game
+
+    assert detect_game("...\nRandomization of Pokemon Fire Red (U) 1.0 completed.\n") == "firered"
+    assert detect_game("Randomization of Leaf Green (U) 1.0 completed.") == "leafgreen"
+    assert detect_game("Randomization of Ruby (U) completed.") == "ruby"
