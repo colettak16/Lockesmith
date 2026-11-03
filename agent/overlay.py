@@ -16,7 +16,7 @@ from agent.randomizer_log import RandomizerLog
 WILD_METHODS = ("walk", "surf", "old-rod", "good-rod", "super-rod", "rock-smash", "seaweed")
 # Rows UPR's "Static Pokemon" can change (legendaries, gifts, the egg, Kecleon, Sudowoodo, roamers);
 # in-game trades are their own section, and the Feebas tiles and JP bonus disc aren't randomized.
-STATIC_METHODS = ("static", "gift", "gift-egg", "devon-scope", "wailmer-pail", "roaming-grass", "roaming-water")
+STATIC_METHODS = ("static", "gift", "gift-egg", "devon-scope", "wailmer-pail", "roaming-grass", "roaming-water", "pokeflute")
 VANILLA_STARTERS = ("treecko", "torchic", "mudkip")  # gStarterMons order, which UPR's "Set starter N" follows
 # Overlay slots are 0-based over the whole set (fishing is one 10-slot table: Old 0-1, Good 2-4,
 # Super 5-9); the vanilla table numbers slots from 1 within each method.

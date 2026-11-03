@@ -21,8 +21,9 @@ METHOD_GATES = {
     "super-rod": ("item", "super-rod"),
     "feebas-tile-fishing": ("item", "old-rod"),  # any rod works on a Feebas tile
     "devon-scope": ("item", "devon-scope"),
+    "pokeflute": ("item", "poke-flute"),  # FireRed/LeafGreen's sleeping Snorlax
 }
-NOT_WILD = {"gift", "gift-egg", "static", "npc-trade"}
+NOT_WILD = {"gift", "gift-egg", "static", "npc-trade", "pokeflute"}
 
 
 class ToolError(Exception):

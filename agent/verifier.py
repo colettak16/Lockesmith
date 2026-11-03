@@ -189,8 +189,12 @@ def check_pick(ctx: RequestContext, pick: Recommendation | Alternative, battle_i
                 add("OVER_LEVEL_CAP", f"{sp['name']} is caught at Lv{min(p['min_level'] for p in places)}, above the cap of {limit}", WARNING)
 
     # --- evolution in time -------------------------------------------------------------
+    dex_limit = ctx.game.evolution_limit
     for step in path:
-        if step["needs_trade"]:
+        if dex_limit is not None and step["to_species_id"] > dex_limit:
+            add("EVOLUTION_NOT_REACHABLE", f"{step['to_name']} is past #{dex_limit}: {ctx.game.short} cancels evolutions "
+                "into it until the National Dex, which comes after the Hall of Fame")
+        elif step["needs_trade"]:
             add("EVOLUTION_NOT_REACHABLE", f"{step['to_name']} needs a trade, impossible in a single-player run")
         elif step["min_level"] is not None and limit is not None and step["min_level"] > limit:
             if hard_cap:

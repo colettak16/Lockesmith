@@ -66,6 +66,9 @@ class Game:
     rom_version: str | None  # the decomp's build flag for two-version trees; None for Emerald
     cast: Cast
     region: str = "hoenn"
+    # FireRed/LeafGreen cancel any evolution into a species past #151 (Mew) until the National Dex,
+    # which comes after the Hall of Fame (evolution_scene.c, party_menu.c MonCanEvolve)
+    evolution_limit: int | None = None
 
     @property
     def name(self) -> str:
@@ -101,8 +104,8 @@ GAMES = {
     "emerald": Game("emerald", "Emerald", "pokeemerald", "pret/pokeemerald", 9, 6, None, hoenn("gym8_juan", "juan")),
     "ruby": Game("ruby", "Ruby", "pokeruby", "pret/pokeruby", 7, 5, "RUBY", hoenn("gym8_wallace", "wallace")),
     "sapphire": Game("sapphire", "Sapphire", "pokeruby", "pret/pokeruby", 8, 5, "SAPPHIRE", hoenn("gym8_wallace", "wallace")),
-    "firered": Game("firered", "FireRed", "pokefirered", "pret/pokefirered", 10, 7, "FIRERED", KANTO, "kanto"),
-    "leafgreen": Game("leafgreen", "LeafGreen", "pokefirered", "pret/pokefirered", 11, 7, "LEAFGREEN", KANTO, "kanto"),
+    "firered": Game("firered", "FireRed", "pokefirered", "pret/pokefirered", 10, 7, "FIRERED", KANTO, "kanto", 151),
+    "leafgreen": Game("leafgreen", "LeafGreen", "pokefirered", "pret/pokefirered", 11, 7, "LEAFGREEN", KANTO, "kanto", 151),
 }
 ALL_STARTERS = tuple(dict.fromkeys(s for g in GAMES.values() for s in g.cast.starters))
 ALL_RIVALS = tuple(dict.fromkeys(r for g in GAMES.values() for r in g.cast.rivals))

@@ -71,20 +71,39 @@ def gauntlet_overview(ctx: RequestContext) -> dict:
     }
 
 
-def final_forms(cur, species_id: int) -> list[tuple[int, list[dict]]]:
-    """[(final species_id, [evolution steps to reach it])]; a species with no evolutions is its own final form."""
+def final_forms(cur, species_id: int, limit: int | None = None) -> list[tuple[int, list[dict]]]:
+    """[(final species_id, [evolution steps to reach it])]; a species with no evolutions is its own final form.
+    `limit` is the game's evolution limit (agent/games.py): steps past it are left out, so in
+    FireRed/LeafGreen Zubat's final form is Golbat."""
     steps = rows(
         cur,
         "SELECT e.*, t.name AS to_name FROM evolutions e JOIN species t ON t.species_id = e.to_species_id "
-        "WHERE e.from_species_id = ?",
-        [species_id],
+        "WHERE e.from_species_id = ? AND (CAST(? AS INTEGER) IS NULL OR e.to_species_id <= ?)",
+        [species_id, limit, limit],
     )
     if not steps:
         return [(species_id, [])]
     out = []
     for s in steps:
-        for final, path in final_forms(cur, s["to_species_id"]):
+        for final, path in final_forms(cur, s["to_species_id"], limit):
             out.append((final, [s, *path]))
+    return out
+
+
+def gated_evolutions(ctx: RequestContext, species_id: int) -> list[str]:
+    """Evolutions of this line the game cancels before the National Dex (FireRed/LeafGreen), as text."""
+    limit = ctx.game.evolution_limit
+    if limit is None:
+        return []
+    out, todo = [], [species_id]
+    while todo:
+        for s in rows(ctx.cursor(), "SELECT e.to_species_id, f.name AS from_name, t.name AS to_name FROM evolutions e "
+                      "JOIN species f ON f.species_id = e.from_species_id JOIN species t ON t.species_id = e.to_species_id "
+                      "WHERE e.from_species_id = ?", [todo.pop()]):
+            if s["to_species_id"] > limit:
+                out.append(f"{s['from_name']} can't evolve into {s['to_name']} before the National Dex (postgame)")
+            else:
+                todo.append(s["to_species_id"])
     return out
 
 
@@ -108,7 +127,8 @@ def assess_candidates(ctx: RequestContext, species: list[str]) -> dict:
     for name in species[:6]:
         sid = resolve(ctx, name, "species")
         base = rows(cur, "SELECT species_id, name, is_legendary, is_mythical, source_id FROM species WHERE identifier = ?", [sid])[0]
-        for final_id, path in final_forms(cur, base["species_id"])[:2]:
+        gated = gated_evolutions(ctx, base["species_id"])
+        for final_id, path in final_forms(cur, base["species_id"], ctx.game.evolution_limit)[:2]:
             f = rows(
                 cur,
                 "SELECT name, type1, type2, hp, attack, defense, sp_attack, sp_defense, speed, bst, ability1, ability2, "
@@ -132,6 +152,7 @@ def assess_candidates(ctx: RequestContext, species: list[str]) -> dict:
                 "abilities": [a for a in (f["ability1"], f["ability2"]) if a],
                 "evolution_path": [f"{s['to_name']}: {evolution_text(s)}" for s in path],
                 "needs_trade": any(s["needs_trade"] for s in path),
+                **({"evolutions_not_available": gated} if gated else {}),
                 "legendary": bool(base["is_legendary"] or base["is_mythical"]),
                 "remaining_opponents_hit_super_effectively": sum(strong_into.values()),
                 "of_remaining_opponents": len(opps),

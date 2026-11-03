@@ -57,3 +57,15 @@ def test_a_kanto_rival_fight_is_one_trainer_per_starter():
     assert fight.trainers_for("bulbasaur") == ["TRAINER_RIVAL_OAKS_LAB_CHARMANDER"]
     with pytest.raises(ValueError):
         fight.trainers_for("treecko")
+
+
+def test_kanto_evolutions_stop_at_mew_before_the_national_dex():
+    """FireRed/LeafGreen cancel evolutions past #151 until the National Dex (postgame)."""
+    import duckdb
+
+    from agent.tools.outlook import final_forms
+
+    con = duckdb.connect(str(GAMES["firered"].db_path), read_only=True)
+    zubat, golbat, crobat = 41, 42, 169
+    assert [f for f, _ in final_forms(con, zubat, GAMES["firered"].evolution_limit)] == [golbat]
+    assert [f for f, _ in final_forms(con, zubat, GAMES["emerald"].evolution_limit)] == [crobat]
