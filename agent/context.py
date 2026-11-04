@@ -45,6 +45,7 @@ class RequestContext:
     usage: list[dict] = field(default_factory=list)
     research_round: int = 0
     round_cap: int = 2  # the Verifier's repair pass allows one more round (PLAN's cap of 3)
+    findings: list[dict] = field(default_factory=list)  # this turn's researcher results, kept for follow-ups
     randomizer: dict | None = None  # overlay.summary() of the session's loaded log, if any
     started: float = field(default_factory=time.monotonic)
     listener: Callable[[dict], None] | None = None  # progress events for POST /chat/stream

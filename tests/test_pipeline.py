@@ -272,3 +272,42 @@ def test_a_follow_up_gives_the_lead_the_conversation_and_keeps_the_pc(models):
     earlier = captured["input"].split("EARLIER IN THIS CONVERSATION")[1]
     assert "I also have a Sharpedo" in earlier and "Picks: Sharpedo" in earlier
     assert "Also has, outside the party (no need to catch these): Sharpedo, Growlithe." in captured["input"]
+
+
+def test_a_follow_up_starts_from_the_research_of_earlier_turns(models, monkeypatch):
+    """Live FireRed run: the player answered the Lead's question ("I have Dig, Fire Blast, Aerial Ace
+    and Overheat for Arcanine") and the Lead re-scouted the Elite Four the previous turn had scouted."""
+    calls, script = models
+    tate = "decomp:trainer_parties.h#sParty_TateAndLiza1/2"
+
+    def lead_researches(ctx):
+        ctx.ledger.add(tate)
+        ctx.findings.append({"researcher": "battle", "task": "Scout gym7_tate_liza", "finding": {
+            "summary": "Tate & Liza lead with Claydol.", "candidates": [], "open_questions": [],
+            "claims": [{"text": "Their ace is Lunatone (Lv42).", "source_ids": [tate, "made:up"]}]}})
+        return DRAFT
+
+    seen = []
+    stub = runtime.run
+
+    async def capture(agent, input, context, max_turns=8):
+        if agent.name == "lead":
+            seen.append((input, tate in context.ledger))
+        return await stub(agent, input, context, max_turns)
+
+    monkeypatch.setattr(runtime, "run", capture)
+    script["clarifier"] = [decision(), decision(intent="lookup"), decision(intent="revision"), decision()]
+    script["lead"] = [lead_researches, DRAFT]
+    script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]."
+    chat("what for Tate & Liza?", "p-research", STATE)
+    chat("I have Ice Beam and Surf, which should Sharpedo learn?", "p-research")
+    chat("not Sharpedo", "p-research")
+    chat("and in Sapphire?", "p-research", RunState(game="sapphire", starter="mudkip", badges=STATE.badges))
+    first, lookup, revision, other_game = seen
+    assert "RESEARCH FROM EARLIER TURNS" not in first[0] and not first[1]
+    research = lookup[0].split("RESEARCH FROM EARLIER TURNS")[1]
+    assert 'For "what for Tate & Liza?"' in research and "Their ace is Lunatone (Lv42)." in research
+    assert tate in research and "made:up" not in research  # only ids a tool returned are carried
+    assert lookup[1]  # and they're back in the ledger, so citing them passes the Verifier
+    assert "EARLIER IN THIS CONVERSATION" in revision[0] and "Their ace is Lunatone" in revision[0]
+    assert "RESEARCH FROM EARLIER TURNS" not in other_game[0] and not other_game[1]  # findings were for Emerald

@@ -31,6 +31,8 @@ log = logging.getLogger("lockesmith.pipeline")
 REQUEST_BUDGET_S = 270  # graders wait up to 5 minutes; Cloud Run's timeout is 600 s
 LEAD_MAX_TURNS = 12
 HISTORY_TURNS = 3
+RESEARCH_TURNS = 3  # earlier turns whose researcher findings a follow-up's Lead sees
+RESEARCH_CHARS = 16_000  # newest first; a turn's findings run 3-7k characters
 
 
 def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunState:
@@ -76,6 +78,51 @@ def conversation_context(session: Session) -> str:
         picks = ", ".join(r["species"] for r in session.last_plan.get("recommendations", []))
         lines.append(f"- Your previous answer: {session.last_plan.get('headline', '')}" + (f" Picks: {picks}." if picks else ""))
     return "\n".join(lines)
+
+
+def research_key(state: RunState) -> tuple:
+    """Findings hold for the game (and randomizer log) they were researched on."""
+    return (state.game, state.randomizer_log_id)
+
+
+def keep_research(session: Session, ctx: RequestContext, message: str) -> None:
+    """Save this turn's findings for follow-ups, keeping only source ids a tool returned. A live
+    FireRed follow-up ("I have Dig, Fire Blast, Aerial Ace and Overheat for Arcanine") re-scouted
+    the whole Elite Four the previous turn had just scouted: 26 of its 67 s."""
+    def known(ids: list[str]) -> list[str]:
+        return [s for s in ids if s in ctx.ledger]
+    findings = [{"researcher": r["researcher"], "task": r["task"], "summary": r["finding"]["summary"],
+                 "claims": [{**c, "source_ids": known(c["source_ids"])} for c in r["finding"]["claims"]],
+                 "candidates": [{**c, "source_ids": known(c["source_ids"])} for c in r["finding"]["candidates"]]}
+                for r in ctx.findings]
+    if findings:
+        turn = {"key": research_key(session.state), "question": message[:200], "findings": findings}
+        session.research = [*session.research, turn][-RESEARCH_TURNS:]
+
+
+def earlier_research(session: Session) -> tuple[str, set[str]]:
+    """The findings of earlier turns on this game, newest turn first, up to RESEARCH_CHARS, and the
+    source ids they cite (put back in the ledger, so the Lead can cite them without asking again)."""
+    blocks, ids, size = [], set(), 0
+    for turn in reversed(session.research):
+        if turn["key"] != research_key(session.state):
+            continue
+        header = f'For "{turn["question"]}":'
+        for f in turn["findings"]:
+            lines = [f"- {f['researcher']} researcher, asked: {f['task']}", f"  {f['summary']}"]
+            lines += [f"  - {c['text']} {c['source_ids']}" for c in f["claims"]]
+            lines += [f"  - candidate {c['species']}: {c['where']}; {c['when']}. {c['why']} Long term: {c['long_term']} "
+                      f"{c['source_ids']}" for c in f["candidates"]]
+            block = "\n".join(lines)
+            if size + len(block) > RESEARCH_CHARS:
+                return "\n".join(blocks), ids
+            if header:
+                blocks.append(header)
+                header = ""
+            blocks.append(block)
+            size += len(block)
+            ids.update(s for c in [*f["claims"], *f["candidates"]] for s in c["source_ids"])
+    return "\n".join(blocks), ids
 
 
 def clarifier_input(message: str, session: Session) -> str:
@@ -223,8 +270,13 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
             f"\n\nPREVIOUS PLAN (the player wants something different)\n{json.dumps(session.last_plan)[:3000]}"
             f"\nPLAYER FEEDBACK: {decision.revision_feedback or 'vague'}"
         )
-    elif session.history:
+    if session.history:
         lead_input += f"\n\nEARLIER IN THIS CONVERSATION\n{conversation_context(session)}"
+    research, cited = earlier_research(session)
+    if research:
+        for sid in cited:
+            ctx.ledger.add(sid)
+        lead_input += f"\n\nRESEARCH FROM EARLIER TURNS (game data; source ids still valid)\n{research}"
     lead_draft: LeadDraft = await runtime.run(make_lead(), lead_input, ctx, max_turns=LEAD_MAX_TURNS)
     draft, warnings = await verify_and_repair(ctx, lead_draft, lead_input)
     draft = picks_changed(lead_draft, draft)
@@ -260,6 +312,7 @@ async def answer(message: str, session: Session, ctx: RequestContext) -> dict:
     if problems:
         plan["citation_warnings"] = problems
     session.last_plan = plan
+    keep_research(session, ctx, message)
     return {"response": text, "citations": citations, "plan": plan, "chart": chart_or_none(ctx, plan), "intent": decision.intent}
 
 

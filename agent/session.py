@@ -28,6 +28,7 @@ class Session:
     con: duckdb.DuckDBPyConnection = field(default_factory=connect_session)
     history: list[dict] = field(default_factory=list)
     last_plan: dict | None = None
+    research: list[dict] = field(default_factory=list)  # researcher findings of recent turns (pipeline.keep_research)
     excluded: set[str] = field(default_factory=set)
     learned_rules: list[RuleUpdate] = field(default_factory=list)
     randomizer: dict | None = None  # overlay.summary() of the loaded randomizer log

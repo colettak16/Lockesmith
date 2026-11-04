@@ -22,7 +22,10 @@ the answer can say it isn't covered.
 INTENT. catch = what to catch or which Pokémon to use. next_steps = what to do next in the story.
 plan = a longer plan or outline toward the Champion. lookup = a specific fact (a team, a location,
 a TM, a move, an evolution). revision = the player is reacting to the previous answer (doesn't
-like it, wants alternatives, or adds a rule because of it).
+like it, wants alternatives, or adds a rule because of it). Answering a question the previous
+answer asked ("I have Dig, Fire Blast and Aerial Ace", "I'm using Lapras as a fighter") isn't a
+revision: use the intent of what they now want answered (a narrow question about moves, one battle
+or one Pokémon is a lookup), and say in `research_brief` what it follows up.
 
 GAME. The run state's `game` says which game the player is on (absent means emerald). If the
 message says which game ("I'm playing Sapphire", "my LeafGreen Nuzlocke"), set state_updates.game to

@@ -46,6 +46,7 @@ async def dispatch_researchers(ctx: RunContextWrapper[RequestContext], tasks: li
         return json.dumps({"error": f"research round limit ({c.round_cap}) reached; draft the answer now and list what's unresolved"})
     c.research_round += 1
     results = await asyncio.gather(*(run_researcher(c, t) for t in tasks[:MAX_TASKS_PER_ROUND]))
+    c.findings += [r for r in results if "finding" in r]
     return json.dumps({"round": c.research_round, "results": results}, ensure_ascii=False)
 
 
@@ -66,15 +67,19 @@ researchers by intent (and no others):
 - next_steps: story (the next battle and what opens on the way); add battle if a party is known.
 - plan: story (the road to the Champion), battle (the toughest fights ahead), catch (key catches
   along the way).
-- lookup: only the one researcher that fits.
+- lookup: only the one researcher that fits, or none if RESEARCH FROM EARLIER TURNS answers it.
 - revision: the original kind of research, telling researchers what the player rejected and what
   to change (a genuinely different plan, not a reshuffle).
 Write each task as a specific, self-contained instruction (the researcher sees only the run state
-and your task). On a follow-up, EARLIER IN THIS CONVERSATION says what the player already told you
-and what you already recommended: treat it as still true, and build on a previous pick ("your
-Snorlax") instead of offering it again as a new catch. The run state lists the moves the player
-gave for each party Pokémon: never suggest teaching one a move it already knows, and name the move
-a new one would replace. One round is usually enough. Run a second round (the maximum is {MAX_RESEARCH_ROUNDS})
+and your task, so state any earlier finding it needs). On a follow-up, EARLIER IN THIS CONVERSATION
+says what the player already told you and what you already recommended: treat it as still true,
+and build on a previous pick ("your Snorlax") instead of offering it again as a new catch. RESEARCH
+FROM EARLIER TURNS holds the findings behind your earlier answers, and their source ids are still
+valid: cite them as they are. Read it before dispatching. Never research again what it already
+covers (a battle already scouted, a move already looked up); dispatch only for what it leaves
+open, and if nothing is open, skip dispatch_researchers and draft straight away. The run state
+lists the moves the player gave for each party Pokémon: never suggest teaching one a move it
+already knows, and name the move a new one would replace. One round is usually enough. Run a second round (the maximum is {MAX_RESEARCH_ROUNDS})
 only to fill a specific gap a finding left open, and never repeat a task that was already answered.
 
 LONG-TERM VALUE. Judge every pick over the whole remaining run, not just the next battle. A

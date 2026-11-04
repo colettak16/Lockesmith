@@ -597,3 +597,21 @@ Fixes:
 - **The check.** A new Verifier check, `MOVE_ALREADY_KNOWN`, reads steps and battle notes for a move offered to a party member: a TM/HM label, "teach [Pokémon]", or "teach X to [Pokémon]". It aims the suggestion at the Pokémon named in the phrase, else the last party member the sentence names, else the step's title. It flags the suggestion when that member's given moves already include the move.
 - **How it's fixed.** Like `TYPE_CLAIM_WRONG`, the finding goes to the Writer as a correction to fix in the text.
 - **Prompts.** The Moves researcher and the Lead are told to check the party's moves and to name the move a new one replaces.
+
+## D18. Follow-ups reuse earlier research (2026-11-03)
+
+A live FireRed conversation, read in LangFuse:
+- **Turn 1** ("what do I need before the Elite Four?"). The battle researcher scouted all five Elite Four battles.
+- **Turn 2.** The Lead had asked which TMs Arcanine could learn, and the player answered: "I have Dig, Fire Blast, Aerial Ace and Overheat". This took 67 s:
+  - 2 s Clarifier, 9 s Lead plan, 26 s research, 25 s Lead draft, 5 s Writer.
+  - The Clarifier classed the answer as a revision. The Lead sent the Moves researcher for the four moves, plus the Battle researcher to scout the same five battles again.
+  - The Lead only had turn 1's headline and picks, not its findings.
+
+Fixes:
+- **Findings carry over.** Each turn's researcher findings are kept in the session for the last 3 turns (`pipeline.keep_research`).
+  - Each finding keeps its summary, claims and candidates, with only the source ids a tool returned.
+  - A follow-up's Lead gets them as RESEARCH FROM EARLIER TURNS, newest first, up to 16k characters. A turn's findings run 3–7k.
+  - Their ids go back into the ledger, so citing them passes the Verifier and the Writer's citation check.
+  - Findings count only for the game and randomizer log they were researched on.
+- **The Lead reuses them.** It's told to check those findings first, never research again what they cover, dispatch only for what's left open, and draft without dispatching when nothing is open.
+- **Answers to the Lead's own questions aren't revisions.** The Clarifier is told to class them by what the player now wants (usually a lookup). A revision also gets EARLIER IN THIS CONVERSATION now, not only the previous plan.
