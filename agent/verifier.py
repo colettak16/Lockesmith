@@ -329,11 +329,14 @@ class Target:
     abilities: frozenset[str] = frozenset()
 
     def takes(self, attack: str) -> list[float]:
-        """Every multiplier `attack` can do to it, with each of its abilities."""
+        """Every multiplier `attack` can do to it: the chart's, and one per ability it can have. An
+        immunity every one of them has replaces the chart (every Gengar has Levitate, so Ground does
+        0x, never 2x); Thick Fat halving Ice leaves "1/4x from Ice" right for Spheal."""
         out = []
         for types in self.typings:
             m = effectiveness(attack, list(types))
-            out += [m] + [ABILITY_EFFECT[a](attack, m) for a in self.abilities if a in ABILITY_EFFECT]
+            with_ability = [ABILITY_EFFECT[a](attack, m) if a in ABILITY_EFFECT else m for a in self.abilities]
+            out += with_ability if with_ability and not any(with_ability) else [m, *with_ability]
         return out
 
     def holds(self, kind: str, attack: str) -> bool:
@@ -391,7 +394,7 @@ def matchup_errors(ctx: RequestContext, text: str, pick: Target | None = None, p
         return targets[name]
 
     moves_ok = not unread(ctx, "move_data")
-    out = []
+    out, earlier = [], []  # earlier: attacks named in the sentences before, for "It gives you an answer to ..."
     for sentence in re.split(r"(?<=[.;!?])\s+", text):
         masked = sentence
         for m in CLAIM_RE.finditer(sentence):
@@ -421,7 +424,7 @@ def matchup_errors(ctx: RequestContext, text: str, pick: Target | None = None, p
         attacks.sort()
         mentions = [(s.start(), s.end(), s.group(1)) for s in species_re.finditer(masked)
                     if not masked.startswith(("'s", "’s"), s.end())]  # "Milotic's Ice Beam": the attacker
-        prev = 0
+        prev, flagged = 0, set()  # flagged: Pokémon a multiplier claim here already got wrong
         for mm in MULT_RE.finditer(masked):
             since = [a for a in attacks if prev <= a[0] < mm.start()]
             used = since or [a for a in attacks if a[0] < mm.start()][-1:]
@@ -439,7 +442,58 @@ def matchup_errors(ctx: RequestContext, text: str, pick: Target | None = None, p
                 t = named(value) if what == "species" else Target(f"{'/'.join(value).title()} types", (tuple(value),))
                 if not any(t.holds(kind, a[3]) for a in used):
                     out.append(f"says {used[-1][2]} {claim} {t.name}, but {t.actual(used[-1][3])}")
+                    flagged.add(t.name)
             prev = max(mm.end(), end)
+        out += untouchable_targets(sentence, attacks, earlier, species_re, move_re, named, flagged)
+        earlier += attacks
+    return out
+
+
+# "It gives you a physical answer to Agatha's Gengar", "Earthquake handles Lance's Aerodactyl": an
+# attack offered against Pokémon it can't touch (0x for every ability they can have). The attack is
+# the one named before the phrase, else "with/using <move>" after the Pokémon, else (for a sentence
+# starting "It ...") those named earlier in the text; any of them doing damage passes. A sentence that
+# says it doesn't work ("not", "avoid", "immune", ...) passes too.
+USE_RE = re.compile(
+    r"\b(?:(?:answers?|counters?|checks?|options?|coverage|tools?|solutions?|great|good|useful|effective|strong|reliable"
+    r"|works?|use (?:it|this|them))\s+(?:to|for|against|on|versus|vs\.?)|hits?|hitting|handles?|handling|beats?|beating"
+    r"|deals? with|dealing with|takes? (?:out|down)|taking (?:out|down))\s+(?:both\s+|all\s+)?",
+    re.I,
+)
+DOUBT_RE = re.compile(r"\b(?:not|no|never|avoid|useless|immune|immunity|except|instead|unlike|rather|unless|cannot)\b|n't\b", re.I)
+PRONOUN_RE = re.compile(r"\s*(?:it|this|that)\b", re.I)
+DESCRIBED_RE = re.compile(rf"(?:{TYPE_RE})(?:[- ]type)?\s+", re.I)  # "Poison-type Gengar"
+WITH_RE = re.compile(r"\s+(?:with|using)\s+(?:its\s+|your\s+|an?\s+)?")
+
+
+def untouchable_targets(sentence: str, attacks: list, earlier: list, species_re: re.Pattern, move_re: re.Pattern,
+                        named, flagged: set[str]) -> list[str]:
+    if DOUBT_RE.search(sentence):
+        return []
+    out = []
+    for u in USE_RE.finditer(sentence):
+        hit, p, end = [], u.end(), u.end()
+        while True:  # "Agatha's Poison-type Gengar and Haunter"
+            q = OWNER_RE.match(sentence, p).end()
+            d = DESCRIBED_RE.match(sentence, q)
+            if d and species_re.match(sentence, d.end()):
+                q = d.end()
+            if not (m := species_re.match(sentence, q)):
+                break
+            hit.append(m.group(1))
+            end = m.end()
+            if not (sep := LIST_SEP_RE.match(sentence, end)):
+                break
+            p = sep.end()
+        w = WITH_RE.match(sentence, end) if hit else None
+        mv = move_re.match(sentence, w.end()) if w else None
+        used = [a for a in attacks if a[2] == mv.group(1)] if mv else [a for a in attacks if a[0] < u.start()]
+        if not used and PRONOUN_RE.match(sentence):
+            used = earlier
+        for name in hit if used else []:
+            t = named(name)
+            if t.name not in flagged and not any(m > 0 for a in used for m in t.takes(a[3])):
+                out.append(f"says {used[-1][2]} is an answer to {t.name}, but {t.actual(used[-1][3])}")
     return out
 
 

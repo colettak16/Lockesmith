@@ -183,6 +183,27 @@ def test_battle_notes_and_steps_are_checked_for_matchups(con):
         "Prepare: says Electric does 2x to Kingdra, but Electric does 1x to Water/Dragon in Gen III"]
 
 
+def test_an_attack_offered_against_a_pokemon_it_cant_touch_is_flagged(con):
+    """Live FireRed answer: "It gives you a physical answer to Agatha's Poison-type Gengar and Haunter"
+    about Dig (every Gengar and Haunter has Levitate). And "Earthquake does 2x damage to Gengar" passed,
+    because the check also read Gengar without its only ability."""
+    ctx = ctx_for(con)
+    levitate = "Ground does 2x to Ghost/Poison in Gen III (0x with Levitate)"
+    assert matchup_flags(ctx, step="Earthquake does 2x damage to Gengar.") == [
+        f"Prepare: says Earthquake does 2x to Gengar, but {levitate}"]
+    assert matchup_flags_of(ctx, "TYPE_CLAIM_WRONG", step=(
+        "Replace Strength with Dig", "Dig (60 Base Power in Gen III) hits Electric, Fire, Poison, Rock, and Steel types "
+        "super-effectively. It gives you a physical answer to Agatha's Poison-type Gengar and Haunter without risking "
+        "the Special Attack drops from Overheat.")) == [
+        f"Replace Strength with Dig: says Dig is an answer to {p}, but {levitate}" for p in ("Gengar", "Haunter")]
+    assert matchup_flags(ctx, step="Earthquake handles Winona's Skarmory.") == [
+        "Prepare: says Earthquake is an answer to Skarmory, but Ground does 0x to Steel/Flying in Gen III"]
+    assert matchup_flags(ctx, step=(  # said right, or with an attack that does hit
+        "Dig works against Arbok, but do not use it on Gengar or Haunter: Levitate makes them immune to Ground. "
+        "Teach Arcanine Dig. It also handles Gengar with Bite. Earthquake and Thunderbolt handle Gyarados. "
+        "Snorlax's Shadow Ball hits Agatha's Gengar and Haunter super-effectively.")) == []
+
+
 def test_teaching_a_party_pokemon_a_move_it_knows_is_flagged(con):
     """Live FireRed answer: "Consider TM26 Earthquake or HM04 Strength" for a Snorlax whose moves the
     player gave as Strength, Yawn, Snore, Rest."""

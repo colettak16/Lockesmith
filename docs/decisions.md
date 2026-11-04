@@ -615,3 +615,17 @@ Fixes:
   - Findings count only for the game and randomizer log they were researched on.
 - **The Lead reuses them.** It's told to check those findings first, never research again what they cover, dispatch only for what's left open, and draft without dispatching when nothing is open.
 - **Answers to the Lead's own questions aren't revisions.** The Clarifier is told to class them by what the player now wants (usually a lookup). A revision also gets EARLIER IN THIS CONVERSATION now, not only the previous plan.
+
+**The replay** (same day). Both turns ran again locally, with the deployed code and the same models, at 74 s and then 53 s, down from 67 s for the follow-up:
+- **The Clarifier** classed the TM answer as a lookup.
+- **The Lead** got turn 1's findings. That run's battle finding named only some of each team and had no matchups for the four new moves, so the Lead still sent the Battle researcher. It ran beside the Moves researcher and finished first, so it cost tokens but not wall-clock time.
+- **What remains of the follow-up's time:** Lead plan 10 s, research 14 s, Lead draft 15 s, Writer 9 s (a Flash 429 cost 4 s of that).
+
+**An attack offered against a Pokémon it can't touch.** The replay's answer said Dig gives "a physical answer to Agatha's Poison-type Gengar and Haunter". Both have Levitate. No researcher said so: the Lead combined "Dig hits Poison super-effectively" with "Poison-type Gengar" itself. The matchup check missed it for two reasons:
+- **The phrasing.** "An answer to X" isn't a claim word or a multiplier. A new shape in `matchup_errors` reads an attack offered against Pokémon: "answer to", "coverage against", "hits", "handles", "use it on". It flags the Pokémon the attack can't touch (0x for every ability they can have).
+  - The attack is the one named before the phrase, or "with <move>" after the Pokémon, or, for a sentence starting "It", the attacks the text named before.
+  - Any of those doing damage passes.
+  - A sentence that says it doesn't work ("not", "avoid", "immune") passes.
+- **Abilities.** `Target.takes` always counted the chart's multiplier beside the ability's, so even "Earthquake does 2x damage to Gengar" passed. An immunity that every member of the species has now replaces the chart. A damage-reducing ability (Thick Fat) still leaves the chart's figure right.
+
+On 27 live Lead drafts from LangFuse and the 11 saved ones, the only new flags are the replay's two (Gengar, Haunter).
