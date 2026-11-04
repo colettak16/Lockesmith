@@ -238,7 +238,7 @@ Limits: wild sets from the log map to whole locations, not rooms (the vanilla ta
 
 Agreed with the user:
 - **Field-journal look** (paper, emerald, pick cards) over a retro GBA style. The user liked GBA, but long cited answers must stay readable. The live-progress box borrows a GBA text-box frame as a nod.
-- **One-click examples are required**, at least three. The user lost points in Project 1 without them. Each example fills both the question and the run state it needs, and the randomizer one loads the sample log too. `agent/examples.py` is the single list behind the buttons, `scripts/run_samples.py`, `scripts/baseline.py` and the README. The three README samples are marked on the page.
+- **One-click examples are required**, at least three. The user lost points in Project 1 without them. Each example fills both the question and the run state it needs, and the randomizer one loads the sample log too. `agent/examples.py` is the single list behind the buttons, `scripts/run_samples.py`, `scripts/baseline.py` and the README. The three README samples were marked on the page until 2026-11-04, when the user asked for the marks to come off.
 - **The fuller synthetic randomizer log is backlogged** until the professor answers about real logs. The demo uses the small hand-made Tate & Liza log, labeled as such in its header.
 
 Design choices:

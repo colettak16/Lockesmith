@@ -432,12 +432,11 @@ function renderLog() {
 function renderExamples() {
   // Small bubbles under the question box; hovering (or focusing) one shows what it is
   $("#examples").insertAdjacentHTML("beforeend", ui.examples.map((ex, i) => `
-    <button type="button" class="ex-bubble${ex.readme ? " featured" : ""}" data-id="${esc(ex.id)}" aria-describedby="tip-${esc(ex.id)}">Example ${i + 1}<span class="ex-tip" role="tooltip" id="tip-${esc(ex.id)}">
+    <button type="button" class="ex-bubble" data-id="${esc(ex.id)}" aria-describedby="tip-${esc(ex.id)}">Example ${i + 1}<span class="ex-tip" role="tooltip" id="tip-${esc(ex.id)}">
       <span class="ex-tag">${esc(ex.tag)}</span>
       <span class="ex-title">${esc(ex.title)}</span>
       <span class="ex-blurb">${esc(ex.blurb)}</span>
-      <span class="ex-q">“${esc(ex.message)}”</span>
-      ${ex.readme ? `<span class="ex-readme">★ README sample</span>` : ""}</span></button>`).join(""));
+      <span class="ex-q">“${esc(ex.message)}”</span></span></button>`).join(""));
   $("#examples").addEventListener("click", (e) => {
     const btn = e.target.closest(".ex-bubble");
     if (btn) useExample(ui.examples.find((x) => x.id === btn.dataset.id), btn);
@@ -561,7 +560,7 @@ class Progress {
 async function ask(message) {
   if (ui.busy || !message.trim()) return;
   ui.busy = true;
-  $("#ask").disabled = true;
+  $("#ask").disabled = $("#clear-chat").disabled = true;
   $("#question").value = "";
   $("#empty")?.remove();
   const entry = newEntry(message);
@@ -577,7 +576,7 @@ async function ask(message) {
     $(".entry-body", entry).innerHTML = `<p class="error-note">Sorry, that didn't come back: ${esc(err.message)}. Please try again.</p>`;
   } finally {
     ui.busy = false;
-    $("#ask").disabled = false;
+    $("#ask").disabled = $("#clear-chat").disabled = false;
     syncRunState();
   }
 }
@@ -670,7 +669,8 @@ function pickCards(plan) {
     const backups = (r.alternatives || []).map((a) => a.species).join(", ");
     return `<div class="pick ${core ? "core" : "situational"}">
       <div class="pick-head"><span class="pick-name">${esc(r.species)}${evo ? ` → ${esc(evo)}` : ""}</span>
-        <span class="pick-horizon">${core ? "core pick" : "for this fight"}</span></div>
+        ${core ? `<span class="pick-star" role="img" aria-label="Core pick" title="Core pick">★</span>`
+               : `<span class="pick-horizon">for this fight</span>`}</div>
       <div class="pick-types">${typePills(evo || r.species)}</div>
       <dl>
         <dt>Role</dt><dd>${esc(r.role)}</dd>
@@ -876,7 +876,7 @@ async function init() {
   $("#question").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask($("#question").value); }
   });
-  $("#clear-chat").addEventListener("click", () => { resetConversation(); ui.log = null; renderLog(); });
+  $("#clear-chat").addEventListener("click", startOver); // clears the conversation and the run form
 }
 
 init().catch((err) => {
