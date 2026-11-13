@@ -98,6 +98,8 @@ def state_brief(ctx: RequestContext) -> str:
         if r["unread"]:
             lines.append("Changed in the log but unreadable (tools refuse these; say so rather than guess): "
                          + ", ".join(r["unread"].values()) + ".")
+        if r.get("rom_notes"):
+            lines.append("About the log's ROM (mention it if it affects the answer): " + " ".join(r["rom_notes"]))
     if ctx.excluded_species:
         lines.append("Rejected this session (never recommend): " + ", ".join(sorted(ctx.excluded_species)) + ".")
     return "\n".join(lines)

@@ -20,7 +20,7 @@ from agent.context import RequestContext, shared_index
 from agent.games import get as get_game
 from agent.lead import make_lead
 from agent.progression import load_game
-from agent.randomizer_log import detect_game, load_overlay, parse_log
+from agent.randomizer_log import COVERED, ROM_NAME_RE, detect_game, load_overlay, parse_log
 from agent.schemas import ClarifierDecision, LeadDraft, StateUpdate
 from agent.session import SESSIONS, Session, apply_rules
 from agent.state import RunState
@@ -350,6 +350,9 @@ def load_log(text: str, name: str | None = None, session_id: str | None = None) 
     tables it changed (agent/overlay.py). Replaces any log the session had."""
     session = SESSIONS.get(session_id)
     game = detect_game(text)
+    footer = ROM_NAME_RE.search(text)
+    if footer and game is None:  # e.g. a Crystal or Platinum log
+        raise ValueError(f"that log is from {footer.group('name').strip()}; LockeSmith covers {COVERED} only")
     if game and game != session.state.game:  # a Sapphire log makes this a Sapphire run
         session.state = session.state.model_copy(update={"game": game, "last_battle": None})
         session.sync_game()

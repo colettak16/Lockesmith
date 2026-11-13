@@ -9,6 +9,8 @@ read (level-up movesets, TM compatibility, move data) aren't shadowed: `Randomiz
 is false for them, and the tools refuse rather than answer from vanilla.
 """
 
+from dataclasses import asdict
+
 import duckdb
 
 from agent.randomizer_log import RandomizerLog
@@ -284,6 +286,8 @@ def summary(log: RandomizerLog, log_id: str, shadowed: list[str]) -> dict:
         "friendship_threshold": log.friendship_threshold,
         "warnings": log.warnings[:20],
         "warning_count": len(log.warnings),
+        "rom": asdict(log.rom),
+        "rom_notes": log.rom_notes,
     }
 
 

@@ -1,6 +1,8 @@
 # Randomizer log fixtures
 
-Drop Universal Pokemon Randomizer ZX spoiler logs for Emerald here (`*.log` or `*.txt`).
+Drop Universal Pokemon Randomizer ZX spoiler logs for Emerald here (`*.log` or `*.txt`). None has been
+added: no ROM was available (docs/decisions.md D19). `tests/test_full_logs.py` runs full-size logs written
+in UPR's format for all five games instead, but only a real log can confirm the format itself.
 `*.log` files are gitignored; never commit a ROM.
 
 The fixture tests in `tests/test_log_parser.py` run automatically once a log is here. Most useful:

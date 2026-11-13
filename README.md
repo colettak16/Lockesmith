@@ -153,7 +153,8 @@ Each became a new code check: `correct_places` rewrites wrong "where" lines from
 It says so instead of guessing:
 - **Other games, ROM hacks and the postgame.** This includes Red/Blue/Yellow, the 3DS remakes Omega Ruby and Alpha Sapphire, Let's Go, the Battle Frontier, the Battle Tower and FireRed/LeafGreen's Sevii Islands 4-7. "What's the best EV spread for Garchomp in Sword?" is declined, with what it does cover.
 - **Exact damage.** Matchups use the type chart and levels, not the damage formula, so "does X one-shot Y?" can only get a type-and-level answer.
-- **Randomizer data it can't read yet.** If a log randomized level-up movesets, TM compatibility or move data, those tools refuse rather than answer from the vanilla game, the Verifier marks the affected moves as unverifiable, and the answer says what's unknown. Its parser follows UPR ZX's source code, and it reads which game a log is from out of the log's footer. No real Emerald, Ruby or Sapphire log has been through it yet, so the sample log is hand-made in that format.
+- **Randomizer data it can't read yet.** If a log randomized level-up movesets, TM compatibility or move data, those tools refuse rather than answer from the vanilla game, the Verifier marks the affected moves as unverifiable, and the answer says what's unknown. Its parser follows UPR ZX's source code. **No real log has been through it**, because no ROM was available to make one. Instead, the tests write a full-size log for each of the five games in UPR's format (every wild set, every trainer, all 50 TMs) and check that the parser reads every line back exactly ([`tests/test_full_logs.py`](tests/test_full_logs.py), [D19](docs/decisions.md)). The site's sample log is hand-made in the same format.
+- **Logs from other games or from modified ROMs.** A log's footer says which ROM it was made from. A log from a game it doesn't cover is turned away. If the ROM's checksum shows it was modified before randomizing (a ROM hack or a patch), or it isn't an English ROM, the page says so and the agent is told.
 - **Vague questions without a run.** "What should I catch?" with no starter or badges gets a question back, not a guess.
 
 ## Tracing and cost
@@ -205,7 +206,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 458 tests, no model calls (5 wait for a real randomizer log; 8 need build/fetch_sources.py run first)
+uv run pytest                           # 533 tests, no model calls (5 wait for a real randomizer log; 8 need build/fetch_sources.py run first)
 ```
 
 Scripts:

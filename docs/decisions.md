@@ -629,3 +629,25 @@ Fixes:
 - **Abilities.** `Target.takes` always counted the chart's multiplier beside the ability's, so even "Earthquake does 2x damage to Gengar" passed. An immunity that every member of the species has now replaces the chart. A damage-reducing ability (Thick Fat) still leaves the chart's figure right.
 
 On 27 live Lead drafts from LangFuse and the 11 saved ones, the only new flags are the replay's two (Gengar, Haunter).
+
+## D19. No real randomizer logs; the parser checked at full size instead (2026-11-13)
+
+**No real log.** A real Universal Pokemon Randomizer ZX log needs a ROM, and none was available: the user has no cartridge dumps, the professor isn't sending example logs, and building ROMs from the decomps was turned down. Review packet items R-12 to R-14 and Q-06 stay predictions, and R-17's revision hashes weren't taken. The fixture tests in `tests/test_log_parser.py` still run if a real log is ever dropped into `tests/fixtures/`.
+
+**Full-size logs written in UPR's format.** `tests/upr_log_writer.py` writes a log for each game from that game's own tables, line by line as UPR ZX's source at `7f00eb8` prints it (`Randomizer.java`'s log methods, `Gen3RomHandler`'s set and trainer names, `gba_english.tbl`'s ’):
+- every wild set in ROM header order (209 in Emerald, 179 in Ruby/Sapphire, 227 in FireRed/LeafGreen), each with random Pokémon and levels
+- every trainer, numbered from 1, plus Emerald's Space Center partner, in both the compact and the moveset-logging form
+- all 50 TMs, the starters, the footer and the ROM diagnostics
+
+`tests/test_full_logs.py` reads each back: 10 logs (5 games × 2 trainer forms). Every set lines up with the ROM order, every trainer joins its decomp id with the right party size, and every Pokémon, level, item, move, TM and starter comes back exactly as written, with no warnings. The ROM names of all 386 species and 354 moves resolve to the right ids in all five databases (FARFETCH’D, NIDORAN♀, FAINT ATTACK, …). What this can't show is that UPR really prints these lines; that still needs a real log.
+
+**A bug it found: the footer read as two sections.** UPR closes every log with a footer between two 66-dash lines, then `--ROM Diagnostics--`. `SECTION_RE` read the dash line as a section named "------…", so a real log would have listed "------…" and "rom diagnostics" as changed but unreadable, on the page and in the agent's brief. The footer and diagnostics are now no section.
+
+**ROM identity (R-17).** `read_rom` reads UPR's name for the ROM from the footer ("Ruby (E)") and the original ROM's CRC32 from the diagnostics, and checks both against UPR's own list of 46 Gen III ROMs (`gen3_offsets.ini`). UPR picks a ROM by its header's game code and version, so a hacked or patched Emerald still says "Emerald (U)"; only the CRC32 tells. The upload's summary carries the game, revision, language and whether the ROM is clean, and the page and the agent's brief get a note for:
+- a ROM changed before randomizing (a ROM hack, a patch or a bad dump): anything the log doesn't list comes from the unmodified game
+- a non-English ROM: UPR prints the ROM's own names, which the matcher may not know
+- a name UPR's list doesn't have, or a log with no footer (cut short)
+
+A log from a game LockeSmith doesn't cover (its footer names, say, Crystal) is refused at upload. Revisions 1 and 2 of Ruby and Sapphire get no note: the decomp's revision switches never touch the data tables (Q-01). The site's hand-made sample log got UPR's footer, with no CRC32, so it isn't reported as a clean ROM.
+
+**Emulator checks (V-15)** weren't done either. The README says the story gates were checked against the decomps, not in an emulator.
