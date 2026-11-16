@@ -23,3 +23,6 @@ tests/fixtures/*.log
 
 # macOS folder metadata
 .DS_Store
+
+# Course starter code kept for reference only; not part of the submission
+reference/
