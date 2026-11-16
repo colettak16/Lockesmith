@@ -13,7 +13,6 @@ from pathlib import Path
 from agent.games import EMERALD, Game
 
 ROOT = Path(__file__).resolve().parent.parent
-CHUNKS = EMERALD.guide_dir / "chunks.jsonl"
 LOCK = ROOT / "data" / "sources.lock.json"
 # Short file names in trainer source ids -> the file in each decomp.
 DECOMP_FILES = {

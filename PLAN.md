@@ -1,5 +1,7 @@
 # Project 2 Plan: Lockesmith
 
+> **This is the original plan from Nov 1, kept as written.** What was built goes further. It covers Emerald, Ruby, Sapphire, FireRed and LeafGreen, not just Emerald. The due date moved to Nov 18. No real randomizer log was ever made, since no ROM dump was available. The assignment page it mentions was later removed from the repo. The [README](README.md) describes what exists, and [docs/decisions.md](docs/decisions.md) records each departure from this plan and why.
+
 A deep research agent that tells a Pokémon Emerald player which Pokémon to catch next, and where, to beat the rest of the game. It works for normal runs, Nuzlocke and custom-ruleset runs, and randomized runs (via an uploaded randomizer spoiler log).
 
 Course: IEOR E4570 Agentic AI, Project 2 (Deep Research path). Solo. Due **Wed Nov 11, 11:59pm ET**.

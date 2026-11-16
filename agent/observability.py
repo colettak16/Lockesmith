@@ -114,10 +114,6 @@ def exported(trace_id: str | None) -> tuple[int, int] | None:
     return accepted, failed
 
 
-def enabled() -> bool:
-    return _enabled
-
-
 def workflow_name(agent_name: str) -> str:
     return WORKFLOW_NAMES.get(agent_name, agent_name)
 

@@ -30,7 +30,6 @@ from urllib.parse import quote, urlencode
 
 ROOT = Path(__file__).resolve().parent.parent
 GUIDE = ROOT / "data" / "guide"
-PAGES = GUIDE / "pages"
 API = "https://bulbapedia.bulbagarden.net/w/api.php"
 WIKI = "https://bulbapedia.bulbagarden.net/wiki/"
 USER_AGENT = "Lockesmith/0.1 (IEOR E4570 course project)"
