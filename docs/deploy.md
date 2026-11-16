@@ -66,7 +66,7 @@ From then on, every push to `main` builds and rolls out a new revision.
 
    To switch to Claude, set these to a LiteLLM Claude model string. On Vertex, Claude needs enabling in Model Garden first; with an Anthropic API key, store `ANTHROPIC_API_KEY` in Secret Manager and reference it here.
 
-Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full catch plan takes about 50 seconds; clarifying questions come back in about 2. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/phase2_acceptance.py` runs the acceptance scenarios.
+Deploy, then ask the deployed `/chat` something real (the browser-console `fetch` from step 7 above). A full catch plan takes about 50 seconds; clarifying questions come back in about 2. Locally, `gcloud auth application-default login` covers the same calls, and `uv run python scripts/run_samples.py` runs the README samples end to end.
 - Private repo: add `codeboi07`, `bhuvighosh3`, `nniishhh`, `x` as collaborators (Settings → Collaborators).
 
 ## Tracing with LangFuse (Phase 4)

@@ -1,5 +1,5 @@
-"""The /chat pipeline's control flow with the models stubbed (scripts/phase2_acceptance.py runs
-the real ones): asking, declining, the Verifier's gap loop, citation checks, rules learned in
+"""The /chat pipeline's control flow with the models stubbed (scripts/run_samples.py runs the
+real ones): asking, declining, the Verifier's gap loop, citation checks, rules learned in
 conversation, rejected picks."""
 
 import asyncio

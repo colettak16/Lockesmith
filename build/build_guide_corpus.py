@@ -4,11 +4,13 @@
     uv run python build/build_guide_corpus.py --corpus rs     # only Ruby/Sapphire
     uv run python build/build_guide_corpus.py --refresh       # refetch every page
 
-Writes <dir>/pages/*.json (raw wikitext plus revision id, for attribution and
-reproducibility) and <dir>/chunks.jsonl (one plain-text chunk per section, with a
-`guide:` source id). Two corpora: the 21-part Emerald walkthrough in data/guide and
-the 23-part Ruby and Sapphire walkthrough in data/guide_rs. TM locations come from
-the decomp instead (docs/decisions.md, D1).
+Writes <dir>/pages.jsonl (each part's raw wikitext plus revision id, one per line, for
+attribution and reproducibility: chunks are rebuilt from these, and only missing parts
+are fetched) and <dir>/chunks.jsonl (one plain-text chunk per section, with a `guide:`
+source id). Bulbapedia has one walkthrough per version pair, so three corpora cover the
+five games: the 21-part Emerald walkthrough in data/guide, the 23-part Ruby and Sapphire
+one in data/guide_rs and the 20-part FireRed and LeafGreen one in data/guide_frlg. TM
+locations come from the decomp instead (docs/decisions.md, D1).
 
 The Ruby/Sapphire walkthrough marks version-specific text with {{sup/3|R}} and
 {{sup/3|S}} ("VS Maxie(R)", "VS Archie(S)"). Those render as "(Ruby)"/"(Sapphire)",
@@ -180,19 +182,25 @@ def chunks(page: dict, versions: tuple[str, ...] = ()) -> list[dict]:
 
 
 def build(corpus: dict, refresh: bool = False) -> None:
-    guide, pages = corpus["dir"], corpus["dir"] / "pages"
-    pages.mkdir(parents=True, exist_ok=True)
+    guide, pages_file = corpus["dir"], corpus["dir"] / "pages.jsonl"
+    saved = {}
+    if pages_file.exists() and not refresh:
+        for line in pages_file.read_text(encoding="utf-8").splitlines():
+            page = json.loads(line)
+            saved[page["title"]] = page
+    pages = []
     for title in corpus["titles"]:
-        path = pages / f"{slug(title).replace('/', '_').replace(':', '_')}.json"
-        if path.exists() and not refresh:
-            continue
-        page = fetch(title)
-        path.write_text(json.dumps(page, ensure_ascii=False, indent=1), encoding="utf-8")
-        print(f"fetched {title} (rev {page['revid']})")
-        time.sleep(1.0)  # be polite to Bulbapedia
+        page = saved.get(title)
+        if page is None:
+            page = fetch(title)
+            print(f"fetched {title} (rev {page['revid']})")
+            time.sleep(1.0)  # be polite to Bulbapedia
+        pages.append(page)
+    with pages_file.open("w", encoding="utf-8") as f:
+        for page in pages:
+            f.write(json.dumps(page, ensure_ascii=False) + "\n")
     all_chunks = []
-    for title in corpus["titles"]:
-        page = json.loads((pages / f"{slug(title).replace('/', '_').replace(':', '_')}.json").read_text(encoding="utf-8"))
+    for page in pages:
         all_chunks.extend(chunks(page, corpus["versions"]))
     with (guide / "chunks.jsonl").open("w", encoding="utf-8") as f:
         for c in all_chunks:
