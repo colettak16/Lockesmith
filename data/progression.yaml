@@ -49,7 +49,7 @@
 #                     on top: surf needs Surf, fishing a rod, rock-smash needs Rock
 #                     Smash, seaweed (underwater) needs Dive.
 #   source            guide chunk the fight is described in (data/guide/chunks.jsonl)
-#   notes / review    context for the agent / open questions for the reviewer
+#   notes / review    context for the agent / open questions still to check
 #
 # You can't catch anything before the first rival fight: Birch only hands out Poké
 # Balls afterwards.

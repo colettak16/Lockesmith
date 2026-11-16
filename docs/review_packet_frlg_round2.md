@@ -1,17 +1,14 @@
-# Review packet: FireRed/LeafGreen story order, round 2
+# FireRed/LeafGreen story order, revised
 
-Round 1 (your review) led to the changes listed below; each was checked in pret/pokefirered at commit ce6406d8
-before it was applied. Please review the revised order as a careful FireRed/LeafGreen expert:
+The changes below (R-xx) came from checking the first draft (`docs/review_packet_frlg.md`); each was verified in
+pret/pokefirered at commit ce6406d8 before it was applied. docs/decisions.md D16 lists what changed after this.
 
-1. For each change (R-xx), say CONFIRMED or WRONG (with the fix).
-2. Then go through the table step by step and flag anything still wrong: a step missing or out of order, an area
-   listed too early or too late, an HM or key item listed before it can be had. Say which step and why.
-3. Keep in mind the conventions: an area appears at the first step it can be reached before; HMs/key items are
-   cumulative; ordinary trainers between milestones are implicitly fought; optional steps (marked) can be skipped,
-   and the Sevii steps assume the player took Bill's trip. Route 23's partial mid-game access is knowingly not
-   modelled (the whole route opens with the League).
+**Conventions:** an area appears at the first step it can be reached before; HMs and key items are cumulative;
+ordinary trainers between milestones are implicitly fought; optional steps (marked) can be skipped, and the Sevii
+steps assume the player took Bill's trip. Route 23's partial mid-game access is knowingly not modelled (the whole
+route opens with the League).
 
-## Changes since round 1
+## Changes since the first draft
 
 - **R-01** PC storage is off from the first One Island meeting until Three Isle Port (ThreeIsland_Port clears FLAG_SYS_PC_STORAGE_DISABLED on transition) (E1).
 - **R-02** The National Dex needs the Hall of Fame, 60 species caught and One Island visited (E2).

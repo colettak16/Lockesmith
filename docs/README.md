@@ -19,13 +19,13 @@ Supporting material for the [main README](../README.md): the design record, the 
 
 ## Checking the data
 
-Each game's facts and story order were written up as a review packet and checked against the decompilation, in rounds, before the agents relied on them.
+Each game's facts and story order were written up as numbered claims and checked against the decompilation before the agents relied on them. Code, tests and docs/decisions.md cite these claims by ID.
 
 | | |
 |---|---|
 | [review_packet.md](review_packet.md) | Emerald: battle mechanics, species, moves and evolutions as of Gen III, data findings, the story order, encounter mapping and every story trainer's team. Generated from the database by [`build/review_packet.py`](../build/review_packet.py). |
-| [review_packet_rs.md](review_packet_rs.md) | Ruby and Sapphire, six drafts: what differs from Emerald, the story order, the randomizer log format, data findings and the area-unlock check (section 12). |
-| [review_packet_frlg.md](review_packet_frlg.md), [review_packet_frlg_round2.md](review_packet_frlg_round2.md) | FireRed and LeafGreen story order and facts, two rounds. |
+| [review_packet_rs.md](review_packet_rs.md) | Ruby and Sapphire: what differs from Emerald, the story order, the randomizer log format, data findings and the area-unlock check (section 12). |
+| [review_packet_frlg.md](review_packet_frlg.md), [review_packet_frlg_round2.md](review_packet_frlg_round2.md) | FireRed and LeafGreen story order and facts: the first draft, then the revised order. |
 | [audit/](audit/) | Reports from `uv run python -m audit`: the mechanical Ruby/Sapphire-vs-Emerald comparison behind section 12 of the Ruby/Sapphire packet ([audit/README.md](../audit/README.md)). |
 
 [PLAN.md](../PLAN.md) at the repo root is the original plan from Nov 1, kept as written.

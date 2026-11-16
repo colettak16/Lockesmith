@@ -1,12 +1,12 @@
-# Review packet: FireRed/LeafGreen story order and facts (round 1)
+# FireRed/LeafGreen story order and facts (first draft)
 
 LockeSmith answers questions about Pokémon FireRed/LeafGreen runs from data built out of the pret/pokefirered
-decompilation (commit ce6406d8) and PokeAPI. This packet is the draft story order (`data/progression_frlg.yaml`) and
-the facts behind it. Please review it like a careful FireRed/LeafGreen expert.
+decompilation (commit ce6406d8) and PokeAPI. This is the first draft of the story order (`data/progression_frlg.yaml`)
+and the facts behind it: claims (C-xx) and the questions that were open (Q-xx), each then checked against the decomp.
+Decomp excerpts are at the end (E-xx); where a claim cites one, the excerpt is the ground truth.
 
-**For each claim (C-xx) say CONFIRMED, WRONG (with the correct fact) or UNSURE. For each open question (Q-xx)
-give your best answer and how sure you are.** Then list anything missing: story steps, gates, or areas listed too
-early or too late. Decomp excerpts are at the end (E-xx); where a claim cites one, the excerpt is the ground truth.
+The revised order is in `docs/review_packet_frlg_round2.md`, `data/progression_frlg.yaml` is the current version,
+and docs/decisions.md D16 lists every change.
 
 ## How the order is meant to work
 
@@ -15,7 +15,7 @@ early or too late. Decomp excerpts are at the end (E-xx); where a claim cites on
 - Gym order is flexible in Kanto; the tool also takes the player's actual badges. Optional steps can be skipped.
 - Scope is the main story to the Champion. Postgame and event-only places are listed separately as never reachable.
 
-## Draft story order
+## First-draft story order
 
 | # | step | badges before | HMs usable | key items | areas first reachable |
 |---|---|---|---|---|---|
@@ -87,7 +87,7 @@ Never reachable before the Champion: pallet-town (the starter is your choice at 
 - **Q-14** Where exactly are the Good Rod and Super Rod given, and what has to be done to reach each?
 - **Q-15** Does the S.S. Anne leave for good after the Cut scene, closing its fishing spot?
 - **Q-16** Can Fly take you from the Sevii Islands back to Kanto before the errand is done?
-- **Q-17** Any FireRed/LeafGreen story gate this draft misses (e.g. the Pokemon Fan Club's Bike Voucher, Mr. Fuji, Seafoam currents needing Strength, the Power Plant needing Surf)?
+- **Q-17** Any FireRed/LeafGreen story gate the first draft misses (e.g. the Pokemon Fan Club's Bike Voucher, Mr. Fuji, Seafoam currents needing Strength, the Power Plant needing Surf)?
 
 ## Decomp excerpts
 

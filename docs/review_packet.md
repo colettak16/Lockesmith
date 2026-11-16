@@ -1,41 +1,22 @@
-# Lockesmith: Pokémon Emerald facts for cross-checking
+# Lockesmith: Pokémon Emerald facts
 
 Generated 2026-11-03 by `build/review_packet.py` from the database built 2026-11-03: pokeemerald `731ad5bfd6e6`, PokeAPI `6b8db7f3cb31`. Bulbapedia text is CC BY-NC-SA 2.5.
 
-Two previous review rounds were applied after re-verification; docs/decisions.md D7 says what changed. Fresh eyes on sections 4, 5 and 7 are still the most useful.
+The claims were cross-checked against the decomp, Bulbapedia and UPR ZX's source; docs/decisions.md D7 says what changed.
 
 **ID prefixes**: M mechanics, MV moves, SP species, LG later-gen relatives, EV evolutions, D data findings, P/N progression, K trainer teams, L locations, SE special encounters, TM/TU machines and tutors, R randomizer, Q questions.
 
-## How to review this packet
+## How to read this
 
-You are a second reviewer for **Lockesmith**, a research agent that answers questions about
-**Pokémon Emerald (English, Gen 3, unmodified)**: what to catch, where, and how to beat the rest
-of the main story, including Nuzlocke and randomized runs. Postgame and the Battle Frontier are
-out of scope except where a claim says "postgame" to mark something unreachable.
-
-Everything below is what the agent will treat as fact. Each claim has an ID (`M-03`, `P-12`,
-`MV-242`, ...). Please check as many as you can, prioritising sections 4 to 6 (progression,
-trainers, locations), where judgement calls live.
+Everything below is what **Lockesmith** treats as fact about **Pokémon Emerald (English, Gen 3,
+unmodified)**: what to catch, where, and how to beat the rest of the main story, including Nuzlocke
+and randomized runs. Postgame and the Battle Frontier are out of scope except where a claim says
+"postgame" to mark something unreachable. Each claim has an ID (`M-03`, `P-12`, `MV-242`, ...) that
+code, tests and docs/decisions.md cite.
 
 **About sources.** Most data comes from the **pret/pokeemerald decompilation** (the game's own
 code and data; claims tagged `[decomp]`) and **PokeAPI** (tagged `[pokeapi]`), with Bulbapedia's
-Emerald walkthrough for story order (`[guide]`). A decomp-tagged claim was read from the game's
-code, so if you disagree, say what you think was misread, not only what you remember. Memory
-of Ruby/Sapphire, FireRed/LeafGreen or the 3DS remakes is a common source of false alarms, so
-please check that a disagreement applies to Emerald specifically.
-
-**Answer in this format:**
-
-1. **Disagreements**: a table with columns `ID | our claim (short) | what you believe instead |
-   confidence (high/medium/low) | evidence (named source, or "memory") | suggested fix`.
-2. **Unsure**: the same table, for claims you suspect but can't confirm.
-3. **Missing**: facts, caveats or battles the agent should know that this packet omits, with the
-   section they belong in.
-4. **Answers to the open questions** (section 9, `Q-` IDs).
-5. **Agreed**: the IDs or ID ranges you checked and agree with. Leave out IDs you didn't check.
-
-Skip wording and formatting nitpicks. "Unsure" is a useful answer; a confident wrong correction
-costs more than a missed one.
+Emerald walkthrough for story order (`[guide]`).
 
 ## 1. Sources and method
 
