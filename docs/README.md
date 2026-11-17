@@ -14,7 +14,7 @@ Supporting material for the [main README](../README.md): the design record, the 
 
 | | |
 |---|---|
-| [samples/](samples/) | LockeSmith's full answers to seven of the site's twelve example questions, each as Markdown (`.md`) and the raw `/chat` response with every tool call (`.json`), from [`scripts/run_samples.py`](../scripts/run_samples.py). [expected.md](samples/expected.md) has the expected answers, generated from the databases by [`scripts/expected_answers.py`](../scripts/expected_answers.py). [vague.json](samples/vague.json) and [out-of-scope.json](samples/out-of-scope.json) show the agent asking a clarifying question and declining an off-topic one; they're from an early, Emerald-only build (Nov 1), so the decline names only Emerald. |
+| [samples/](samples/) | LockeSmith's full answers to nine of the site's twelve example questions, each as Markdown (`.md`) and the raw `/chat` response with every tool call (`.json`), from [`scripts/run_samples.py`](../scripts/run_samples.py). [expected.md](samples/expected.md) has the expected answers, generated from the databases by [`scripts/expected_answers.py`](../scripts/expected_answers.py). [vague.md](samples/vague.md) and [out-of-scope.md](samples/out-of-scope.md) show the agent asking a clarifying question and declining an off-topic one. |
 | [baseline/](baseline/) | The same questions put to Gemini 3.1 Pro with no tools and no system prompt ([`scripts/baseline.py`](../scripts/baseline.py)). |
 
 ## Checking the data
