@@ -108,8 +108,6 @@ GAMES = {
     "firered": Game("firered", "FireRed", "pokefirered", "pret/pokefirered", 10, 7, "FIRERED", KANTO, "kanto", 151),
     "leafgreen": Game("leafgreen", "LeafGreen", "pokefirered", "pret/pokefirered", 11, 7, "LEAFGREEN", KANTO, "kanto", 151),
 }
-ALL_STARTERS = tuple(dict.fromkeys(s for g in GAMES.values() for s in g.cast.starters))
-ALL_RIVALS = tuple(dict.fromkeys(r for g in GAMES.values() for r in g.cast.rivals))
 DEFAULT = "emerald"
 EMERALD = GAMES["emerald"]
 

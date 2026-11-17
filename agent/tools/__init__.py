@@ -15,36 +15,6 @@ Ctx = RunContextWrapper[RequestContext]
 
 
 @function_tool
-def get_remaining_battles(ctx: Ctx) -> str:
-    """Story battles still ahead of the player, in order (deferred gyms included), with each
-    team's highest level and whether it's optional."""
-    return guarded(battles.remaining_battles)(ctx.context)
-
-
-@function_tool
-def get_trainer_team(ctx: Ctx, battle: str) -> str:
-    """The opposing team for one story battle: species, types, levels, held items, abilities and
-    moves. Rival teams follow the player's starter and rival.
-
-    Args:
-        battle: A battle id from get_remaining_battles (e.g. "gym8_juan") or a name ("Juan").
-    """
-    return guarded(battles.trainer_team)(ctx.context, battle)
-
-
-@function_tool
-def threat_matrix(ctx: Ctx, battle: str) -> str:
-    """Gen 3 type matchups between the player's party and one battle's team: which opponents
-    hit which party members super effectively, which party members answer each opponent, and
-    which opponents nobody answers. Needs a party in the run state.
-
-    Args:
-        battle: A battle id or name.
-    """
-    return guarded(battles.threat_matrix)(ctx.context, battle)
-
-
-@function_tool
 def scout_battle(ctx: Ctx, battle: str) -> str:
     """One battle in one call: the opposing team (species, types, levels, items, abilities, moves)
     and, when the party is known, the type matchups against the party and the level gap.

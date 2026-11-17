@@ -2,68 +2,65 @@
 
 **Question:** What should I catch to get through Tate & Liza?
 
-79.1 s · 19 model calls · 83,178 tokens · about $0.247 · researchers: battle_researcher, catch_researcher, moves_researcher, story_researcher · 20 trace steps (full trace in `tate-liza.json`)
+77.1 s · 14 model calls · 55,062 tokens · about $0.173 · researchers: battle_researcher, catch_researcher, moves_researcher · 13 trace steps (full trace in `tate-liza.json`)
 
 ## Answer
 
-To counter Tate & Liza's double battle strategy, catch a Sharpedo or Shuppet to exploit their Psychic typing with special Dark or physical Ghost attacks [1][2][3][4].
+Catch a Sharpedo or Shuppet to exploit Tate & Liza's type weaknesses, and level up Marshtomp to evolve into Swampert [1].
 
 ### Top picks
 
 #### Sharpedo (core)
-* **Where:** Route 122 (Super Rod, levels 30-35, 40% odds) [5][6].
-* **When:** Available on the water route just before Mt. Pyre [5].
-* **Why it helps now:** Its Water/Dark typing gives it STAB moves (Surf and Crunch) that deal super-effective special damage to all of Tate & Liza's Pokémon, bypassing their defensive setups [1][7][3][4]. *Note: In Gen III, Surf (Water) and Crunch (Dark) are both special moves, meaning they use Sharpedo's lower Sp. Atk (95) rather than its massive Attack (120).*
-* **Long run:** Incredibly strong against Phoebe's Ghost types in the Elite Four, though its paper-thin defenses make it high-risk for taking direct hits [1].
-* **Backup:** **Staryu** (Lilycove City, Super Rod, 15% odds) [8]. It can evolve into Starmie with a Water Stone to hit their Rock/Ground types with Surf [9], making it a premier utility sweeper later [9]. *Note: Make sure you can obtain a Water Stone before Mossdeep Gym.*
+* **Where:** Route 103, 118, or 122 [2][3]
+* **When:** Right now, using the Super Rod [2][3] (at Lv30-35) [2][3].
+* **Why it helps now:** Its Dark/Water typing grants it complete immunity to Tate & Liza's Psychic attacks [4]. With STAB Surf and Crunch, it can hit their entire team for super-effective damage [5]. *Note: In Gen III, Water and Dark are both special types, whereas Sharpedo has a massive 120 Attack and a lower 95 Sp. Atk.*
+* **Long run:** A potent glass cannon [4]. Its high offenses are very useful against Elite Four Phoebe's Ghost types [4].
+* **Backup:** **Spheal** (found walking in Shoal Cave B1F/B2F at Lv26-32 [6]). It evolves into Sealeo at Level 32 [7]. It has great bulk to survive hits, and Surf deals super-effective damage to Claydol, Solrock, and Lunatone [8]. In the long term, it evolves into Walrein at 44, offering S-tier value and acting as the ultimate counter to Elite Four Drake [8].
 
-#### Shuppet (core)
-* **Where:** Mt. Pyre 1F-3F (Walking, levels 22-29, 100% odds) [10].
-* **When:** Inside Mt. Pyre on Route 122 before reaching Lilycove City [10].
-* **Why it helps now:** Since Ghost moves are physical in Gen III, Shuppet's evolution, Banette, uses its massive base 115 Attack to hit Tate & Liza's Psychic types incredibly hard with Shadow Ball [11][2][12][3][4].
-* **Long run:** Remains a powerful physical attacker against Phoebe's Ghost-type team in the Elite Four and provides strong neutral physical damage [11][2].
-* **Backup:** **Absol** (Route 120, tall grass) [13]. Uses its high Attack stat with physical moves like Slash and TM30 Shadow Ball to hit Psychic types incredibly hard [14][12][4].
+#### Shuppet (for this fight)
+* **Where:** Mt. Pyre 1F-3F [9] (walking at Lv22-29) [9].
+* **When:** Right now, at Mt. Pyre [9].
+* **Why it helps now:** It evolves into Banette at Level 37 [10]. Ghost-type moves are physical in Gen III, so Banette's massive 115 Attack allows physical Shadow Ball to completely shred the relatively fragile physical defenses of Tate & Liza's team [11].
+* **Long run:** Great offensive asset against Elite Four Phoebe, but its low Speed and defensive stats make it risky in later boss fights [11].
+* **Backup:** **Absol** (found walking on Route 120 at Lv25-27 [12]). It boasts a colossal 130 base Attack [13]. By teaching it Shadow Ball (TM30), it can bypass its Special Dark typing and crush the Mossdeep Gym leaders with physical Ghost damage [13]. It is a strong physical attacker, but relies on TM support since Dark-type moves run off its lower 75 Sp. Attack [13].
 
 ---
 
-### Key Battle Notes
+### Key Battles
 
-#### Mossdeep Gym: Tate & Liza
-Tate & Liza use a highly synergistic double battle strategy [15]. 
-* Their entire team (Claydol, Xatu, Lunatone, Solrock) is immune to Ground moves [15][16][17][18], allowing Claydol to safely spam Earthquake (dealing 2x damage to your Manectric) [15].
-* Solrock sets up Sunny Day to fire off instantaneous Solar Beams (dealing 4x damage to Marshtomp/Swampert) and boosted Flamethrowers (dealing 2x damage to Breloom) [18].
-* All four of their Pokémon carry Psychic, which deals 2x damage to Breloom [15][16][17][18].
+#### Gym 7: Tate & Liza
+Tate & Liza use Claydol, Xatu, Lunatone, and Solrock (up to Level 42) [14][15]. Claydol, Lunatone, and Solrock all have the Levitate ability, making them completely immune to Ground-type attacks [16]. Every Pokémon on their team knows Psychic, which hits Breloom for 2x super-effective damage [14][15]. Solrock also carries Sunny Day and Solar Beam, threatening Marshtomp/Swampert with a 4x super-effective Grass-type attack [15]. 
+
+Your Marshtomp is currently Level 33, while Tate & Liza's team reaches Level 42 [15]. Marshtomp evolves into Swampert at Level 36 [1], gaining crucial stats to survive, so make sure to level it up before tackling this gym.
 
 ---
 
 ### Assumptions
-* You will train Marshtomp to level 36 so it evolves into Swampert before the Gym battle.
-* Your party will be leveled up to roughly level 41-42 to match Tate & Liza.
+* You have access to the Super Rod.
+* You still have the TM for Shadow Ball (TM30) if you choose to use Shuppet/Banette or Absol.
 
 ### To sharpen this
-* Do you prefer a bulky, defensive Ghost-type option like Dusclops, or a fast, offensive physical sweeper like Banette?
-* Have you already used TM30 Shadow Ball from Mt. Pyre, or is it available for Banette or Absol?
+* Have you already used TM30 (Shadow Ball)?
+* Are you planning to complete the optional Lilycove City rival battle to unlock the Department Store TMs?
 
 ### Not covered
-* Whether you currently have access to a Water Stone (e.g., from the Abandoned Ship or trading Blue Shards) to evolve Staryu into Starmie.
+* Any specific items or party composition beyond the recommended captures.
 
 ## Sources
 
-1. PokeAPI: Sharpedo (species data) (`pokeapi:pokemon_species#319`)
-2. PokeAPI: Banette (species data) (`pokeapi:pokemon_species#354`)
-3. database query df73c3cdc5 (`sql:df73c3cdc5`)
-4. database query e8f9d1adfd (`sql:e8f9d1adfd`)
-5. PokeAPI: Carvanha at Route 118 (super-rod) (`pokeapi:encounters#29835`)
-6. PokeAPI: Sharpedo at Route 122 (super-rod) (`pokeapi:encounters#30596`)
-7. PokeAPI: Sharpedo learns Crunch (level-up) (`pokeapi:pokemon_moves#319/242/level-up/22`)
-8. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
-9. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
-10. PokeAPI: Shuppet at Mt. Pyre (walk) (`pokeapi:encounters#29953`)
-11. PokeAPI: Shuppet evolves into Banette (`pokeapi:pokemon_evolution#180`)
-12. database query 6005a6e2e2 (`sql:6005a6e2e2`)
+1. PokeAPI: Marshtomp evolves into Swampert (`pokeapi:pokemon_evolution#135`)
+2. PokeAPI: Sharpedo at Route 103 (super-rod) (`pokeapi:encounters#29611`)
+3. PokeAPI: Carvanha at Route 118 (super-rod) (`pokeapi:encounters#29835`)
+4. PokeAPI: Sharpedo (species data) (`pokeapi:pokemon_species#319`)
+5. PokeAPI: Sharpedo learns Crunch (level-up) (`pokeapi:pokemon_moves#319/242/level-up/22`)
+6. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
+7. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
+8. PokeAPI: Walrein (species data) (`pokeapi:pokemon_species#365`)
+9. PokeAPI: Shuppet at Mt. Pyre (walk) (`pokeapi:encounters#29953`)
+10. PokeAPI: Shuppet evolves into Banette (`pokeapi:pokemon_evolution#180`)
+11. PokeAPI: Banette (species data) (`pokeapi:pokemon_species#354`)
+12. PokeAPI: Absol at Route 120 (walk) (`pokeapi:encounters#30560`)
 13. PokeAPI: Absol (species data) (`pokeapi:pokemon_species#359`)
-14. PokeAPI: Absol learns Slash (level-up) (`pokeapi:pokemon_moves#359/163/level-up/36`)
-15. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/1) (`decomp:trainer_parties.h#sParty_TateAndLiza1/1`)
-16. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/2) (`decomp:trainer_parties.h#sParty_TateAndLiza1/2`)
-17. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/3) (`decomp:trainer_parties.h#sParty_TateAndLiza1/3`)
-18. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/4) (`decomp:trainer_parties.h#sParty_TateAndLiza1/4`)
+14. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/1) (`decomp:trainer_parties.h#sParty_TateAndLiza1/1`)
+15. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/4) (`decomp:trainer_parties.h#sParty_TateAndLiza1/4`)
+16. database query a5bbcba1f9 (`sql:a5bbcba1f9`)

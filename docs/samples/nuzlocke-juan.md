@@ -2,56 +2,52 @@
 
 **Question:** Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch?
 
-75.8 s · 14 model calls · 61,075 tokens · about $0.186 · researchers: battle_researcher, catch_researcher, moves_researcher · 13 trace steps (full trace in `nuzlocke-juan.json`)
+71.3 s · 16 model calls · 72,902 tokens · about $0.189 · researchers: battle_researcher, catch_researcher, moves_researcher · 16 trace steps (full trace in `nuzlocke-juan.json`)
 
 ## Answer
 
-Target Magneton, Lanturn, or Walrein from unused areas to handle Juan's Water/Ice threats and boost your endgame [1][2][3].
+Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rounding out your team's coverage [1][2].
 
 ### Top picks
 
-#### Magnemite (core)
-* **Where:** New Mauville, Walking, Lv 22-26 (50% encounter rate) [4]
-* **When:** Available immediately using Surf to access New Mauville [4].
-* **Why:** Evolves into Magneton, which resists Juan's Ice-type attacks and hits his Water-types extremely hard with STAB Electric moves like Thunderbolt [5][6].
-* **Long run:** S-Tier utility [5]. Magneton's Steel typing provides numerous resistances, making it exceptionally reliable through Victory Road, Elite Four Glacia, and Champion Wallace [5].
-* **Backup:** **Staryu** (Lilycove City, Super Rod, 15% encounter rate, Lv 25-30) [7]. It evolves into Starmie, which resists Ice and can sweep Juan's bulky Water-types with Thunderbolt [8][9][10]. *Note: Starmie requires a Water Stone, so ensure you have one before the Sootopolis Gym.*
+#### Spheal (Walrein) — Core [1][3]
+* **Where:** Shoal Cave (B1F, B2F, or High-Tide), walking, Levels 26-32 (50% encounter rate) [1][4].
+* **When:** Available right now, before facing the Mossdeep Space Center or Juan [1].
+* **Why it helps now:** Juan's Kingdra is a notorious run-killer with Double Team, Rest, and Ice Beam [5]. Walrein's massive bulk and Thick Fat ability let it easily tank Ice Beam and Water Pulse, allowing it to sit in against Kingdra and hit back with Ice-type attacks [5].
+* **Long run:** Walrein is one of the best Elite Four Pokémon in Hoenn [3]. Its Ice-type STAB is critical for defeating Drake's Dragon-types, and its durability makes it excellent against Wallace [3].
+* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
 
-#### Chinchou (core)
-* **Where:** Route 124 or Route 126 (underwater), Seaweed, Lv 20-30 (30% encounter rate) [11]
-* **When:** Available immediately using Dive [11].
-* **Why:** Evolves into Lanturn, which resists both Water and Ice-type attacks from Juan's team, while threatening back with STAB Electric moves [12][13][14].
-* **Long run:** Outstanding against the final boss (Champion Wallace) and Elite Four Glacia's Water-types due to its unique typing [12].
-* **Backup:** None [14].
+#### Staryu (Starmie) — Core [2][9]
+* **Where:** Lilycove City, Super Rod, Levels 25-30 (15% encounter rate) [2].
+* **When:** Available right now in Lilycove City [2].
+* **Why it helps now:** Starmie is a premier fast attacker [9]. With access to Thunderbolt and Ice Beam via TMs, it can effortlessly sweep the rest of Juan's team (Luvdisc, Sealeo, Crawdaunt) before you have to face Kingdra [5][10].
+* **Long run:** Starmie's unmatched coverage (Surf, Thunderbolt, Ice Beam, Psychic) and high Speed make it a top-tier sweeper for the entire Elite Four [9].
+* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
 
-#### Spheal (core)
-* **Where:** Shoal Cave (high-tide or low-tide), Walking, Lv 26-32 (50% encounter rate) [15]
-* **When:** Available immediately north of Mossdeep City [15].
-* **Why:** Evolves into Walrein before the level cap [16][17]. Its Thick Fat ability halves incoming Ice-type damage, making it a stellar bulky pivot against Juan [18][19].
-* **Long run:** An excellent bulky tank that is absolutely crucial for Elite Four Drake (Dragon-type specialist) using STAB Ice moves [18].
-* **Backup:** None [19].
+*Note: Starmie requires a Water Stone to evolve [9]. Make sure you have one available before challenging Juan.*
 
 ---
 
 ### Key Battles
 
 #### Gym 8: Juan
-* Whiscash carries Earthquake, posing a direct threat to Manectric and Magneton with a super-effective ground move [20].
-* Sealeo and Kingdra carry Ice Beam/Aurora Beam, threatening Swellow and Breloom with super-effective damage [21][22].
-* Kingdra can fully heal with Rest paired with a Chesto Berry [22].
+* **Watch out for:** Juan's Kingdra (Lv46) has Double Team, Rest (holding a Chesto Berry), Water Pulse, and Ice Beam [5]. It threatens Breloom and Swellow with super-effective Ice-type damage [11][5]. 
+* **Ground Caution:** Be careful with Manectric, as Juan's Whiscash knows Earthquake [12].
+
+---
+
+### Key Steps
+1. **Check your Level Cap:** Juan's highest-level Pokémon is his Kingdra at Level 46 [5]. Ensure your team stays at or below this level limit [13].
+2. **Equip Key TMs:** Purchase TM13 Ice Beam and TM24 Thunderbolt from the Mauville Game Corner for your new catches, or pick up TM25 Thunder and TM14 Blizzard from the Lilycove Department Store [14][15][10][16].
 
 ---
 
 ### Assumptions
-* You have not used New Mauville, Route 124/126 underwater, or Shoal Cave for Nuzlocke encounters yet.
-* You have access to TMs like Thunderbolt (TM24) and Ice Beam (TM13).
+* You have the Super Rod needed to fish for Staryu.
+* You have access to a Water Stone to evolve Staryu.
 
 ### To sharpen this
-* Do you have a Grass-type move like Giga Drain available to deal with Juan's Whiscash?
-* Do you have setup moves like Bulk Up on Breloom to bypass Kingdra's Double Team evasion?
-
-### Not covered
-* The availability of specific TMs (like Thunderbolt and Ice Beam) in your current inventory is unknown.
+* Do you already have a Water Stone for Staryu, or need to know where to find one?
 
 ### Rules I followed
 - Nuzlocke: first encounter per named location only, dupes clause; gifts, statics and trades are free (checked by the Verifier)
@@ -60,25 +56,19 @@ Target Magneton, Lanturn, or Walrein from unused areas to handle Juan's Water/Ic
 
 ## Sources
 
-1. PokeAPI: Magnemite (species data) (`pokeapi:pokemon_species#81`)
-2. PokeAPI: Chinchou (species data) (`pokeapi:pokemon_species#170`)
-3. PokeAPI: Spheal (species data) (`pokeapi:pokemon_species#363`)
-4. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#30499`)
-5. PokeAPI: Magneton (species data) (`pokeapi:pokemon_species#82`)
-6. PokeAPI: Magnemite evolves into Magneton (`pokeapi:pokemon_evolution#51`)
-7. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
-8. PokeAPI: Staryu (species data) (`pokeapi:pokemon_species#120`)
-9. PokeAPI: Starmie (species data) (`pokeapi:pokemon_species#121`)
-10. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
-11. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
-12. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
-13. PokeAPI: Chinchou evolves into Lanturn (`pokeapi:pokemon_evolution#95`)
-14. database query 16d1836167 (`sql:16d1836167`)
-15. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#30883`)
-16. PokeAPI: Spheal evolves into Sealeo (`pokeapi:pokemon_evolution#184`)
-17. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
-18. PokeAPI: Walrein (species data) (`pokeapi:pokemon_species#365`)
-19. database query 61d6083338 (`sql:61d6083338`)
-20. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)
-21. pokeemerald src/data/trainer_parties.h (sParty_Juan1/3) (`decomp:trainer_parties.h#sParty_Juan1/3`)
-22. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
+1. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
+2. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
+3. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
+4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70808`)
+5. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
+6. PokeAPI: Chinchou evolves into Lanturn (`pokeapi:pokemon_evolution#95`)
+7. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
+8. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
+9. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
+10. pokeemerald data/maps/MauvilleCity_GameCorner (TM13) (`decomp:data/maps/MauvilleCity_GameCorner#TM13`)
+11. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
+12. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)
+13. database query ef2ed14180 (`sql:ef2ed14180`)
+14. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM25) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM25`)
+15. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM14) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14`)
+16. pokeemerald data/maps/MauvilleCity_GameCorner (TM24) (`decomp:data/maps/MauvilleCity_GameCorner#TM24`)

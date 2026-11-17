@@ -1,0 +1,31 @@
+{
+  "response": "I'm sorry, but I only cover the Game Boy Advance Gen III games: Pokémon Emerald, Ruby, Sapphire, FireRed, and LeafGreen, up to defeating the Champion. I do not cover modern games like Pokémon Sword, nor do I cover competitive stats, EV spreads, or IVs. Please let me know if you need help with a Gen III playthrough!",
+  "session_id": "sample-out-of-scope",
+  "tool_calls": [
+    {
+      "agent": "clarifier",
+      "name": "decide",
+      "args": {
+        "message": "What's the best EV spread for Garchomp in Pokémon Sword?"
+      },
+      "result": "{\"action\": \"decline\", \"intent\": \"lookup\", \"reply\": \"I'm sorry, but I only cover the Game Boy Advance Gen III games: Pok\\u00e9mon Emerald, Ruby, Sapphire, FireRed, and LeafGreen, up to defeating the Champion. I do not cover modern games like Pok\\u00e9mon Sword, nor do I cover competitive stats, EV spreads, or IVs. Please let me know if you need help with a Gen III playthrough!\", \"research_brief\": \"The player is asking about an EV spread for Garchomp in Pok\\u00e9mon Sword. This is out of scope as Garchomp and Pok\\u00e9mon Sword are Gen IV+ and Gen VIII respectively, and EV training/competitive builds are out of scope.\", \"state_updates\": {\"game\": null, \"starter\": null, \"badges\": null, \"rival\": null, \"last_battle\": null, \"party\": null, \"owned\": null}, \"rule_updates\": {\"nuzlocke\": null, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": null, \"level_caps\": null, \"level_cap_offset\": null, \"allowed_types\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_banned_types\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "round": 0,
+      "t": 2.06
+    }
+  ],
+  "citations": [],
+  "plan": null,
+  "chart": null,
+  "usage": [
+    {
+      "agent": "clarifier",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 3126,
+      "output_tokens": 375,
+      "cost_usd": 0.008064,
+      "t": 2.06,
+      "fallback": null
+    }
+  ],
+  "seconds": 2.1
+}

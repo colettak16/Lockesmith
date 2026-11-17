@@ -27,7 +27,7 @@ Done in the second cross-check (D7): `tm_locations.requires` holds 17 hand-check
 
 ## D2. Guide corpus (PLAN §4.1) — **Bulbapedia via MediaWiki API, Emerald walkthrough only**
 
-Spike result: the API serves all 21 walkthrough parts. `build/build_guide_corpus.py` caches raw wikitext with revision IDs in `data/guide/pages/` and writes **400 section chunks (~165K characters)** to `data/guide/chunks.jsonl`, each with an id like `guide:Walkthrough:Pokemon_Emerald/Part_10#Finding_Feebas` and a deep link.
+Spike result: the API serves all 21 walkthrough parts. `build/build_guide_corpus.py` caches raw wikitext with revision IDs (now one file per walkthrough, `data/guide/pages.jsonl`) and writes **400 section chunks (~165K characters)** to `data/guide/chunks.jsonl`, each with an id like `guide:Walkthrough:Pokemon_Emerald/Part_10#Finding_Feebas` and a deep link.
 
 Things to know:
 - Bulbapedia's edge returns **403 to httpx** and 200 to curl and Python's urllib, so the fetcher uses urllib. Requests are 1/s with a project User-Agent.
@@ -139,7 +139,7 @@ These widen PLAN.md §1, §6 and §9. They were agreed in conversation before Ph
 
 ## D9. Phase 2 tuning, from live runs (2026-11-01)
 
-Measured with `scripts/phase2_acceptance.py`; the outputs are in `docs/phase2_runs/`.
+Measured with live acceptance runs of five scenarios (a catch plan, a revision, next steps, a vague question, an out-of-scope one). The script was retired before submission; the vague and out-of-scope responses are kept in `docs/samples/`.
 
 - **Researchers loop on tools.** Gemini Flash often calls a tool once per species and runs into `max_turns`. Agents that hit the limit now get one more turn with tools switched off and report what they found (the SDK's `max_turns` error handler); the trace shows `turn_limit_wrap_up`. Before this, every scenario lost researchers to `MaxTurnsExceeded`.
 - **Vertex quota is the main latency risk.** Four parallel researchers trip "429 Resource exhausted". The runner retries 429/5xx with exponential backoff (2 s doubling to 20 s, 5 retries), so nothing fails, but one slow researcher can push a request from about 90 s to about 240 s. A quota increase, or switching to Claude (D8), are the levers if this hurts.
@@ -170,7 +170,7 @@ The user judged 100–240 s unacceptable; even a minute is long. We considered c
   - The researcher turn cap is 4, still with the forced wrap-up.
   - The Battle researcher lost `search_guide`, which it used to wander.
 - **The Lead stays on Pro.** On Flash it saved only about 5 s (46 s vs 51 s), but it dispatched an unneeded fourth researcher, ignoring the instructions.
-- **Result** (`scripts/phase2_acceptance.py`): catch plan 51 s with 14 model calls (down from about 31); revision 51 s; next steps 39 s; vague and out-of-scope 2 s. All five scenarios pass. Phase 4's front end will stream progress so the wait is visible.
+- **Result:** catch plan 51 s with 14 model calls (down from about 31); revision 51 s; next steps 39 s; vague and out-of-scope 2 s. All five scenarios pass. Phase 4's front end will stream progress so the wait is visible.
 
 ## D11. Phase 3: the Verifier, the gap loop, rulesets and randomized runs (2026-11-01)
 
@@ -224,7 +224,7 @@ So every tool and the Verifier read the randomized game with no code changes, an
 
 Limits: wild sets from the log map to whole locations, not rooms (the vanilla table has the same grain for most places), and no real Emerald log has been through the parser yet (D4).
 
-**Found in the live runs** (`scripts/phase3_acceptance.py`, outputs in `docs/phase3_runs/`):
+**Found in the live runs** (Nuzlocke, custom-rule and randomized scenarios):
 - **Towns with no wild Pokémon were never "reachable."** Mauville City, Verdanturf, Fallarbor, Mt. Chimney and Scorched Slab weren't in any `areas_new`, so their TMs and tutors were never available. The Verifier wrongly rejected Lanturn with Thunderbolt and Starmie with Psychic before Juan, since TM24 and TM29 are both in Mauville. Each now opens at the step its route does. A test checks that every TM and tutor place opens somewhere; the one exception is the S.S. Tidal, whose ticket comes after the Hall of Fame.
 - **A promoted backup left the headline naming the old pick.** When the final picks differ from the Lead's, the headline is blanked and the Writer opens from the final picks.
 
@@ -304,9 +304,9 @@ Surprises in the data, kept here for the README's data section:
 12. **Hidden Power and Weather Ball have no fixed category.** Damage takes physical/special from the type the move has in battle (`typeOverride` in `pokemon.c`), so `damage_class` is `varies`.
 13. **Trainer Pokémon always have their first ability.** `CreateNPCTrainerParty` gives them even personality values, and the ability slot is `personality & 1`. `trainer_mons.ability` records it.
 
-## D7. Second-model cross-check (2026-11-01)
+## D7. Cross-checking the Emerald facts (2026-11-01)
 
-The review packet (`docs/review_packet.md`) went to GPT. Before changing anything, each of its claims was re-checked in the decomp, Bulbapedia, or UPR ZX's own source.
+The facts in `docs/review_packet.md` were cross-checked claim by claim. Before changing anything, each correction was verified in the decomp, Bulbapedia, or UPR ZX's own source.
 
 **Confirmed and applied:**
 - Findings 10–13.
@@ -326,20 +326,20 @@ The review packet (`docs/review_packet.md`) went to GPT. Before changing anythin
 - Moveset logging puts the header on its own line and adds `, Ability: X`.
 - Statics carry `(2)` repeat counts.
 
-GPT's sample log was from Pokémon X, though. Its "Surf/Old Rod" set labels don't apply: Gen 3 prints `Grass/Cave`, `Surfing`, `Rock Smash` and `Fishing`. The parser now follows the source.
+The "Surf/Old Rod" set labels in a sample log offered as evidence came from Pokémon X and don't apply: Gen 3 prints `Grass/Cave`, `Surfing`, `Rock Smash` and `Fishing`. The parser now follows the source.
 
-**Unverified in its report but now settled:**
+**Open at first, now settled:**
 - UPR numbers trainers by ROM table index, which matches the decomp IDs.
 - UPR numbers wild sets in ROM header order. No two Emerald sets share a table, so none are skipped.
 
-**Found while verifying, not in its report:**
+**Found while verifying:**
 - UPR adds Steven's Space Center team as pseudo-trainer #855. The parser marks it as a partner.
 - Cave of Origin is enterable only during the crisis: an Expert blocks it unless `VAR_SOOTOPOLIS_CITY_STATE` is 2–3.
 - Routes 132–134 only flow west (Bulbapedia), so they can't be reached from Slateport before the eastern sea opens.
 
 **Second round.** Every claim checked out after verification, with one placement corrected. Applied:
 - **Routes that open in stages.**
-  - Route 110's first grass lies south of the Team Aqua line (grunts at y=83, the Route 103 junction at y=60–80). It opens with Slateport, before Brawly; GPT had said P-07, but Slateport already opens at P-06.
+  - Route 110's first grass lies south of the Team Aqua line (grunts at y=83, the Route 103 junction at y=60–80). It opens with Slateport (P-06), before Brawly, not at P-07.
   - Route 111's pond and Rock Smash rocks open from Mauville. Its grass is desert-only, behind the Go-Goggles.
 - **TM gates:** `tm_locations.requires` (see D1). Highlights:
   - TM43 is first a gift from Route 111's Secret Power man. That gift also makes the Slateport TM salesman appear (`secret_power_tm.inc`).
@@ -545,9 +545,9 @@ Every encounter area is either opened by a step or marked never reachable.
 
 **Walkthrough corpus.** Bulbapedia's 20-part FireRed/LeafGreen walkthrough (360 passages). Its version marks render as "(FireRed)" and "(LeafGreen)".
 
-**Review.** `docs/review_packet_frlg.md` goes through Codex (ChatGPT) rounds, run from an empty folder with decomp excerpts in the packet. Every claim gets checked in the decomp before anything changes.
+**Review.** `docs/review_packet_frlg.md` was cross-checked in two rounds, with decomp excerpts in the packet. Every claim was checked in the decomp before anything changed.
 
-**Review round 1** (`docs/review_frlg_round1_codex.md`). Codex confirmed 20 of the 21 claims. Each correction below was checked at the pinned commit before it was applied:
+**Round 1.** 20 of the 21 claims held. Each correction below was checked at the pinned commit before it was applied:
 - **PC storage.** The PC comes back at Three Isle Port (`ThreeIsland_Port` clears `FLAG_SYS_PC_STORAGE_DISABLED`), not in the postgame.
 - **National Dex.** Oak gives it only once you've caught 60 species and visited One Island (`PalletTown_ProfessorOaksLab`).
 - **New steps:**
@@ -565,16 +565,16 @@ Every encounter area is either opened by a step or marked never reachable.
 
 Not applied:
 - **Route 23 mid-game.** Its badge guards let you fish and surf part of it before eight badges. That's not modeled; the whole route opens with the League.
-- **Mt. Ember's area names.** Codex would also compare levels and slots, not only species. It's left as a `review:` note.
+- **Mt. Ember's area names.** Comparing levels and slots, not only species, would settle them. It's left as a `review:` note.
 
-**Review round 2** (`docs/review_frlg_round2_codex.md`). Codex confirmed all 14 round-1 changes and found no HM listed too early. Applied after checking each:
+**Round 2** (`docs/review_packet_frlg_round2.md`). All 14 round-1 changes held, and no HM was listed too early. Applied after checking each:
 - **S.S. Anne.** The ship leaves when you step off it after the Captain's HM01: he sets Vermilion's scene to 1, and the dock's `ExitSSAnne` runs on it. The `closes` entry already had that timing; its reason now says so.
 - **Pokémon Tower.** The ghost Marowak on 6F blocks the stairs (two trigger tiles) and is now named in the Tower step.
 - **Card Key.** It can be had before Koga, since Silph Co. opens with Mr. Fuji's rescue.
 - **Mimic.** The tutor also takes a Poké Doll (`EventScript_MimicTutor`).
 - **Sevii.** Once you take Bill's trip, both Sevii steps are the way back to Kanto.
 
-Not changed, since Codex misread them:
+Suggested but not changed, since the decomp disagrees:
 - `pallet-town` is excluded only for the starter gift; its fishing opens at the Route 22 step.
 - `kanto-route-3/pokemon-center` is marked as PokeAPI's duplicate of the Route 4 Magikarp salesman.
 - Key items stay the ones the tools gate on, not every key item.
@@ -629,3 +629,25 @@ Fixes:
 - **Abilities.** `Target.takes` always counted the chart's multiplier beside the ability's, so even "Earthquake does 2x damage to Gengar" passed. An immunity that every member of the species has now replaces the chart. A damage-reducing ability (Thick Fat) still leaves the chart's figure right.
 
 On 27 live Lead drafts from LangFuse and the 11 saved ones, the only new flags are the replay's two (Gengar, Haunter).
+
+## D19. No real randomizer logs; the parser checked at full size instead (2026-11-13)
+
+**No real log.** A real Universal Pokemon Randomizer ZX log needs a ROM, and none was available: the user has no cartridge dumps, the professor isn't sending example logs, and building ROMs from the decomps was turned down. Review packet items R-12 to R-14 and Q-06 stay predictions, and R-17's revision hashes weren't taken. The fixture tests in `tests/test_log_parser.py` still run if a real log is ever dropped into `tests/fixtures/`.
+
+**Full-size logs written in UPR's format.** `tests/upr_log_writer.py` writes a log for each game from that game's own tables, line by line as UPR ZX's source at `7f00eb8` prints it (`Randomizer.java`'s log methods, `Gen3RomHandler`'s set and trainer names, `gba_english.tbl`'s ’):
+- every wild set in ROM header order (209 in Emerald, 179 in Ruby/Sapphire, 227 in FireRed/LeafGreen), each with random Pokémon and levels
+- every trainer, numbered from 1, plus Emerald's Space Center partner, in both the compact and the moveset-logging form
+- all 50 TMs, the starters, the footer and the ROM diagnostics
+
+`tests/test_full_logs.py` reads each back: 10 logs (5 games × 2 trainer forms). Every set lines up with the ROM order, every trainer joins its decomp id with the right party size, and every Pokémon, level, item, move, TM and starter comes back exactly as written, with no warnings. The ROM names of all 386 species and 354 moves resolve to the right ids in all five databases (FARFETCH’D, NIDORAN♀, FAINT ATTACK, …). What this can't show is that UPR really prints these lines; that still needs a real log.
+
+**A bug it found: the footer read as two sections.** UPR closes every log with a footer between two 66-dash lines, then `--ROM Diagnostics--`. `SECTION_RE` read the dash line as a section named "------…", so a real log would have listed "------…" and "rom diagnostics" as changed but unreadable, on the page and in the agent's brief. The footer and diagnostics are now no section.
+
+**ROM identity (R-17).** `read_rom` reads UPR's name for the ROM from the footer ("Ruby (E)") and the original ROM's CRC32 from the diagnostics, and checks both against UPR's own list of 46 Gen III ROMs (`gen3_offsets.ini`). UPR picks a ROM by its header's game code and version, so a hacked or patched Emerald still says "Emerald (U)"; only the CRC32 tells. The upload's summary carries the game, revision, language and whether the ROM is clean, and the page and the agent's brief get a note for:
+- a ROM changed before randomizing (a ROM hack, a patch or a bad dump): anything the log doesn't list comes from the unmodified game
+- a non-English ROM: UPR prints the ROM's own names, which the matcher may not know
+- a name UPR's list doesn't have, or a log with no footer (cut short)
+
+A log from a game LockeSmith doesn't cover (its footer names, say, Crystal) is refused at upload. Revisions 1 and 2 of Ruby and Sapphire get no note: the decomp's revision switches never touch the data tables (Q-01). The site's hand-made sample log got UPR's footer, with no CRC32, so it isn't reported as a clean ROM.
+
+**Emulator checks (V-15)** weren't done either. The README says the story gates were checked against the decomps, not in an emulator.

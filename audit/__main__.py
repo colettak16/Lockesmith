@@ -9,7 +9,6 @@ two reports are identical (review packet V-13). Takes about a minute.
 
 import sys
 import time
-from pathlib import Path
 
 from audit import chokepoints, core_data, encounter_scripts, engine, layouts, map_changes, reach, story_gates
 from audit.sources import ROOT, pinned

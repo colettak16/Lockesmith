@@ -19,8 +19,6 @@ from agent.games import EMERALD, Game
 from build import decomp
 
 GEN = 3
-EMERALD_VERSION_ID = EMERALD.version_id
-EMERALD_VERSION_GROUP_ID = EMERALD.version_group_id
 ENGLISH = 9
 MAX_SPECIES = 386
 

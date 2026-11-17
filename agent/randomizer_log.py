@@ -1,11 +1,12 @@
-"""Parse a Universal Pokemon Randomizer ZX spoiler log for Emerald, Ruby or Sapphire
-(PLAN.md section 4.5). The log's footer says which game it's from (`detect_game`).
+"""Parse a Universal Pokemon Randomizer ZX spoiler log for Emerald, Ruby, Sapphire, FireRed
+or LeafGreen (PLAN.md section 4.5). The log's footer says which game it's from (`detect_game`)
+and its diagnostics which ROM (`read_rom`).
 
 The line formats follow UPR ZX's own logging code (Randomizer.java's log* methods,
-TrainerPokemon.toString, StaticEncounter.toString and Gen3RomHandler's set names),
-but no real log from any of the three has been run through it yet (tests/fixtures/
-is empty), so each section parser is tolerant and records anything it can't read in
-`warnings`.
+TrainerPokemon.toString, StaticEncounter.toString and Gen3RomHandler's set names). No real
+log has been run through it (no ROM was available); tests/test_full_logs.py runs full-size
+logs written to UPR's format from each game's data instead. Each section parser is tolerant
+and records anything it can't read in `warnings`.
 
 A log only has sections for what was randomized, but a missing section doesn't
 always mean vanilla: UPR also prints status lines between sections ("Pokemon
@@ -45,6 +46,50 @@ STATIC_SUFFIX_RE = re.compile(r"(?:\s+\(egg\))?(?:\(\d+\))?(?:\s+Lv\s*\d+(?:-\d+
 # name is its gen3_offsets.ini section. Ruby and Sapphire logs are read against their own tables.
 # UPR names the Kanto ROMs "Fire Red (U) 1.0" and "Leaf Green (U) 1.0" (gen3_offsets.ini), with a space.
 GAME_RE = re.compile(r"^Randomization of (?:Pokemon |Pokémon )?(Ruby|Sapphire|Emerald|Fire ?Red|Leaf ?Green)\b", re.I | re.M)
+# The footer and diagnostics after the last section (Randomizer.java's log tail,
+# AbstractGBRomHandler.printRomDiagnostics):
+#   ------------------------------------------------------------------
+#   Randomization of Emerald (U) completed.
+#   Time elapsed: 2512ms
+#   RNG Calls: 41213
+#   ------------------------------------------------------------------
+#
+#   --ROM Diagnostics--
+#   File name: emerald.gba
+#   Original ROM CRC32: 1F1C08FB
+# The 66-dash rules would otherwise match SECTION_RE ("--" + dashes + "--").
+RULE_RE = re.compile(r"^-{20,}$")
+ROM_NAME_RE = re.compile(r"^Randomization of (?P<name>.+?) completed\.\s*$", re.M)
+CRC_RE = re.compile(r"^Original ROM CRC32:\s*(?P<crc>[0-9A-Fa-f]{8})\s*$", re.M)
+DIAGNOSTICS = "rom diagnostics"
+# UPR ZX's Gen III ROM list (gen3_offsets.ini at 7f00eb8): name -> (revision, clean ROM's CRC32).
+# UPR picks the entry by the ROM header's game code and version, then compares CRC32s
+# (Gen3RomHandler.isRomValid), so a hacked or patched Emerald still prints "Emerald (U)".
+UPR_GEN3_ROMS = {
+    "Ruby (U)": (0, "F0815EE7"), "Ruby (E)": (1, "61641576"), "Ruby (U/E) 1.2": (2, "AEAC73E6"),
+    "Sapphire (U)": (0, "554DEDC4"), "Sapphire (E)": (1, "BAFEDAE5"), "Sapphire (U/E) 1.2": (2, "9CC4410E"),
+    "Emerald (U)": (0, "1F1C08FB"),
+    "Fire Red (U) 1.0": (0, "DD88761C"), "Fire Red (U) 1.1": (1, "84EE4776"),
+    "Leaf Green (U) 1.0": (0, "D69C96CC"), "Leaf Green (U) 1.1": (1, "DAFFECEC"),
+    "Ruby (F)": (0, "690FD310"), "Ruby (F) 1.1": (1, "9F981F72"),
+    "Sapphire (F)": (0, "3581A05F"), "Sapphire (F) 1.1": (1, "2AE49146"), "Emerald (F)": (0, "A3FDCCB1"),
+    "Ruby (G)": (0, "15E1E280"), "Ruby (G) 1.1": (1, "CAE89464"),
+    "Sapphire (G)": (0, "6FCD7A98"), "Sapphire (G) 1.1": (1, "B0C40C7C"), "Emerald (G)": (0, "34C9DF89"),
+    "Ruby (S)": (0, "EB0729CF"), "Ruby (S) 1.1": (1, "B980FFF5"),
+    "Sapphire (S)": (0, "A04F5F0B"), "Sapphire (S) 1.1": (1, "F2C88931"), "Emerald (S)": (0, "8C4D3108"),
+    "Ruby (I)": (0, "C18231A9"), "Ruby (I) 1.1": (1, "9305E793"),
+    "Sapphire (I)": (0, "0C7992A9"), "Sapphire (I) 1.1": (1, "5EFE4493"), "Emerald (I)": (0, "A0AEC80A"),
+    "Fire Red (F)": (0, "5DC668F6"), "Leaf Green (F)": (0, "BA3285E3"),
+    "Fire Red (G)": (0, "1A81EEDF"), "Leaf Green (G)": (0, "D12F1FDD"),
+    "Fire Red (S)": (0, "9F08064E"), "Leaf Green (S)": (0, "2CA11D59"),
+    "Fire Red (I)": (0, "73A72167"), "Leaf Green (I)": (0, "16974506"),
+    "Ruby (J)": (0, "CEE9471A"), "Sapphire (J)": (0, "FD1EEB78"), "Emerald (J)": (0, "4881F3F8"),
+    "Emerald (T-Eng)": (0, None),
+    "Fire Red (J)": (0, "3B2056E9"), "Fire Red (J) 1.1": (1, "BB640DF7"), "Leaf Green (J)": (0, "0A48556B"),
+}
+LANGUAGES = {"U": "English", "E": "English", "U/E": "English", "F": "French", "G": "German", "S": "Spanish",
+             "I": "Italian", "J": "Japanese", "T-Eng": "fan-translated Japanese"}
+COVERED = "Emerald, Ruby, Sapphire, FireRed and LeafGreen"
 STATUS_RE = re.compile(r"^(?P<what>[A-Z][A-Za-z ]+): (?P<status>Unchanged|Metronome Only)\.$")
 # EvolutionUpdate.toString: "EEVEE -> ESPEON by reaching high happiness", or the condensed
 # "NINCADA now also evolves into SHEDINJA at minimum level 20"
@@ -149,7 +194,20 @@ class EvolutionUpdate:
 
 
 @dataclass
+class RomInfo:
+    """Which ROM a log was made from (review packet R-17), from UPR's footer and diagnostics."""
+
+    name: str | None = None  # UPR's name for it, e.g. "Ruby (E)"
+    revision: int | None = None  # 0 for the first release
+    language: str | None = None
+    crc32: str | None = None  # the ROM's CRC32 before randomizing
+    clean: bool | None = None  # matches UPR's CRC32 for that ROM; None when either is unknown
+
+
+@dataclass
 class RandomizerLog:
+    rom: RomInfo = field(default_factory=RomInfo)
+    rom_notes: list[str] = field(default_factory=list)  # about the ROM, not about lines
     header: dict[str, str] = field(default_factory=dict)
     sections: list[str] = field(default_factory=list)
     unparsed_sections: list[str] = field(default_factory=list)
@@ -165,7 +223,7 @@ class RandomizerLog:
     statics: list[tuple[str, str]] = field(default_factory=list)  # (vanilla species, new species)
     move_tutors: list[tuple[str, str]] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
-    game: str | None = None  # "emerald" | "ruby" | "sapphire", from the log's footer
+    game: str | None = None  # "emerald" | "ruby" | "sapphire" | "firered" | "leafgreen", from the footer
 
     def randomized(self, key: str) -> bool:
         return key in {SECTION_KEYS.get(s.lower(), s.lower()) for s in self.sections}
@@ -189,20 +247,27 @@ class RandomizerLog:
 
 def split_sections(text: str) -> tuple[list[str], dict[str, list[str]], dict[str, str]]:
     """Header lines before the first `--Section--`, section name -> its lines, and the
-    status lines UPR prints between sections (kind -> status)."""
-    header, sections, statuses, current = [], {}, {}, None
+    status lines UPR prints between sections (kind -> status). The footer and ROM
+    diagnostics belong to no section (`read_rom` reads them)."""
+    header, sections, statuses, current, in_footer = [], {}, {}, None, False
     for line in text.splitlines():
+        if RULE_RE.match(line.strip()):
+            current, in_footer = None, True
+            continue
         status = STATUS_RE.match(line.strip())
         if status and status.group("what").lower() in STATUS_KEYS:
             kind = STATUS_KEYS[status.group("what").lower()]
             statuses[kind] = status.group("status").lower().replace(" ", "-")
             continue
         m = SECTION_RE.match(line.strip())
-        if m:
-            current = m.group(1)
+        if m and m.group(1).lower() == DIAGNOSTICS:
+            current, in_footer = None, True
+        elif m:
+            current, in_footer = m.group(1), False
             sections.setdefault(current, [])
         elif current is None:
-            header.append(line)
+            if not in_footer:
+                header.append(line)
         else:
             sections[current].append(line.rstrip())
     return header, sections, statuses
@@ -212,6 +277,39 @@ def detect_game(text: str) -> str | None:
     """Which game a UPR log was made from, or None if its footer is missing."""
     m = GAME_RE.search(text)
     return m.group(1).lower().replace(" ", "") if m else None
+
+
+def read_rom(text: str) -> tuple[RomInfo, list[str]]:
+    """Which ROM the log was made from, and notes for the player when it matters: a log cut
+    short, a ROM UPR doesn't list, a non-English ROM, or a ROM modified before randomizing."""
+    rom, notes = RomInfo(), []
+    crc = CRC_RE.search(text)
+    rom.crc32 = crc.group("crc").upper() if crc else None
+    footer = ROM_NAME_RE.search(text)
+    if not footer:
+        notes.append("The log has no closing footer (\"Randomization of ... completed.\"), so it may be cut short.")
+        return rom, notes
+    rom.name = footer.group("name").strip()
+    if detect_game(text) is None:
+        notes.append(f"The log is from {rom.name}, a game LockeSmith doesn't cover ({COVERED} only).")
+        return rom, notes
+    region = re.search(r"\(([^)]+)\)", rom.name)
+    rom.language = LANGUAGES.get(region.group(1)) if region else None
+    expected = None
+    if rom.name in UPR_GEN3_ROMS:
+        rom.revision, expected = UPR_GEN3_ROMS[rom.name]
+        if rom.crc32 and expected:
+            rom.clean = rom.crc32 == expected
+    else:
+        notes.append(f"UPR named the ROM \"{rom.name}\", which isn't in its list of Gen III ROMs, so its revision is unknown.")
+    if rom.language and rom.language != "English":
+        notes.append(f"The log is from a {rom.language} ROM ({rom.name}). LockeSmith reads English logs, "
+                     "so some Pokémon and move names may not be recognised.")
+    if rom.clean is False:
+        notes.append(f"The ROM's checksum ({rom.crc32}) isn't a clean {rom.name}'s ({expected}), so it was changed "
+                     "before randomizing (a ROM hack, a patch or a bad dump). LockeSmith covers the unmodified games, "
+                     "so anything the log doesn't list comes from the unmodified game and may not match yours.")
+    return rom, notes
 
 
 def norm_map_name(name: str) -> str:
@@ -261,6 +359,7 @@ class LogParser:
 
     def parse(self, text: str) -> RandomizerLog:
         log = RandomizerLog(game=detect_game(text))
+        log.rom, log.rom_notes = read_rom(text)
         if log.game and log.game != self.game:
             log.warnings.append(f"the log is from {log.game.title()}, but it's being read against {self.game.title()}'s data")
         header, sections, log.statuses = split_sections(text)

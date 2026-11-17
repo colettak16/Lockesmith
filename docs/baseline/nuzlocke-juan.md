@@ -1,6 +1,6 @@
 # Baseline: nuzlocke-juan
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 50.8 s, 252 input / 3617 output tokens, about $0.0439.
+vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 53.6 s, 252 input / 5283 output tokens, about $0.0639.
 
 ## Prompt
 
@@ -12,49 +12,44 @@ Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch
 
 ## Answer
 
-Your team of Swampert, Breloom, Swellow, and Manectric is incredibly solid, but you have two empty slots in your party. With the level cap sitting at **Lv. 46** (Juan’s Kingdra), you are in a great position to fill out your team. 
+With 7 badges down, your level cap for Juan is **Level 46** (his ace is Kingdra). 
 
-Juan is notorious for being a run-killer in Emerald, almost entirely because of his **Kingdra** (Water Pulse, Ice Beam, Rest, Sleep Talk, Double Team). Since Kingdra is Water/Dragon, it is only weak to Dragon, meaning your Manectric and Breloom will only hit it for neutral damage.
+Looking at your current team, **Manectric** and **Breloom** match up incredibly well against 4 of Juan's 5 Pokémon. Breloom will absolutely destroy Whiscash (which has a 4x weakness to Grass and no Ice moves), and Manectric can sweep Luvdisc, Sealeo, and Crawdaunt with Thunderbolt.
 
-Since you have Surf, Dive, and the Super Rod (from Mossdeep City), the entire ocean is open to you. Here are the best encounters you should target right now, taking advantage of the **Dupes Clause**:
+However, Juan’s ace—**Kingdra**—is a notorious run-killer. It has Water Pulse, Ice Beam, Rest (with a Chesto Berry), and Double Team. Because it is his final Pokémon, you cannot use Roar or Whirlwind to phase away its Double Team boosts. 
 
-### 1. New Mauville (Magneton)
-If you haven't been here yet, go immediately. You get the Basement Key from Wattson in Mauville City after getting Surf.
-*   **The Catch:** You will encounter either Voltorb or Magnemite. Both are great, but **Magnemite/Magneton** is a top-tier Nuzlocke Pokémon. 
-*   **Why for Juan:** Magneton resists both of Kingdra's attacks (Water and Ice). It also has massive Special Attack and Defense. It’s arguably the safest Pokémon to put in front of Kingdra. 
+Looking at your list of used areas, you have left some of the best locations in the game untouched. Here is exactly what you should go catch to counter Kingdra and build your team for the Elite Four:
 
-### 2. Shoal Cave (Spheal -> Walrein)
-Located north of Mossdeep City. 
-*   **The Catch:** Depending on the tide, you can find Spheal, Snorunt, Zubat, or Tentacool. If you already have a Zubat/Golbat and a Tentacool/Tentacruel from earlier routes, your Dupes Clause almost guarantees you a **Spheal (Walrein)** or Snorunt.
-*   **Why for Juan:** Walrein is a bulky Water/Ice type with massive HP. Because of its typing, it resists both of Kingdra’s attacking moves. Walrein also gets **Encore** via level up, which can lock Kingdra into Double Team or Rest, completely shutting down its strategy so you can get a free switch to a heavy hitter.
+### 1. The Ultimate Kingdra Counter: Magneton
+**Location:** New Mauville (Surf from Route 110)
+**Encounter:** Magnemite / Voltorb (If you get Voltorb, Electrode is still great, but Magneton is the prize).
+*   **Why it's perfect:** Magneton is Electric/Steel. Steel resists Kingdra’s Ice Beam, and Electric takes neutral damage from Water Pulse. More importantly, Magneton learns **Lock-On** (Lv 33) and **Swift** (Lv 44) natively. 
+*   **The Strategy:** You can either use Lock-On followed by Thunderbolt to guarantee a hit through 6 Double Teams, or teach it **Shock Wave** (TM34 from Wattson), which is a "never-miss" Electric move. Magneton completely walls Kingdra and slowly whittles it down without missing. 
 
-### 3. Lilycove City (Staryu -> Starmie)
-You can fish in the water right inside Lilycove City using the **Super Rod**.
-*   **The Catch:** The Super Rod yields Wailmer (85%) and Staryu (15%). 
-*   **Dupes Clause Trick:** Before fishing in Lilycove, go to Route 124 or 125 and fish for a Wailmer. Once you catch Wailmer, go to Lilycove. Thanks to your Dupes Clause, your first valid encounter in Lilycove will be guaranteed to be **Staryu**. You can evolve it with a Water Stone (found on the Abandoned Ship or traded for a Blue Shard).
-*   **Why for Juan:** Starmie is fast, hits incredibly hard, and can learn Thunderbolt, Ice Beam, Psychic, and Surf. It also gets Recover. 
+### 2. The Unkillable Tank: Spheal (Walrein)
+**Location:** Shoal Cave (Route 125, north of Mossdeep)
+**Encounter:** Spheal / Sealeo (or Snorunt, but Spheal is most common)
+*   **Why it's perfect:** If you evolve Spheal into Walrein (Lv 44), you get a massive Water/Ice tank with the ability Thick Fat. It resists Water Pulse and takes 1/4 damage from Ice Beam. 
+*   **The Strategy:** Walrein is your ultimate safe switch. It can soak up Kingdra's hits indefinitely, heal up, and use Body Slam to fish for Paralysis, effectively neutralizing Kingdra's speed and Double Team evasion advantage. (Walrein is also basically mandatory to easily beat Drake in the Elite Four).
 
-### 4. Abandoned Ship (Tentacruel)
-If you didn't catch a Tentacool on your earlier surfing routes, get one now.
-*   **The Catch:** Tentacool/Tentacruel are everywhere here. 
-*   **Why for Juan:** Tentacruel has incredibly high Special Defense. It resists Water and Ice. Furthermore, it has the **Clear Body** ability (prevents stat drops) and can learn **Toxic**. You can poison Kingdra, and then stall it out with Barrier/Protect.
+### 3. The Perfect Pivot: Chinchou (Lanturn)
+**Location:** Underwater (Dive on Route 124 or 126)
+**Encounter:** Chinchou / Clamperl / Relicanth
+*   **Why it's perfect:** Lanturn (evolves at Lv 27) is Water/Electric. It resists both of Kingdra's attacking moves (Water and Ice).
+*   **The Strategy:** Like Magneton, you can teach it Shock Wave (TM34) to bypass Double Team. It has a massive HP pool and can comfortably sit in front of Kingdra all day while hitting it with STAB Electric moves.
+
+### 4. The Fast Sweeper: Staryu (Starmie)
+**Location:** Lilycove City (Fish with the Super Rod)
+**Encounter:** Staryu (15% chance, repels + level manipulation can help depending on dupes)
+*   **Why it's perfect:** Starmie is blazing fast and has fantastic Special Attack. It resists Water and Ice.
+*   **The Strategy:** You can teach it Thunderbolt (Game Corner TM), Ice Beam (Abandoned Ship TM), Recover, and either Swift or Shock Wave. It can outspeed and out-damage almost anything Juan throws at you.
 
 ---
 
-### Strategy for Juan (Level Cap: 46)
+### How to route the Gym Fight:
+1. **Lead with Manectric:** OHKO his **Luvdisc** with Thunderbolt. 
+2. **Switch to Breloom on Whiscash:** Whiscash will likely try to set up Rain Dance or Amnesia. Breloom is faster and will OHKO it with Giga Drain (TM19 from Route 123) or chunk it massively with Sky Uppercut/Mach Punch.
+3. **Bring Manectric back out:** Thunderbolt will OHKO or 2HKO **Sealeo** and **Crawdaunt**. (If Manectric gets low, Swampert and Breloom can help clean these two up). 
+4. **The Kingdra Finale:** Switch into your new **Magneton** or **Lanturn**. Spam **Shock Wave** (TM34). Because Shock Wave never misses, Double Team is completely useless. Let Kingdra use Rest to consume its Chesto Berry, then keep spamming Shock Wave until it goes down. 
 
-Juan’s Team: **Luvdisc (41), Whiscash (41), Sealeo (43), Crawdaunt (43), Kingdra (46)**
-
-*   **Luvdisc:** Lead with Manectric. Easy OHKO with Thunderbolt/Spark.
-*   **Whiscash:** It’s Water/Ground, so Manectric can’t hit it. Switch immediately to **Breloom**. Whiscash has a 4x weakness to Grass. Giga Drain or Bullet Seed will obliterate it. *Be careful:* it knows Amnesia and Earthquake.
-*   **Sealeo:** Breloom can hit it with Fighting moves, but Sealeo has Aurora Beam (Ice). Manectric is your safest bet here to take it out with Electric moves.
-*   **Crawdaunt:** Breloom’s Mach Punch/Sky Uppercut or Manectric's Electric moves will destroy it. 
-*   **Kingdra:** **The Boss.** 
-    *   **The "Never Miss" Strategy:** Since Kingdra will spam Double Team, accuracy is your worst enemy. Teach **Shock Wave (TM39)** to Manectric or Starmie/Magneton, and/or teach **Aerial Ace (TM40)** to Swellow. These moves bypass accuracy checks and ignore Double Team evasion boosts. 
-    *   **The Stall Strategy:** Bring in a bulky Water-type (Tentacruel or Walrein) that resists Ice and Water. Use Toxic on Kingdra (it will cure it with Rest, but you re-apply it when it wakes up) and just out-heal it. 
-
-**Next Steps Checklist:**
-1. Go catch Magnemite in New Mauville.
-2. Exploit Dupes Clause to get Staryu in Lilycove and Spheal in Shoal Cave.
-3. Grind your team to Level 45/46. (The reporters Gabby & Ty on Route 111/118/120 are great for safe EXP).
-4. Put the TM for Shock Wave or Aerial Ace on your team to ensure Kingdra's Double Team doesn't end your run!
+**Pro Nuzlocke Tip:** Give your Kingdra counter a **Cheri Berry** to hold. Kingdra's Water Pulse has a 20% chance to confuse, which is the only way it can reliably break your strategy if it gets lucky. Removing that RNG makes this fight a guaranteed win.

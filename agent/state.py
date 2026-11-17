@@ -20,10 +20,8 @@ GameId = Literal["emerald", "ruby", "sapphire", "firered", "leafgreen"]
 # and battle ids are accepted as badges too.
 BADGE_GYMS = {game: dict(zip(g.cast.badges, g.cast.gyms)) for game, g in GAMES.items()}
 GAME_LEADERS = {game: dict(g.cast.leaders) for game, g in GAMES.items()}
-BADGE_ORDER = GAMES[DEFAULT].cast.badges
 BADGES = BADGE_GYMS[DEFAULT]
 LEADERS = GAME_LEADERS[DEFAULT]
-GYM_TO_BADGE = {gym: badge for badge, gym in BADGES.items()}
 
 
 def normalize_badge(value: str, game: str = DEFAULT) -> str:

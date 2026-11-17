@@ -1,7 +1,7 @@
 """HTTP surface: the /chat contract (PLAN.md §8) and the session endpoints.
 
-The pipeline is stubbed here so the tests don't call a model; scripts/phase2_acceptance.py
-runs the real thing.
+The pipeline is stubbed here so the tests don't call a model; scripts/run_samples.py runs
+the real thing.
 """
 
 import pytest

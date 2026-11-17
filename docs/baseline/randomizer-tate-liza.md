@@ -1,6 +1,6 @@
 # Baseline: randomizer-tate-liza
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 60.5 s, 225 input / 4110 output tokens, about $0.0498.
+vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 52.4 s, 286 input / 4323 output tokens, about $0.0524.
 
 ## Prompt
 
@@ -15,46 +15,56 @@ Note: a hand-made sample in UPR ZX's log format, not a log from a real ROM. Only
 --Trainers Pokemon--
 #271 (TATE&LIZA)@31F2E8 - Camerupt Lv41, Torkoal Lv41, Magcargo@Sitrus Berry Lv42, Houndoom@Sitrus Berry Lv42
 
+------------------------------------------------------------------
+Randomization of Emerald (U) completed.
+Time elapsed: 1210ms
+RNG Calls: 4570
+------------------------------------------------------------------
+
+--ROM Diagnostics--
+File name: none (hand-made sample, no ROM)
+
 
 What should I catch to get through Tate & Liza?
 ```
 
 ## Answer
 
-You’ve hit the jackpot! In a game famous for having "too much water," the randomizer has graciously turned the hardest Gym Leaders in Emerald into a pure Fire-type double battle. 
+This is a huge stroke of luck for you! By randomizing Tate and Liza to Fire-types, you've completely bypassed the notorious difficulty of their vanilla Psychic-type gym. Since the rest of your game's wild encounters are vanilla, you have access to some incredibly powerful tools to sweep them.
 
-Two of their Pokémon (Camerupt and Magcargo) have **4x weaknesses to Water**, while the other two (Torkoal and Houndoom) have a 2x weakness. 
+However, you have one major problem to address first: **Your levels.** Tate and Liza's team is Level 41–42, and your highest is 33. You will need to grind a bit, but with the right catches, you won't need to match their levels perfectly. 
 
-Here is exactly what you should do to completely trivialize this fight:
+Here is exactly what you should catch and the strategy you should use to wash them away.
 
-### 1. The Strategy: "Double Surf"
-In Generation 3, the move **Surf hits BOTH opponents in a Double Battle**, but *does not* hit your ally. Since Tate & Liza are a Double Battle, having two Pokémon on the field spamming Surf at the same time will hit all four of their weaknesses simultaneously. 
+### The Strategy: "Gen 3 Surf Mechanics"
+In Generation 3 (Ruby/Sapphire/Emerald), the move **Surf** in a Double Battle is incredibly broken because **it hits both opponents, but DOES NOT hit your ally.** (This was changed in Gen 4). 
 
-### 2. Evolve Marshtomp! (Priority #1)
-Before you catch anything, you **must level up Marshtomp to 36 so it evolves into Swampert**. 
-Looking at your party, your team is Lv 30-33, but Tate & Liza are **Lv 41-42**. Even with a massive type advantage, a 10-level gap is dangerous. Getting Swampert gives you a massive stat boost, a Water/Ground typing (resists Fire and Rock, immune to Electric), and a fantastic physical tank. 
+Because Tate and Liza are using a full Fire-type team in a Double Battle format, **Double-Surf spam** is all you need. Furthermore, Camerupt and Magcargo are **4x weak to Water**, meaning they will be instantly deleted by almost any Surf attack.
 
-### 3. What to Catch (The Surfing Partner)
-You want a second Water-type Pokémon to sit next to Swampert and spam Surf. Since you are in Mossdeep City, you have access to some incredible options right now:
+### Priority #1: Evolve Marshtomp
+Before doing anything else, get your Marshtomp to **Level 36** so it evolves into **Swampert**. Swampert’s Water/Ground typing is virtually invincible in this gym. Give it **Surf** (HM03) and **Earthquake** (TM26, found deep in the Seafloor Cavern, or just use Mud Shot/Dig). 
 
-*   **Option A: Spheal / Sealeo (Shoal Cave)**
-    *   **Location:** Shoal Cave is Route 125, just north of Mossdeep City. You can catch Sealeo natively around Lv 30-32.
-    *   **Why it's great:** Try to catch one with the ability **Thick Fat**. Sealeo is Water/Ice, which makes Fire moves hit for neutral damage normally. However, Thick Fat halves Fire damage, effectively giving Sealeo a Fire resistance! It is incredibly bulky and can easily survive anything Tate & Liza throw at it while spamming Surf.
-*   **Option B: Tentacruel (Surfing anywhere)**
-    *   **Location:** Any ocean route (124, 125, etc.).
-    *   **Why it's great:** Tentacruel has massive Special Defense (120 base) and a natural resistance to Fire. It is also very fast. You can catch these at high levels (up to Lv 35) just by surfing around Mossdeep, minimizing the amount of grinding you have to do.
-*   **Option C: Staryu / Starmie (Lilycove City)**
-    *   **Location:** You can get the **Super Rod** from a fisherman inside a house in Mossdeep City. Fly back to Lilycove City and fish in the water. 
-    *   **Why it's great:** Use a Water Stone (found on Route 106 or by trading a Blue Shard) to evolve it into Starmie immediately. Starmie is blazing fast and has fantastic Special Attack. It will outspeed their entire team and nuke them. 
-*   **Option D: Pelipper (Surfing anywhere)**
-    *   **Location:** Any water route. 
-    *   **Why it's great:** Camerupt is part Ground and often carries Magnitude or Earthquake. Pelipper is Water/Flying, meaning it is completely immune to Ground moves while still resisting Fire. 
+### Priority #2: Catch a Surf Partner
+You want a second Water-type to put right next to Swampert. Since everything else in your ROM is vanilla, you can easily grab one of these around Lilycove City or Mossdeep City:
 
-### 4. Items and Execution
-1.  Give **Swampert** the **Mystic Water** (received from the Castform scientists at the Weather Institute).
-2.  Give your **New Catch** the **Sea Incense** (found at Mt. Pyre). 
-3.  Teach both of them **Surf**. 
-4.  Lead the battle with Swampert and your new Water-type. 
-5.  Click Surf with both Pokémon on Turn 1 and Turn 2. 
+**1. Staryu / Starmie (The Best Option)**
+*   **Why:** Starmie is blazing fast and hits like a truck. Houndoom is their fastest Pokémon, and Starmie will naturally outspeed it and hit it with a super-effective Surf. 
+*   **Where to get it:** Use the Super Rod in the water at Lilycove City. 
+*   **How to evolve:** Use a Water Stone (trade a Blue Shard to the Treasure Hunter on Route 124). Give it Surf and Mystic Water.
 
-Because of the 4x weaknesses on Camerupt and Magcargo, those two will likely die in a single turn. Houndoom and Torkoal will take double-damage Surfs from two different Pokémon and will faint shortly after. Their Sitrus Berries won't even matter because you will out-damage their healing. You'll win in 2-3 turns without breaking a sweat!
+**2. Tentacruel (The Tanky Option)**
+*   **Why:** Tentacruel has massive Special Defense and naturally resists Fire-type moves. It's also quite fast. It can comfortably sit next to Swampert and spam Surf all day without taking much damage from Flamethrowers.
+*   **Where to get it:** You can encounter wild Tentacruel (around Level 25-30) while surfing on almost any ocean route (Route 124, 125, etc.), or just catch a Tentacool and evolve it at Level 30.
+
+**3. Magikarp / Gyarados OR Wingull / Pelipper (The Earthquake Option)**
+*   **Why:** While Gen 3 Surf doesn't hit your ally, **Earthquake DOES hit your ally.** If you want Swampert to be able to spam Earthquake freely to deal with Torkoal and Houndoom, its partner needs to be a Flying-type or have the Levitate ability. Gyarados and Pelipper are both Water/Flying. Gyarados also provides Intimidate, which lowers Camerupt's Earthquake and Torkoal's Body Slam damage. 
+*   **Where to get them:** Literally everywhere there is water. 
+
+### How the Battle Will Go
+1.  **Bench Breloom:** Breloom is Grass/Fighting and will get instantly KO'd by anything on their team. Leave it in the back.
+2.  **Lead Swampert + Your New Water Catch (Starmie/Tentacruel/Gyarados).**
+3.  **Turn 1:** Have both of your Pokémon use **Surf**. 
+4.  Because Tate and Liza will lead with Camerupt and Torkoal (or Magcargo), the double-Surf will hit both of them. Camerupt will instantly faint to the 4x weakness. Torkoal will take massive damage from two consecutive Surfs. 
+5.  **Turn 2+:** Just keep pressing Surf. Magcargo will instantly die upon switching in (4x weakness), and Houndoom's Special Defense isn't high enough to survive Double-Surfs. 
+
+Even if you go into this fight slightly underleveled (around Level 38), the type matchups and the double-target mechanics of Surf will make this the easiest badge of your run!

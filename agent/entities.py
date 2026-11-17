@@ -42,10 +42,6 @@ def normalize(text: str) -> str:
     return " ".join(text.split())
 
 
-def compact(text: str) -> str:
-    return normalize(text).replace(" ", "")
-
-
 class EntityIndex:
     def __init__(self, con: duckdb.DuckDBPyConnection | None = None):
         own = con is None

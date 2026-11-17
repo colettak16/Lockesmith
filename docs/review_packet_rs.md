@@ -1,159 +1,30 @@
-# LockeSmith: Pokémon Ruby & Sapphire facts for cross-checking (draft 6)
+# LockeSmith: Pokémon Ruby & Sapphire facts
 
-Assembled 2026-11-02 from scratch extraction scripts run against the **pret/pokeruby** decompilation (`5784633ce4ef`, which builds both Ruby and Sapphire), compared with **pret/pokeemerald** (`731ad5bfd6e6`, the commit LockeSmith's Emerald build pins) and **PokeAPI** (`6b8db7f3cb31`). UPR ZX facts are from its source (master `7f00eb8`). Bulbapedia text is CC BY-NC-SA 2.5. Drafts 4 to 6 updated 2026-11-03.
+Assembled 2026-11-02 from extraction scripts run against the **pret/pokeruby** decompilation (`5784633ce4ef`, which builds both Ruby and Sapphire), compared with **pret/pokeemerald** (`731ad5bfd6e6`, the commit LockeSmith's Emerald build pins) and **PokeAPI** (`6b8db7f3cb31`). UPR ZX facts are from its source (master `7f00eb8`). Bulbapedia text is CC BY-NC-SA 2.5. Last updated 2026-11-03.
 
-**How this differs from the Emerald packet.** The Emerald packet (`docs/review_packet.md`) was generated from the built database and went through two review rounds. This packet was written first, as the fact base for the Ruby/Sapphire build, and LockeSmith's Ruby and Sapphire databases and story files have since been built from it. It is a **delta from Emerald**:
+This is the fact base for the Ruby/Sapphire build: LockeSmith's Ruby and Sapphire databases and story files were built from it, and code, tests and docs cite its claims by ID. It is a **delta from Emerald** (`docs/review_packet.md`):
 - section 2: what carries over unchanged
 - sections 3 to 8: what differs
 - the story order for each version
-- section 12: a mechanical check that Ruby/Sapphire open areas when the story file says (new in draft 4)
+- section 12: a mechanical check that Ruby/Sapphire open areas when the story file says
+
+Every claim was checked in the decomps (section 9 in UPR ZX's source) before the build relied on it; docs/decisions.md D13 and D14 record what changed along the way. Still unverified: R-12 to R-14 and R-17 need a real UPR log or ROM, and the story gates weren't played in an emulator (docs/decisions.md D19).
 
 **ID prefixes**: C carries over from Emerald, X differs from Emerald, P progression, E story events, A area unlocks, CL areas that close, N never reachable, K trainer teams, L wild encounters, SE special encounters, TM machines, R randomizer, D data findings, Q questions, V area-unlock verification.
 
-**Draft 6 (2026-11-03): what's new.** Review round 4 checked draft 5 and the published audit code. Each point was re-checked in the decomps before anything changed.
-- **Corrected: Pickup works in Ruby/Sapphire (V-11).**
-  - After each battle you win, each party Pokémon with Pickup that holds nothing has a 10% chance to find an item (`atkE5_pickup`).
-  - It draws from one fixed table at every level: Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%. Emerald's `Cmd_pickup` uses level-based tables.
-  - The agent's brief said only Stench and Illuminate act outside battle, which was too broad for item farming. It now gives the Pickup table. `audit.engine` reads all of this from the code.
-- **Corrected: the bikes are separate (V-01).**
-  - The flood fill now runs each set of field moves once with the Mach Bike and once with the Acro Bike, so a path can't switch bikes inside a map.
-  - It follows the engine's bike rules:
-    - muddy slopes need the Mach Bike going up; any other way slides you south
-    - cracked floors need the Mach Bike; slower and you fall through
-    - bumpy slopes need the Acro Bike
-    - either bike rides along long rails
-    - only the Acro Bike's side jump lands on a single-tile rail or steps sideways off a rail
-  - **Same result:** 9 differing maps, and 14 and 20 chokepoint groups.
-  - **New list of where the bike matters, the same in both games:**
-    - the Safari Zone's northwest area needs the Mach Bike
-    - its northeast needs the Acro Bike, via side jumps onto the rails in the southeast area
-    - climbing Jagged Pass from Route 112 needs the Acro Bike
-    - Sky Pillar and Mirage Tower need the Mach Bike
+## How to read this
 
-    The Ruby/Sapphire story file now names the bike for each Safari Zone area, as Emerald's did.
-- **Enforced: E-10 is now a data condition.** The roaming rows carry `lati-tv-report` next to the Hall of Fame condition, described in `rom_conditions` and tested. Before, it was only a description, and the old test accepted the Hall of Fame alone.
-- **Added: areas that need a story event, not just a battle (E-04).**
-  - Until the hideout battle, the hideout's Electrode show "only after slateport_submarine_theft", because reaching Lilycove isn't enough.
-  - The run state records badges and battles, not events. So the tools state the condition rather than guess whether the player did it.
-- **Widened: Q-10.** The encounter-script comparison now also covers the specials that create a Pokémon or start an encounter from a script: in-game trades, the daycare egg and Rock Smash. That makes 24 scripts in Ruby/Sapphire, and all of their gates match Emerald's (Q-10).
-- **Fixed in the audit itself:**
-  - the scripts now also read `data/event_scripts.s` and pokeruby's top-level `data/*_scripts.inc` files; no result changed
-  - the reports no longer depend on set ordering
-- **Answered:** Q-11 (no other closings). The reviewer agreed with CL-01 and CL-02.
-- **Still open, all needing ROMs:**
-  - real UPR logs (R-12 to R-14, Q-06)
-  - table hashes across revisions (R-17)
-  - emulator checks of the main gates
+This packet covers **Pokémon Ruby and Pokémon Sapphire (English, Gen 3, GBA, unmodified)**. Postgame is out of scope, except where a claim says "postgame" to mark something unreachable.
 
-  The reviewer recommends these over further packet rounds.
-
-**Draft 5 (2026-11-03).** Review round 3 checked draft 4. Each of its points was re-checked in pokeruby and pokeemerald before anything changed.
-- **Corrected:**
-  - **E-09 / X-16 / SE-08 / D-03:** the Hall of Fame doesn't start the roaming Lati by itself. It sets `FLAG_SYS_TV_LATI`. The roamer starts when you check the TV on your house's 1F, which runs `InitRoamer` (`tv.inc`). This is now its own event, **E-10**.
-    - In Emerald the same report plays by itself when you enter the house, and Mom asks which color you saw.
-    - In Ruby/Sapphire nothing plays automatically; the TV just turns on, and the version picks the species.
-- **Added:**
-  - **Areas that close (P-R6, CL-01 to CL-02).** The story file can now close an area. The tools stop offering its encounters after the closing battle, flag them as missable until then, and warn about the closing in "next steps".
-    - CL-01: the hideout after Tate & Liza.
-    - CL-02: the forced legendary's static once its battle is over. Draft 4's build still offered Groudon/Kyogre as catchable before Wallace, after the required battle; the reviewer's point found that too.
-    - Emerald got the same fix for Cave of Origin, which is open only during the crisis, and a missable flag for Mirage Tower, which falls when you take a fossil.
-  - **V-11:** three more abilities only matter outside battle in Emerald:
-    - Compound Eyes's held-item boost
-    - Suction Cups/Sticky Hold's fishing boost
-    - Flame Body/Magma Armor's faster egg hatching
-
-    The agent's per-game brief now carries all of these, and the encounter abilities, for Ruby/Sapphire.
-  - **SE-10 / Q-10:** every script that starts an encounter was compared with Emerald's. Only two things differ, the roamer (E-10) and gifts when your party is full. Ruby/Sapphire's Castform and fossil givers wait until you have room; Emerald sends the Pokémon to the PC.
-  - Before/after checks in the test suite at the story steps the reviewer named: the Oceanic Museum, the hideout admin, Tate & Liza, the Seafloor Cavern and the legendary.
-- **Section 12's scripts are in the repo:** [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with their reports in [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit). Round 3 couldn't mark V-01 to V-05 agreed without them.
-  - Re-running them from fresh downloads of the pinned commits reproduced draft 4's reachability, chokepoint and map-change results exactly.
-  - One count changed: V-02's tally of same-tile blockers (540/517/23, not 476/451/25). The conclusion is the same.
-- **Narrowed:** V-00 and V-15 now say what section 12 covers: movement and story blockers. It doesn't cover every script that starts an encounter; the Lati TV report is one of those.
-- **Already handled:** the randomizer parser records, for each kind of data, whether the log's section was parsed, left unparsed, Metronome Only or unchanged. That was fixed in Emerald's review round 2, so a recognised ROM isn't taken as proof that everything was read.
-- **Confirmed by the reviewer:**
-  - V-11's Sootopolis block and encounter abilities, V-14
-  - X-11/X-18/E-05/E-06, TM-01/HM08
-  - the teams of Tate & Liza, Wallace, Steven and the Lilycove rival
-  - R-10, R-11 and R-14 (configuration only), X-10/A-09
-- **Still open, all needing ROMs:** real UPR logs for R-12 to R-14 (Q-06), table hashes across revisions (R-17), and emulator checks of section 12's gates.
-
-**Draft 4 (2026-11-03).** The build exists now, and the open question about area unlocks (Q-08) has been worked through mechanically.
-- **Added: section 12.** Ruby/Sapphire were compared with Emerald on every shared map. The comparison covers:
-  - reachability under each set of field moves
-  - every story NPC standing on a chokepoint
-  - step triggers
-  - scripts that change the map
-  - the C engine rules behind movement, field moves, bikes, Fly, tides and wild encounters
-
-  **Result:** no gate differs beyond those already in E, X and A. The section also found three things:
-  - an Emerald-only encounter block in Sootopolis (V-11)
-  - Emerald-only encounter abilities, e.g. Synchronize (V-11)
-  - a Lilycove Department Store gate that holds in all three games (V-14)
-- **Changed:**
-  - A-01's caveat now points to section 12, and Q-08 is answered.
-  - D-08 gains two extraction pitfalls that draft 4's own first pass fell into.
-  - The build now has V-14's store requirement and V-11's Emerald Sootopolis note.
-- **Unchanged:** the rest of sections 2 to 10, as reviewed in rounds 1 and 2.
-
-**Review round 1 (2026-11-02).** A second model reviewed draft 1. Each of its points was re-checked in pokeruby and pokeemerald before anything changed.
-- **Corrected:**
-  - **X-11 / P-18 / A-05:** the hideout opens after the **Slateport Harbor submarine theft**, not the Mt. Pyre orb theft alone. Two grunts block its entrance until then, and the orb flag I cited only changes their dialogue.
-  - **X-14:** the Sealed Chamber order is **reversed** in Emerald (Wailord first, Relicanth last). Draft 1 wrongly said "same as Emerald".
-- **Added:**
-  - **X-18:** the hideout closes for good after the Mind Badge, so its Master Ball and Electrode are missable.
-  - **Story events (E-01 to E-09)** as prerequisites in their own right, separate from battles.
-  - Regi navigation gates (X-14).
-  - Nuzlocke and level-cap facts for the forced legendary (P-22).
-  - ROM identity (R-17).
-  - Answers to Q-01 to Q-05 and Q-07, folded into the claims they settle.
-- **Confirmed by the reviewer:** C-10, X-03, X-04, X-08 to X-12, X-14's puzzles, X-15, Roxanne's, Tate & Liza's and Steven's teams, A-08, D-07.
-- **Still unverified:** R-12 to R-14, which need real Ruby/Sapphire UPR logs.
-
-**Review round 2 (2026-11-02).** Re-checked in the decomp before applying.
-- **Corrected:**
-  - **TM-01 / HM08:** the Steven's-house Dive item ball is not a second story source. It's hidden at new game and appears only after the Hall of Fame, and only if Steven's gift was never taken (`hall_of_fame.inc`, `ShowHM08`). The reviewer called it dormant; the Hall of Fame script is the part it missed.
-  - **R-14:** Birch's first-battle Pokémon is **Poochyena** Lv2 in Ruby/Sapphire, not Zigzagoon.
-  - **P-R1:** 28 trainer-battle steps but 29 individual trainer battles (P-06 is two).
-  - **L-01:** Route 102 vs 114 wording.
-- **Added:**
-  - mass outbreaks (L-08)
-  - the Feebas tile quirks (C-11)
-  - an extraction check for object flags (D-08)
-- **Confirmed by the reviewer:** C-12, X-01/R-15, X-11/E-04, X-18/E-06, X-14's chamber order, E-01, P-14, L-03 (Routes 102/114), SE-06's Kecleon, TM-02 (Pacifidlog), X-12/A-03, R-10/R-11.
-- **Still open:** R-12 to R-14 need real logs (Q-06), and A-01 needs a mechanical check of event gates (Q-08).
-
-## How to review this packet
-
-You are a second reviewer for **LockeSmith**, a research agent that answers questions about Pokémon games: what to catch, where, and how to beat the rest of the main story, including Nuzlocke and randomized runs. It covers Emerald, Ruby and Sapphire. This packet covers **Pokémon Ruby and Pokémon Sapphire (English, Gen 3, GBA, unmodified)**. Postgame is out of scope, except where a claim says "postgame" to mark something unreachable.
-
-Everything below is what the agent treats as fact for Ruby and Sapphire. Each claim has an ID. Please check as many as you can, prioritising:
-- **what's new in draft 6:** the bike split in V-01 and its results, the Pickup correction in V-11, E-10 as a data condition, event-gated areas (E-04), and Q-10's widened comparison
-- **section 12** (new in draft 4): whether its method could miss a gate. Its scripts are now readable at [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with their output in [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit)
-- **section 4**, story order, especially the Ruby/Sapphire split and the steps that differ from Emerald
-- **section 5**, trainer teams
-- **X-** claims
-
-**About sources.**
-- `[decomp]` claims were read from the game's code or data, so if you disagree, say what you think was misread.
+**Source tags.**
+- `[decomp]` claims were read from the game's code or data.
 - `[pokeapi]` and `[guide]` (Bulbapedia) as in the Emerald packet.
 - `[inferred]` marks a conclusion drawn from code that we did not see run.
 - `[diff]` marks a claim checked by mechanically comparing the two decompilations.
 
-**Common false alarms.**
-- Memory of **Emerald**: Juan as 8th leader, Wallace as Champion, both teams in one story, the Space Center battle, Mirage Tower, Battle Frontier, move tutors.
-- Memory of the 2014 3DS remakes **Omega Ruby / Alpha Sapphire**: Fairy type, Mega Evolution, Primal Groudon/Kyogre, the Delta Episode, different teams and levels.
-
-Please check that a disagreement applies to the GBA Ruby/Sapphire specifically.
-
-**Answer in this format:**
-
-1. **Disagreements**: a table with columns `ID | our claim (short) | what you believe instead | confidence (high/medium/low) | evidence (named source, or "memory") | suggested fix`.
-2. **Unsure**: the same table, for claims you suspect but can't confirm.
-3. **Missing**: facts, caveats or battles the agent should know that this packet omits, with the section they belong in.
-4. **Answers to the open questions** (section 11, `Q-` IDs).
-5. **Agreed**: the IDs or ID ranges you checked and agree with. Leave out IDs you didn't check.
-
-Skip wording and formatting nitpicks. "Unsure" is a useful answer; a confident wrong correction costs more than a missed one.
+**Not to be confused with.**
+- **Emerald**: Juan as 8th leader, Wallace as Champion, both teams in one story, the Space Center battle, Mirage Tower, Battle Frontier, move tutors.
+- The 2014 3DS remakes **Omega Ruby / Alpha Sapphire**: Fairy type, Mega Evolution, Primal Groudon/Kyogre, the Delta Episode, different teams and levels.
 
 ## 1. Sources and method
 
@@ -188,7 +59,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
   - Each of the six is `FeebasRandom() % 447` (0 becomes 447). Tile numbers 1–3 are re-rolled; pokeemerald's comment says those spots are inaccessible. Duplicates aren't re-rolled, so there can be fewer than six distinct tiles. We haven't checked that every tile from 4 to 447 can be fished.
   - The seed is the current Dewford trendy phrase (`easyChatPairs[0]`), so **the tiles move when that phrase changes**.
   - On a Feebas tile, Feebas comes up 50% of the time; otherwise the normal fishing table is used.
-  - The agent shouldn't promise exactly six usable spots. Emerald's code is the same (round 2).
+  - The agent shouldn't promise exactly six usable spots. Emerald's code is the same.
 - **C-12** `[decomp]` **Field-move badges, now checked in code for all eight.**
   - `pokemon_menu.c` lists field moves in the order Cut, Flash, Rock Smash, Strength, Surf, Fly, Dive, Waterfall (`sPokeMenuFieldMoves`) and blocks move *i* unless `FLAG_BADGE01_GET + i` is set.
   - So: Cut needs the Stone Badge, Flash Knuckle, Rock Smash Dynamo, Strength Heat, Surf Balance, Fly Feather, Dive Mind, Waterfall Rain.
@@ -228,7 +99,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
   - Ruby enters at (71,5) into the Magma Hideout maps; Sapphire at (70,5) into the Aqua Hideout maps.
   - Ruby retiles the entrance in `LilycoveCity_OnLoad` under `.ifndef SAPPHIRE`; that Sapphire's open door is (70,5) is `[inferred]`.
   - The two map sets have different layouts but share scripts (double labels) and trainers via aliases.
-  - **Entry gate** (corrected in round 1):
+  - **Entry gate**:
     - Two grunts stand across the 1F entrance: (13,11)/(14,11) in the Aqua Hideout, (13,19)/(14,19) in the Magma Hideout.
     - They are hidden by `FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT` and `FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT`, which only the **Slateport Harbor submarine-theft scene** sets (`SlateportCity_Harbor_EventScript_EvilTeamEscapeScene`, E-04).
     - That scene triggers on entering the harbor once Mt. Pyre's summit event has set `VAR_SLATEPORT_HARBOR_STATE` to 1 (E-03).
@@ -237,7 +108,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
 - **X-12** `[decomp]` **Fossils come from the Route 111 desert**: pick one of the Root Fossil (Lileep) or Claw Fossil (Anorith) from the ground (Go-Goggles needed). Picking one hides the other. They're revived at Devon Corp in Rustboro at Lv20. There's no Mirage Tower.
 - **X-13** `[decomp]` **The Pokéblock Case comes from the Slateport Contest Lobby** (`SlateportCity_ContestLobby`). The Safari Zone entrance still checks for it (`Route121_SafariZoneEntrance`: `checkitem ITEM_POKEBLOCK_CASE`). Contest halls are in Slateport, Verdanturf, Fallarbor and Lilycove; Emerald has only Lilycove's, with Battle Tents in the other three towns.
 - **X-14** `[decomp]` **Regi puzzles differ from Emerald's** (`braille_puzzles.c`):
-  - **Sealed Chamber**: Dig, then **Relicanth first and Wailord last** in the party (`CheckRelicanthWailord`). **Emerald reverses it**: Wailord first, Relicanth last (pokeemerald `braille_puzzles.c`). Corrected in round 1.
+  - **Sealed Chamber**: Dig, then **Relicanth first and Wailord last** in the party (`CheckRelicanthWailord`). **Emerald reverses it**: Wailord first, Relicanth last (pokeemerald `braille_puzzles.c`). 
   - **Regirock**: Strength in Desert Ruins
   - **Registeel**: Fly in Ancient Tomb
   - **Regice**: wait two minutes in Island Cave without pressing a button. It's a 7,200-frame counter, not the real-time clock, so a dead battery doesn't block it.
@@ -254,7 +125,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
   - **Fortree** (`FortreeCity_House1`): Skitty "SKITIT" @ Glitter Mail for your Pikachu
   - **Pacifidlog** (`PacifidlogTown_House3`): Corsola "COROSO" @ Tropic Mail for your Bellossom
   - Emerald's Seedot, Plusle, Horsea and Meowth trades don't exist.
-- **X-16** `[decomp]` **Roamer: Latios in Ruby, Latias in Sapphire**, Lv40 (`ROAMER_SPECIES` in `constants/species.h`). It starts after the Hall of Fame, once you check the TV news at home (E-09, then E-10; corrected in draft 5). Emerald plays that report by itself and asks for a color, which picks the species. Southern Island has the other one at Lv50 with the Eon Ticket (event-only).
+- **X-16** `[decomp]` **Roamer: Latios in Ruby, Latias in Sapphire**, Lv40 (`ROAMER_SPECIES` in `constants/species.h`). It starts after the Hall of Fame, once you check the TV news at home (E-09, then E-10). Emerald plays that report by itself and asks for a color, which picks the species. Southern Island has the other one at Lv50 with the Eon Ticket (event-only).
 - **X-17** `[decomp]` Places that **don't exist** in Ruby/Sapphire:
   - Mirage Tower, the Jagged Pass Magma Hideout, Trainer Hill, the Battle Frontier and Battle Tents
   - Altering Cave, Desert Underpass, Terra Cave, Marine Cave, Artisan Cave
@@ -271,7 +142,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
   - The admin battle (P-18) comes before Tate & Liza in the standard order, so a normal run passes through. A player who skips the hideout's side rooms loses them.
   - Emerald's Lilycove has no such closure.
 
-## 4. Story progression (draft for both versions)
+## 4. Story progression (both versions)
 
 - **P-R1** **29 story steps** from the first rival fight to the Champion. Ruby and Sapphire share the order; the villain fights differ by version.
   - **28 trainer-battle steps holding 29 individual trainer battles**, because P-06 is two museum grunts in a row: all 8 gyms, the Elite Four, the Champion, 4 rival fights (Lilycove optional), both Wally fights, both leader fights (Mt. Chimney, Seafloor Cavern), four admin fights, and three early grunt steps (Petalburg Woods, Rusturf Tunnel, the museum pair).
@@ -283,7 +154,7 @@ Each was checked by diffing pokeruby against pokeemerald. Differences that were 
 - **P-R3** The Emerald area rule (Emerald P-R2), HM rule (P-R3) and badge-order note (P-R4, C-13) carry over unchanged. The area rule now also applies closings (P-R6).
 - **P-R4** Rival fights: the rival takes the starter with the type advantage over yours (Treecko → rival Torchic, Torchic → Mudkip, Mudkip → Treecko), from the `VAR_STARTER_MON` switch in each map script. The rival is May if you play Brendan and vice versa (X-06).
 - **P-R5** Order is from the decomp's story gates, below, and Emerald's reviewed order. It hasn't yet been matched against Bulbapedia's Ruby/Sapphire walkthrough (23 parts) the way Emerald's was.
-- **P-R6** **Areas that close (new in draft 5).** "Reachable before X" is the areas opened up to X, minus those that closed after an earlier battle. A closing tied to a battle removes the area for every later battle; until then the tools flag its encounters as missable, and "next steps" warns before that battle. A closing with no battle (one the player triggers) is only flagged. The list is CL below.
+- **P-R6** **Areas that close.** "Reachable before X" is the areas opened up to X, minus those that closed after an earlier battle. A closing tied to a battle removes the area for every later battle; until then the tools flag its encounters as missable, and "next steps" warns before that battle. A closing with no battle (one the player triggers) is only flagged. The list is CL below.
 
 ### Steps in order
 
@@ -332,7 +203,7 @@ Notes per step:
   - Clearing the hideout sets `FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE`, which removes the Wailmer blocking Lilycove's eastern sea (`LilycoveCity_EventScript_SetWailmerMetatiles`). This is the same gate as Emerald's.
 - **P-20/P-21** Seafloor Cavern has two grunts before the admin (Room 1) and one between the admin and the leader (Room 4).
 - **P-22** `[decomp]` Cave of Origin's entrance is blocked by an Expert until `FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN` (set at the end of P-21). See also X-08 and X-09.
-  - **For challenge runs** (added in round 1). The agent should report three separate facts and not pick a rule for the player:
+  - **For challenge runs**. The agent should report three separate facts and not pick a rule for the player:
     - **The battle is required**: the story needs the encounter resolved, but not the catch.
     - **Catch eligibility depends on the player's rules.** B4F is part of the same location (`cave-of-origin`) as the wild floors 1F–B3F (Zubat, Golbat, Mawile/Sableye). Under a strict first-encounter-per-location rule, an earlier wild encounter there uses up the location, unless the player counts statics separately. LockeSmith's default doesn't count them (docs/decisions.md D11).
     - **Its level is above the next cap.** At Lv45 it is over Wallace's ace (Milotic, Lv43), so under a next-leader level cap it can't be used against Wallace without breaking the cap.
@@ -340,26 +211,26 @@ Notes per step:
 
 ### Story events (E)
 
-Non-battle milestones that gate areas or encounters, added in round 1. The battle list alone can imply that an area opens straight after an unrelated boss. A build should store these as prerequisites in the progression file, not only as notes. All are `[decomp]`.
+Non-battle milestones that gate areas or encounters. The battle list alone can imply that an area opens straight after an unrelated boss. A build should store these as prerequisites in the progression file, not only as notes. All are `[decomp]`.
 
 | ID | Event | Requires | Opens / changes | Flag or variable |
 |---|---|---|---|---|
 | E-01 | Meteor Falls scene (no battle) | Route 114 | The two grunts blocking Route 112's cable car leave, so Mt. Chimney can be reached | `FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR` (`MeteorFalls_1F_1R`) |
 | E-02 | Oceanic Museum battle (P-06) | Slateport | The grunt line on Route 110 at y=83 goes | `FLAG_HIDE_EVIL_TEAM_ROUTE110` |
 | E-03 | Mt. Pyre summit orb theft | reach the summit (no badge check) | Arms the Slateport Harbor scene | `FLAG_MT_PYRE_ORB_STOLEN`, `VAR_SLATEPORT_HARBOR_STATE` = 1 |
-| E-04 | Slateport Harbor submarine theft | E-03, then enter the harbor | The hideout's entrance grunts go. Until P-18 the tools mark the hideout's encounters "only after" this event (draft 6) | `FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT` |
+| E-04 | Slateport Harbor submarine theft | E-03, then enter the harbor | The hideout's entrance grunts go. Until P-18 the tools mark the hideout's encounters "only after" this event | `FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT` |
 | E-05 | Hideout cleared (P-18) | E-04 | The Wailmer blocking Lilycove's eastern sea leave | `FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE` |
 | E-06 | Mind Badge (P-19) | | The hideout entrance is walled off for good (X-18) | `FLAG_BADGE07_GET` |
 | E-07 | Seafloor Cavern leader (P-21) | | The Expert at Cave of Origin steps aside | `FLAG_LEGEND_ESCAPED_SEAFLOOR_CAVERN` |
 | E-08 | Groudon/Kyogre battle (P-22) | E-07 | Sootopolis's doors and gym open; Wallace appears | `FLAG_LEGENDARY_BATTLE_COMPLETED` |
-| E-09 | Hall of Fame | | Sky Pillar, the Beldum gift, the S.S. Tidal, and the TV news that starts the roamer (corrected in draft 5) | `FLAG_SYS_GAME_CLEAR`; `FLAG_SYS_TV_LATI`, set only while no Lati roams yet (`hall_of_fame.inc`) |
-| E-10 | Lati TV report (new in draft 5) | E-09, then check the TV on your house's 1F | The roaming Latios (Ruby) / Latias (Sapphire) starts (`InitRoamer`). The TV just turns on and nothing plays until you check it; there is no color question. The roaming rows carry the condition `lati-tv-report` (draft 6) | `FLAG_LATIOS_OR_LATIAS_ROAMING` (`tv.inc`, `EventScript_1A6F0B`) |
+| E-09 | Hall of Fame | | Sky Pillar, the Beldum gift, the S.S. Tidal, and the TV news that starts the roamer | `FLAG_SYS_GAME_CLEAR`; `FLAG_SYS_TV_LATI`, set only while no Lati roams yet (`hall_of_fame.inc`) |
+| E-10 | Lati TV report | E-09, then check the TV on your house's 1F | The roaming Latios (Ruby) / Latias (Sapphire) starts (`InitRoamer`). The TV just turns on and nothing plays until you check it; there is no color question. The roaming rows carry the condition `lati-tv-report` | `FLAG_LATIOS_OR_LATIAS_ROAMING` (`tv.inc`, `EventScript_1A6F0B`) |
 
 ### Area unlocks: changes to Emerald's reviewed list (A)
 
 - **A-01** `[diff]` For every step not listed below, the areas newly reachable before it are those of the matching Emerald step in `data/progression.yaml`, because the overworld is wired the same (C-14). The removed Emerald steps opened no areas of their own, except the Magma Hideout (A-05).
-  - **Caveat (round 1):** the same map connections don't prove the same event gates; the hideout (X-11) shows why.
-  - **Checked mechanically in draft 4 (section 12, answers Q-08):** per-map reachability, every story blocker on a chokepoint, step triggers, conditional map changes and the engine's movement and field-move rules. No gate differs beyond the ones already in E, X and A-02 to A-10, so the copied unlocks stand.
+  - **Caveat:** the same map connections don't prove the same event gates; the hideout (X-11) shows why.
+  - **Checked mechanically (section 12, answers Q-08):** per-map reachability, every story blocker on a chokepoint, step triggers, conditional map changes and the engine's movement and field-move rules. No gate differs beyond the ones already in E, X and A-02 to A-10, so the copied unlocks stand.
 - **A-02** Before P-02 and P-03: as Emerald.
   - Routes 101–104, Petalburg, Petalburg Woods.
   - Then Rustboro, Route 116, the west of Rusturf Tunnel, and Route 115's beach for fishing only.
@@ -368,7 +239,7 @@ Non-battle milestones that gate areas or encounters, added in round 1. The battl
 - **A-05** Before P-16 (Winona):
   - Emerald lists `magma-hideout` (Jagged Pass) here; it doesn't exist in Ruby/Sapphire.
   - The Lilycove hideout has **no wild Pokémon**; its only encounters are two **Electrode Lv30 statics in B1F**, in both versions.
-  - The hideout can be entered once **E-03 then E-04** are done (Mt. Pyre summit, then Slateport Harbor). Neither checks a badge, so it is listed here like Emerald's Magma Hideout. Corrected in round 1: draft 1 named only the Mt. Pyre event.
+  - The hideout can be entered once **E-03 then E-04** are done (Mt. Pyre summit, then Slateport Harbor). Neither checks a badge, so it is listed here like Emerald's Magma Hideout.  Pyre event.
   - It **closes after the Mind Badge** (X-18), so its Electrode and items are reachable only from here until P-19.
 - **A-06** Before P-19 (Tate & Liza): as Emerald.
   - Routes 124–134, Mossdeep, Shoal Cave, Mirage Island and Pacifidlog, by Surf once the Wailmer leave.
@@ -380,7 +251,7 @@ Non-battle milestones that gate areas or encounters, added in round 1. The battl
 - **A-09** Before P-23 (Wallace): **remove Sky Pillar** (1F, 3F, 5F, top), which Emerald opens here. It's postgame in Ruby/Sapphire (X-10).
 - **A-10** Before P-24: as Emerald. Ever Grande City, Victory Road, and Meteor Falls' back rooms with Waterfall (Bagon).
 
-### Areas that close for good (CL), new in draft 5
+### Areas that close for good (CL)
 
 - **CL-01** The hideout (`team-magma-hideout` in Ruby, `team-aqua-hideout` in Sapphire) is gone after P-19, Tate & Liza: E-06 walls it off. Its two Electrode are offered only up to P-19 and flagged as missable.
 - **CL-02** Cave of Origin B4F's static (Groudon/Kyogre) is gone after P-22, the battle itself. The rest of the cave stays open: the Expert doesn't come back after the battle, and HM07 is still on B3F.
@@ -816,7 +687,7 @@ Ruby/Sapphire also have walk tables for Cave of Origin B1F, B2F and B3F (A-08).
   - pokeruby's region-map constants for them read `MAPSEC_UNDERWATER_124`, `_125`, `_126`, `_127`, so for 2–4 the constant name is not the route above.
   - Only UNDERWATER1 and UNDERWATER2 (Routes 124 and 126) have wild (seaweed) tables, as in Emerald.
   - Routes 105, 125 and 129 have no dive spots in Ruby/Sapphire; Emerald added underwater maps there.
-- **L-08** `[decomp]` **Mass outbreaks (swarms)** can add species to a route's grass for a while, after a TV report (`gPokeOutbreakSpeciesList`, `tv.c`). Added in round 2.
+- **L-08** `[decomp]` **Mass outbreaks (swarms)** can add species to a route's grass for a while, after a TV report (`gPokeOutbreakSpeciesList`, `tv.c`).
   - **Ruby/Sapphire's list**: Surskit on Route 102 (Lv3), Route 114 (Lv15), Route 117 (Lv15) and Route 120 (Lv28); Skitty on Route 116 (Lv15).
   - **Emerald's list**: Seedot on Routes 102, 117 and 120, Nuzleaf on Route 114, Skitty on Route 116.
   - Outbreak reports also travel by **record mixing** between Ruby, Sapphire and Emerald saves. So a Sapphire player can get an Emerald Seedot outbreak, and an Emerald player a Surskit one.
@@ -845,7 +716,7 @@ Ruby/Sapphire also have walk tables for Cave of Origin B1F, B2F and B3F (A-08).
 - **SE-07** In-game trades: see X-15.
 - **SE-08** Roamer: see X-16. It needs E-10 (the home TV report), not only the Hall of Fame.
 - **SE-09** Feebas (C-11). Mirage Island has only Wynaut, as in Emerald.
-- **SE-10** `[diff]` **Gifts need a free party slot** (new in draft 5).
+- **SE-10** `[diff]` **Gifts need a free party slot**.
   - In Ruby/Sapphire, Castform (`Route119_WeatherInstitute_2F`) and the revived fossil (`RustboroCity_DevonCorp_2F`) are handed over only if you have fewer than six Pokémon. Their scripts check `getpartysize` and send nothing to the PC; talk to the giver again with room.
   - Emerald's `givemon` sends them to the PC (`MON_GIVEN_TO_PC`).
   - The Wynaut egg needs room in all three games. The progression notes for the Weather Institute and the desert now say this.
@@ -857,7 +728,7 @@ Ruby/Sapphire also have walk tables for Cave of Origin B1F, B2F and B3F (A-08).
   | Label | Ruby/Sapphire source | Emerald source |
   |---|---|---|
   | HM07 Waterfall | item ball, Cave of Origin B3F (X-09) | gift in Sootopolis |
-  | HM08 Dive | gift from Steven in Mossdeep. A fallback item ball in the same house is hidden at new game (`new_game.inc`) and shown only after the Hall of Fame if the gift was never taken (`hall_of_fame.inc`, `ShowHM08`), so it's postgame (corrected in round 2) | gift |
+  | HM08 Dive | gift from Steven in Mossdeep. A fallback item ball in the same house is hidden at new game (`new_game.inc`) and shown only after the Hall of Fame if the gift was never taken (`hall_of_fame.inc`, `ShowHM08`), so it's postgame | gift |
   | TM27 Return | gift in `FallarborTown_House1` (Prof. Cozmo, after the Meteorite) | `FallarborTown_CozmosHouse`: the same NPC, renamed map |
   | TM41 Torment | gift in the Slateport Contest Hall, no condition | Slateport Battle Tent lobby |
   | TM45 Attract | gift in the Verdanturf Contest Lobby, no condition | Verdanturf Battle Tent lobby |
@@ -883,11 +754,11 @@ From UPR ZX's source (master `7f00eb8`, `Gen3RomHandler.java`, `Randomizer.java`
   - No two Ruby/Sapphire tables share a data pointer, so none should be skipped. `[inferred]` from the decomp.
 - **R-13** **Town and city names in wild-set labels may print oddly.** pokeruby's region-map names embed a `{NAME_END}` control code ("PETALBURG{NAME_END} CITY"); Emerald's are plain. Given UPR's `readString` and its character table, the label likely prints as `PETALBURG\c  CITY`. `[inferred]` This affects 8 places: Petalburg, Slateport, Lilycove, Mossdeep, Sootopolis, Ever Grande, Dewford and Pacifidlog.
 - **R-14** `--Static Pokemon--` has 20 lines for Ruby/Sapphire (Emerald 26):
-  - Ruby: Lileep, Anorith, **Groudon**, the three Regis, **Latias** (Southern Island), Rayquaza, the Kecleon, Voltorb ×3, Electrode ×2, the Wynaut egg, Beldum and Castform, then the first-battle **Poochyena** (Birch's rescue, Lv2: `CreateMon(..., SPECIES_POOCHYENA, 2, ...)` in `battle_controllers.c`; UPR patches it through `StaticFirstBattleTweak=hardcoded_statics/rs_firstbattle`), then the **roamer (Latios)** on its own line. Emerald's first battle is Zigzagoon; draft 2 had that by mistake.
+  - Ruby: Lileep, Anorith, **Groudon**, the three Regis, **Latias** (Southern Island), Rayquaza, the Kecleon, Voltorb ×3, Electrode ×2, the Wynaut egg, Beldum and Castform, then the first-battle **Poochyena** (Birch's rescue, Lv2: `CreateMon(..., SPECIES_POOCHYENA, 2, ...)` in `battle_controllers.c`; UPR patches it through `StaticFirstBattleTweak=hardcoded_statics/rs_firstbattle`), then the **roamer (Latios)** on its own line. Emerald's first battle is Zigzagoon.
   - Sapphire swaps in Kyogre and Southern Island Latios, with a Latias roamer.
 - **R-15** **No tutor section** and no "Move Tutor Moves" status line (`hasMoveTutors()` is false for R/S).
 - **R-16** The game is named only in the footer, `Randomization of Ruby (U) completed.`, between two 66-dash lines, and by the ROM CRC32 under `--ROM Diagnostics--`. A parser has to detect the game from these.
-- **R-17** **ROM identity** (added in round 1).
+- **R-17** **ROM identity**.
   - Record the game, region and revision a log came from, and whether its parse succeeded.
   - The CRC32s in R-10 are revision 0's. A later revision has a different CRC but, per Q-01, the same game data.
   - A CRC the parser doesn't recognise should produce a warning, not a silent "rev 0".
@@ -914,21 +785,21 @@ From comparing PokeAPI's Ruby (version 7) and Sapphire (version 8) rows, version
   - Index 51 is `MAPSEC_UNDERWATER_125` in pokeruby, but PokeAPI files that map as Route 126 underwater (L-07).
   - Index 58 lists both the Battle Tower and the Battle Frontier.
   - Keeping only areas with Emerald encounters drops `cave-of-origin/b4f` (the Groudon/Kyogre static).
-- **D-07** `[decomp]` PokeAPI lists in-game trade levels as ranges (5–100; Corsola 21–100). The ROM gives the received Pokémon the level of the one you hand over: `trade.c` reads the player's Pokémon's `MON_DATA_LEVEL` and passes it to `CreateMon`. The reviewer confirmed this from Bulbapedia.
+- **D-07** `[decomp]` PokeAPI lists in-game trade levels as ranges (5–100; Corsola 21–100). The ROM gives the received Pokémon the level of the one you hand over: `trade.c` reads the player's Pokémon's `MON_DATA_LEVEL` and passes it to `CreateMon`. Bulbapedia agrees.
 - **D-08** `[decomp]` **Pitfalls in the decomp for extraction:**
   - `data/item_ball_scripts.inc` has an unlabeled `finditem ITEM_HM08_DIVE` block that no object uses (a naive label parser attaches it to Victory Road B2F's ball).
-  - **An attached item ball isn't necessarily obtainable.** Steven's house has a Dive item ball whose object flag starts set at new game and is cleared only by a postgame script (TM-01). A build should check every item-ball and gift source against its object flag's initial value (`new_game.inc`) and every script that changes it, not just against the script attached to the object. Added in round 2.
+  - **An attached item ball isn't necessarily obtainable.** Steven's house has a Dive item ball whose object flag starts set at new game and is cleared only by a postgame script (TM-01). A build should check every item-ball and gift source against its object flag's initial value (`new_game.inc`) and every script that changes it, not just against the script attached to the object.
   - `data/scripts/debug.inc` gives Lv99 Barboach and Shroomish; these must be excluded.
   - The two hideouts share scripts via double labels, so their trainers appear once, under `AquaHideout_*`.
   - Villain trainers appear only through the aliases in `constants/version.inc` (section 1).
-  - **Two branch syntaxes** (added in draft 4). pokeruby writes variable branches as `compare VAR, VALUE` followed by a one-argument `goto_if_eq LABEL` (about 1,200 one-argument branches in map scripts); pokeemerald writes `goto_if_eq VAR, VALUE, LABEL`. A parser written for one misses the other's conditions. Draft 4's first gate pass did, and it was re-run (section 12, V-04).
-  - **`removeobject` hides an object for good** by setting the object's own flag (`RemoveObjectEventByLocalIdAndMap` calls `FlagSet`, `event_object_movement.c` in both decomps), with no `setflag` in the script. Draft 4's first blocker pass searched only for `setflag` and missed blockers removed this way, e.g. Emerald's Route 120 Kecleon. The chokepoint pass (V-02) counts both.
+  - **Two branch syntaxes**. pokeruby writes variable branches as `compare VAR, VALUE` followed by a one-argument `goto_if_eq LABEL` (about 1,200 one-argument branches in map scripts); pokeemerald writes `goto_if_eq VAR, VALUE, LABEL`. A parser written for one misses the other's conditions. The first gate pass did, and it was re-run (section 12, V-04).
+  - **`removeobject` hides an object for good** by setting the object's own flag (`RemoveObjectEventByLocalIdAndMap` calls `FlagSet`, `event_object_movement.c` in both decomps), with no `setflag` in the script. A first blocker pass that searched only for `setflag` and missed blockers removed this way, e.g. Emerald's Route 120 Kecleon. The chokepoint pass (V-02) counts both.
 
 ## 11. Open questions
 
-Answered in round 1 and folded into the claims:
+Answered and folded into the claims:
 - **Q-01** Revisions 1 and 2 don't change the game data in this packet.
-  - The reviewer cites Bulbapedia's version history: 1.1 fixes non-English names on evolution, 1.2 is the Berry Program Update.
+  - Bulbapedia's version history agrees: 1.1 fixes non-English names on evolution, 1.2 is the Berry Program Update.
   - The decomp agrees: pokeruby's `REVISION` conditionals appear only in graphics, Pokédex text, fonts, strings, TV/cable-club text and decoration code, never in trainer, wild, item or map-script data. See R-17.
 - **Q-02** There's no single Nuzlocke convention for the forced legendary; see P-22's three facts.
 - **Q-03** No missed story battles:
@@ -939,14 +810,12 @@ Answered in round 1 and folded into the claims:
 - **Q-05** Confirmed (X-11). The hideouts differ in layout and in the version's villain team; both have two Lv30 Electrode.
 - **Q-07** Answered with the navigation gates in X-14.
 
-Answered in draft 4:
 - **Q-08** A-01: besides the E-table events, are there other event-script gates where Ruby/Sapphire differ from Emerald on the same map? **No; see section 12.** That section is a mechanical comparison, per shared map, of reachability, story blockers on chokepoints, step triggers, conditional map changes and the engine rules behind them. Every difference is an Emerald-only beat or a gate already in this packet. It also turned up one fact that holds in all three games (V-14).
 
-Answered in rounds 3 and 4 (drafts 5 and 6):
-- **Q-10** (raised and answered in draft 5) `[diff]` Does any encounter's activation script differ from Emerald, the way E-10 does?
+- **Q-10** `[diff]` Does any encounter's activation script differ from Emerald, the way E-10 does?
   - **Method:** every script in pokeruby that starts an encounter was compared with its Emerald counterpart.
     - **The commands:** `setwildbattle`, `givemon` and `giveegg`.
-    - **The specials that create a Pokémon or start an encounter (widened in draft 6, round 4):** `InitRoamer`, `CreateInGameTradePokemon` (trades), `GiveEggFromDaycare` and Rock Smash's `RockSmashWildEncounter`.
+    - **The specials that create a Pokémon or start an encounter:** `InitRoamer`, `CreateInGameTradePokemon` (trades), `GiveEggFromDaycare` and Rock Smash's `RockSmashWildEncounter`.
     - **Counted:** 24 in Ruby/Sapphire outside the debug scripts *(audit.encounter_scripts; report `encounter_scripts_ruby.txt`)*. The flags and items checked before each one were compared too.
     - **Not covered here:** encounters that start in C with no script: walking, surfing and fishing in the wild tables, Feebas and the roamer's encounters. V-11's engine comparison covers those.
   - **The same in both games:**
@@ -966,20 +835,20 @@ Answered in rounds 3 and 4 (drafts 5 and 6):
     - **gifts with a full party** (new, SE-10)
 
   Emerald-only encounters (Sudowoodo, the Johto starters, the Pichu egg, Terra and Marine Cave) have no Ruby/Sapphire counterpart.
-- **Q-11** (answered in round 4) No other place in Ruby or Sapphire closes for good before the Champion. CL-01 closes a whole location; CL-02 is one encounter, and the rest of Cave of Origin stays open. One-time gifts, statics and the fossil choice can be missed, but they aren't closed places.
-- **Q-09** Section 12's geography held up. The reviewer found no area or path that opens at a different point. It did find an encounter-activation step that section 12 doesn't look at: the roaming Lati's TV report (E-10). Its point that areas also close led to CL and the closing logic (P-R6).
+- **Q-11** No other place in Ruby or Sapphire closes for good before the Champion. CL-01 closes a whole location; CL-02 is one encounter, and the rest of Cave of Origin stays open. One-time gifts, statics and the fossil choice can be missed, but they aren't closed places.
+- **Q-09** Section 12's geography held up: no area or path opens at a different point. Section 12 doesn't look at encounter-activation steps, and one of them matters: the roaming Lati's TV report (E-10). Areas can also close, hence CL and the closing logic (P-R6).
 
 Still open:
 - **Q-06** R-13: if you've seen a real Ruby or Sapphire UPR log, how do town names print in wild-set labels?
-- **Q-01 follow-up** (round 2): the `REVISION` audit supports Q-01. The full guarantee is a hash comparison of the extracted trainer, wild, item and event tables built for revisions 0, 1 and 2. Not done: it needs the three revisions built, with pret's agbcc toolchain (not installed here), or dumped from cartridges.
+- **Q-01 follow-up:** the `REVISION` audit supports Q-01. The full guarantee is a hash comparison of the extracted trainer, wild, item and event tables built for revisions 0, 1 and 2. Not done: it needs the three revisions built, with pret's agbcc toolchain (not installed here), or dumped from cartridges.
 
-## 12. Area-unlock verification (V), new in draft 4
+## 12. Area-unlock verification (V)
 
 This answers Q-08: does Ruby or Sapphire open any area at a different story point from Emerald, beyond what sections 3 and 4 already say? Claims are `[diff]` unless marked.
 
 Scripts compared pret/pokeruby `5784633ce4ef` with pret/pokeemerald `731ad5bfd6e6` over the 348 map ids both games have. pokeruby was read once as Ruby and once as Sapphire, with `.ifdef SAPPHIRE` blocks resolved.
 
-**The scripts and their output are in the repo (new in draft 5):**
+**The scripts and their output are in the repo:**
 - the scripts: [`audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/audit), with a README mapping each script to the claims below
 - their reports: [`docs/audit/`](https://github.com/colettak16/Lockesmith/tree/ruby-sapphire/docs/audit), one plain-text file per check, headed by the two commits compared
 - `uv run python -m audit` re-runs everything in about a minute, from the two decomps downloaded at the pinned commits.
@@ -992,7 +861,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
   - No change to section 4's story order or area unlocks was needed. `data/progression_rs.yaml` changed only in one note (V-14).
   - Two engine-level differences turned up, both Emerald-only (V-11): Sootopolis's water encounters are blocked during Emerald's crisis, and Emerald alone has the encounter abilities (Synchronize and others).
   - One new fact applies to all three games (V-14).
-  - **Scope (narrowed in draft 5):** this checks where the player can move and what blocks them. It doesn't check every script that starts an encounter. Round 3 found one such step, the Lati TV report (E-10), and areas that close again (CL).
+  - **Scope:** this checks where the player can move and what blocks them. It doesn't check every script that starts an encounter. The Lati TV report (E-10) is one such step, and areas that close again (CL) are handled separately.
 
 ### What was compared
 
@@ -1006,7 +875,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
     - plus Surf
     - plus Waterfall
 
-    Each set with a bike runs twice, once with the Mach Bike and once with the Acro Bike, because you can't switch bikes inside a map. Rydel's shop is in Mauville. This was split in draft 6 (round 4); before, one "bike" did everything either bike can.
+    Each set with a bike runs twice, once with the Mach Bike and once with the Acro Bike, because you can't switch bikes inside a map. Rydel's shop is in Mauville.
   - **Recorded:** which exits are reached, and whether walkable encounter tiles, surfable water and fishable water are reached.
   - **Movement rules,** taken from the engine and the same in both games (V-10):
     - Collision blocks, except that a ledge is jumped (two tiles, in its arrow direction only) before collision is applied, as `ShouldJumpLedge` does.
@@ -1021,7 +890,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
     - **Surf** starts only from elevation-3 land, facing water that has no collision and a different elevation (`IsPlayerFacingSurfableFishableWater`). It ends only onto an elevation-3 tile with no object (`CanStopSurfing`). Fishing from land uses the same test as starting Surf (`CanFish`). Arriving by a warp onto water starts you surfing.
     - Waterfalls are climbed only with Waterfall; going down one needs nothing.
     - **Animated doors** are solid tiles entered by moving north into them (`TryDoorWarp`), so a door counts as an exit when the tile below it is reached.
-  - **The rules above are the corrected model.** Draft 4's first run missed door exits and allowed surfing at any elevation. The re-run with the engine's rules found about 200 more door exits per game and the same 9 differing maps (V-06).
+  - **The rules above are the corrected model.** A first run without them missed door exits and allowed surfing at any elevation. The re-run with the engine's rules found about 200 more door exits per game and the same 9 differing maps (V-06).
   - **Obstacles:** Cut trees, Rock Smash rocks and Strength boulders need their move. Other NPCs are left to V-02.
   - **Ignored:** exits to maps only one game has.
 - **V-02 Story blockers on chokepoints.** *(audit.chokepoints and audit.story_gates)*
@@ -1029,7 +898,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
   - **Test:** objects that share a hide flag are walled off together, and the rest one at a time. A candidate is a chokepoint if walling it costs any entrance an exit, grass or water, even with every field ability.
   - **Matching:** chokepoints are matched across games by map and tiles, and for each match the scripts that remove it were compared.
   - **The rest:** 540 `setflag`-removed blockers stand on the same tile in both games. For 517 of them, the scripts that hide them live in the same place in both games. The other 23 are Mt. Chimney's scene (22) and Meteor Falls' Cozmo: Ruby/Sapphire run them from the shared `magma_chimney.inc`, Emerald from `MtChimney`. *(audit.story_gates, section 1b.)*
-  - **Corrected in draft 5:** draft 4 gave 476, 451 and 25. That count came from a scratch comparison that wasn't kept and can't be re-run, and it included two blockers that only looked different because of a truncated name. The repo's script gives the numbers above. The conclusion is unchanged.
+  - **Corrected:** an earlier count gave 476, 451 and 25. That count came from a scratch comparison that wasn't kept and can't be re-run, and it included two blockers that only looked different because of a truncated name. The repo's script gives the numbers above. The conclusion is unchanged.
 - **V-03 Step triggers.** *(audit.story_gates, section 2)* Every coordinate trigger on a story variable whose tile is in only one game, with its script read.
 - **V-04 Conditional map changes.** *(audit.map_changes)* For every conditional branch in a map's scripts, the target label was checked for:
   - metatile changes
@@ -1067,7 +936,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
 | Route 116 (38, 9) | Black Belt at the Tunnelers' Rest House | the same Devon Corp 3F script in both |
 | Mauville (8, 6) | Wally at the gym door | after his battle (X-07) |
 | Route 111 (13, 114) | Victor Winstrate | Route 111's own script (`removeobject`) |
-| Route 120 (20, 11) | Kecleon on the way to the Scorched Slab | Devon Scope. Draft 4's first pass listed it as Ruby/Sapphire-only because Emerald removes it with `removeobject` (D-08) |
+| Route 120 (20, 11) | Kecleon on the way to the Scorched Slab | Devon Scope. A first pass listed it as Ruby/Sapphire-only because Emerald removes it with `removeobject` (D-08) |
 | Fortree (25, 8) | Kecleon in front of the gym | Devon Scope |
 | Lilycove (27, 7) | the rival, below the Department Store door | after the battle, not after declining (V-14) |
 | Lilycove Museum 1F (16, 2) | the curator | the same Contest Lobby and museum scripts |
@@ -1174,11 +1043,11 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
   - **The wild-encounter engine** is the same for Feebas (C-11), roamers (X-16), the Safari Zone (30 balls, 500 steps), Repel, the flutes and the Cleanse Tag.
     - **One encounter gate is Emerald-only.** Emerald blocks Sootopolis's surfing and Sweet Scent water encounters while `FLAG_LEGENDARIES_IN_SOOTOPOLIS` is set (`AreLegendariesInSootopolisPreventingEncounters`, `wild_encounter.c`). That runs from the Seafloor Cavern leader until the crisis ends. Ruby/Sapphire have no such check, so Sootopolis's water encounters stay available during their crisis. Fishing isn't blocked in either game. Emerald's story file now notes this on the Archie step.
     - **Encounter abilities:** Ruby/Sapphire's `wild_encounter.c` knows only **Stench and Illuminate**. Emerald adds Synchronize and Cute Charm (wild nature and gender), Magnet Pull and Static (type bias), Keen Eye and Intimidate (low levels filtered), Hustle, Vital Spirit and Pressure (higher levels), Arena Trap, Sand Veil and White Smoke (encounter rate), and Suction Cups and Sticky Hold (fishing). They change odds, not which species can appear. **The agent must not suggest a Synchronize lead for natures in Ruby/Sapphire.**
-    - **Pickup (corrected in draft 6, round 4) works in all three games.**
+    - **Pickup works in all three games.**
       - After each battle you win, each party Pokémon with Pickup that holds nothing has a 10% chance to find an item. In Ruby/Sapphire it comes from one fixed table at every level (`atkE5_pickup`, `sPickupItems`): Super Potion 30%; Full Heal, Ultra Ball, Rare Candy, Full Restore, Revive and Nugget 10% each; Protein 5%; PP Up 4%; King's Rock 1%.
       - Emerald's `Cmd_pickup` picks from tables that depend on the Pokémon's level.
-      - Draft 5 said Stench and Illuminate were the only field abilities in Ruby/Sapphire. That holds for wild encounters, not for Pickup. *(audit.engine, section 7.)*
-    - **Other field abilities (added in draft 5) are Emerald-only:**
+      - Stench and Illuminate are the only abilities that change wild encounters in Ruby/Sapphire, but Pickup works outside battle too. *(audit.engine, section 7.)*
+    - **Other field abilities are Emerald-only:**
       - **Held items.** Ruby/Sapphire's `SetWildMonHeldItem` (`pokemon_3.c`) always rolls 45% none, 50% common, 5% rare. Emerald's `pokemon.c` changes that to 20/60/20 with a Compound Eyes lead.
       - **Fishing.** Suction Cups and Sticky Hold, above, live in Emerald's `field_player_avatar.c`; Ruby/Sapphire's has no ability check.
       - **Eggs.** Flame Body and Magma Armor halve egg steps only in Emerald (`egg_hatch.c`). Ruby/Sapphire's `daycare.c` counts egg cycles with no ability check.
@@ -1200,7 +1069,7 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
   - **Declining doesn't clear it.** It sets `FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE` and leaves the rival in place (`LilycoveCity_EventScript_DeclineMayBattle` and the Brendan equivalent).
   - **What clears it:** only the end of the battle (`LilycoveCity_EventScript_RivalFlyAway`, `removeobject`), until the Hall of Fame hides the rival.
   - **Effect:** the store's eight TMs (TM14, 15, 16, 17, 20, 25, 33, 38) need P-17, which is optional only if you skip the store.
-  - **Fixed in draft 4's build.** LockeSmith's TM table had listed these TMs with no requirement in all three databases. They now carry the rival-battle requirement, and the Lilycove rival steps' notes in both story files say so.
+  - **Fixed in the build.** LockeSmith's TM table had listed these TMs with no requirement in all three databases. They now carry the rival-battle requirement, and the Lilycove rival steps' notes in both story files say so.
 - **V-15 Limits.**
   - The reachability model ignores NPCs that wander. It walls off together all trainers that share a hide flag, which can only add chokepoints, never hide one.
   - The model doesn't check an arrow warp's direction, and it counts any warp event on a tile it reaches. Rotating gates and tiles changed by scripts aren't modeled; V-04 and V-10 cover them instead.
@@ -1208,8 +1077,8 @@ Each V claim names its script in brackets, e.g. *(audit.reach)*. The reports are
   - Conditions inside the removing scripts were compared by hand only for chokepoint blockers (V-07). The other same-tile blockers were checked only for being removed from the same map.
   - The engine checks (V-10, V-11) read the C source; nothing was run in an emulator.
   - Real Ruby/Sapphire randomizer logs remain open (Q-06, R-12 to R-14).
-  - **Added in draft 6:** each map is checked on its own.
+  - Each map is checked on its own.
     - An edge entrance starts from every open tile on that edge, so a gate that sits in the neighbouring map shows up on that map, not this one. For example, the Safari Zone northeast's Acro Bike gate is in the southeast map.
     - The model records whether a map's walkable encounter tiles are reached at all, not which ones. Gen 3 uses one wild table per map, so that is what matters for encounters.
     - Falling through cracked floors and holes isn't counted as an exit.
-  - **Added in draft 5:** this is an audit of movement and story blockers, not a proof over every game state. Scripts that start an encounter without blocking a path weren't compared; E-10 was found that way, by the reviewer. Emulator checks at the main gates would cover what reading the code can't.
+  - This is an audit of movement and story blockers, not a proof over every game state. Scripts that start an encounter without blocking a path weren't compared here; E-10 was found separately. Emulator checks at the main gates would cover what reading the code can't.

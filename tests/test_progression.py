@@ -190,7 +190,7 @@ def test_resolved_review_placements(prog):
 
 
 def test_cross_check_placements(prog):
-    """Corrections from the second-model review, each re-verified (see the battles' notes)."""
+    """Corrections from cross-checking the story order, each verified in the decomp (see the battles' notes)."""
     # Open-water routes need Surf; the boat ride across them is a cutscene
     for route in ("hoenn-route-105", "hoenn-route-107", "hoenn-route-108"):
         assert not prog.is_reachable("gym5_norman", route, None)

@@ -168,7 +168,6 @@ def labelled_blocks(text: str) -> dict[str, str]:
 
 def extract(decomp_dir: Path, version: str | None = None) -> list[dict]:
     aliases = item_aliases(decomp_dir)
-    item_re = re.compile(r"\b(ITEM_(?:TM|HM)\w+)\b")
     maps = decomp.maps(decomp_dir, version)
     folder_to_map = {m["folder"]: map_id for map_id, m in maps.items()}
     rows = []

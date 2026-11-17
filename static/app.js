@@ -414,8 +414,11 @@ function renderLog() {
   if (!s) { $("#log-summary").innerHTML = ""; return; }
   const reads = s.shadowed.map((t) => SHADOW_WORDS[t] || t);
   const unread = Object.values(s.unread || {});
+  const rom = s.rom || {};
   $("#log-summary").innerHTML = `
     <p class="ok">Loaded ${esc(s.log_id)}${s.seed ? ` (seed ${esc(s.seed)})` : ""}.</p>
+    ${rom.name ? `<p class="hint">Made from ${esc(rom.name)}${rom.clean ? ", a clean ROM (its checksum matches)" : ""}.</p>` : ""}
+    ${(s.rom_notes || []).map((n) => `<p class="warn">${esc(n)}</p>`).join("")}
     <p>Answers now use this log for: ${reads.length ? esc(reads.join(", ")) : "nothing (it only lists unchanged data)"}. Everything else is vanilla.</p>
     ${unread.length ? `<p class="warn">Changed but not readable yet, so it won't guess: ${esc(unread.join(", "))}.</p>` : ""}
     ${s.warning_count ? `<p class="hint">${s.warning_count} line(s) couldn't be placed; see the trace for details.</p>` : ""}

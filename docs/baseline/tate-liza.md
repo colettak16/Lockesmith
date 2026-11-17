@@ -1,6 +1,6 @@
 # Baseline: tate-liza
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 47.8 s, 78 input / 3137 output tokens, about $0.0378.
+vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 33.5 s, 78 input / 2802 output tokens, about $0.0338.
 
 ## Prompt
 
@@ -12,41 +12,40 @@ What should I catch to get through Tate & Liza?
 
 ## Answer
 
-Tate and Liza are arguably the hardest Gym Leaders in *Pokémon Emerald*. Unlike Ruby and Sapphire, their Emerald team consists of four Pokémon (Claydol, Xatu, Lunatone, Solrock) hovering at **levels 41 and 42**, and they use a highly coordinated Double Battle strategy involving Earthquake, Sunny Day, and SolarBeam. 
+Tate & Liza in *Pokémon Emerald* are notoriously one of the hardest Gym battles in the entire franchise. Because it’s a Double Battle and their team covers their weaknesses perfectly, your current team is going to have a very hard time. 
 
-Right now, your team is in the low 30s. **You are severely underleveled** and your Breloom will be instantly knocked out by their Psychic and Flying moves. 
+Before looking at what to catch, we need to address two things:
+1. **You are severely underleveled.** Your team is level 30-33, but Tate & Liza’s Pokémon are **levels 41 and 42**. You need to grind to at least level 38-40.
+2. **Evolve Marshtomp.** Get Marshtomp to Level 36 so it evolves into Swampert. 
 
-Here is exactly what you should catch, and what you need to do, to crush them.
+Here is why this gym is so hard for your current party, followed by the best Pokémon you can catch right now to beat them.
 
-### 1. The Best Catch: Sharpedo (or Carvanha)
-*   **Type:** Water / Dark
-*   **Why you need it:** Sharpedo is practically built to destroy this Gym. Because it is a Dark type, it is **completely immune to Psychic attacks**. Furthermore, its Water typing allows it to use **Surf**, which hits both of the opponent's Pokémon at the same time. In Gen 3, Dark is a "Special" type, and Sharpedo has a great Special Attack stat, making its move *Crunch* hit incredibly hard.
-*   **Where to find it:** Use the Good Rod (obtained from the fisherman on Route 118) on Route 118 or 119 to catch a Carvanha, then level it up to 30 to evolve it into Sharpedo.
+### Why Your Current Team is in Danger
+*   **Breloom** will be absolutely destroyed here. All four of their Pokémon have Psychic moves. Breloom is dead weight for this fight.
+*   **Marshtomp/Swampert** is great, but Solrock knows **Sunny Day** and **SolarBeam**. Because of Swampert's 4x weakness to Grass, one SolarBeam will instantly knock it out. 
+*   **Manectric** is frail, and their lead Pokémon (Claydol) is a Ground-type immune to Electric moves and will use Earthquake to one-shot Manectric.
 
-### 2. The Physical Sweeper: Banette or Dusclops
-*   **Type:** Ghost
-*   **Why you need it:** In Gen 3, **Ghost-type moves are Physical**. You can find the **TM for Shadow Ball** inside Mt. Pyre. If you teach Shadow Ball to a Ghost Pokémon, it will deal massive super-effective damage to Tate & Liza’s entire team.
-*   **Where to find them:** Inside Mt. Pyre.
-    *   **Shuppet/Banette:** Has a massive Attack stat. It will outspeed and one-shot most of their team with Shadow Ball. (Shuppet evolves at Lv 37).
-    *   **Duskull/Dusclops:** Much slower, but incredibly tanky. It can survive Earthquakes and Psychics and hit back hard with Shadow Ball. (Duskull evolves at Lv 37).
+### What to Catch
 
-### 3. The Wildcard: Absol
-*   **Type:** Dark
-*   **Why you need it:** Like Sharpedo, it is immune to Psychic. Absol has one of the highest Attack stats in the game. *However*, because Dark moves are Special in this generation, **do not use Bite or Crunch**. Instead, teach Absol the **Shadow Ball TM**. It will absolutely devastate Tate and Liza.
-*   **Where to find it:** Route 120 (in the tall grass, 8% encounter rate).
+To beat Tate & Liza, you need **Dark-types** (immune to Psychic) and Pokémon that can abuse **Surf** (which hits both opponents in a Double Battle). 
 
----
+**1. Carvanha / Sharpedo (The Glass Cannon MVP)**
+*   **Why:** It is Water/Dark. It is completely immune to their Psychic attacks, and its Water-typing resists Solrock's Flamethrower. Teach it **Surf** and it will deal massive damage to Claydol, Solrock, and Lunatone simultaneously. It also gets Crunch to deal with Xatu. 
+*   **Where to get it:** You can fish with a Good Rod on Route 118 or 119 to get Carvanha, or wait until you get to Mossdeep City, grab the Super Rod, and fish right in the city to catch a high-level Sharpedo directly.
 
-### What to do with your current team:
+**2. Absol (The Physical Sweeper)**
+*   **Why:** Absol is a pure Dark-type, meaning it takes 0 damage from Psychic attacks. In Generation 3, Ghost-type moves are Physical, and Absol has a massive Physical Attack stat. Teach it **Shadow Ball** (TM30, found inside Mt. Pyre) and it will one-shot or two-shot almost everything in this gym.
+*   **Where to get it:** Route 120 (in the tall grass). It has a low encounter rate (around 8%), but it is entirely worth the hunt.
 
-*   **Marshtomp:** You **must** level it to 36 so it evolves into **Swampert**. Its stats will drastically increase. Teach it **Surf**. *Warning:* Solrock knows Sunny Day and SolarBeam. If the sun is shining, Solrock will use SolarBeam instantly without charging, which will one-shot Swampert. 
-*   **Manectric:** Can be useful to hit Xatu with Thunderbolt/Spark, but be very careful. Claydol is Ground-type (immune to Electric) and knows Earthquake, which will easily kill Manectric.
-*   **Breloom:** Put it at the back of your party. It is 4x weak to Xatu's Flying moves, weak to everyone's Psychic moves, and weak to Solrock's Flamethrower. It is dead weight for this specific Gym.
-*   **Swellow:** Immune to Claydol's Earthquake, which is nice, but it doesn't have the offensive typing to do much damage here.
+**3. Shuppet / Banette (The Ghost Hitter)**
+*   **Why:** If you don't want to hunt for Absol, Banette is an excellent alternative. It has incredibly high Physical Attack. Slap the **Shadow Ball** TM on it, and it will tear through Xatu, Lunatone, and Solrock.
+*   **Where to get it:** Mt. Pyre (you have to go here for the story anyway before facing the Gym). 
 
-### The Winning Strategy for the Gym Battle:
-1.  **Level up:** You need to grind your core team to at least **Level 38-40**. Fight all the Aqua grunts in the Team Aqua Hideout (outside Lilycove City) and clear all the trainers on the ocean routes.
-2.  **Lead with Swampert and Sharpedo (or your Ghost/Dark type).**
-3.  Have both Swampert and Sharpedo spam **Surf**. Since it hits both opponents, you will be doing double the damage every turn. 
-4.  If Claydol puts up Light Screen (which halves special damage like Surf), switch to your physical attacker (Banette/Dusclops/Absol) and start spamming **Shadow Ball**.
-5.  **Watch the weather!** If Xatu or Solrock uses Sunny Day, Water moves will do half damage, and Solrock will spam SolarBeam. You can counter this by catching the **Castform** you were given at the Weather Institute and having it use **Rain Dance** to get rid of the sun.
+### The Secret Weapon (Already in your PC!)
+**Castform**
+You were given Castform at the Weather Institute. You should strongly consider bringing it into this fight for one reason: **Rain Dance**. 
+Tate & Liza's ultimate strategy is to have Xatu or Solrock use Sunny Day, which allows Solrock to fire off SolarBeams with no charge turn to kill your Swampert. If you have Castform (or any fast Pokémon) use Rain Dance, the sun goes away. Solrock will now have to waste a turn charging SolarBeam, making it virtually useless, and Swampert's/Sharpedo's Surf attacks will get a massive 50% damage boost from the rain.
+
+### Recommended Strategy
+Go into the battle with **Swampert** and **Sharpedo** (or Absol) as your leads. 
+Turn 1, have Swampert use Surf (Surf doesn't hurt your own teammate in Gen 3!) and have your Dark-type focus entirely on taking down Claydol or Xatu. Keep Swampert away from Solrock unless you have changed the weather to Rain!
