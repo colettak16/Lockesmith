@@ -568,23 +568,6 @@ Every generation carries its model, token usage and cost. The prices are registe
 - the Verifier's `verify-picks` and `check-citations` run in code alongside
 - two researchers that used up their tool budget show their `wrap-up` turn
 
-## Running it locally
-
-```bash
-uv sync
-gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
-uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 537 tests, no model calls (5 wait for a real randomizer log; 8 need build/fetch_sources.py run first)
-```
-
-Scripts:
-- `scripts/run_samples.py`: the agent on the README samples (or any example by id), saving full traces to `docs/samples/`
-- `scripts/baseline.py`: the no-tools baseline, saved to `docs/baseline/`
-- `scripts/expected_answers.py`: expected answers from the data
-- `uv run python -m audit`: the Ruby/Sapphire vs Emerald comparison behind the review packet's section 12, run on the full decomps at their pinned commits, with reports written to `docs/audit/` ([audit/README.md](audit/README.md))
-
-Deployment (Cloud Run, continuous deploy from GitHub, IAP, Vertex AI permissions, LangFuse) is in [docs/deploy.md](docs/deploy.md). [docs/README.md](docs/README.md) lists everything else in `docs/`.
-
 ## Credits
 
-Built by kc3936 for IEOR E4570, with Claude Code. Pokémon and Pokémon Emerald, Ruby, Sapphire, FireRed and LeafGreen are © Nintendo, Game Freak and Creatures. This is a non-commercial course project. Walkthrough text is from Bulbapedia (CC BY-NC-SA 2.5); species and move data are from PokeAPI; game data is from the pret/pokeemerald, pret/pokeruby and pret/pokefirered decompilations.
+Built by Kyle Coletta (kc3936@columbia.edu) for IEOR E4570. This is a non-commercial course project. Walkthrough text is from Bulbapedia; species and move data are from PokeAPI; game data is from the pret/pokeemerald, pret/pokeruby and pret/pokefirered decompilations.
