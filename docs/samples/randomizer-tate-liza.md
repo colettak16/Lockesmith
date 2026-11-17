@@ -2,72 +2,62 @@
 
 **Question:** What should I catch to get through Tate & Liza?
 
-81.9 s · 14 model calls · 65,260 tokens · about $0.204 · researchers: battle_researcher, catch_researcher, moves_researcher · 14 trace steps (full trace in `randomizer-tate-liza.json`)
+71.4 s · 14 model calls · 55,375 tokens · about $0.146 · researchers: battle_researcher, catch_researcher, moves_researcher · 13 trace steps (full trace in `randomizer-tate-liza.json`)
 
 ## Answer
 
-Tate & Liza's randomized team is entirely Fire-type, making bulky Water-types like Spheal and Sharpedo ideal catches to pair with your Marshtomp's evolutions [1].
+Since this randomized run gave Tate & Liza a pure Fire-type team, your best bet is leveling up Marshtomp and catching another fast Water-type to drown them [1].
 
 ### Top picks
 
-#### Spheal (core)
-* **Where to catch:** Shoal Cave (B1F, B2F, or high-tide) via walking (50% encounter rate, Levels 26-32) [2].
-* **When to catch:** Immediately available after acquiring Surf to reach Shoal Cave north of Mossdeep [3].
-* **Why it helps now:** Tate & Liza's randomized team consists of Camerupt, Torkoal, Magcargo, and Houndoom [1]. Spheal's Water typing allows it to exploit their heavy Fire-type composition, especially using Surf which hits both opponents in a Double Battle [4][1][3].
-* **Long run:** Outstanding long-term value [4]. It evolves into Sealeo (and eventually Walrein), has massive bulk, and hits 26 remaining opponents super-effectively, making it incredibly strong against Elite Four Drake's Dragon types [4][5].
-* **Backup:** Aron (found in Granite Cave B1F or B2F via walking, 40% encounter rate, Levels 9-12) [6][7]. It acts as a premier physical wall against Normal and Flying moves and evolves into Lairon and then Aggron, yielding a monumental 180 Base Defense [7][8].
+#### Staryu (Starmie) — Core [2]
+* **Where:** Lilycove City (Super Rod, 15%, levels 25-30) [3]
+* **When to catch:** Before Tate & Liza
+* **Why it helps now:** With base 115 Speed and 100 Special Attack as Starmie, it can easily outspeed and wash away Tate & Liza's Fire-type team (Camerupt, Torkoal, Magcargo, and Houndoom) using Surf [1]. 
+* **Long run:** One of the best Water-types in the game [3]. It gets incredibly diverse TM coverage (Thunderbolt, Ice Beam, Psychic, Surf) making it a top-tier asset for the Elite Four [3].
+* **Backup:** Spheal (Shoal Cave, Walk, 50%, levels 26-32) [4]. Its Water/Ice typing and high bulk give you a more durable option to take hits while dealing super-effective Water damage [4]. Walrein's exceptional bulk and Ice typing make it a premier counter to Elite Four Drake's Dragon-types later on [5].
+* *Note:* Starmie needs a Water Stone to evolve. Make sure you can obtain one before challenging Tate & Liza.
 
-#### Sharpedo (core)
-* **Where to catch:** Route 103 or Route 118 by fishing with the Super Rod (Lv30-35, 40% encounter rate) [9][10].
-* **When to catch:** Immediately available once you have the Super Rod [9][10].
-* **Why it helps now:** Its strong offensive stats allow it to quickly sweep Tate & Liza's Fire-type team before they can retaliate [11][1]. *(Note: Surf is a Special move in Gen III, so it won't use Sharpedo's massive 120 Physical Attack, but its 95 Special Attack is still very serviceable)*.
-* **Long run:** Hits 15 remaining opponents super-effectively and is excellent against Elite Four Phoebe, but its low defensive stats make it a glass cannon [11].
-* **Backup:** Shuppet (found on Mt. Pyre 1F-3F, 100% encounter rate, Levels 22-29) [12][13]. It evolves into Banette, deals immense physical Ghost-type STAB damage, and is extremely useful for defeating Elite Four Phoebe [13][14].
+#### Carvanha (Sharpedo) — For this fight [6]
+* **Where:** Route 119 (Super Rod, 100%, levels 20-45) or Route 118 (Super Rod, 60%, levels 20-45) [7]
+* **When to catch:** Before Tate & Liza
+* **Why it helps now:** Evolves immediately at level 30 into Sharpedo, giving you an aggressive Water-type attacker that can deal massive damage to the Fire-type gym [6][8].
+* **Long run:** Outstanding late-game offensive profile, but its low defenses make it a glass cannon that requires careful positioning [8].
+* **Backup:** None listed.
+* *Note:* In Generation III, Surf (Water) and Crunch (Dark) are both classified as Special attacks. While Sharpedo has a massive Attack stat of 120, its Special Attack is still a decent 95 [9].
 
 ---
 
 ### Key Battles
 
-#### Gym Leader: Tate & Liza
-Tate & Liza have a randomized, Fire-heavy team of Camerupt (Lv41), Torkoal (Lv41), Magcargo (Lv42), and Houndoom (Lv42) [1]. Camerupt carries Earthquake and Rock Slide, which threaten Manectric and Swellow [1]. Use Water-type moves like Surf to deal heavy damage to both opponents simultaneously [15][3].
-
----
-
-### Next Steps
-
-1. **Level up your party:** Your party is currently heavily underleveled [1]. Marshtomp is Level 33, while Tate & Liza's team is Level 41-42; you will need to level up significantly to survive [1].
-2. **Evolve Marshtomp and upgrade moves:** Marshtomp evolves into Swampert at level 36 [16]. Teach it Surf (HM03) and Muddy Water (learned at level 37) to exploit the Fire-type weaknesses of the Gym Leaders' Pokémon [17][3].
+#### Gym 7: Mossdeep Gym (Tate & Liza)
+* **The Team:** Tate & Liza's randomized team consists entirely of Fire-types: Camerupt, Torkoal, Magcargo, and Houndoom [1].
+* **Strategy:** Magcargo is 4x weak to Water and Ground, while the others are 2x weak to both types [10]. Beware of Camerupt's Earthquake and Rock Slide, which threaten Manectric, Swellow, and Breloom [1].
+* **Preparation:** Level up your team. Your highest level is 33, while Tate & Liza's Pokémon peak at level 42 [11]. Evolving Marshtomp into Swampert (at level 36) is highly recommended so it can tank hits and use its Ground typing [11].
 
 ---
 
 ### Assumptions
-* Your randomized seed left wild encounters and TM availability normal [18].
-* You are willing to spend time grinding levels to bridge the 9-level gap before fighting Tate & Liza [1].
+* You have access to a Super Rod [3].
+* You are willing to grind levels to close the 9-level gap before challenging the gym [11].
 
 ### To sharpen this
-* Are you willing to replace Marshtomp/Swampert or run multiple Water-types, as Spheal/Sharpedo would add type overlap to your party [4][11]?
-* Do you prefer a highly defensive pivot or a fast, offensive threat for your tactical playstyle [4][11]?
+* Do you have a Water Stone available to evolve Staryu [2]?
+* Do you need advice on the best grinding spots before taking on the gym [11]?
 
 ### Not covered
-* We don't know the exact movesets of your party, so we can't suggest exactly which moves to replace.
+* Whether you have the TMs for Thunderbolt, Ice Beam, or Psychic available for Starmie [3].
 
 ## Sources
 
 1. Your randomizer log: Leader Tate&Liza's team (`log:trainers#271`)
-2. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
-3. pokeemerald data/maps/PetalburgCity_WallysHouse (HM03) (`decomp:data/maps/PetalburgCity_WallysHouse#HM03`)
-4. PokeAPI: Spheal (species data) (`pokeapi:pokemon_species#363`)
-5. PokeAPI: Walrein (species data) (`pokeapi:pokemon_species#365`)
-6. PokeAPI: Aron at Granite Cave (walk) (`pokeapi:encounters#29913`)
-7. PokeAPI: Aron (species data) (`pokeapi:pokemon_species#304`)
-8. PokeAPI: Aggron (species data) (`pokeapi:pokemon_species#306`)
-9. PokeAPI: Sharpedo at Route 103 (super-rod) (`pokeapi:encounters#29611`)
-10. PokeAPI: Sharpedo at Route 118 (super-rod) (`pokeapi:encounters#29834`)
-11. PokeAPI: Sharpedo (species data) (`pokeapi:pokemon_species#319`)
-12. PokeAPI: Shuppet at Mt. Pyre (walk) (`pokeapi:encounters#29953`)
-13. PokeAPI: Shuppet (species data) (`pokeapi:pokemon_species#353`)
-14. PokeAPI: Banette (species data) (`pokeapi:pokemon_species#354`)
-15. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
-16. PokeAPI: Marshtomp evolves into Swampert (`pokeapi:pokemon_evolution#135`)
-17. PokeAPI: Marshtomp learns Muddy Water (level-up) (`pokeapi:pokemon_moves#259/330/level-up/37`)
-18. LockeSmith's Emerald rules (agent/brief.py) (`rules:game`)
+2. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
+3. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
+4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
+5. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
+6. PokeAPI: Carvanha evolves into Sharpedo (`pokeapi:pokemon_evolution#166`)
+7. PokeAPI: Carvanha at Route 119 (super-rod) (`pokeapi:encounters#30515`)
+8. database query 1224539e18 (`sql:1224539e18`)
+9. PokeAPI: Sharpedo learns Crunch (level-up) (`pokeapi:pokemon_moves#319/242/level-up/22`)
+10. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
+11. Story progression (data/progression.yaml): Mossdeep Gym: Tate & Liza (`progression:gym7_tate_liza`)

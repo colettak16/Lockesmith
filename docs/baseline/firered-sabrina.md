@@ -1,6 +1,6 @@
 # Baseline: firered-sabrina
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 34.1 s, 68 input / 2451 output tokens, about $0.0295.
+vertex_ai/gemini-3.5-flash, no tools, no system prompt. 14.7 s, 68 input / 2524 output tokens, about $0.0228.
 
 ## Prompt
 
@@ -12,36 +12,36 @@ What should I catch to beat Sabrina?
 
 ## Answer
 
-To beat Sabrina, you need to exploit the biggest weakness of Generation 3 Psychic-type Pokémon: **They have incredibly low physical Defense.** 
+To beat Sabrina, you need to exploit the biggest weakness of Psychic-type Pokémon in Generation III (FireRed/LeafGreen): **their incredibly low Physical Defense.** 
 
-While her Alakazam (Level 43) will outspeed your team and hit like a truck with Special attacks, it will fold instantly to a strong physical move. Also, **do not use Ghost-types like Haunter/Gengar**. Because they are part Poison-type, Sabrina's Psychic attacks will one-shot them. 
+Additionally, in Gen III, **all Ghost-type and Bug-type moves are Physical**. 
 
-Here are the best Pokémon you can catch right now to destroy Sabrina:
-
-### 1. The Ultimate Counter: Snorlax
-If you haven't caught one of the two Snorlax blocking Route 12 or Route 16, go catch one immediately. Snorlax is the perfect anti-Psychic weapon for three reasons:
-* **Massive Special Defense & HP:** Sabrina’s Psychic attacks will barely leave a scratch on Snorlax.
-* **Massive Physical Attack:** Snorlax’s physical moves will decimate her frail Psychic Pokémon.
-* **The "Shadow Ball" Strat:** In FireRed, Ghost-type moves are **Physical**. Go to the Celadon City Game Corner and buy **TM30 (Shadow Ball)** for 4,500 coins. Teach it to Snorlax. Snorlax will comfortably survive anything Sabrina throws at it and one-shot her Kadabra, Mr. Mime, and Alakazam with Shadow Ball.
-
-### 2. The Speedy Physical Sweeper: Dodrio
-Your Pidgeotto (Level 34) is currently too slow and weak to deal with Alakazam. If you want a massive upgrade, go to Route 16 (just left of Celadon City) and catch a **Doduo**. 
-* It evolves into Dodrio at Level 31.
-* Dodrio is incredibly fast and has a massive physical Attack stat.
-* A Dodrio around Level 38-40 using **Drill Peck** or **Fly** can easily outspeed and one-shot Sabrina's Pokémon before they even get a chance to attack. 
-
-### 3. The Tanky Bug: Scyther (or Pinsir if you were playing LeafGreen)
-If you have the patience for the Safari Zone, you can catch a Scyther. Bug is super-effective against Psychic. However, Scyther can be frustrating to catch and level up, so Snorlax and Dodrio are much more reliable choices.
+Here are the best Pokémon you can catch right now to easily defeat Sabrina, followed by a quick tip for your current team.
 
 ---
 
-### How to use your current team against her:
-* **Charizard (Lv 40):** Charizard is your highest-leveled Pokémon and can do heavy damage. Use physical moves (like **Fly** or **Slash**) against Kadabra, Mr. Mime, and Alakazam. However, you can use **Flamethrower** to easily one-shot her Venomoth (since Venomoth is Bug/Poison).
-* **Lapras (Lv 30):** Lapras is an incredible Pokémon, but it is currently too underleveled to survive Alakazam. If you use the **Vs. Seeker** to grind Lapras up to Level 38+, its move **Body Slam** will do huge damage to her team. 
-* **Raichu & Pidgeotto:** Keep them away from Alakazam. They both have low Special Defense and will be knocked out in one hit by Psychic. 
+### 1. The Best Choice: Snorlax
+If you haven't caught one of the two sleeping Snorlax blocking the roads (Route 12 or Route 16), go do it now. 
+* **Why it’s perfect:** Snorlax has massive HP and Special Defense, meaning Sabrina’s Psychic attacks will barely tickle it. Meanwhile, Snorlax has a huge Attack stat to prey on her team's weak physical defense.
+* **The Strategy:** Go to the Celadon Game Corner and buy **TM30 (Shadow Ball)** for 4,500 coins (or find it in the Pokémon Tower). Teach it to Snorlax. Because Ghost-type moves are physical in Gen III, Snorlax’s Shadow Ball will easily one-shot Kadabra, Mr. Mime, and Alakazam. 
 
-**Summary Game Plan:**
-1. Catch a **Snorlax**.
-2. Teach Snorlax **Shadow Ball** (from the Celadon Game Corner) or just use **Body Slam**.
-3. Level Snorlax up to about Level 36-38 using the Vs. Seeker on the Bikers on Cycling Road.
-4. Let Charizard roast her Venomoth, and let Snorlax sweep the rest of her team.
+### 2. The Speed Choice: Dugtrio
+Sabrina’s Alakazam is incredibly fast and hits hard. If you want to outspeed her, head to **Diglett’s Cave** and catch a high-level Dugtrio (around Lv. 29-31).
+* **Why it’s perfect:** Dugtrio is one of the fastest Pokémon in the game. It will likely outspeed Sabrina’s entire team.
+* **The Strategy:** Level it up slightly and spam **Earthquake** (which it learns at Level 49, or you can use the TM you got from Giovanni). If you don't have Earthquake, **Slash** or **Dig** will still do massive physical damage to her frail Psychic types.
+
+### 3. The Bug Choice: Scyther (FireRed exclusive) or Pinsir
+You can buy Scyther at the Celadon Game Corner prize room. 
+* **Why it’s perfect:** It is Bug/Flying. Bug is super-effective against Psychic, and Scyther has a massive Attack stat.
+* **The Strategy:** Teach it **Fury Cutter** or **Signal Beam** (though Scyther mostly relies on Wing Attack and Slash in this generation). Its high speed and physical attack will shred Sabrina's team. (Note: Watch out for Sabrina's Venomoth, which has Fire/Poison moves).
+
+---
+
+### Tips for your Current Party:
+
+If you don't want to catch anyone new, you can beat her with your current team if you make a few adjustments:
+
+1. **Evolve Pidgeotto:** Pidgeotto evolves into **Pidgeot at Level 36**. Get those two levels. Pidgeot's **Wing Attack** or **Return** (Physical moves) will do great damage to Sabrina's team.
+2. **Level up Lapras:** At Level 30, Lapras is too underleveled. Surf around south of Fuchsia City to get it to at least Level 38. Lapras is very bulky and can tank Sabrina's hits while hitting back with **Body Slam** (Physical).
+3. **Use Raichu's Physical Moves:** Do not use Electric attacks against Sabrina's high Special Defense. Instead, teach Raichu **TM18 (Rain Dance) + Thunder** (to bypass accuracy), or just use **Strength/Return** (Physical) to chip away at Alakazam.
+4. **Charizard is your Venomoth counter:** Sabrina's Venomoth is Bug/Poison. Charizard can easily one-shot it with Flamethrower or Fly.

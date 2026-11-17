@@ -109,7 +109,7 @@ def test_full_turn_cites_ledger_ids_and_flags_unknown(models):
     script["writer"] = "Catch Sharpedo [[progression:gym7_tate_liza]]. It's great [[made:up]]."
     body = chat("what for Tate & Liza?", "p-full", STATE)
     assert calls == ["clarifier", "lead", "writer", "writer"]  # one retry for the unknown id
-    assert body["response"] == "Catch Sharpedo [1]. It's great ."
+    assert body["response"] == "Catch Sharpedo [1]. It's great."  # the dropped marker leaves no gap
     assert body["citations"][0]["source_id"] == "progression:gym7_tate_liza"
     assert body["plan"]["citation_warnings"] == ["[[made:up]] isn't a source any tool returned"]
 

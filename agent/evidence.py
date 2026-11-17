@@ -22,7 +22,8 @@ DECOMP_FILES = {
 }
 TYPE_CHART_FILE = {"pokeemerald": "gTypeEffectiveness", "pokeruby": "data/type_effectiveness.inc", "pokefirered": "gTypeEffectiveness"}
 AUDIT_REPORTS = "https://github.com/colettak16/Lockesmith/blob/main/docs/audit"
-CITE_RE = re.compile(r"\[\[([^\[\]]+?)\]\]")
+# The spaces before a marker are captured so that a marker citing nothing known leaves no gap ("frail .").
+CITE_RE = re.compile(r"([ \t]*)\[\[([^\[\]]+?)\]\]")
 
 
 def chunks_path(game: Game = EMERALD) -> Path:
@@ -161,7 +162,7 @@ class Ledger:
             return [s for s in out if s]
 
         def sub(m):
-            ids = split_ids(m.group(1))
+            ids = split_ids(m.group(2))
             marks = []
             for sid in ids:
                 if sid not in self.entries:
@@ -169,7 +170,7 @@ class Ledger:
                     continue
                 numbers.setdefault(sid, len(numbers) + 1)
                 marks.append(f"[{numbers[sid]}]")
-            return "".join(marks)
+            return m.group(1) + "".join(marks) if marks else ""
 
         text = CITE_RE.sub(sub, markdown)
         citations = [

@@ -4,8 +4,8 @@ tools and no system prompt, next to your agent's answer").
     uv run python scripts/baseline.py            # the three README samples
     uv run python scripts/baseline.py tate-liza  # one by id
 
-Each sample's question goes to the Lead's model (the strongest in the pipeline, Gemini 3.1
-Pro) with no system prompt and no tools. The run state the agent gets from the form is
+Each sample's question goes to Gemini 3.5 Flash, the model that runs most of the pipeline (the
+Clarifier, the four researchers and the Writer), with no system prompt and no tools. The run state the agent gets from the form is
 written out in words, as a player would type it; for the randomizer sample the log itself is
 pasted in. Answers go to docs/baseline/<id>.md.
 """
@@ -43,13 +43,26 @@ def state_in_words(ex: dict) -> str:
     if rs.get("party"):
         parts.append("My party: " + ", ".join(f"{m['species']} Lv{m['level']}" for m in rs["party"]) + ".")
     r = rs.get("ruleset", {})
+    rules = []
     if r.get("nuzlocke"):
-        rules = ["Nuzlocke (first encounter per area only)"]
+        rules.append("Nuzlocke (first encounter per " + ("floor or room" if r.get("encounter_scope") == "area" else "area") + " only"
+                     + (", and gifts, statics and trades use up their area's encounter" if r.get("gifts_count_as_encounter") else "") + ")")
         rules += ["dupes clause"] if r.get("dupes_clause") else []
-        rules += ["level caps at the next gym leader's highest level"] if r.get("level_caps") else []
-        parts.append("Rules: " + ", ".join(rules) + ".")
-        if r.get("used_routes"):
-            parts.append("Areas whose encounter I've already used: " + ", ".join(r["used_routes"]) + ".")
+    if r.get("level_caps"):
+        offset = r.get("level_cap_offset", 0)
+        rules.append("level caps at the next boss's highest level" + (f" {offset:+d}" if offset else ""))
+    if r.get("allowed_types"):
+        rules.append("every Pokémon must be " + " or ".join(t.title() for t in r["allowed_types"]) + " type (dual types count)")
+    if r.get("banned_types"):
+        rules.append("no " + ", ".join(t.title() for t in r["banned_types"]) + " types at all, dual types included")
+    rules += ["no legendaries"] if r.get("no_legendaries") else []
+    rules += ["wild catches only (no gifts, static encounters, fossils or trades)"] if r.get("wild_only") else []
+    if r.get("banned_species"):
+        rules.append("banned: " + ", ".join(r["banned_species"]))
+    if rules:
+        parts.append("Rules: " + "; ".join(rules) + ".")
+    if r.get("used_routes"):
+        parts.append("Areas whose encounter I've already used: " + ", ".join(r["used_routes"]) + ".")
     if ex.get("sample_log"):
         log = (ROOT / "static" / "samples" / ex["sample_log"]).read_text(encoding="utf-8")
         parts.append("It's a randomized run (Universal Pokémon Randomizer ZX). Here's my spoiler log:\n\n" + log)
@@ -61,7 +74,7 @@ def prompt_for(ex: dict) -> str:
 
 
 async def ask(ex: dict) -> dict:
-    model = model_name("strong")
+    model = model_name("fast")
     prompt = prompt_for(ex)
     t = time.time()
     r = await litellm.acompletion(model=model, messages=[{"role": "user", "content": prompt}])

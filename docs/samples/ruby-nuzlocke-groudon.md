@@ -2,54 +2,55 @@
 
 **Question:** Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?
 
-186.1 s · 24 model calls · 110,022 tokens · about $0.291 · researchers: battle_researcher, catch_researcher, moves_researcher, story_researcher · 27 trace steps (full trace in `ruby-nuzlocke-groudon.json`)
+71.3 s · 16 model calls · 67,101 tokens · about $0.194 · researchers: battle_researcher, catch_researcher, moves_researcher, story_researcher · 16 trace steps (full trace in `ruby-nuzlocke-groudon.json`)
 
 ## Answer
 
-You can catch Groudon since statics are free, but at Level 45 it breaks Wallace's Level 43 cap and must sit out the gym [1][2].
+You can catch Groudon to use later, but its Level 45 encounter violates Wallace's Level 43 cap, so you must box it for the Gym and rely on your party and new encounters [1][2].
 
 ### Top picks
 
-#### Chinchou (core)
-* **Where:** Route 124 or 126 (Underwater), Seaweed, Lv20-30 [3][4].
-* **When:** Before Wallace, once Dive is usable.
-* **Why:** Its Water/Electric typing allows it to resist Wallace's Water-type moves while firing back with super-effective STAB Electric attacks [5].
-* **Long run:** Evolves into Lanturn, a solid tanky pivot with high HP that functions well against Glacia, Wallace, and elements of Steven's team [5].
-* **Backup:** Staryu (Lilycove City, Super Rod, Lv25-30) is a fast, powerful special attacker that can sweep Wallace if taught Thunderbolt [6]. It evolves into Starmie (requires a Water Stone, so make sure you can obtain one before the fight) and excels against Maxie, Courtney, and Steven [6].
+#### Magneton (from Magnemite) — *core* [3][4]
+* **Where:** New Mauville (walk, Lv22-26, 49-50% encounter rate) [5].
+* **When:** Available immediately (requires Surf to access New Mauville) [3].
+* **Why it helps now:** Evolves into Magneton at level 30 [3][4]. Its massive Special Attack and Electric typing allow it to sweep through most of Wallace's Water-types [3][4]. Its Steel typing grants invaluable defensive resistances against Ice-type moves like Milotic's Ice Beam [3][4].
+* **Key Moves:** Thunderbolt [3].
+* **Long run:** Outstanding against Glacia (resists Ice) and useful against Steven's Skarmory, Cradily, and Armaldo, though it must avoid Ground-type attacks due to a 4x weakness [3][4].
+* **Backup:** **Lanturn** (from Chinchou, Route 124 or 126 Underwater in seaweed, Lv20-30, 30%) [6]. Its Volt Absorb ability and Water/Electric typing make it a perfect defensive wall against other Water-types, taking minimal damage while striking back with super-effective Electric moves [7][8]. It has an incredible matchup against Glacia's Water-types and Steven's Skarmory, though lower offensive stats mean it relies on matching up defensively [7][8].
 
-#### Magnemite (core)
-* **Where:** New Mauville, Walk, Lv22-26 [7][8].
-* **When:** Before Wallace.
-* **Why:** Its massive 120 Special Attack makes it a premier Electric-type sweeper against Wallace's Water-type team, and its Steel typing adds useful defensive resistances [9].
-* **Long run:** Evolves into Magneton. It is excellent through the Elite Four (particularly Glacia) and invaluable against Champion Steven's Steel-type team [9].
-
----
-
-### Plan
-
-1. **Clear Seafloor Cavern:** Defeat Magma Admin Courtney (highest Lv38), then Magma Leader Maxie (highest Lv43) [10][11]. While inside, grab TM26 Earthquake from Room 9 for your Swampert [12][13].
-2. **Catch Groudon in Cave of Origin:** After defeating Maxie, proceed to the Cave of Origin [1]. This is a mandatory battle [1]. It is caught at Level 45 with Slash, Bulk Up, Earthquake, and Fire Blast [14][15]. Because your Nuzlocke rules allow static encounters for free, you can catch it without using up a standard route encounter.
-3. **Box Groudon for Gym 8:** Wallace’s ace is his Level 43 Milotic [2]. Because Groudon is Level 45, it breaks your level cap and cannot participate in the gym battle [2][16].
-4. **Equip Key Moves for Wallace:** Teach Manectric Thunderbolt (TM24 from Mauville) [17]. Ensure Breloom has Sky Uppercut [18] and a Grass-type move like Giga Drain (TM19 from Route 123) [19] or Solar Beam (TM22) [20] to help bypass Water/Ground dual types.
+#### Vileplume (from Oddish) — *core* [9][10]
+* **Where:** Safari Zone SE/SW (walk, Lv25-27, 40%) or Route 119 (walk, Lv24-27, 30%) [11].
+* **When:** Available immediately [9].
+* **Why it helps now:** Wallace's Whiscash is immune to Electric attacks and can threaten your Electric-types with Ground moves [9][2]. A Grass-type like Vileplume or Bellossom will hit Whiscash for 4x super-effective damage [9][10][12]. *Note: Vileplume needs a Leaf Stone; ensure you can acquire one before the battle.*
+* **Key Moves:** Giga Drain, Sleep Powder [9].
+* **Long run:** Extremely useful for countering heavy Ground- and Rock-types in Steven's champion team [9].
+* **Backup:** None.
 
 ---
 
 ### Key Battles
 
-#### Gym Leader Wallace
-* **Milotic and Sealeo:** Milotic's Ice Beam deals 4x damage to Breloom and 2x damage to Swellow [21][2]. Sealeo's Aurora Beam also deals 2x damage to both [21][22]. Keep Breloom and Swellow away from these two.
-* **Whiscash:** It is immune to Electric attacks and carries Earthquake, which deals 2x damage to Manectric [21][23]. Switch Manectric out immediately when Whiscash enters, preferably to Breloom or a Flying-type.
-* **Seaking:** It carries Horn Drill, a 30% accuracy OHKO move [24]. Take it down quickly or swap to a Ghost-type pivot if you have one.
+#### Groudon (Cave of Origin)
+The Cave of Origin encounter with Groudon is a mandatory story event [1]. You do not have to catch it; defeating it or fleeing will also clear the event and unlock Sootopolis Gym [1][2]. If you do catch it, it is encountered at Level 45, which exceeds Wallace's Level 43 cap, meaning you must keep it in the PC for the Gym battle [1][2].
+
+#### Gym 8 Leader: Wallace
+Wallace leads with Luvdisc (Lv40) and has Whiscash (Lv42), Sealeo (Lv40), Seaking (Lv42), and Milotic (Lv43) [13][14][15][16][17]. 
+* **Whiscash** is immune to Electric and carries Ground moves [14][18]. Your Breloom provides a great answer, learning Sky Uppercut at Level 36 [19], while a Grass-type like Vileplume can hit its 4x Grass weakness [9][18].
+* **Sealeo** (Aurora Beam) and **Milotic** (Ice Beam) can hit your Grass and Flying types (Breloom, Swellow) for super-effective damage [15][17][18].
+* **Manectric** is perfectly positioned to sweep much of Wallace's team, learning Bite at Level 39 [20]. It learns Thunder at Level 45, but this will be unavailable due to the Level 43 cap [21][2].
 
 ---
 
 ### Assumptions
-* You have not already used your route encounters for New Mauville or the underwater seaweed [25].
-* You intend to enforce the level cap strictly, preventing the use of any Pokémon over level 43 against Wallace [25].
+* You are allowing the use of legendary Pokémon as long as they adhere to your level caps [22].
+* You have not already exhausted your encounters in New Mauville or the Safari Zone [22].
 
 ### To sharpen this
-* Have you already completed the New Mauville quest or caught a Pokémon there?
-* Do you have the Thunderbolt TM (TM24) from Wattson, or will you need to obtain it from the Game Corner?
+* What are the current movesets of your Swampert, Breloom, Swellow, and Manectric?
+* Do you already have a Leaf Stone or Sun Stone to evolve a Gloom?
+
+### Not covered
+* Whether your specific Nuzlocke ruleset bans legendary Pokémon altogether, regardless of level caps [22].
 
 ### Rules I followed
 - Nuzlocke: first encounter per named location only; gifts, statics and trades are free (checked by the Verifier)
@@ -58,27 +59,24 @@ You can catch Groudon since statics are free, but at Level 45 it breaks Wallace'
 ## Sources
 
 1. Story progression (data/progression_rs.yaml): Cave of Origin: Groudon (Lv45) (`progression:legendary_cave_of_origin`)
-2. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/5) (`decomp:trainer_parties.h#gTrainerParty_Wallace/5`)
-3. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#27832`)
-4. PokeAPI: Chinchou at Route 126 (seaweed) (`pokeapi:encounters#27867`)
-5. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
-6. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#26702`)
-7. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#27243`)
-8. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#27255`)
-9. PokeAPI: Magneton (species data) (`pokeapi:pokemon_species#82`)
-10. Story progression (data/progression_rs.yaml): Seafloor Cavern: Magma Admin Courtney (`progression:admin_seafloor_cavern`)
-11. Story progression (data/progression_rs.yaml): Seafloor Cavern: Magma Leader Maxie (`progression:leader_seafloor_cavern`)
-12. Bulbapedia: Walkthrough:Pokémon Ruby and Sapphire/Part 16 § Route 128 > Seafloor Cavern > Chamber 10 (`guide:Walkthrough:Pokemon_Ruby_and_Sapphire/Part_16#Chamber_10`)
-13. pokeruby data/maps/SeafloorCavern_Room9 (TM26) (`decomp:data/maps/SeafloorCavern_Room9#TM26`)
-14. PokeAPI: Groudon learns Slash (level-up) (`pokeapi:pokemon_moves#383/163/level-up/20`)
-15. PokeAPI: Groudon learns Fire Blast (level-up) (`pokeapi:pokemon_moves#383/126/level-up/45`)
-16. Story progression (data/progression_rs.yaml): Sootopolis Gym: Wallace (`progression:gym8_wallace`)
-17. pokeruby data/maps/MauvilleCity (TM24) (`decomp:data/maps/MauvilleCity#TM24`)
-18. PokeAPI: Breloom learns Sky Uppercut (level-up) (`pokeapi:pokemon_moves#286/327/level-up/36`)
-19. pokeruby data/maps/Route123 (TM19) (`decomp:data/maps/Route123#TM19`)
-20. pokeruby data/maps/SafariZone_Northwest (TM22) (`decomp:data/maps/SafariZone_Northwest#TM22`)
-21. Gen 3 type chart (pokeruby data/type_effectiveness.inc) (`rules:gen3_type_chart`)
-22. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/3) (`decomp:trainer_parties.h#gTrainerParty_Wallace/3`)
-23. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/2) (`decomp:trainer_parties.h#gTrainerParty_Wallace/2`)
-24. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/4) (`decomp:trainer_parties.h#gTrainerParty_Wallace/4`)
-25. LockeSmith's Ruby rules (agent/brief.py, checked in docs/audit/engine.txt) (`rules:game`)
+2. Story progression (data/progression_rs.yaml): Sootopolis Gym: Wallace (`progression:gym8_wallace`)
+3. PokeAPI: Magnemite (species data) (`pokeapi:pokemon_species#81`)
+4. PokeAPI: Magneton (species data) (`pokeapi:pokemon_species#82`)
+5. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#27243`)
+6. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#27832`)
+7. PokeAPI: Chinchou (species data) (`pokeapi:pokemon_species#170`)
+8. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
+9. PokeAPI: Oddish (species data) (`pokeapi:pokemon_species#43`)
+10. PokeAPI: Vileplume (species data) (`pokeapi:pokemon_species#45`)
+11. PokeAPI: Oddish at Safari Zone (walk) (`pokeapi:encounters#28074`)
+12. PokeAPI: Bellossom (species data) (`pokeapi:pokemon_species#182`)
+13. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/1) (`decomp:trainer_parties.h#gTrainerParty_Wallace/1`)
+14. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/2) (`decomp:trainer_parties.h#gTrainerParty_Wallace/2`)
+15. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/3) (`decomp:trainer_parties.h#gTrainerParty_Wallace/3`)
+16. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/4) (`decomp:trainer_parties.h#gTrainerParty_Wallace/4`)
+17. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/5) (`decomp:trainer_parties.h#gTrainerParty_Wallace/5`)
+18. Gen 3 type chart (pokeruby data/type_effectiveness.inc) (`rules:gen3_type_chart`)
+19. PokeAPI: Breloom learns Sky Uppercut (level-up) (`pokeapi:pokemon_moves#286/327/level-up/36`)
+20. PokeAPI: Manectric learns Bite (level-up) (`pokeapi:pokemon_moves#310/44/level-up/39`)
+21. PokeAPI: Manectric learns Thunder (level-up) (`pokeapi:pokemon_moves#310/87/level-up/45`)
+22. LockeSmith's Ruby rules (agent/brief.py, checked in docs/audit/engine.txt) (`rules:game`)

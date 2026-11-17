@@ -16,10 +16,15 @@ USED_ROUTES = [
 
 EXAMPLES = [
     {
-        "id": "tate-liza", "title": "Mid-game catch plan", "tag": "vanilla", "readme": True,
-        "blurb": "Six badges, heading into Emerald's double-battle Mossdeep Gym.",
-        "message": "What should I catch to get through Tate & Liza?",
-        "run_state": {"starter": "mudkip", "rival": "may", "badges": SIX, "party": MID_GAME_PARTY},
+        "id": "ruby-nuzlocke-groudon", "title": "Ruby Nuzlocke: Groudon?", "tag": "ruby", "readme": True,
+        "blurb": "The forced Lv45 legendary, level caps and Nuzlocke rules in Ruby.",
+        "message": "Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?",
+        "run_state": {
+            "game": "ruby", "starter": "mudkip", "rival": "may", "badges": SEVEN,
+            "party": [{"species": "Swampert", "level": 41}, {"species": "Breloom", "level": 38},
+                      {"species": "Swellow", "level": 38}, {"species": "Manectric", "level": 37}],
+            "ruleset": {"nuzlocke": True, "level_caps": True},
+        },
     },
     {
         "id": "nuzlocke-juan", "title": "Nuzlocke into Juan", "tag": "nuzlocke", "readme": True,
@@ -40,6 +45,12 @@ EXAMPLES = [
         "sample_log": "fire-tate-liza.log",
     },
     {
+        "id": "tate-liza", "title": "Mid-game catch plan", "tag": "vanilla",
+        "blurb": "Six badges, heading into Emerald's double-battle Mossdeep Gym.",
+        "message": "What should I catch to get through Tate & Liza?",
+        "run_state": {"starter": "mudkip", "rival": "may", "badges": SIX, "party": MID_GAME_PARTY},
+    },
+    {
         "id": "sapphire-wallace", "title": "Sapphire: into Wallace", "tag": "sapphire",
         "blurb": "Ruby/Sapphire data: Wallace is the 8th leader, and Kyogre comes first.",
         "message": "What should I catch to beat Wallace?",
@@ -47,17 +58,6 @@ EXAMPLES = [
             "game": "sapphire", "starter": "treecko", "rival": "may", "badges": SEVEN,
             "party": [{"species": "Sceptile", "level": 43}, {"species": "Pelipper", "level": 39},
                       {"species": "Manectric", "level": 40}, {"species": "Breloom", "level": 39}],
-        },
-    },
-    {
-        "id": "ruby-nuzlocke-groudon", "title": "Ruby Nuzlocke: Groudon?", "tag": "ruby",
-        "blurb": "The forced Lv45 legendary, level caps and Nuzlocke rules in Ruby.",
-        "message": "Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?",
-        "run_state": {
-            "game": "ruby", "starter": "mudkip", "rival": "may", "badges": SEVEN,
-            "party": [{"species": "Swampert", "level": 41}, {"species": "Breloom", "level": 38},
-                      {"species": "Swellow", "level": 38}, {"species": "Manectric", "level": 37}],
-            "ruleset": {"nuzlocke": True, "level_caps": True},
         },
     },
     {

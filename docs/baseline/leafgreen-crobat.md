@@ -1,6 +1,6 @@
 # Baseline: leafgreen-crobat
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 14.3 s, 87 input / 1226 output tokens, about $0.0149.
+vertex_ai/gemini-3.5-flash, no tools, no system prompt. 7.5 s, 87 input / 1335 output tokens, about $0.0121.
 
 ## Prompt
 
@@ -12,23 +12,24 @@ My Golbat is really friendly now. Will it evolve into Crobat before the Elite Fo
 
 ## Answer
 
-**No, your Golbat will not evolve into Crobat before you beat the Elite Four.** 
+Unfortunately, **no**, your Golbat will not be able to evolve into Crobat before you defeat the Elite Four. 
 
-Here is exactly why, and what will happen instead:
+Here is why, and how you can eventually evolve it:
 
-In Pokémon FireRed and LeafGreen, the game strictly restricts you to the original 151 Kanto Pokémon during the main storyline. Because Crobat is a Generation 2 (Johto) Pokémon, **the game will physically not allow Golbat to evolve until you obtain the National Pokédex.**
+### The "National Dex" Lock
+In *Pokémon LeafGreen* and *FireRed*, the game actively blocks Kanto Pokémon from evolving into forms introduced in Generation II or III (like Crobat, Steelix, Scizor, or Bellossom) until you have unlocked the **National Pokédex**. 
 
-Since your Golbat already has high friendship, here is what is going to happen when it levels up:
-1. The evolution screen will trigger, and it will look like Golbat is about to evolve.
-2. The animation will suddenly stop, and the game will say "...?" 
-3. Golbat will remain a Golbat. 
+If your Golbat's friendship is high enough and it levels up right now, the evolution screen *will* actually trigger. However, the game will abruptly interrupt the animation with a message saying **"..."** or **"It stopped evolving,"** and the evolution will fail.
 
-Many players think their game is glitched when this happens, but it is an intended mechanic to keep the main story restricted to Generation 1 Pokémon. 
+### How to evolve it after the Elite Four:
+To finally get your Crobat, you will need to complete the following steps:
 
-**How to finally get your Crobat:**
-1. Proceed to the Pokémon League and defeat the Elite Four and the Champion. (Your team of Blastoise, Jolteon, Dugtrio, and Golbat is well-balanced and should handle them nicely at those levels!)
-2. Make sure you have caught **at least 60 different species of Pokémon**.
-3. After the credits roll, load your save file. Professor Oak will call you to his lab and upgrade your Pokédex to the **National Pokédex**.
-4. Level up your Golbat one more time. Because its friendship is already high, it will successfully evolve into Crobat! 
+1. **Defeat the Elite Four** and become the Champion.
+2. **Catch at least 60 different species** of Pokémon (owned, not just seen) in your Pokédex.
+3. **Talk to Professor Oak** in Pallet Town. He will upgrade your Pokédex to the **National Pokédex**.
+4. Once you have the National Dex, simply **level up Golbat one more time** (while keeping its friendship high), and it will successfully evolve into Crobat!
 
-Until then, you will just have to rely on Golbat for the Elite Four. You can safely press "B" to cancel its evolution whenever it levels up so you don't have to watch the animation fail every time. Good luck at the Pokémon League!
+### Tips for your current party:
+Even though Golbat can't become Crobat yet, your current party (Blastoise, Golbat, Jolteon, Dugtrio) is still in great shape for the Elite Four. 
+* **Golbat** is still very fast and can be useful for spreading status (like Confuse Ray or Toxic) or using Wing Attack. 
+* Just be careful using Golbat against the Lorelei (Ice-type) and Bruno (who has Rock-type moves) in the Elite Four, as Golbat is weak to Ice and Rock.
