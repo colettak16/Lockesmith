@@ -1,56 +1,67 @@
 # Baseline: ruby-nuzlocke-groudon
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 39.3 s, 124 input / 3243 output tokens, about $0.0392.
+vertex_ai/gemini-3.5-flash, no tools, no system prompt. 17.7 s, 123 input / 3848 output tokens, about $0.0348.
 
 ## Prompt
 
 ```text
-I'm playing Pokémon Ruby. My starter was Mudkip and my rival is May. I have 7 badges: Stone, Knuckle, Dynamo, Heat, Balance, Feather, Mind. My party: Swampert Lv41, Breloom Lv38, Swellow Lv38, Manectric Lv37. Rules: Nuzlocke (first encounter per area only), level caps at the next gym leader's highest level.
+I'm playing Pokémon Ruby. My starter was Mudkip and my rival is May. I have 7 badges: Stone, Knuckle, Dynamo, Heat, Balance, Feather, Mind. My party: Swampert Lv41, Breloom Lv38, Swellow Lv38, Manectric Lv37. Rules: Nuzlocke (first encounter per area only); level caps at the next boss's highest level.
 
 Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?
 ```
 
 ## Answer
 
-This is a fantastic point in a Ruby Nuzlocke. You have a very solid core team, but the upcoming section requires some careful navigation regarding your rules. 
+Here is the breakdown to help you make the best decisions for your Ruby Nuzlocke, keeping your level caps and rules in mind.
 
-Here is the breakdown of what to do with Groudon, how to handle your level caps, and how to prepare your team for Wallace.
+---
 
-### 1. Should you catch Groudon?
-**Yes, but you must put it in the PC immediately.**
+### Part 1: Should you catch Groudon in the Cave of Origin?
 
-*   **The Level Cap Problem:** Wallace’s highest-level Pokémon (Milotic) is **Level 43**. Groudon is caught at **Level 45**. Because you are playing with strict level caps, using Groudon against Wallace breaks your rules.
-*   **The Encounter Rule:** The Cave of Origin is a distinct, named location. As long as you haven't caught anything else in the Cave of Origin (which is impossible since it just opened), Groudon is a 100% legal encounter. 
-*   **How to catch it safely:** Groudon has Earthquake, Fire Blast, Slash, and Bulk Up. It hits like a truck. If you still have your **Master Ball** from the Team Magma Hideout, **use it on Groudon**. Trying to weaken it without killing it is incredibly dangerous and easily causes Nuzlocke wipes. Catch it, box it, and save it for the Elite Four (where the level cap is 58).
+**Yes, you should catch it, but you CANNOT use it for Wallace.**
 
-### 2. Leveling Up for Wallace
-Your current team is levels 37-41. You need to grind everyone you plan to use up to **Level 43**. Wallace’s team is: Luvdisc (40), Whiscash (40), Sealeo (40), Seaking (42), and Milotic (43).
+Here is why:
+1. **The Level Cap Rule:** In Pokémon Ruby, Groudon is caught at **Level 45**. Wallace’s highest-level Pokémon (Milotic and Crawdaunt) are **Level 43**. Bringing Groudon to the Wallace fight would violate your level cap rule. 
+2. **Type Disadvantage:** Even if you bent the level cap rule, Groudon is a Ground-type facing a Water-type gym. While its *Drought* ability weakens Water-type attacks, Groudon is still at risk of taking neutral super-effective-equivalent damage, and it doesn't have a natural type advantage here.
+3. **Save it for later:** You should absolutely still catch Groudon as your Cave of Origin encounter. Put it in the PC. Once you beat Wallace, the level cap will jump to **Lv. 58** (Steven’s Metagross). Groudon will be an incredibly powerful asset for the Elite Four and Steven.
 
-### 3. Analyzing your current team for Wallace
-*   **Manectric (MVP):** Manectric will carry this gym. If you haven't already, go to the Mauville Game Corner and buy the **Thunderbolt TM**. Spark will not cut it against Wallace’s bulky team. Manectric can sweep Luvdisc, Seaking, and Sealeo.
-*   **Breloom:** Excellent for dealing with Whiscash (who is Water/Ground and immune to Electric). **Warning:** Wallace's Sealeo and Milotic both carry Ice-type moves. Breloom has very low Special Defense and will likely be OHKO'd by Milotic's Ice Beam. Keep Breloom far away from them.
-*   **Swampert:** A great bulky pivot. Swampert takes neutral damage from Water and Ice. It won't deal much super-effective damage, but it can safely take hits if you need to heal another Pokémon. 
-*   **Swellow:** Put Swellow in the PC for this Gym. Normal/Flying takes super-effective damage from Ice moves. It offers no value here and is highly likely to die.
+---
 
-### 4. What else do you need? (Team Additions)
-You have two empty slots (assuming you box Swellow). You need **bulky Water resistances**. In Gen 3, Water types are abundant and incredibly strong. Check your PC for, or go catch, the following:
+### Part 2: What else do you need for Wallace?
 
-**A Bulky Water-Type (Crucial for pivoting)**
-Because your team is weak/neutral to Ice and Water (outside of Manectric), you need something that resists both.
-*   **Tentacruel:** If you caught a Tentacool on any of the water routes, evolve it. It has incredibly high Special Defense, resists Water and Ice, and its Clear Body ability prevents stat drops. 
-*   **Gyarados:** Magikarp can be caught in almost any town with an Old Rod. Gyarados has great Special Defense and Intimidate, making it an amazing pivot to soak up damage.
-*   **Walrein / Sealeo:** If you haven't gotten your **Shoal Cave** encounter yet (north of Mossdeep), go get a Spheal. It has the ability Thick Fat, meaning it takes 1/4 damage from Ice moves and 1/2 from Water. 
+Wallace's team in Pokémon Ruby is:
+*   **Luvdisc** (Lv. 40 - Water)
+*   **Sealeo** (Lv. 40 - Ice/Water)
+*   **Whiscash** (Lv. 42 - Water/Ground)
+*   **Crawdaunt** (Lv. 43 - Water/Dark)
+*   **Milotic** (Lv. 43 - Water)
 
-**A Milotic Contingency Plan**
-Wallace’s Milotic is a Nuzlocke killer. It has Recover, Ice Beam, Water Pulse, Twister, and the ability Marvel Scale (increases Defense if it has a status condition). 
-*   If Manectric fails to OHKO Milotic with Thunderbolt, Milotic will retaliate hard.
-*   **The Strategy:** Teach **Toxic** (TM found in Fiery Path) and **Protect** (TM bought in Lilycove Dept. Store) to a bulky Water type (like Tentacruel or Gyarados). Toxic damage scales up every turn, completely bypassing Milotic's Recover. You can just sit there, resist its Water/Ice moves, use Protect every other turn, and watch it faint. *(Note: Toxic triggers Marvel Scale, raising Milotic's Defense, but since Toxic does indirect damage, it doesn't matter!).*
+Your current party is only 4 Pokémon. **You have 2 empty slots.** Since you are playing a Nuzlocke, you need to look at your PC and your remaining encounters to fill these slots. 
+
+#### 1. Recommended Additions to your Team
+*   **Tentacruel (Water/Poison):** Tentacool is incredibly easy to catch via Surf on almost any water route. Tentacruel has massive Special Defense, resists Water and Ice-type moves, and is immune to Milotic’s *Toxic*. It is the ultimate "pivot" Pokémon for this fight to safely absorb hits.
+*   **Chinchou/Lanturn (Water/Electric):** If you can catch one (by fishing with the Super Rod on Route 124/126), Lanturn is a cheat code for this gym. It resists Water and Ice, and hits back with Super-Effective Electric moves.
+*   **A "Sack" or Backup Grass-type:** If you have an Oddish/Gloom (from Safari Zone or Route 119), evolve it into Vileplume or Bellossom. Having a backup Grass-type is great security in case something happens to Breloom.
+
+#### 2. Strategy for your Current Party (Level Cap: 43)
+First, **level up your team!** Bring Manectric, Breloom, and Swellow up to **Level 42 or 43**. 
+
+*   **Manectric (The Sweeper):** 
+    *   *Role:* Your primary weapon against Luvdisc, Sealeo, Crawdaunt, and Milotic.
+    *   *Tip:* Ensure it has **Thunderbolt** (obtained from Wattson after doing the New Mauville sidequest). Do *not* rely on Spark. 
+    *   *Danger:* **Do not use Manectric against Whiscash.** Whiscash is Ground-type and immune to Electric. Also, Wallace's Milotic is incredibly bulky; if Manectric cannot OHKO it, Milotic can hit back hard with Surf or poison you with Toxic.
+*   **Breloom (The Whiscash Slayer):**
+    *   *Role:* To deal with Whiscash and Crawdaunt. 
+    *   *Tip:* Gen 3 does *not* have the physical/special split yet. Grass is Special (Breloom’s weaker stat), but a Grass move (like **Mega Drain** or **Giga Drain** from TM19 on Route 123) will still easily 4x OHKO Whiscash because of Whiscash's double-weakness.
+    *   *Danger:* Watch out for Sealeo’s *Aurora Beam* and Milotic’s *Ice Beam*. They will do massive damage to Breloom. Do not keep Breloom in against them. Use **Mach Punch** or **Sky Uppercut** to quickly delete Crawdaunt.
+*   **Swampert (The Tank):**
+    *   *Role:* High-HP pivot. If Manectric or Breloom gets into trouble, Swampert can safely switch in to take a hit. It resists nothing here, but its sheer bulk makes it safe. 
+*   **Swellow (The Bench Warmer):**
+    *   *Role:* Keep Swellow away from this fight. Sealeo and Milotic carry Ice-type moves that will easily OHKO Swellow. Only use it as a last-resort sacrifice if things go horribly wrong.
 
 ### Summary Checklist for Wallace:
-1.  **Master Ball Groudon**, then put it in the PC to obey the Lv. 43 cap.
-2.  Grind **Manectric, Breloom, and Swampert** to Lv. 43.
-3.  Ensure Manectric knows **Thunderbolt**.
-4.  Box Swellow.
-5.  Bring 1 or 2 **bulky Water types** (Tentacruel, Gyarados, Walrein) from your PC/unused routes. 
-6.  Teach one of your bulky Waters **Toxic and Protect**.
-7.  **In the Gym:** Lead Manectric. Switch to Breloom *only* for Whiscash. Use your bulky Water types to absorb Ice Beams, and use Toxic stall or Manectric's Thunderbolt to kill Milotic.
+1. **Level up** Manectric, Breloom, and Swellow to Level 42.
+2. Teach Manectric **Thunderbolt** (if it doesn't have it).
+3. Teach Breloom a Grass-type TM (like **Giga Drain**) specifically for Whiscash.
+4. Catch and train a **Tentacruel** to Lv. 42 to act as your Special Defense wall against Milotic.
+5. Catch Groudon, but leave it in the PC until after the Gym Badge is yours.

@@ -2,52 +2,48 @@
 
 **Question:** Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch?
 
-71.3 s · 16 model calls · 72,902 tokens · about $0.189 · researchers: battle_researcher, catch_researcher, moves_researcher · 16 trace steps (full trace in `nuzlocke-juan.json`)
+83.9 s · 27 model calls · 111,663 tokens · about $0.249 · researchers: battle_researcher, catch_researcher, moves_researcher · 28 trace steps (full trace in `nuzlocke-juan.json`)
 
 ## Answer
 
-Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rounding out your team's coverage [1][2].
+Target Spheal in Shoal Cave and Chinchou on Route 124 underwater to prepare for Juan's Level 46 cap [1].
 
 ### Top picks
 
-#### Spheal (Walrein) — Core [1][3]
-* **Where:** Shoal Cave (B1F, B2F, or High-Tide), walking, Levels 26-32 (50% encounter rate) [1][4].
-* **When:** Available right now, before facing the Mossdeep Space Center or Juan [1].
-* **Why it helps now:** Juan's Kingdra is a notorious run-killer with Double Team, Rest, and Ice Beam [5]. Walrein's massive bulk and Thick Fat ability let it easily tank Ice Beam and Water Pulse, allowing it to sit in against Kingdra and hit back with Ice-type attacks [5].
-* **Long run:** Walrein is one of the best Elite Four Pokémon in Hoenn [3]. Its Ice-type STAB is critical for defeating Drake's Dragon-types, and its durability makes it excellent against Wallace [3].
-* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
+#### Spheal (Tank / Ice Attacker) — **Core** [2]
+* **Where:** Shoal Cave, Walking (Lv26-32, 50% rate, guaranteed if you have Zubat/Golbat) [3][4][5]
+* **When:** Available immediately, but evolve before Lv46 [6]
+* **Why:** With Thick Fat, Walrein minimizes Ice-type damage and has the bulk to take on Juan's stalling team safely [2][6].
+* **Long run:** Essential for defeating Drake of the Elite Four with powerful Ice-type moves [6].
+* **Backup:** Staryu (Lilycove City via Super Rod, 15% rate) [7]. Starmie is incredibly fast with deep coverage (Thunderbolt, Ice Beam, Surf) to sweep [8]. *Note: Starmie requires a Water Stone; make sure you can obtain one before facing Juan.*
 
-#### Staryu (Starmie) — Core [2][9]
-* **Where:** Lilycove City, Super Rod, Levels 25-30 (15% encounter rate) [2].
-* **When:** Available right now in Lilycove City [2].
-* **Why it helps now:** Starmie is a premier fast attacker [9]. With access to Thunderbolt and Ice Beam via TMs, it can effortlessly sweep the rest of Juan's team (Luvdisc, Sealeo, Crawdaunt) before you have to face Kingdra [5][10].
-* **Long run:** Starmie's unmatched coverage (Surf, Thunderbolt, Ice Beam, Psychic) and high Speed make it a top-tier sweeper for the entire Elite Four [9].
-* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
-
-*Note: Starmie requires a Water Stone to evolve [9]. Make sure you have one available before challenging Juan.*
+#### Chinchou (Electric/Water Pivot) — **Core** [9]
+* **Where:** Route 124 (underwater), Seaweed (Lv20-30, 30% rate) [10]
+* **When:** Available as soon as Dive is usable (after Space Center) [11]
+* **Why:** Lanturn's typing resists Water and Ice, and it hits Juan's team super-effectively with STAB Electric moves [9][6].
+* **Long run:** Volt Absorb and excellent HP make Lanturn an incredible tank and pivot against Wallace and Glacia [9][12].
+* **Backup:** Magnemite (New Mauville, ~49% rate) [13]. Magneton offers high Special Attack to clear Water-types (though it must dodge Whiscash's Earthquake) and key Steel-type resistances for the Elite Four [14][15].
 
 ---
 
 ### Key Battles
 
 #### Gym 8: Juan
-* **Watch out for:** Juan's Kingdra (Lv46) has Double Team, Rest (holding a Chesto Berry), Water Pulse, and Ice Beam [5]. It threatens Breloom and Swellow with super-effective Ice-type damage [11][5]. 
-* **Ground Caution:** Be careful with Manectric, as Juan's Whiscash knows Earthquake [12].
-
----
-
-### Key Steps
-1. **Check your Level Cap:** Juan's highest-level Pokémon is his Kingdra at Level 46 [5]. Ensure your team stays at or below this level limit [13].
-2. **Equip Key TMs:** Purchase TM13 Ice Beam and TM24 Thunderbolt from the Mauville Game Corner for your new catches, or pick up TM25 Thunder and TM14 Blizzard from the Lilycove Department Store [14][15][10][16].
+* Juan's team is capped at Level 46 (Kingdra) [16].
+* Whiscash knows Earthquake, which threatens Electric-type counters [17].
+* Kingdra stalls with Double Team, Ice Beam, Rest, and a Chesto Berry, requiring high bulk or burst damage to overcome safely [16].
 
 ---
 
 ### Assumptions
-* You have the Super Rod needed to fish for Staryu.
-* You have access to a Water Stone to evolve Staryu.
+* You have not caught Zubat or Golbat yet, but encountering them triggers the dupes clause for a guaranteed Spheal encounter.
 
 ### To sharpen this
-* Do you already have a Water Stone for Staryu, or need to know where to find one?
+* Do you already have a Zubat or Golbat registered in your Pokédex?
+* Do you have the Storage Key for the Abandoned Ship to access TM13 Ice Beam?
+
+### Not covered
+* Other potential encounter areas requiring HMs not yet unlocked.
 
 ### Rules I followed
 - Nuzlocke: first encounter per named location only, dupes clause; gifts, statics and trades are free (checked by the Verifier)
@@ -56,19 +52,20 @@ Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rou
 
 ## Sources
 
-1. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
-2. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
-3. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
-4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70808`)
-5. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
-6. PokeAPI: Chinchou evolves into Lanturn (`pokeapi:pokemon_evolution#95`)
-7. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
-8. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
-9. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
-10. pokeemerald data/maps/MauvilleCity_GameCorner (TM13) (`decomp:data/maps/MauvilleCity_GameCorner#TM13`)
-11. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
-12. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)
-13. database query ef2ed14180 (`sql:ef2ed14180`)
-14. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM25) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM25`)
-15. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM14) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14`)
-16. pokeemerald data/maps/MauvilleCity_GameCorner (TM24) (`decomp:data/maps/MauvilleCity_GameCorner#TM24`)
+1. LockeSmith's Emerald rules (agent/brief.py) (`rules:game`)
+2. PokeAPI: Spheal (species data) (`pokeapi:pokemon_species#363`)
+3. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#30883`)
+4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70746`)
+5. PokeAPI: Zubat at Shoal Cave (walk) (`pokeapi:encounters#70741`)
+6. database query a490601260 (`sql:a490601260`)
+7. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
+8. PokeAPI: Staryu (species data) (`pokeapi:pokemon_species#120`)
+9. PokeAPI: Chinchou (species data) (`pokeapi:pokemon_species#170`)
+10. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
+11. Story progression (data/progression.yaml): Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven) (`progression:space_center`)
+12. database query b86cf59b31 (`sql:b86cf59b31`)
+13. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#30487`)
+14. PokeAPI: Magnemite (species data) (`pokeapi:pokemon_species#81`)
+15. database query 86f8f978ec (`sql:86f8f978ec`)
+16. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
+17. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)

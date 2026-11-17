@@ -1,5 +1,5 @@
 {
-  "response": "Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rounding out your team's coverage [1][2].\n\n### Top picks\n\n#### Spheal (Walrein) — Core [1][3]\n* **Where:** Shoal Cave (B1F, B2F, or High-Tide), walking, Levels 26-32 (50% encounter rate) [1][4].\n* **When:** Available right now, before facing the Mossdeep Space Center or Juan [1].\n* **Why it helps now:** Juan's Kingdra is a notorious run-killer with Double Team, Rest, and Ice Beam [5]. Walrein's massive bulk and Thick Fat ability let it easily tank Ice Beam and Water Pulse, allowing it to sit in against Kingdra and hit back with Ice-type attacks [5].\n* **Long run:** Walrein is one of the best Elite Four Pokémon in Hoenn [3]. Its Ice-type STAB is critical for defeating Drake's Dragon-types, and its durability makes it excellent against Wallace [3].\n* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).\n\n#### Staryu (Starmie) — Core [2][9]\n* **Where:** Lilycove City, Super Rod, Levels 25-30 (15% encounter rate) [2].\n* **When:** Available right now in Lilycove City [2].\n* **Why it helps now:** Starmie is a premier fast attacker [9]. With access to Thunderbolt and Ice Beam via TMs, it can effortlessly sweep the rest of Juan's team (Luvdisc, Sealeo, Crawdaunt) before you have to face Kingdra [5][10].\n* **Long run:** Starmie's unmatched coverage (Surf, Thunderbolt, Ice Beam, Psychic) and high Speed make it a top-tier sweeper for the entire Elite Four [9].\n* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).\n\n*Note: Starmie requires a Water Stone to evolve [9]. Make sure you have one available before challenging Juan.*\n\n---\n\n### Key Battles\n\n#### Gym 8: Juan\n* **Watch out for:** Juan's Kingdra (Lv46) has Double Team, Rest (holding a Chesto Berry), Water Pulse, and Ice Beam [5]. It threatens Breloom and Swellow with super-effective Ice-type damage [11][5]. \n* **Ground Caution:** Be careful with Manectric, as Juan's Whiscash knows Earthquake [12].\n\n---\n\n### Key Steps\n1. **Check your Level Cap:** Juan's highest-level Pokémon is his Kingdra at Level 46 [5]. Ensure your team stays at or below this level limit [13].\n2. **Equip Key TMs:** Purchase TM13 Ice Beam and TM24 Thunderbolt from the Mauville Game Corner for your new catches, or pick up TM25 Thunder and TM14 Blizzard from the Lilycove Department Store [14][15][10][16].\n\n---\n\n### Assumptions\n* You have the Super Rod needed to fish for Staryu.\n* You have access to a Water Stone to evolve Staryu.\n\n### To sharpen this\n* Do you already have a Water Stone for Staryu, or need to know where to find one?\n\n### Rules I followed\n- Nuzlocke: first encounter per named location only, dupes clause; gifts, statics and trades are free (checked by the Verifier)\n- encounters already used: Route 101, Route 102, Route 103, Route 104, Petalburg Woods, Route 116, Rusturf Tunnel, Granite Cave, Route 110, Route 117, Route 111, Route 112, Fiery Path, Route 113, Route 114, Meteor Falls, Route 115, Route 118, Route 119, Route 120, Route 121, Safari Zone, Mt. Pyre (checked by the Verifier)\n- level caps: stay at or below the next boss's highest level (checked by the Verifier)",
+  "response": "Target Spheal in Shoal Cave and Chinchou on Route 124 underwater to prepare for Juan's Level 46 cap [1].\n\n### Top picks\n\n#### Spheal (Tank / Ice Attacker) — **Core** [2]\n* **Where:** Shoal Cave, Walking (Lv26-32, 50% rate, guaranteed if you have Zubat/Golbat) [3][4][5]\n* **When:** Available immediately, but evolve before Lv46 [6]\n* **Why:** With Thick Fat, Walrein minimizes Ice-type damage and has the bulk to take on Juan's stalling team safely [2][6].\n* **Long run:** Essential for defeating Drake of the Elite Four with powerful Ice-type moves [6].\n* **Backup:** Staryu (Lilycove City via Super Rod, 15% rate) [7]. Starmie is incredibly fast with deep coverage (Thunderbolt, Ice Beam, Surf) to sweep [8]. *Note: Starmie requires a Water Stone; make sure you can obtain one before facing Juan.*\n\n#### Chinchou (Electric/Water Pivot) — **Core** [9]\n* **Where:** Route 124 (underwater), Seaweed (Lv20-30, 30% rate) [10]\n* **When:** Available as soon as Dive is usable (after Space Center) [11]\n* **Why:** Lanturn's typing resists Water and Ice, and it hits Juan's team super-effectively with STAB Electric moves [9][6].\n* **Long run:** Volt Absorb and excellent HP make Lanturn an incredible tank and pivot against Wallace and Glacia [9][12].\n* **Backup:** Magnemite (New Mauville, ~49% rate) [13]. Magneton offers high Special Attack to clear Water-types (though it must dodge Whiscash's Earthquake) and key Steel-type resistances for the Elite Four [14][15].\n\n---\n\n### Key Battles\n\n#### Gym 8: Juan\n* Juan's team is capped at Level 46 (Kingdra) [16].\n* Whiscash knows Earthquake, which threatens Electric-type counters [17].\n* Kingdra stalls with Double Team, Ice Beam, Rest, and a Chesto Berry, requiring high bulk or burst damage to overcome safely [16].\n\n---\n\n### Assumptions\n* You have not caught Zubat or Golbat yet, but encountering them triggers the dupes clause for a guaranteed Spheal encounter.\n\n### To sharpen this\n* Do you already have a Zubat or Golbat registered in your Pokédex?\n* Do you have the Storage Key for the Abandoned Ship to access TM13 Ice Beam?\n\n### Not covered\n* Other potential encounter areas requiring HMs not yet unlocked.\n\n### Rules I followed\n- Nuzlocke: first encounter per named location only, dupes clause; gifts, statics and trades are free (checked by the Verifier)\n- encounters already used: Route 101, Route 102, Route 103, Route 104, Petalburg Woods, Route 116, Rusturf Tunnel, Granite Cave, Route 110, Route 117, Route 111, Route 112, Fiery Path, Route 113, Route 114, Meteor Falls, Route 115, Route 118, Route 119, Route 120, Route 121, Safari Zone, Mt. Pyre (checked by the Verifier)\n- level caps: stay at or below the next boss's highest level (checked by the Verifier)",
   "session_id": "sample-nuzlocke-juan",
   "tool_calls": [
     {
@@ -8,9 +8,9 @@
       "args": {
         "message": "Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch?"
       },
-      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"The player is preparing for the Gym Leader Juan in Emerald (using Mudkip starter, already has 7 badges). They are playing a Nuzlocke with dupes clause and level caps, and want to know what Pok\\u00e9mon they can or should catch next to prepare for Juan.\", \"state_updates\": {\"game\": \"emerald\", \"starter\": null, \"badges\": [\"stone\", \"knuckle\", \"dynamo\", \"heat\", \"balance\", \"feather\", \"mind\"], \"rival\": null, \"last_battle\": null, \"party\": null, \"owned\": null}, \"rule_updates\": {\"nuzlocke\": true, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": true, \"level_caps\": true, \"level_cap_offset\": null, \"allowed_types\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_banned_types\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
+      "result": "{\"action\": \"proceed\", \"intent\": \"catch\", \"reply\": \"\", \"research_brief\": \"The player is playing Emerald (implied by Juan being the 8th Gym Leader) and needs advice on what encounters to seek out/catch specifically to prepare for the Gym Leader Juan.\", \"state_updates\": {\"game\": \"emerald\", \"starter\": null, \"badges\": [\"stone\", \"knuckle\", \"dynamo\", \"heat\", \"balance\", \"feather\", \"mind\"], \"rival\": null, \"last_battle\": null, \"party\": null, \"owned\": null}, \"rule_updates\": {\"nuzlocke\": true, \"encounter_scope\": null, \"gifts_count_as_encounter\": null, \"dupes_clause\": true, \"level_caps\": true, \"level_cap_offset\": null, \"allowed_types\": null, \"no_legendaries\": null, \"wild_only\": null, \"add_banned_species\": [], \"add_banned_types\": [], \"add_used_routes\": [], \"add_notes\": []}, \"reject_species\": [], \"revision_feedback\": \"\"}",
       "round": 0,
-      "t": 6.33
+      "t": 1.93
     },
     {
       "agent": "battle_researcher",
@@ -20,7 +20,7 @@
       },
       "result": "{\"battle_id\": \"gym8_juan\", \"label\": \"Sootopolis Gym: Juan\", \"format\": \"single\", \"location\": \"sootopolis-city\", \"partner\": null, \"notes\": \"Juan is the 8th leader in Emerald (Wallace is Champion). Cave of Origin is open only during the crisis: an Expert stands in front of its entrance, and the Sootopolis script moves him aside only while VAR_SOOTOPOLIS_CITY_STATE is 2 or 3 (after Archie, before Sky Pillar). Catch there on the way to Wallace or not at all before the Champion. Sky Pillar opens when Wallace goes there (FLAG_WALLACE_GOES_TO_SKY_PILLAR). Rayquaza (Lv70) is back at Sky Pillar's apex once it calms Groudon and Kyogre, before this gym (VAR_SKY_PILLAR_STATE >= 2; the door stays open). The cracked upper floors need the Mach Bike. Wallace hands over HM07 Waterfall before the gym, but climbing a waterfall needs this badge (field_control_avatar.c checks FLAG_BADGE08_GET), so Meteor Falls' back rooms (Bagon) open at the next battle.\", \"team_note\": null, \"teams\": [{\"trainer\": \"Leader Juan\", \"trainer_const\": \"TRAINER_JUAN_1\", \"pokemon\": [{\"species\": \"Luvdisc\", \"types\": [\"water\"], \"level\": 41, \"held_item\": null, \"ability\": \"swift-swim\", \"iv\": 24, \"moves_source\": \"custom\", \"moves\": [\"W... [3965 more characters]",
       "round": 1,
-      "t": 24.3
+      "t": 14.15
     },
     {
       "agent": "battle_researcher",
@@ -28,118 +28,110 @@
       "args": {},
       "result": "{\"opponents_remaining\": 47, \"battles\": [{\"battle_id\": \"space_center\", \"battle\": \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"levels\": [36, 44], \"types\": {\"dark\": 2, \"poison\": 2, \"flying\": 2, \"fire\": 2}, \"attack_types\": {\"normal\": 4, \"flying\": 2, \"rock\": 2, \"ground\": 1}}, {\"battle_id\": \"shelly_seafloor_cavern\", \"battle\": \"Seafloor Cavern: Aqua Admin Shelly\", \"levels\": [37, 37], \"types\": {\"dark\": 2, \"water\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 1}}, {\"battle_id\": \"archie_seafloor_cavern\", \"battle\": \"Seafloor Cavern: Aqua Leader Archie\", \"levels\": [41, 43], \"types\": {\"dark\": 2, \"poison\": 1, \"flying\": 1, \"water\": 1}, \"attack_types\": {\"normal\": 2, \"dark\": 1, \"flying\": 1}}, {\"battle_id\": \"gym8_juan\", \"battle\": \"Sootopolis Gym: Juan\", \"levels\": [41, 46], \"types\": {\"water\": 5, \"ground\": 1, \"ice\": 1, \"dark\": 1}, \"attack_types\": {\"water\": 5, \"ice\": 2, \"ground\": 1, \"normal\": 1}}, {\"battle_id\": \"wally_victory_road\", \"battle\": \"Victory Road: Wally\", \"levels\": [41, 45], \"types\": {\"dragon\": 1, \"flying\": 1, \"normal\": 1, \"grass\": 1}, \"attack_types\": {\"dragon\": 1, \"flying\": 1, \"dark\": 1, \"grass\": 1}}, {\"battle_id\": \"e4_sidney\", \"battle\": \"Elite Four: Sidney\", \"levels\": ... [2227 more characters]",
       "round": 1,
-      "t": 24.42
-    },
-    {
-      "agent": "moves_researcher",
-      "name": "query_db",
-      "args": {
-        "sql_query": "SELECT t.name, tm.species, tm.level FROM trainers t JOIN trainer_mons tm ON t.trainer_const = tm.trainer_const WHERE t.name LIKE 'Juan%' or t.trainer_const LIKE '%JUAN%'"
-      },
-      "result": "{\"columns\": [\"name\", \"species\", \"level\"], \"rows\": [[\"Juan\", \"luvdisc\", 41], [\"Juan\", \"whiscash\", 41], [\"Juan\", \"sealeo\", 43], [\"Juan\", \"crawdaunt\", 43], [\"Juan\", \"kingdra\", 46], [\"Juan\", \"poliwag\", 46], [\"Juan\", \"whiscash\", 46], [\"Juan\", \"walrein\", 48], [\"Juan\", \"crawdaunt\", 48], [\"Juan\", \"kingdra\", 51], [\"Juan\", \"poliwhirl\", 50], [\"Juan\", \"whiscash\", 51], [\"Juan\", \"walrein\", 53], [\"Juan\", \"crawdaunt\", 53], [\"Juan\", \"kingdra\", 56], [\"Juan\", \"lapras\", 56], [\"Juan\", \"whiscash\", 58], [\"Juan\", \"poliwhirl\", 56], [\"Juan\", \"walrein\", 58], [\"Juan\", \"crawdaunt\", 58], [\"Juan\", \"kingdra\", 61], [\"Juan\", \"lapras\", 61], [\"Juan\", \"whiscash\", 63], [\"Juan\", \"politoed\", 61], [\"Juan\", \"walrein\", 63], [\"Juan\", \"crawdaunt\", 63], [\"Juan\", \"kingdra\", 66]], \"source_id\": \"sql:ef2ed14180\"}",
-      "round": 1,
-      "t": 24.91
+      "t": 14.17
     },
     {
       "agent": "catch_researcher",
       "name": "get_catchable",
       "args": {
-        "before_battle": "gym8_juan",
         "species": null,
+        "before_battle": "gym8_juan",
         "types": [
-          "electric",
-          "grass",
-          "ice",
           "water",
-          "dragon"
+          "grass",
+          "electric"
         ]
       },
-      "result": "{\"before_battle\": \"gym8_juan\", \"label\": \"Sootopolis Gym: Juan\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\", \"dive\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 33, \"species\": [{\"species\": \"Corphish\", \"types\": [\"water\"], \"places\": [{\"where\": \"Petalburg City\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31001\"}, {\"where\": \"Petalburg City\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#30998\"}], \"wild\": true}, {\"species\": \"Magikarp\", \"types\": [\"water\"], \"places\": [{\"where\": \"Sootopolis City\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31047\"}, {\"where\": \"Sootopolis City\", \"method\": \"surf\", \"lv\": [5, 35], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31057\"}, {\"where\": \"Sootopolis City\", \"method\": \"super-rod\", \"lv\": [30, 35], \"rate_pct\": 80, \"source_id\": \"pokeapi:encounters#31052\"}], \"wild\": true}, {\"species\": \"Marill\", \"types\": [\"water\"], \"places\": [{\"where\": \"Petalburg City\", \"method\": \"surf\", \"lv\": [5, 35], \"rate_pct\": 100, \"source_id\": \"pokeapi:encoun... [8607 more characters]",
+      "result": "{\"before_battle\": \"gym8_juan\", \"label\": \"Sootopolis Gym: Juan\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\", \"dive\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 29, \"species\": [{\"species\": \"Corphish\", \"types\": [\"water\"], \"places\": [{\"where\": \"Petalburg City\", \"method\": \"super-rod\", \"lv\": [20, 45], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31001\"}, {\"where\": \"Petalburg City\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 20, \"source_id\": \"pokeapi:encounters#30998\"}], \"wild\": true}, {\"species\": \"Magikarp\", \"types\": [\"water\"], \"places\": [{\"where\": \"Sootopolis City\", \"method\": \"good-rod\", \"lv\": [10, 30], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31047\"}, {\"where\": \"Sootopolis City\", \"method\": \"surf\", \"lv\": [5, 35], \"rate_pct\": 100, \"source_id\": \"pokeapi:encounters#31057\"}, {\"where\": \"Sootopolis City\", \"method\": \"super-rod\", \"lv\": [30, 35], \"rate_pct\": 80, \"source_id\": \"pokeapi:encounters#31052\"}], \"wild\": true}, {\"species\": \"Marill\", \"types\": [\"water\"], \"places\": [{\"where\": \"Petalburg City\", \"method\": \"surf\", \"lv\": [5, 35], \"rate_pct\": 100, \"source_id\": \"pokeapi:encoun... [8375 more characters]",
       "round": 1,
-      "t": 26.65
+      "t": 14.47
     },
     {
       "agent": "moves_researcher",
       "name": "query_db",
       "args": {
-        "sql_query": "SELECT DISTINCT trainer_const, name FROM trainers WHERE name LIKE 'Juan%' or trainer_const LIKE '%JUAN%'"
+        "sql_query": "SELECT t.name, tm.species, tm.level FROM trainers t JOIN trainer_mons tm ON t.trainer_const = tm.trainer_const WHERE t.name LIKE 'Juan%' OR t.trainer_const LIKE '%JUAN%' ORDER BY tm.level DESC LIMIT 10;"
       },
-      "result": "{\"columns\": [\"trainer_const\", \"name\"], \"rows\": [[\"TRAINER_JUAN_1\", \"Juan\"], [\"TRAINER_JUAN_3\", \"Juan\"], [\"TRAINER_JUAN_2\", \"Juan\"], [\"TRAINER_JUAN_5\", \"Juan\"], [\"TRAINER_JUAN_4\", \"Juan\"]], \"source_id\": \"sql:225abf9a2b\"}",
+      "result": "{\"columns\": [\"name\", \"species\", \"level\"], \"rows\": [[\"Juan\", \"kingdra\", 66], [\"Juan\", \"crawdaunt\", 63], [\"Juan\", \"walrein\", 63], [\"Juan\", \"whiscash\", 63], [\"Juan\", \"politoed\", 61], [\"Juan\", \"kingdra\", 61], [\"Juan\", \"lapras\", 61], [\"Juan\", \"walrein\", 58], [\"Juan\", \"whiscash\", 58], [\"Juan\", \"crawdaunt\", 58]], \"source_id\": \"sql:37d0e7a9da\"}",
       "round": 1,
-      "t": 27.21
-    },
-    {
-      "agent": "moves_researcher",
-      "name": "moves_outlook",
-      "args": {
-        "species": [
-          "Breloom",
-          "Manectric",
-          "Walrein",
-          "Lanturn",
-          "Starmie"
-        ],
-        "before_battle": "gym8_juan",
-        "level": 46
-      },
-      "result": "{\"before_battle\": \"gym8_juan\", \"label\": \"Sootopolis Gym: Juan\", \"species\": [{\"species\": \"Breloom\", \"types\": [\"grass\", \"fighting\"], \"at_level\": 46, \"default_moveset\": [\"Mach Punch\", \"Counter\", \"Sky Uppercut\", \"Mind Reader\"], \"best_level_up_attacks\": [\"Sky Uppercut (fighting, physical, 85) Lv36\", \"Headbutt (normal, physical, 70) Lv22\", \"Mega Drain (grass, special, 40) Lv16\", \"Mach Punch (fighting, physical, 40) Lv23\"], \"next_level_up\": [\"Dynamic Punch Lv54\"], \"evolves\": [], \"tms_obtainable_before\": [\"TM01 Focus Punch (fighting, 150) at hoenn-route-115\", \"TM15 Hyper Beam (normal, 150) at lilycove-city [requires: the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle]\", \"TM22 Solar Beam (grass, 120) at hoenn-safari-zone\", \"TM23 Iron Tail (steel, 100) at meteor-falls\"], \"source_ids\": [\"pokeapi:pokemon_moves#286/327/level-up/36\", \"pokeapi:pokemon_moves#286/29/level-up/22\", \"pokeapi:pokemon_moves#286/72/level-up/16\", \"pokeapi:pokemon_moves#286/183/level-up/23\", \"decomp:data/maps/Route115#TM01\", \"decomp:data/maps/LilycoveCity_Dep... [6631 more characters]",
-      "round": 1,
-      "t": 29.45
+      "t": 16.16
     },
     {
       "agent": "moves_researcher",
       "name": "query_db",
       "args": {
-        "sql_query": "SELECT method, level, move_id, identifier FROM learnsets l JOIN moves m ON l.move_id = m.move_id WHERE species_id = (SELECT species_id FROM species WHERE name = 'Staryu') AND method = 'level-up' ORDER BY level"
+        "sql_query": "SELECT trainer_const, name, class_name FROM trainers WHERE name = 'Juan' OR trainer_const LIKE '%JUAN%';"
       },
-      "result": "{\"error\": \"query failed: Binder Error: Ambiguous reference to column name \\\"move_id\\\" (use: 'l.move_id' or 'm.move_id')\\n\\nLINE 1: SELECT method, level, move_id, identifier FROM learnsets l JOIN moves m ON l.move_id...\\n                              ^^^^^^^\"}",
+      "result": "{\"columns\": [\"trainer_const\", \"name\", \"class_name\"], \"rows\": [[\"TRAINER_JUAN_1\", \"Juan\", \"Leader\"], [\"TRAINER_JUAN_2\", \"Juan\", \"Leader\"], [\"TRAINER_JUAN_3\", \"Juan\", \"Leader\"], [\"TRAINER_JUAN_4\", \"Juan\", \"Leader\"], [\"TRAINER_JUAN_5\", \"Juan\", \"Leader\"]], \"source_id\": \"sql:d494176d34\"}",
       "round": 1,
-      "t": 32.01
+      "t": 18.25
     },
     {
       "agent": "moves_researcher",
-      "name": "turn_limit_wrap_up",
-      "args": {},
-      "result": "tool budget used; asked for the final answer",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT slot, species, level FROM trainer_mons WHERE trainer_const = 'TRAINER_JUAN_1';"
+      },
+      "result": "{\"columns\": [\"slot\", \"species\", \"level\"], \"rows\": [[1, \"luvdisc\", 41], [2, \"whiscash\", 41], [3, \"sealeo\", 43], [4, \"crawdaunt\", 43], [5, \"kingdra\", 46]], \"source_id\": \"sql:86f8f978ec\"}",
       "round": 1,
-      "t": 32.01
+      "t": 20.01
     },
     {
       "agent": "catch_researcher",
       "name": "assess_candidates",
       "args": {
         "species": [
-          "Chinchou",
           "Spheal",
-          "Magnemite",
+          "Chinchou",
           "Staryu",
-          "Lileep",
-          "Snorunt"
+          "Magnemite",
+          "Tentacool",
+          "Corphish"
         ]
       },
-      "result": "{\"candidates\": [{\"candidate\": \"Chinchou\", \"final_form\": \"Lanturn\", \"final_types\": [\"water\", \"electric\"], \"final_bst\": 460, \"final_stats\": {\"hp\": 125, \"attack\": 58, \"defense\": 58, \"sp_attack\": 76, \"sp_defense\": 76, \"speed\": 67}, \"abilities\": [\"volt-absorb\", \"illuminate\"], \"evolution_path\": [\"Lanturn: level-up, level 27\"], \"needs_trade\": false, \"legendary\": false, \"remaining_opponents_hit_super_effectively\": 18, \"of_remaining_opponents\": 47, \"new_coverage_vs_party\": 0, \"shares_types_with_party\": [\"electric\", \"water\"], \"strongest_into\": [\"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"Champion: Wallace\", \"Sootopolis Gym: Juan\", \"Elite Four: Glacia\"], \"most_threatened_by\": [\"Champion: Wallace\", \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"Sootopolis Gym: Juan\"], \"source_ids\": [\"pokeapi:pokemon_species#170\", \"pokeapi:pokemon_species#171\", \"rules:gen3_type_chart\", \"pokeapi:pokemon_evolution#95\"]}, {\"candidate\": \"Spheal\", \"final_form\": \"Walrein\", \"final_types\": [\"ice\", \"water\"], \"final_bst\": 530, \"final_stats\": {\"hp\": 110, \"attack\": 80, \"defense\": 90, \"sp_attack\": 95, \"sp_defense\": 90, \"speed\": 65}, \"abilities\": [\"thick-fat\"], \"evolution_path... [4543 more characters]",
+      "result": "{\"candidates\": [{\"candidate\": \"Spheal\", \"final_form\": \"Walrein\", \"final_types\": [\"ice\", \"water\"], \"final_bst\": 530, \"final_stats\": {\"hp\": 110, \"attack\": 80, \"defense\": 90, \"sp_attack\": 95, \"sp_defense\": 90, \"speed\": 65}, \"abilities\": [\"thick-fat\"], \"evolution_path\": [\"Sealeo: level-up, level 32\", \"Walrein: level-up, level 44\"], \"needs_trade\": false, \"legendary\": false, \"remaining_opponents_hit_super_effectively\": 13, \"of_remaining_opponents\": 47, \"new_coverage_vs_party\": 5, \"shares_types_with_party\": [\"water\"], \"strongest_into\": [\"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"Elite Four: Drake\", \"Victory Road: Wally\", \"Elite Four: Sidney\"], \"most_threatened_by\": [\"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"Victory Road: Wally\", \"Elite Four: Sidney\"], \"source_ids\": [\"pokeapi:pokemon_species#363\", \"pokeapi:pokemon_species#365\", \"rules:gen3_type_chart\", \"pokeapi:pokemon_evolution#184\", \"pokeapi:pokemon_evolution#185\"]}, {\"candidate\": \"Chinchou\", \"final_form\": \"Lanturn\", \"final_types\": [\"water\", \"electric\"], \"final_bst\": 460, \"final_stats\": {\"hp\": 125, \"attack\": 58, \"defense\": 58, \"sp_attack\": 76, \"sp_defense\": 76, \"speed\": 67}, \"abiliti... [4513 more characters]",
       "round": 1,
-      "t": 32.76
+      "t": 20.67
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT DISTINCT trainer_const FROM trainers WHERE trainer_const LIKE '%JUAN%';"
+      },
+      "result": "{\"columns\": [\"trainer_const\"], \"rows\": [[\"TRAINER_JUAN_3\"], [\"TRAINER_JUAN_5\"], [\"TRAINER_JUAN_4\"], [\"TRAINER_JUAN_1\"], [\"TRAINER_JUAN_2\"]], \"source_id\": \"sql:57556726c5\"}",
+      "round": 1,
+      "t": 24.27
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 1,
+      "t": 24.27
     },
     {
       "agent": "catch_researcher",
-      "name": "search_guide",
+      "name": "encounter_odds",
       "args": {
-        "query": "Juan Kingdra team Emerald"
+        "location": "Lilycove City",
+        "method": "super-rod"
       },
-      "result": "{\"query\": \"Juan Kingdra team Emerald\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_17#Sootopolis_Gym\", \"page\": \"Walkthrough:Pokémon Emerald/Part 17\", \"section\": \"Sootopolis City (second visit) > Sootopolis Gym\", \"text\": \"E\\nE\\nE\\nE\\n\\nThe Sootopolis Gym Specializes in Water Pokémon. Grass- and Electric moves are best here, while Fire, Ground, and Rock Pokémon may struggle. The Gym features three platforms where each icy tile must be traversed once in order to defrost the next stairway. Walking over an ice tile once cracks it; passing by a second time shatters it, leaving you to fall to the Gym's snowy underbelly where plenty of Trainers await.\\n\\nThe first puzzle is a 3×3 grid of ice, with two icy rocks as obstacles. Starting on the south-central tile, move ←1, ↑1, →2, ↑1 and ←1. This reveals the first stairway.\\n\\nThe second puzzle is a 7×3 grid, with two icy rocks as obstacles. From the south-central tile, move ←3, ↑2, →2, ↓1, →2, ↓1, →2, ↑2, and ←3. This reveals the second stairway.\\n\\nThe final puzzle is an 11×4 grid, with six icy rocks as obstacles. Starting on the south-central tile, move ←5, ↑3, →1, ↓1, →1, \"}, {\"source_id\": \"guide:Walkthrough:Pokemon_... [2120 more characters]",
+      "result": "{\"location\": \"lilycove-city\", \"encounters\": [{\"area\": null, \"method\": \"super-rod\", \"species\": \"Wailmer\", \"slot_rate_pct\": 85, \"min_level\": 25, \"max_level\": 45, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#30915\", \"pokeapi:encounters#30914\"]}, {\"area\": null, \"method\": \"super-rod\", \"species\": \"Staryu\", \"slot_rate_pct\": 15, \"min_level\": 25, \"max_level\": 30, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#30913\"]}], \"note\": \"Slot odds once an encounter happens; how often one happens is a separate per-area rate.\"}",
       "round": 1,
-      "t": 35.76
+      "t": 29.56
     },
     {
       "agent": "catch_researcher",
-      "name": "search_guide",
+      "name": "encounter_odds",
       "args": {
-        "query": "Gym Leader Juan Emerald"
+        "location": "Route 124 (underwater)",
+        "method": "seaweed"
       },
-      "result": "{\"query\": \"Gym Leader Juan Emerald\", \"passages\": [{\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_16#B1F\", \"page\": \"Walkthrough:Pokémon Emerald/Part 16\", \"section\": \"Cave of Origin > B1F\", \"text\": \"The lowest floor is lined with sapphires and rubies. Visit the south side of this mist-filled room to meet Wallace. He was once the Sootopolis Gym Leader, but something came up that caused him to leave the Gym in the care of his mentor, Juan. According to Wallace, Groudon and Kyogre are not the only super-ancient Pokémon—there is a third somewhere, named Rayquaza. It's believed that it was Rayquaza that becalmed the two combatants in the distant past, but even Wallace can't be sure where it's located now. He asks if you might know where it is, and after you mention Sky Pillar, he sets off in search of the ancient creature. To follow him, you'll need to trek through the southeast ocean beginning with Route 129.\\n\\nNote: the entrance to the Cave of Origin is blocked for the rest of the game after awakening Rayquaza.\"}, {\"source_id\": \"guide:Walkthrough:Pokemon_Emerald/Part_9#Done\", \"page\": \"Walkthrough:Pokémon Emerald/Part 9\", \"section\": \"New Mauville (optional) > Done\", \"text\": \"With... [2381 more characters]",
+      "result": "{\"location\": \"hoenn-route-124\", \"encounters\": [{\"area\": \"underwater\", \"method\": \"seaweed\", \"species\": \"Clamperl\", \"slot_rate_pct\": 65, \"min_level\": 20, \"max_level\": 35, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29873\", \"pokeapi:encounters#29871\"]}, {\"area\": \"underwater\", \"method\": \"seaweed\", \"species\": \"Chinchou\", \"slot_rate_pct\": 30, \"min_level\": 20, \"max_level\": 30, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29872\"]}, {\"area\": \"underwater\", \"method\": \"seaweed\", \"species\": \"Relicanth\", \"slot_rate_pct\": 5, \"min_level\": 30, \"max_level\": 35, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29875\", \"pokeapi:encounters#29874\"]}], \"note\": \"Slot odds once an encounter happens; how often one happens is a separate per-area rate.\"}",
       "round": 1,
-      "t": 41.3
+      "t": 34.29
     },
     {
       "agent": "catch_researcher",
@@ -147,7 +139,7 @@
       "args": {},
       "result": "tool budget used; asked for the final answer",
       "round": 1,
-      "t": 41.3
+      "t": 34.3
     },
     {
       "agent": "lead",
@@ -155,22 +147,167 @@
       "args": {
         "tasks": [
           {
-            "task": "Scout gym8_juan. Note his team, levels (for the level cap), and major threats. Specifically detail Kingdra's moveset.",
+            "task": "Scout gym8_juan in Emerald against Swampert, Breloom, Swellow, Manectric. What are his Pokemon, levels, moves, and the level cap?",
             "researcher": "battle"
           },
           {
-            "task": "Identify the best available encounters before gym8_juan in Emerald. Exclude: Route 101, 102, 103, 104, Petalburg Woods, 116, Rusturf Tunnel, Granite Cave, 110, 117, 111, 112, Fiery Path, 113, 114, Meteor Falls, 115, 118, 119, 120, 121, Safari Zone, Mt. Pyre. Focus on counters to Juan, especially his Kingdra. Consider Shoal Cave, underwater routes, Mossdeep, Sootopolis, etc.",
-            "researcher": "catch"
+            "researcher": "catch",
+            "task": "Identify the best catch candidates for gym8_juan (Water types, Grass types, Electric types) available after Mossdeep but before Juan (e.g., Shoal Cave, sea routes, Sootopolis City, Abandoned Ship). Factor in Dupes clause based on the used routes. Calculate Nuzlocke odds."
           },
           {
-            "task": "Find key level-up or TM moves obtainable before gym8_juan for Breloom, Manectric, and top catch candidates for Juan (like Spheal/Walrein, Chinchou/Lanturn, or Staryu/Starmie) up to his level cap.",
+            "task": "Find key moves, TMs, and evolution levels for top candidates (like Spheal/Walrein, Chinchou/Lanturn, Staryu/Starmie, Magikarp/Gyarados) up to Juan's level cap. Also check Manectric and Breloom's key moves by that level.",
             "researcher": "moves"
           }
         ]
       },
-      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Scout gym8_juan. Note his team, levels (for the level cap), and major threats. Specifically detail Kingdra's moveset.\", \"finding\": {\"summary\": \"Gym Leader Juan's highest level is 46, which serves as your level cap. His Kingdra is a massive threat that relies on evasiveness, healing, and Ice Beam to pressure your Grass and Flying-type team members, while his Whiscash shuts down Electric offense with Earthquake.\", \"claims\": [{\"text\": \"Sootopolis Gym Leader Juan's team consists of Luvdisc (Lv41), Whiscash (Lv41), Sealeo (Lv43), Crawdaunt (Lv43), and Kingdra (Lv46).\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_Juan1/1\", \"decomp:trainer_parties.h#sParty_Juan1/2\", \"decomp:trainer_parties.h#sParty_Juan1/3\", \"decomp:trainer_parties.h#sParty_Juan1/4\", \"decomp:trainer_parties.h#sParty_Juan1/5\"]}, {\"text\": \"Juan's Kingdra is at Level 46, setting your level cap for this battle.\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_Juan1/5\"]}, {\"text\": \"Kingdra's moveset is Water Pulse, Double Team, Ice Beam, and Rest while holding a Chesto Berry.\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_Juan1/5\"]}, {\"text\": \"Kingdra threatens... [5813 more characters]",
+      "result": "{\"round\": 1, \"results\": [{\"researcher\": \"battle\", \"task\": \"Scout gym8_juan in Emerald against Swampert, Breloom, Swellow, Manectric. What are his Pokemon, levels, moves, and the level cap?\", \"finding\": {\"summary\": \"Leader Juan's team features five Water-types ranging from Lv41 to Lv46, setting the Gym 8 level cap at Lv46. His ace Kingdra (Lv46) is a major stalling threat with Double Team, Ice Beam, and Rest paired with a Chesto Berry, while Whiscash covers Electric attackers with Earthquake. Looking ahead, Electric and Fighting remain high-value attacking types against Juan and the remaining gauntlet, while Water and Steel provide strong defensive utility.\", \"claims\": [{\"text\": \"Leader Juan's team consists of Luvdisc (Lv41), Whiscash (Lv41), Sealeo (Lv43), Crawdaunt (Lv43), and Kingdra (Lv46), setting the level cap for this battle at Lv46.\", \"source_ids\": [\"decomp:trainer_parties.h#sParty_Juan1/1\", \"decomp:trainer_parties.h#sParty_Juan1/2\", \"decomp:trainer_parties.h#sParty_Juan1/3\", \"decomp:trainer_parties.h#sParty_Juan1/4\", \"decomp:trainer_parties.h#sParty_Juan1/5\"]}, {\"text\": \"Luvdisc knows Water Pulse, Attract, Sweet Kiss, and Flail with the Swift Swim ability.\", \"source_ids\": [... [5457 more characters]",
       "round": 1,
-      "t": 45.37
+      "t": 38.71
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "moves_outlook",
+      "args": {
+        "before_battle": "space_center",
+        "level": 46,
+        "species": [
+          "Spheal",
+          "Chinchou",
+          "Breloom",
+          "Manectric"
+        ]
+      },
+      "result": "{\"before_battle\": \"space_center\", \"label\": \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"species\": [{\"species\": \"Spheal\", \"types\": [\"ice\", \"water\"], \"at_level\": 46, \"default_moveset\": [\"Hail\", \"Snore\", \"Rest\", \"Blizzard\"], \"best_level_up_attacks\": [\"Blizzard (ice, special, 120) Lv43\", \"Body Slam (normal, physical, 85) Lv19\", \"Aurora Beam (ice, special, 65) Lv25\", \"Powder Snow (ice, special, 40) Lv1\"], \"next_level_up\": [\"Sheer Cold Lv49\"], \"evolves\": [\"Sealeo: level-up, level 32\"], \"tms_obtainable_before\": [\"TM14 Blizzard (ice, 120) at lilycove-city [requires: the Lilycove rival stands on the only tile below the Department Store's door until you battle them; declining leaves them there (LilycoveCity_EventScript_DeclineMayBattle), so the store needs the Lilycove rival battle]\", \"TM23 Iron Tail (steel, 100) at meteor-falls\", \"TM13 Ice Beam (ice, 95) at mauville-city\", \"TM13 Ice Beam (ice, 95) at abandoned-ship [requires: the Storage Key from the Captain's Office unlocks this room (FLAG_USED_STORAGE_KEY)]\"], \"source_ids\": [\"pokeapi:pokemon_moves#363/59/level-up/43\", \"pokeapi:pokemon_moves#363/34/level-up/19\", \"pokeapi:pokemon_moves#363/62/level-up/25\", \"pokeapi:... [4804 more characters]",
+      "round": 2,
+      "t": 49.76
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "encounter_odds",
+      "args": {
+        "method": "underwater",
+        "location": "Route 124"
+      },
+      "result": "{\"error\": \"no Emerald encounters at 'Route 124' by underwater\"}",
+      "round": 2,
+      "t": 50.98
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "encounter_odds",
+      "args": {
+        "method": null,
+        "location": "Shoal Cave"
+      },
+      "result": "{\"location\": \"shoal-cave\", \"encounters\": [{\"area\": \"b1f\", \"method\": \"walk\", \"species\": \"Spheal\", \"slot_rate_pct\": 50, \"min_level\": 26, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#70746\", \"pokeapi:encounters#70744\"]}, {\"area\": \"b1f\", \"method\": \"walk\", \"species\": \"Zubat\", \"slot_rate_pct\": 45, \"min_level\": 26, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#70741\", \"pokeapi:encounters#70739\"]}, {\"area\": \"b1f\", \"method\": \"walk\", \"species\": \"Golbat\", \"slot_rate_pct\": 5, \"min_level\": 32, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#70745\", \"pokeapi:encounters#70743\"]}, {\"area\": \"b2f\", \"method\": \"walk\", \"species\": \"Spheal\", \"slot_rate_pct\": 50, \"min_level\": 26, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#70818\", \"pokeapi:encounters#70816\"]}, {\"area\": \"b2f\", \"method\": \"walk\", \"species\": \"Zubat\", \"slot_rate_pct\": 45, \"min_level\": 26, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#70813\", \"pokeapi:encounters#70811\"]}, {\"area\": \"b2f\", \"method\": \"walk\", \"species\": \"Golbat\", \"slot_rate_pct\": 5, \"min_level\": 32, \"max_level\": 32, \"conditions\": [], \"source_ids\": [\"pokeapi:encou... [3882 more characters]",
+      "round": 2,
+      "t": 50.98
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT s1.name AS 'from_species', s2.name AS 'to_species', e.min_level, e.trigger, e.item\nFROM evolutions e\nJOIN species s1 ON e.from_species_id = s1.species_id\nJOIN species s2 ON e.to_species_id = s2.species_id\nWHERE s1.name IN ('Spheal', 'Sealeo', 'Chinchou', 'Lanturn', 'Breloom', 'Manectric')\nOR s2.name IN ('Spheal', 'Sealeo', 'Chinchou', 'Lanturn', 'Breloom', 'Manectric')"
+      },
+      "result": "{\"columns\": [\"from_species\", \"to_species\", \"min_level\", \"trigger\", \"item\"], \"rows\": [[\"Chinchou\", \"Lanturn\", 27, \"level-up\", null], [\"Shroomish\", \"Breloom\", 23, \"level-up\", null], [\"Electrike\", \"Manectric\", 26, \"level-up\", null], [\"Spheal\", \"Sealeo\", 32, \"level-up\", null], [\"Sealeo\", \"Walrein\", 44, \"level-up\", null]], \"source_id\": \"sql:a490601260\"}",
+      "round": 2,
+      "t": 52.62
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "encounter_odds",
+      "args": {
+        "location": "Route 124",
+        "method": null
+      },
+      "result": "{\"location\": \"hoenn-route-124\", \"encounters\": [{\"area\": null, \"method\": \"good-rod\", \"species\": \"Magikarp\", \"slot_rate_pct\": 60, \"min_level\": 10, \"max_level\": 30, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29856\"]}, {\"area\": null, \"method\": \"good-rod\", \"species\": \"Tentacool\", \"slot_rate_pct\": 20, \"min_level\": 10, \"max_level\": 30, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29857\"]}, {\"area\": null, \"method\": \"good-rod\", \"species\": \"Wailmer\", \"slot_rate_pct\": 20, \"min_level\": 10, \"max_level\": 30, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29858\"]}, {\"area\": null, \"method\": \"old-rod\", \"species\": \"Magikarp\", \"slot_rate_pct\": 70, \"min_level\": 5, \"max_level\": 10, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29859\"]}, {\"area\": null, \"method\": \"old-rod\", \"species\": \"Tentacool\", \"slot_rate_pct\": 30, \"min_level\": 5, \"max_level\": 10, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29860\"]}, {\"area\": null, \"method\": \"super-rod\", \"species\": \"Wailmer\", \"slot_rate_pct\": 60, \"min_level\": 25, \"max_level\": 45, \"conditions\": [], \"source_ids\": [\"pokeapi:encounters#29865\", \"pokeapi:encounters#29864\"]}, {\"area\": null, \"method\": \"super-rod\", \"species\": \"Sharpedo\",... [1405 more characters]",
+      "round": 2,
+      "t": 55.37
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT s.name AS species, l.level, m.name AS move, m.type, m.power, m.accuracy\nFROM learnsets l\nJOIN species s ON l.species_id = s.species_id\nJOIN moves m ON l.move_id = m.move_id\nWHERE s.name IN ('Spheal', 'Sealeo', 'Walrein', 'Chinchou', 'Lanturn', 'Breloom', 'Manectric')\nAND l.method = 'level-up'\nAND l.level <= 46\nORDER BY s.name, l.level"
+      },
+      "result": "{\"columns\": [\"species\", \"level\", \"move\", \"type\", \"power\", \"accuracy\"], \"rows\": [[\"Breloom\", 1, \"Absorb\", \"grass\", 20, 100], [\"Breloom\", 1, \"Tackle\", \"normal\", 35, 95], [\"Breloom\", 1, \"Leech Seed\", \"grass\", null, 90], [\"Breloom\", 1, \"Stun Spore\", \"grass\", null, 75], [\"Breloom\", 4, \"Tackle\", \"normal\", 35, 95], [\"Breloom\", 7, \"Stun Spore\", \"grass\", null, 75], [\"Breloom\", 10, \"Leech Seed\", \"grass\", null, 90], [\"Breloom\", 16, \"Mega Drain\", \"grass\", 40, 100], [\"Breloom\", 22, \"Headbutt\", \"normal\", 70, 100], [\"Breloom\", 23, \"Mach Punch\", \"fighting\", 40, 100], [\"Breloom\", 28, \"Counter\", \"fighting\", null, 100], [\"Breloom\", 36, \"Sky Uppercut\", \"fighting\", 85, 90], [\"Breloom\", 45, \"Mind Reader\", \"normal\", null, 100], [\"Chinchou\", 1, \"Thunder Wave\", \"electric\", null, 100], [\"Chinchou\", 1, \"Bubble\", \"water\", 20, 100], [\"Chinchou\", 5, \"Supersonic\", \"normal\", null, 55], [\"Chinchou\", 13, \"Flail\", \"normal\", null, 100], [\"Chinchou\", 17, \"Water Gun\", \"water\", 40, 100], [\"Chinchou\", 25, \"Spark\", \"electric\", 65, 100], [\"Chinchou\", 29, \"Confuse Ray\", \"ghost\", null, 100], [\"Chinchou\", 37, \"Take Down\", \"normal\", 90, 85], [\"Chinchou\", 41, \"Hydro Pump\", \"water\", 120, 80], [\"Lanturn\", 1, \"Supersonic\", \"normal... [1421 more characters]",
+      "round": 2,
+      "t": 56.2
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "species": "Spheal",
+        "types": [
+          "water",
+          "ice"
+        ],
+        "before_battle": "space_center"
+      },
+      "result": "{\"before_battle\": \"space_center\", \"label\": \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 1, \"species\": [{\"species\": \"Spheal\", \"types\": [\"ice\", \"water\"], \"places\": [{\"where\": \"Shoal Cave (b1f)\", \"method\": \"walk\", \"lv\": [26, 32], \"rate_pct\": 50, \"source_id\": \"pokeapi:encounters#70736\"}, {\"where\": \"Shoal Cave (b2f)\", \"method\": \"walk\", \"lv\": [26, 32], \"rate_pct\": 50, \"source_id\": \"pokeapi:encounters#70808\"}, {\"where\": \"Shoal Cave (high-tide)\", \"method\": \"walk\", \"lv\": [26, 32], \"rate_pct\": 50, \"source_id\": \"pokeapi:encounters#30883\"}], \"wild\": true}], \"excluded_by_rules\": {}, \"source_ids\": [\"progression:space_center\"]}",
+      "round": 2,
+      "t": 57.94
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "get_catchable",
+      "args": {
+        "types": [
+          "water",
+          "electric"
+        ],
+        "species": "Chinchou",
+        "before_battle": "space_center"
+      },
+      "result": "{\"before_battle\": \"space_center\", \"label\": \"Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"hms_usable\": [\"cut\", \"flash\", \"rock-smash\", \"strength\", \"surf\", \"fly\"], \"key_items\": [\"old-rod\", \"good-rod\", \"super-rod\", \"go-goggles\", \"devon-scope\", \"pokeblock-case\"], \"species_count\": 0, \"species\": [], \"excluded_by_rules\": {}, \"source_ids\": [\"progression:space_center\"], \"why_not\": [\"hoenn-route-124/underwater seaweed: not reachable before Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\", \"hoenn-route-126/underwater seaweed: not reachable before Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)\"]}",
+      "round": 2,
+      "t": 59.14
+    },
+    {
+      "agent": "catch_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 2,
+      "t": 59.14
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "query_db",
+      "args": {
+        "sql_query": "SELECT s.name AS species, l.level, m.name AS move, m.type, m.power, m.accuracy\nFROM learnsets l\nJOIN species s ON l.species_id = s.species_id\nJOIN moves m ON l.move_id = m.move_id\nWHERE s.name IN ('Spheal', 'Sealeo', 'Walrein')\nAND l.method = 'level-up'\nAND l.level <= 46\nORDER BY s.name, l.level"
+      },
+      "result": "{\"columns\": [\"species\", \"level\", \"move\", \"type\", \"power\", \"accuracy\"], \"rows\": [[\"Sealeo\", 1, \"Powder Snow\", \"ice\", 40, 100], [\"Sealeo\", 1, \"Encore\", \"normal\", null, 100], [\"Sealeo\", 1, \"Water Gun\", \"water\", 40, 100], [\"Sealeo\", 1, \"Growl\", \"normal\", null, 100], [\"Sealeo\", 7, \"Encore\", \"normal\", null, 100], [\"Sealeo\", 13, \"Ice Ball\", \"ice\", 30, 90], [\"Sealeo\", 19, \"Body Slam\", \"normal\", 85, 100], [\"Sealeo\", 25, \"Aurora Beam\", \"ice\", 65, 100], [\"Sealeo\", 31, \"Hail\", \"ice\", null, null], [\"Sealeo\", 39, \"Rest\", \"psychic\", null, null], [\"Sealeo\", 39, \"Snore\", \"normal\", 40, 100], [\"Spheal\", 1, \"Powder Snow\", \"ice\", 40, 100], [\"Spheal\", 1, \"Water Gun\", \"water\", 40, 100], [\"Spheal\", 1, \"Growl\", \"normal\", null, 100], [\"Spheal\", 7, \"Encore\", \"normal\", null, 100], [\"Spheal\", 13, \"Ice Ball\", \"ice\", 30, 90], [\"Spheal\", 19, \"Body Slam\", \"normal\", 85, 100], [\"Spheal\", 25, \"Aurora Beam\", \"ice\", 65, 100], [\"Spheal\", 31, \"Hail\", \"ice\", null, null], [\"Spheal\", 37, \"Rest\", \"psychic\", null, null], [\"Spheal\", 37, \"Snore\", \"normal\", 40, 100], [\"Spheal\", 43, \"Blizzard\", \"ice\", 120, 70], [\"Walrein\", 1, \"Powder Snow\", \"ice\", 40, 100], [\"Walrein\", 1, \"Growl\", \"normal\", null, 100], [\"Walrein\", 1, \"Water Gun\",... [423 more characters]",
+      "round": 2,
+      "t": 60.05
+    },
+    {
+      "agent": "moves_researcher",
+      "name": "turn_limit_wrap_up",
+      "args": {},
+      "result": "tool budget used; asked for the final answer",
+      "round": 2,
+      "t": 60.05
+    },
+    {
+      "agent": "lead",
+      "name": "dispatch_researchers",
+      "args": {
+        "tasks": [
+          {
+            "task": "Find the evolution levels for Spheal (Sealeo, Walrein), Chinchou (Lanturn) and their level-up/TM moves before Lv46. Also find Breloom and Manectric's level-up moves up to Lv46.",
+            "researcher": "moves"
+          },
+          {
+            "researcher": "catch",
+            "task": "Check Shoal Cave encounters to see if Spheal can be guaranteed with dupes clause. Also check Route 124 underwater for Chinchou odds with dupes clause (Relicanth, Clamperl)."
+          }
+        ]
+      },
+      "result": "{\"round\": 2, \"results\": [{\"researcher\": \"moves\", \"task\": \"Find the evolution levels for Spheal (Sealeo, Walrein), Chinchou (Lanturn) and their level-up/TM moves before Lv46. Also find Breloom and Manectric's level-up moves up to Lv46.\", \"finding\": {\"summary\": \"This guide outlines the level-up evolution thresholds, move progressions up to Lv46, and relevant key TM options for Spheal, Chinchou, Breloom, and Manectric in Gen III Hoenn.\", \"claims\": [{\"text\": \"Spheal evolves into Sealeo at level 32, and Sealeo evolves into Walrein at level 44.\", \"source_ids\": [\"sql:a490601260\"]}, {\"text\": \"Chinchou evolves into Lanturn at level 27.\", \"source_ids\": [\"sql:a490601260\"]}, {\"text\": \"Spheal's level-up moves up to Lv46 are Aurora Beam (Lv25), Hail (Lv31), Rest & Snore (Lv37), and Blizzard (Lv43). If evolved, Sealeo learns Rest & Snore at Lv39 instead, and does not learn Blizzard by level-up before Lv46.\", \"source_ids\": [\"sql:ab85a767ab\"]}, {\"text\": \"Chinchou's level-up moves up to Lv46 are Spark (Lv25), Confuse Ray (Lv29), Take Down (Lv37), and Hydro Pump (Lv41). Lanturn learns Confuse Ray at Lv32 and Take Down at Lv43.\", \"source_ids\": [\"sql:b86cf59b31\"]}, {\"text\": \"Strong TMs obtainable befor... [2608 more characters]",
+      "round": 2,
+      "t": 63.81
     },
     {
       "agent": "verifier",
@@ -178,198 +315,207 @@
       "args": {
         "picks": [
           "Spheal",
-          "Staryu"
+          "Chinchou"
         ]
       },
-      "result": "[{\"code\": \"EVOLUTION_ITEM_UNVERIFIED\", \"severity\": \"warning\", \"species\": \"Staryu\", \"detail\": \"Starmie needs a water-stone; make sure you can get one before Sootopolis Gym: Juan\", \"rec\": 1, \"alt\": null}]",
-      "round": 1,
-      "t": 66.52
+      "result": "[{\"code\": \"EVOLUTION_ITEM_UNVERIFIED\", \"severity\": \"warning\", \"species\": \"Staryu\", \"detail\": \"Starmie needs a water-stone; make sure you can get one before Sootopolis Gym: Juan\", \"rec\": 0, \"alt\": 0}]",
+      "round": 2,
+      "t": 80.18
     },
     {
       "agent": "verifier",
       "name": "citation_check",
       "args": {},
       "result": "all citations resolve",
-      "round": 1,
-      "t": 71.17
+      "round": 2,
+      "t": 83.81
     }
   ],
   "citations": [
     {
       "n": 1,
-      "source_id": "pokeapi:encounters#70736",
-      "label": "PokeAPI: Spheal at Shoal Cave (walk)",
+      "source_id": "rules:game",
+      "label": "LockeSmith's Emerald rules (agent/brief.py)",
       "url": null
     },
     {
       "n": 2,
-      "source_id": "pokeapi:encounters#30913",
-      "label": "PokeAPI: Staryu at Lilycove City (super-rod)",
+      "source_id": "pokeapi:pokemon_species#363",
+      "label": "PokeAPI: Spheal (species data)",
       "url": null
     },
     {
       "n": 3,
-      "source_id": "pokeapi:pokemon_evolution#185",
-      "label": "PokeAPI: Sealeo evolves into Walrein",
+      "source_id": "pokeapi:encounters#30883",
+      "label": "PokeAPI: Spheal at Shoal Cave (walk)",
       "url": null
     },
     {
       "n": 4,
-      "source_id": "pokeapi:encounters#70808",
+      "source_id": "pokeapi:encounters#70746",
       "label": "PokeAPI: Spheal at Shoal Cave (walk)",
       "url": null
     },
     {
       "n": 5,
-      "source_id": "decomp:trainer_parties.h#sParty_Juan1/5",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_Juan1/5)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+      "source_id": "pokeapi:encounters#70741",
+      "label": "PokeAPI: Zubat at Shoal Cave (walk)",
+      "url": null
     },
     {
       "n": 6,
-      "source_id": "pokeapi:pokemon_evolution#95",
-      "label": "PokeAPI: Chinchou evolves into Lanturn",
+      "source_id": "sql:a490601260",
+      "label": "database query a490601260",
       "url": null
     },
     {
       "n": 7,
-      "source_id": "pokeapi:pokemon_species#171",
-      "label": "PokeAPI: Lanturn (species data)",
+      "source_id": "pokeapi:encounters#30913",
+      "label": "PokeAPI: Staryu at Lilycove City (super-rod)",
       "url": null
     },
     {
       "n": 8,
+      "source_id": "pokeapi:pokemon_species#120",
+      "label": "PokeAPI: Staryu (species data)",
+      "url": null
+    },
+    {
+      "n": 9,
+      "source_id": "pokeapi:pokemon_species#170",
+      "label": "PokeAPI: Chinchou (species data)",
+      "url": null
+    },
+    {
+      "n": 10,
       "source_id": "pokeapi:encounters#29872",
       "label": "PokeAPI: Chinchou at Route 124 (seaweed)",
       "url": null
     },
     {
-      "n": 9,
-      "source_id": "pokeapi:pokemon_evolution#70",
-      "label": "PokeAPI: Staryu evolves into Starmie",
-      "url": null
-    },
-    {
-      "n": 10,
-      "source_id": "decomp:data/maps/MauvilleCity_GameCorner#TM13",
-      "label": "pokeemerald data/maps/MauvilleCity_GameCorner (TM13)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/data/maps/MauvilleCity_GameCorner"
-    },
-    {
       "n": 11,
-      "source_id": "rules:gen3_type_chart",
-      "label": "Gen 3 type chart (pokeemerald gTypeEffectiveness)",
+      "source_id": "progression:space_center",
+      "label": "Story progression (data/progression.yaml): Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven)",
       "url": null
     },
     {
       "n": 12,
-      "source_id": "decomp:trainer_parties.h#sParty_Juan1/2",
-      "label": "pokeemerald src/data/trainer_parties.h (sParty_Juan1/2)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+      "source_id": "sql:b86cf59b31",
+      "label": "database query b86cf59b31",
+      "url": null
     },
     {
       "n": 13,
-      "source_id": "sql:ef2ed14180",
-      "label": "database query ef2ed14180",
+      "source_id": "pokeapi:encounters#30487",
+      "label": "PokeAPI: Magnemite at New Mauville (walk)",
       "url": null
     },
     {
       "n": 14,
-      "source_id": "decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM25",
-      "label": "pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM25)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/data/maps/LilycoveCity_DepartmentStore_4F"
+      "source_id": "pokeapi:pokemon_species#81",
+      "label": "PokeAPI: Magnemite (species data)",
+      "url": null
     },
     {
       "n": 15,
-      "source_id": "decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14",
-      "label": "pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM14)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/data/maps/LilycoveCity_DepartmentStore_4F"
+      "source_id": "sql:86f8f978ec",
+      "label": "database query 86f8f978ec",
+      "url": null
     },
     {
       "n": 16,
-      "source_id": "decomp:data/maps/MauvilleCity_GameCorner#TM24",
-      "label": "pokeemerald data/maps/MauvilleCity_GameCorner (TM24)",
-      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/data/maps/MauvilleCity_GameCorner"
+      "source_id": "decomp:trainer_parties.h#sParty_Juan1/5",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_Juan1/5)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
+    },
+    {
+      "n": 17,
+      "source_id": "decomp:trainer_parties.h#sParty_Juan1/2",
+      "label": "pokeemerald src/data/trainer_parties.h (sParty_Juan1/2)",
+      "url": "https://github.com/pret/pokeemerald/blob/731ad5bfd6e6f265508d0efcca0ba42f9dcf5881/src/data/trainer_parties.h"
     }
   ],
   "plan": {
     "intent": "catch",
-    "headline": "Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rounding out your team's coverage.",
+    "headline": "Target Spheal in Shoal Cave and Chinchou on Route 124 underwater to prepare for Juan's Level 46 cap.",
     "recommendations": [
       {
         "species": "Spheal",
-        "role": "Tank / Dragon Counter",
+        "role": "Tank / Ice Attacker",
         "horizon": "core",
         "before_battle": "gym8_juan",
-        "where": "Shoal Cave (B1F, B2F, or High-Tide), walking, Levels 26-32 (50% encounter rate)",
-        "when": "Available right now, before facing the Mossdeep Space Center or Juan.",
-        "why": "Juan's Kingdra is a notorious run-killer with Double Team, Rest, and Ice Beam. Walrein's massive bulk and Thick Fat ability let it easily tank Ice Beam and Water Pulse, allowing it to sit in against Kingdra and hit back with Ice-type attacks.",
-        "long_term": "Walrein is one of the best Elite Four Pokémon in Hoenn. Its Ice-type STAB is critical for defeating Drake's Dragon-types, and its durability makes it excellent against Wallace.",
+        "where": "Shoal Cave, Walking (Lv26-32, 50% rate, guaranteed if you have Zubat/Golbat)",
+        "when": "Available immediately, but evolve before Lv46",
+        "why": "With Thick Fat, Walrein minimizes Ice-type damage and has the bulk to take on Juan's stalling team safely.",
+        "long_term": "Essential for defeating Drake of the Elite Four with powerful Ice-type moves.",
         "evolve_to": "Walrein",
         "key_moves": [
+          "Aurora Beam",
           "Ice Beam"
         ],
         "source_ids": [
-          "pokeapi:encounters#70736",
-          "pokeapi:pokemon_evolution#185",
-          "pokeapi:encounters#70808",
-          "decomp:trainer_parties.h#sParty_Juan1/5"
+          "pokeapi:encounters#30883",
+          "pokeapi:pokemon_species#363",
+          "pokeapi:encounters#70746",
+          "pokeapi:encounters#70741",
+          "sql:a490601260",
+          "decomp:data/maps/MauvilleCity_GameCorner#TM13"
         ],
         "alternatives": [
           {
-            "species": "Chinchou",
-            "horizon": "situational",
-            "where": "Route 124 or 126 (Underwater), seaweed, Levels 20-30 (30% encounter rate)",
-            "why": "Lanturn's Water/Electric typing and Volt Absorb give it phenomenal resistances to Juan's Water-type attacks.",
-            "long_term": "A great bulky pivot for Juan and Wallace, though it competes with Manectric for the Electric-type role.",
-            "evolve_to": "Lanturn",
+            "species": "Staryu",
+            "horizon": "core",
+            "where": "Lilycove City, Super Rod (Lv25-30, 15% rate)",
+            "why": "Incredibly fast with deep special coverage to hit Juan's Water types.",
+            "long_term": "A premier late-game sweeper using Thunderbolt, Ice Beam, and Surf.",
+            "evolve_to": "Starmie",
             "key_moves": [
               "Thunderbolt",
-              "Ice Beam"
+              "Ice Beam",
+              "Surf"
             ],
             "source_ids": [
-              "pokeapi:encounters#29872",
-              "pokeapi:pokemon_evolution#95",
-              "pokeapi:pokemon_species#171"
+              "pokeapi:encounters#30913",
+              "pokeapi:pokemon_species#120"
             ]
           }
         ]
       },
       {
-        "species": "Staryu",
-        "role": "Fast Special Sweeper",
+        "species": "Chinchou",
+        "role": "Electric/Water Pivot",
         "horizon": "core",
         "before_battle": "gym8_juan",
-        "where": "Lilycove City, Super Rod, Levels 25-30 (15% encounter rate)",
-        "when": "Available right now in Lilycove City.",
-        "why": "Starmie is a premier fast attacker. With access to Thunderbolt and Ice Beam via TMs, it can effortlessly sweep the rest of Juan's team (Luvdisc, Sealeo, Crawdaunt) before you have to face Kingdra.",
-        "long_term": "Starmie's unmatched coverage (Surf, Thunderbolt, Ice Beam, Psychic) and high Speed make it a top-tier sweeper for the entire Elite Four.",
-        "evolve_to": "Starmie",
+        "where": "Route 124 (underwater), Seaweed (Lv20-30, 30% rate)",
+        "when": "Available as soon as Dive is usable (after Space Center)",
+        "why": "Lanturn's typing resists Water and Ice, and it hits Juan's team super-effectively with STAB Electric moves.",
+        "long_term": "Volt Absorb and excellent HP make Lanturn an incredible tank and pivot against Wallace and Glacia.",
+        "evolve_to": "Lanturn",
         "key_moves": [
-          "Thunderbolt",
-          "Ice Beam"
+          "Spark",
+          "Confuse Ray"
         ],
         "source_ids": [
-          "pokeapi:encounters#30913",
-          "pokeapi:pokemon_evolution#70",
-          "decomp:data/maps/MauvilleCity_GameCorner#TM13"
+          "pokeapi:encounters#29872",
+          "pokeapi:pokemon_species#170",
+          "sql:a490601260",
+          "sql:b86cf59b31",
+          "progression:space_center"
         ],
         "alternatives": [
           {
-            "species": "Chinchou",
-            "horizon": "situational",
-            "where": "Route 124 or 126 (Underwater), seaweed, Levels 20-30 (30% encounter rate)",
-            "why": "Lanturn's typing makes it highly resistant to Juan's attacks, and it can use Thunderbolt and Ice Beam.",
-            "long_term": "A bulky pivot for Water-type heavy teams, though it overlaps somewhat with Manectric.",
-            "evolve_to": "Lanturn",
+            "species": "Magnemite",
+            "horizon": "core",
+            "where": "New Mauville, Walking (Lv22-26, ~49% rate)",
+            "why": "High Special Attack to clean up Juan's Water types, though it must dodge Whiscash's Earthquake.",
+            "long_term": "Steel typing gives key resistances against the Elite Four.",
+            "evolve_to": "Magneton",
             "key_moves": [
-              "Thunderbolt",
-              "Ice Beam"
+              "Spark"
             ],
             "source_ids": [
-              "pokeapi:encounters#29872",
-              "pokeapi:pokemon_evolution#95",
-              "pokeapi:pokemon_species#171"
+              "pokeapi:encounters#30487",
+              "pokeapi:pokemon_species#81"
             ]
           }
         ]
@@ -377,41 +523,38 @@
     ],
     "steps": [
       {
-        "title": "Level Cap Check",
-        "detail": "Juan's ace is Kingdra at Level 46. Ensure your team stays at or below this level.",
+        "title": "Clear Mossdeep Space Center",
+        "detail": "Defeat Maxie and Tabitha at the Space Center alongside Steven to progress the story and unlock Dive.",
         "source_ids": [
-          "decomp:trainer_parties.h#sParty_Juan1/5",
-          "sql:ef2ed14180"
+          "progression:space_center"
         ]
       },
       {
-        "title": "Equip Key TMs",
-        "detail": "Purchase TM13 Ice Beam and TM24 Thunderbolt from the Mauville Game Corner for your new catches, or pick up TM25 Thunder and TM14 Blizzard from the Lilycove Department Store.",
+        "title": "Level up catches",
+        "detail": "Level Spheal up to Lv32 to evolve into Sealeo, and Lv44 for Walrein. Chinchou evolves at Lv27. Your party should reach the Lv46 cap.",
         "source_ids": [
-          "decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM25",
-          "decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14",
-          "decomp:data/maps/MauvilleCity_GameCorner#TM13",
-          "decomp:data/maps/MauvilleCity_GameCorner#TM24"
+          "sql:a490601260"
         ]
       }
     ],
     "battle_notes": [
       {
         "battle_id": "gym8_juan",
-        "note": "Juan's Kingdra (Lv46) has Double Team, Rest (with a Chesto Berry), Water Pulse, and Ice Beam. It threatens Breloom and Swellow with super-effective Ice-type damage. Additionally, be careful with Manectric, as Juan's Whiscash knows Earthquake.",
+        "note": "Juan's team is capped at Level 46 (Kingdra). Whiscash knows Earthquake, which threatens Electric types. Kingdra runs Double Team, Ice Beam, Rest, and Chesto Berry, requiring high bulk or sure-hit/burst strategies to take down.",
         "source_ids": [
+          "decomp:trainer_parties.h#sParty_Juan1/1",
+          "decomp:trainer_parties.h#sParty_Juan1/2",
           "decomp:trainer_parties.h#sParty_Juan1/5",
-          "rules:gen3_type_chart",
-          "decomp:trainer_parties.h#sParty_Juan1/2"
+          "sql:86f8f978ec"
         ]
       }
     ],
     "assumptions": [
-      "You have the Super Rod needed to fish for Staryu.",
-      "You have access to a Water Stone to evolve Staryu."
+      "You have not caught Zubat/Golbat yet, but encountering them triggers the dupes clause for a guaranteed Spheal."
     ],
     "follow_up_questions": [
-      "Do you already have a Water Stone for Staryu, or need to know where to find one?"
+      "Do you already have a Zubat or Golbat registered in your Pokédex?",
+      "Do you have the Storage Key for the Abandoned Ship to access TM13 Ice Beam?"
     ],
     "unresolved": []
   },
@@ -474,14 +617,14 @@
           "share": 0.0
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Juan",
           "order": 26,
-          "hits": 0,
-          "threats": 0,
+          "hits": 3,
+          "threats": 1,
           "team_size": 5,
-          "share": 0.0
+          "share": 0.6
         },
         {
           "member": "Swampert (party)",
@@ -534,14 +677,14 @@
           "share": 0.4
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Sidney",
           "order": 28,
-          "hits": 0,
-          "threats": 2,
+          "hits": 1,
+          "threats": 1,
           "team_size": 5,
-          "share": 0.0
+          "share": 0.2
         },
         {
           "member": "Swampert (party)",
@@ -594,12 +737,12 @@
           "share": 0.0
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Phoebe",
           "order": 29,
           "hits": 0,
-          "threats": 5,
+          "threats": 1,
           "team_size": 5,
           "share": 0.0
         },
@@ -654,14 +797,14 @@
           "share": 0.0
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Glacia",
           "order": 30,
-          "hits": 0,
-          "threats": 2,
+          "hits": 3,
+          "threats": 0,
           "team_size": 5,
-          "share": 0.0
+          "share": 0.6
         },
         {
           "member": "Swampert (party)",
@@ -714,12 +857,12 @@
           "share": 0.8
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Drake",
           "order": 31,
           "hits": 0,
-          "threats": 2,
+          "threats": 1,
           "team_size": 5,
           "share": 0.0
         },
@@ -774,14 +917,14 @@
           "share": 0.0
         },
         {
-          "member": "Staryu → Starmie (pick)",
+          "member": "Chinchou → Lanturn (pick)",
           "kind": "pick",
           "battle": "Wallace",
           "order": 32,
-          "hits": 1,
-          "threats": 1,
+          "hits": 4,
+          "threats": 3,
           "team_size": 6,
-          "share": 0.17
+          "share": 0.67
         }
       ]
     },
@@ -814,7 +957,7 @@
           "Swellow (party)",
           "Manectric (party)",
           "Spheal → Walrein (pick)",
-          "Staryu → Starmie (pick)"
+          "Chinchou → Lanturn (pick)"
         ],
         "axis": {
           "labelLimit": 220
@@ -904,146 +1047,245 @@
       "agent": "clarifier",
       "model": "vertex_ai/gemini-3.5-flash",
       "input_tokens": 3356,
-      "output_tokens": 329,
-      "cost_usd": 0.007995,
-      "t": 6.33,
+      "output_tokens": 311,
+      "cost_usd": 0.007833,
+      "t": 1.93,
       "fallback": null
     },
     {
       "agent": "lead",
       "model": "vertex_ai/gemini-3.1-pro-preview",
-      "input_tokens": 2974,
-      "output_tokens": 942,
-      "cost_usd": 0.017252,
-      "t": 21.53,
+      "input_tokens": 2956,
+      "output_tokens": 470,
+      "cost_usd": 0.011552,
+      "t": 11.77,
       "fallback": null
     },
     {
       "agent": "battle_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 1433,
-      "output_tokens": 128,
-      "cost_usd": 0.003302,
-      "t": 24.18,
-      "fallback": null
-    },
-    {
-      "agent": "moves_researcher",
-      "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 2110,
-      "output_tokens": 327,
-      "cost_usd": 0.006108,
-      "t": 24.9,
+      "input_tokens": 1439,
+      "output_tokens": 134,
+      "cost_usd": 0.003364,
+      "t": 14.1,
       "fallback": null
     },
     {
       "agent": "catch_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 1989,
-      "output_tokens": 491,
-      "cost_usd": 0.007403,
-      "t": 26.53,
+      "input_tokens": 1903,
+      "output_tokens": 176,
+      "cost_usd": 0.004438,
+      "t": 14.4,
       "fallback": null
     },
     {
       "agent": "moves_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 2610,
-      "output_tokens": 79,
-      "cost_usd": 0.004626,
-      "t": 27.21,
+      "input_tokens": 2120,
+      "output_tokens": 240,
+      "cost_usd": 0.00534,
+      "t": 16.16,
       "fallback": null
     },
     {
       "agent": "moves_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 2749,
+      "input_tokens": 2436,
+      "output_tokens": 100,
+      "cost_usd": 0.004554,
+      "t": 18.25,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2605,
+      "output_tokens": 70,
+      "cost_usd": 0.004537,
+      "t": 19.99,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4269,
+      "output_tokens": 712,
+      "cost_usd": 0.012811,
+      "t": 20.55,
+      "fallback": null
+    },
+    {
+      "agent": "battle_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 3431,
+      "output_tokens": 856,
+      "cost_usd": 0.005783,
+      "t": 20.96,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 2723,
+      "output_tokens": 80,
+      "cost_usd": 0.002342,
+      "t": 24.26,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 6275,
+      "output_tokens": 1116,
+      "cost_usd": 0.019457,
+      "t": 29.55,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 1798,
+      "output_tokens": 223,
+      "cost_usd": 0.002185,
+      "t": 32.18,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 7510,
+      "output_tokens": 75,
+      "cost_usd": 0.01194,
+      "t": 34.28,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 5322,
+      "output_tokens": 936,
+      "cost_usd": 0.016407,
+      "t": 38.7,
+      "fallback": null
+    },
+    {
+      "agent": "lead",
+      "model": "vertex_ai/gemini-3.1-pro-preview",
+      "input_tokens": 5031,
+      "output_tokens": 353,
+      "cost_usd": 0.014298,
+      "t": 46.29,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 2107,
+      "output_tokens": 364,
+      "cost_usd": 0.006437,
+      "t": 49.67,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 1881,
+      "output_tokens": 258,
+      "cost_usd": 0.005143,
+      "t": 50.97,
+      "fallback": null
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4294,
+      "output_tokens": 265,
+      "cost_usd": 0.008826,
+      "t": 52.61,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.8-flash",
+      "input_tokens": 3424,
+      "output_tokens": 59,
+      "cost_usd": 0.002789,
+      "t": 55.37,
+      "fallback": "vertex_ai/gemini-3.8-flash"
+    },
+    {
+      "agent": "moves_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4643,
+      "output_tokens": 291,
+      "cost_usd": 0.009584,
+      "t": 56.18,
+      "fallback": null
+    },
+    {
+      "agent": "catch_researcher",
+      "model": "vertex_ai/gemini-3.5-flash",
+      "input_tokens": 4100,
       "output_tokens": 165,
-      "cost_usd": 0.005608,
-      "t": 29.3,
+      "cost_usd": 0.007635,
+      "t": 57.93,
       "fallback": null
     },
     {
-      "agent": "battle_researcher",
+      "agent": "catch_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 3419,
-      "output_tokens": 1163,
-      "cost_usd": 0.015595,
-      "t": 30.9,
+      "input_tokens": 4450,
+      "output_tokens": 39,
+      "cost_usd": 0.007026,
+      "t": 59.13,
       "fallback": null
     },
     {
       "agent": "moves_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 5236,
+      "input_tokens": 5544,
       "output_tokens": 149,
-      "cost_usd": 0.009195,
-      "t": 32.0,
+      "cost_usd": 0.009657,
+      "t": 60.05,
       "fallback": null
     },
     {
       "agent": "catch_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 4724,
-      "output_tokens": 663,
-      "cost_usd": 0.013053,
-      "t": 32.67,
-      "fallback": null
-    },
-    {
-      "agent": "catch_researcher",
-      "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 6698,
-      "output_tokens": 58,
-      "cost_usd": 0.010569,
-      "t": 35.73,
+      "input_tokens": 3752,
+      "output_tokens": 468,
+      "cost_usd": 0.00984,
+      "t": 61.63,
       "fallback": null
     },
     {
       "agent": "moves_researcher",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 4210,
-      "output_tokens": 484,
-      "cost_usd": 0.010671,
-      "t": 36.41,
-      "fallback": null
-    },
-    {
-      "agent": "catch_researcher",
-      "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 7538,
-      "output_tokens": 38,
-      "cost_usd": 0.011649,
-      "t": 41.3,
-      "fallback": null
-    },
-    {
-      "agent": "catch_researcher",
-      "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 6826,
-      "output_tokens": 922,
-      "cost_usd": 0.018537,
-      "t": 45.37,
+      "input_tokens": 4738,
+      "output_tokens": 780,
+      "cost_usd": 0.014127,
+      "t": 63.81,
       "fallback": null
     },
     {
       "agent": "lead",
       "model": "vertex_ai/gemini-3.1-pro-preview",
-      "input_tokens": 5717,
-      "output_tokens": 1861,
-      "cost_usd": 0.033766,
-      "t": 66.39,
+      "input_tokens": 6438,
+      "output_tokens": 1431,
+      "cost_usd": 0.030048,
+      "t": 80.03,
       "fallback": null
     },
     {
       "agent": "writer",
       "model": "vertex_ai/gemini-3.5-flash",
-      "input_tokens": 2333,
-      "output_tokens": 1181,
-      "cost_usd": 0.014129,
-      "t": 71.14,
+      "input_tokens": 2150,
+      "output_tokens": 847,
+      "cost_usd": 0.010848,
+      "t": 83.74,
       "fallback": null
     }
   ],
-  "seconds": 71.3
+  "seconds": 83.9
 }

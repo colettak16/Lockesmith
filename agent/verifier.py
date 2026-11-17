@@ -29,6 +29,7 @@ CODES = {
     "GEN3_ANACHRONISM": "mentions something that isn't in Generation III",
     "TYPE_CLAIM_WRONG": "states a type matchup that the Gen III type chart and abilities contradict",
     "MOVE_ALREADY_KNOWN": "suggests teaching a party Pokémon a move it already knows",
+    "OPPONENT_MOVE_WRONG": "gives an opponent's Pokémon a move its moveset in that battle doesn't have",
     "NUZLOCKE_ROUTE_USED": "every place to get it is an area whose encounter is used",
     "NUZLOCKE_DUPE": "the dupes clause forbids it",
     "RULESET_TYPE_VIOLATION": "breaks the player's allowed or banned types",
@@ -522,6 +523,46 @@ def targets_after(text: str, pos: int, species_re: re.Pattern) -> tuple[list[tup
     return out, end
 
 
+# "His Sealeo carries Ice Beam", "Milotic's Ice Beam", "Sealeo and Milotic, who both carry deadly Ice Beam":
+# a battle note giving an opponent a move. Live Emerald and Ruby runs gave Juan's and Wallace's Sealeo
+# Ice Beam (it has Aurora Beam). The subject is the team's Pokémon named right before the verb or "'s".
+ATTRIBUTION_RE = (
+    r"(?:(?:'s|’s)\s+|,?\s+(?:(?:who|which)\s+)?(?:both\s+|all\s+|also\s+)?(?:(?:can|will|may|might|could)\s+)?"
+    r"(?:carries|carry|knows|know|has|have|uses|use|runs|run|brings|bring|packs|pack|wields|wield)\s+)"
+    r"(?:[\w-]+\s+){0,3}$"
+)
+
+
+def opponent_move_errors(ctx: RequestContext, note: str, battle_id: str) -> list[str]:
+    """Moves a battle note gives the battle's Pokémon that their movesets don't have."""
+    try:
+        mons, _ = team(ctx, battle(ctx, battle_id))
+    except ToolError:
+        return []
+    known: dict[str, set[str]] = {}
+    for m in mons:
+        if m["moves"]:  # empty when a randomizer log left the moves unknown
+            known.setdefault(m["species"], set()).update(m["moves"])
+    if not known:
+        return []
+    _, _, move_re, move_ids = name_patterns(ctx)
+    name = "|".join(re.escape(n) for n in sorted(known, key=len, reverse=True))
+    subject = re.compile(rf"(?<!\w)(?P<subj>(?:{name})(?:(?:\s*,\s*(?:and\s+)?|\s+and\s+|\s*&\s*)(?:{name}))*){ATTRIBUTION_RE}")
+    titles = dict(ctx.cursor().execute("SELECT identifier, name FROM moves").fetchall())
+    out = []
+    for sentence in re.split(r"(?<=[.;!?])\s+", note):
+        for mv in move_re.finditer(sentence):
+            m = subject.search(sentence[: mv.start()])
+            if not m:
+                continue
+            move = move_ids[mv.group(1)]
+            for who in re.findall(rf"(?<!\w)(?:{name})(?!\w)", m["subj"]):
+                if move not in known[who]:
+                    has = ", ".join(titles.get(x, x) for x in sorted(known[who]))
+                    out.append(f"says {who} knows {mv.group(1)}, but its moves in this battle are {has}")
+    return list(dict.fromkeys(out))
+
+
 def verify(ctx: RequestContext, draft: LeadDraft) -> list[Violation]:
     out: list[Violation] = []
     for i, rec in enumerate(draft.recommendations):
@@ -543,6 +584,8 @@ def verify(ctx: RequestContext, draft: LeadDraft) -> list[Violation]:
         out += [Violation("TYPE_CLAIM_WRONG", WARNING, label, d) for d in matchup_errors(ctx, text)]
         out += [Violation("MOVE_ALREADY_KNOWN", WARNING, label, d)
                 for d in known_move_suggestions(ctx, text, getattr(item, "title", ""))]
+        if getattr(item, "battle_id", None):
+            out += [Violation("OPPONENT_MOVE_WRONG", WARNING, label, d) for d in opponent_move_errors(ctx, item.note, item.battle_id)]
     return out
 
 

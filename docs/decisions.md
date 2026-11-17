@@ -651,3 +651,13 @@ On 27 live Lead drafts from LangFuse and the 11 saved ones, the only new flags a
 A log from a game LockeSmith doesn't cover (its footer names, say, Crystal) is refused at upload. Revisions 1 and 2 of Ruby and Sapphire get no note: the decomp's revision switches never touch the data tables (Q-01). The site's hand-made sample log got UPR's footer, with no CRC32, so it isn't reported as a clean ROM.
 
 **Emulator checks (V-15)** weren't done either. The README says the story gates were checked against the decomps, not in an emulator.
+
+## D20. The baseline model, the README samples and a check on opponents' moves (2026-11-16)
+
+**The baseline is Gemini 3.5 Flash.** The assignment asks for "the same model with no tools and no system prompt". LockeSmith uses two: Gemini 3.1 Pro for the Lead, and Gemini 3.5 Flash for the Clarifier, the four researchers and the Writer, which writes every answer. The baseline now uses Flash (`scripts/baseline.py`), and it now gets every rule in words (allowed and banned types, no legendaries, wild-only, a cap offset, per-floor encounters), not only the Nuzlocke ones.
+
+**The README samples** are now a Ruby Nuzlocke question (Groudon and Wallace), the Emerald Nuzlocke into Juan, and the randomized gym. The Ruby question tests what a model that knows Emerald best is likely to blur: Ruby's own Wallace team and the forced Lv45 legendary against a level cap of 43. The vanilla Tate & Liza question is still a site example, with its answer and baseline in `docs/samples/` and `docs/baseline/`. `scripts/expected_answers.py` now also gives the level cap and the required wild battles before the target ("Cave of Origin: Groudon (Lv45)").
+
+**`OPPONENT_MOVE_WRONG`.** Live Emerald and Ruby runs said Juan's and Wallace's Sealeo "carries Ice Beam"; it has Aurora Beam. Battle notes were checked for type matchups but not for which moves the opponents have. The Verifier now reads each battle note for a move given to that battle's Pokémon ("Sealeo carries Ice Beam", "Milotic's Ice Beam", "Sealeo and Milotic, who both carry Ice Beam") and checks it against the team's moveset from `trainer_mons` (or the log's). A wrong one goes to the Writer as a correction, as `TYPE_CLAIM_WRONG` does. Pokémon whose moves a randomizer log leaves unknown are skipped.
+
+**Dropped citations left a gap.** When the Writer cited an id no tool returned, the marker was removed but the space before it stayed ("frail ."). `Ledger.cite` now removes the space with the marker.

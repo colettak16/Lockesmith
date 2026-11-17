@@ -66,7 +66,7 @@ def apply_state(state: RunState, u: StateUpdate, ctx: RequestContext) -> RunStat
 
 # Verifier findings the Writer fixes in the text rather than mentions: wrong matchups, and moves a party
 # Pokémon already knows offered as new
-CORRECTION_CODES = {"TYPE_CLAIM_WRONG", "MOVE_ALREADY_KNOWN"}
+CORRECTION_CODES = {"TYPE_CLAIM_WRONG", "MOVE_ALREADY_KNOWN", "OPPONENT_MOVE_WRONG"}
 
 
 def conversation_context(session: Session) -> str:

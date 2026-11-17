@@ -243,6 +243,13 @@ def test_cite_numbers_known_ids_and_drops_unknown():
     assert unknown == ["made:up"]
 
 
+def test_cite_leaves_no_gap_where_a_marker_cited_nothing_known():
+    ledger = Ledger()
+    ledger.add("progression:gym8_juan")
+    text, _, unknown = ledger.cite("Manectric is frail [[made:up]]. Juan is next [[progression:gym8_juan]].\nKey moves: Spark [[also:made-up]]")
+    assert text == "Manectric is frail. Juan is next [1].\nKey moves: Spark" and unknown == ["made:up", "also:made-up"]
+
+
 def test_cite_handles_ids_with_commas():
     ledger = Ledger()
     ledger.add("guide:Walkthrough:Pokemon_Emerald/Part_2#Stop,_Thief!")

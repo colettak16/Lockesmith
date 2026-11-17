@@ -6,7 +6,7 @@ Supporting material for the [main README](../README.md): the design record, the 
 
 | | |
 |---|---|
-| [decisions.md](decisions.md) | Every design decision, D1–D19, with the reason, what it cost and what testing turned up. "Data findings" lists where PokeAPI disagrees with the decomps. Start here for *why* something is built the way it is. |
+| [decisions.md](decisions.md) | Every design decision, D1–D20, with the reason, what it cost and what testing turned up. "Data findings" lists where PokeAPI disagrees with the decomps. Start here for *why* something is built the way it is. |
 | [deploy.md](deploy.md) | Cloud Run setup: continuous deploy from GitHub, IAP sign-in, Vertex AI permissions, session affinity, LangFuse keys. |
 | [images/](images/) | The LangFuse screenshots in the main README. |
 
@@ -15,7 +15,7 @@ Supporting material for the [main README](../README.md): the design record, the 
 | | |
 |---|---|
 | [samples/](samples/) | LockeSmith's full answers to nine of the site's twelve example questions, each as Markdown (`.md`) and the raw `/chat` response with every tool call (`.json`), from [`scripts/run_samples.py`](../scripts/run_samples.py). [expected.md](samples/expected.md) has the expected answers, generated from the databases by [`scripts/expected_answers.py`](../scripts/expected_answers.py). [vague.md](samples/vague.md) and [out-of-scope.md](samples/out-of-scope.md) show the agent asking a clarifying question and declining an off-topic one. |
-| [baseline/](baseline/) | The same questions put to Gemini 3.1 Pro with no tools and no system prompt ([`scripts/baseline.py`](../scripts/baseline.py)). |
+| [baseline/](baseline/) | The same questions put to Gemini 3.5 Flash with no tools and no system prompt ([`scripts/baseline.py`](../scripts/baseline.py)). |
 
 ## Checking the data
 

@@ -27,7 +27,7 @@ LockeSmith answers from the data instead.
 ## How to use it
 
 1. Open the site. Pick your **Game**, then fill in **Your run** on the left (starter and badges are required; party, rival, rules and a randomizer log are optional), or click one of the **Example** bubbles under the question box (hover one to see what it asks). One click fills in both the question and the run it needs. **What is this?** on the banner opens a short explainer.
-2. Press **Ask**. Live progress shows each researcher working in its own lane. A catch plan takes about a minute and a half.
+2. Press **Ask**. Live progress shows each researcher working in its own lane. A catch plan takes a minute or two.
 3. Read the answer:
    - pick cards (core vs. for-this-fight, where, when, backups)
    - the cited write-up, with `[n]` linking to its source
@@ -102,228 +102,262 @@ The tables behind the sample answers below are `trainer_mons` (every trainer's t
 
 ## Sample queries
 
-Each sample is one click on the site: **Examples 1, 2 and 3** under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. All three are Emerald runs. The example list also has a Sapphire catch plan and a Ruby Nuzlocke question, whose answers and baselines are in [docs/samples/](docs/samples/) and [docs/baseline/](docs/baseline/), and a FireRed catch plan and a LeafGreen evolution question; none of them is in the table. For each sample, the table below gives:
-- the **expected answer**, generated from `data/emerald.duckdb` by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md)), with the tables it comes from
-- the **baseline**: Gemini 3.1 Pro with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py)). It's the Lead's model and the strongest in the pipeline; the Clarifier, researchers and Writer run Gemini 3.5 Flash.
+Each sample is one click on the site: **Examples 1, 2 and 3** under the question box. Hovering one shows what it is, and clicking it fills in the question **and** the run state. Sample 1 is a Ruby run; samples 2 and 3 are Emerald. The example list also has a vanilla Emerald catch plan, a Sapphire catch plan, a FireRed catch plan and a LeafGreen evolution question, whose answers and baselines are in [docs/samples/](docs/samples/) and [docs/baseline/](docs/baseline/). For each sample, the table below gives:
+- the **expected answer**, generated from the game's database by [`scripts/expected_answers.py`](scripts/expected_answers.py) ([docs/samples/expected.md](docs/samples/expected.md)), with the files and tables it comes from
+- the **baseline**: Gemini 3.5 Flash with no tools and no system prompt, given the run state in words ([`scripts/baseline.py`](scripts/baseline.py)). Flash runs most of LockeSmith: the Clarifier, the four researchers and the Writer. The Lead uses Gemini 3.1 Pro.
 - **LockeSmith's answer**, from `POST /chat` ([`scripts/run_samples.py`](scripts/run_samples.py); traces in [docs/samples/](docs/samples/))
 
-The table summarizes both answers and what was checked; each sample's full baseline and LockeSmith answers are in the collapsed sections under it.
+Every baseline claim called wrong below was checked against the game's data. The full baseline and LockeSmith answers are in the collapsed sections under each table. These are the runs of Nov 16, with the code as submitted.
 
-### 1. Mid-game catch plan (vanilla)
+### 1. Ruby Nuzlocke: should I catch Groudon?
 
-> **Run:** Mudkip, rival May, 6 badges; party Marshtomp 33, Breloom 30, Swellow 31, Manectric 30.
-> **Question:** *What should I catch to get through Tate & Liza?*
+> **Run:** Ruby, Mudkip, rival May, 7 badges; party Swampert 41, Breloom 38, Swellow 38, Manectric 37; **Nuzlocke with level caps**.
+> **Question:** *Ruby Nuzlocke with level caps. Should I catch Groudon in the Cave of Origin, and what else do I need for Wallace?*
 
 | | |
 |---|---|
-| **Expected** (`trainer_mons`, `type_efficacy`, `encounters` via `get_catchable`) | A **double battle** against Claydol 41, Xatu 41, Lunatone 42 and Solrock 42 (both rock/psychic ones holding Sitrus Berries). Ghost and Dark hit all four super-effectively, Water three. Obtainable before the gym: Carvanha/Sharpedo (Super Rod: Routes 118, 119, 122, …), Shuppet (Mt. Pyre 1F–3F, 100%), Absol (Route 120 grass, 8%), Staryu (Lilycove, Super Rod 15%). |
-| **Baseline** ([full](docs/baseline/tate-liza.md)), 34 s, $0.03 | **Good.** Sharpedo (Super Rod in Mossdeep), Absol or Banette with TM30 Shadow Ball from Mt. Pyre, and Rain Dance from the gift Castform against Solrock's sun. It knows the team's moves, the Gen III physical/special split and that Surf spares your partner in Gen III doubles. Every specific fact I checked against the data was right. No sources. |
-| **LockeSmith** ([full](docs/samples/tate-liza.md)), 77 s, $0.17 | **Sharpedo** (Super Rod on Routes 103/118/122, Lv30–35, 40%) and **Shuppet → Banette** (Mt. Pyre 1F–3F, 100%), with backups Spheal and Absol. It flags that Surf and Crunch are special in Gen III, against Sharpedo's higher Attack. Battle notes: Claydol, Lunatone and Solrock have Levitate (immune to Ground), every foe knows Psychic (2× on Breloom), and Solrock's Sunny Day + Solar Beam does 4× to Swampert. 16 cited sources plus a coverage chart for the rest of the run. |
+| **Expected** (`data/ruby.duckdb`: `trainer_mons`, `type_efficacy`, `encounters` via `get_catchable`; story order from `data/progression_rs.yaml`) | Groudon is a required **Lv45** battle in the Cave of Origin before the gym. Wallace's ace is Milotic Lv43, so the **level cap is 43**, and a caught Groudon can't be used against him. Ruby's Wallace: Luvdisc 40, Whiscash 42 (Earthquake), Sealeo 40 (Aurora Beam), Seaking 42 (Horn Drill), Milotic 43 (Ice Beam, Recover). Grass hits all five super-effectively, Electric four. Catchable: Magnemite/Voltorb (New Mauville, 50%), Oddish (Safari Zone, 40%; Route 119, 30%), Chinchou (Route 124/126 seaweed, 30%). |
+| **Baseline** ([full](docs/baseline/ruby-nuzlocke-groudon.md)) | Gets the Groudon part right (Lv45, over the cap, so box it), then **answers from the wrong game**. Its Wallace has a Lv43 **Crawdaunt**, which is Juan's Pokémon in Emerald; Ruby's Wallace has Seaking. It builds its advice around Milotic's **Toxic** and **Surf**, moves Milotic doesn't have (it has Water Pulse, Twister, Recover and Ice Beam). And it says to catch Chinchou **with the Super Rod**; Chinchou are only in underwater seaweed, reached with Dive. No sources. |
+| **LockeSmith** ([full](docs/samples/ruby-nuzlocke-groudon.md)) | Catch Groudon (statics are free under these rules) but box it: Lv45 is over the cap of 43 (knocking it out or fleeing also clears the story event). Picks **Magnemite → Magneton** (New Mauville, 49–50%) with **Chinchou → Lanturn** (Route 124/126 seaweed, 30%) as the backup, and **Oddish → Vileplume** (Safari Zone 40%, Route 119 30%) for Whiscash's 4× Grass weakness, flagging the Leaf Stone it needs. It gives Ruby's real Wallace team, with Sealeo's Aurora Beam and Milotic's Ice Beam, and notes that Manectric's Lv45 Thunder is out of reach under the cap. The Verifier dropped a Spheal backup because Walrein needs Lv44, over the cap. 22 cited sources plus a coverage chart. |
 
 <details>
-<summary>Baseline's full answer (Gemini 3.1 Pro, no tools, no system prompt)</summary>
+<summary>Baseline's full answer (Gemini 3.5 Flash, no tools, no system prompt)</summary>
 
-Tate & Liza in *Pokémon Emerald* are notoriously one of the hardest Gym battles in the entire franchise. Because it’s a Double Battle and their team covers their weaknesses perfectly, your current team is going to have a very hard time.
+Here is the breakdown to help you make the best decisions for your Ruby Nuzlocke, keeping your level caps and rules in mind.
 
-Before looking at what to catch, we need to address two things:
-1. **You are severely underleveled.** Your team is level 30-33, but Tate & Liza’s Pokémon are **levels 41 and 42**. You need to grind to at least level 38-40.
-2. **Evolve Marshtomp.** Get Marshtomp to Level 36 so it evolves into Swampert.
+---
 
-Here is why this gym is so hard for your current party, followed by the best Pokémon you can catch right now to beat them.
+**Part 1: Should you catch Groudon in the Cave of Origin?**
+**Yes, you should catch it, but you CANNOT use it for Wallace.**
 
-**Why Your Current Team is in Danger**
-*   **Breloom** will be absolutely destroyed here. All four of their Pokémon have Psychic moves. Breloom is dead weight for this fight.
-*   **Marshtomp/Swampert** is great, but Solrock knows **Sunny Day** and **SolarBeam**. Because of Swampert's 4x weakness to Grass, one SolarBeam will instantly knock it out.
-*   **Manectric** is frail, and their lead Pokémon (Claydol) is a Ground-type immune to Electric moves and will use Earthquake to one-shot Manectric.
+Here is why:
+1. **The Level Cap Rule:** In Pokémon Ruby, Groudon is caught at **Level 45**. Wallace’s highest-level Pokémon (Milotic and Crawdaunt) are **Level 43**. Bringing Groudon to the Wallace fight would violate your level cap rule.
+2. **Type Disadvantage:** Even if you bent the level cap rule, Groudon is a Ground-type facing a Water-type gym. While its *Drought* ability weakens Water-type attacks, Groudon is still at risk of taking neutral super-effective-equivalent damage, and it doesn't have a natural type advantage here.
+3. **Save it for later:** You should absolutely still catch Groudon as your Cave of Origin encounter. Put it in the PC. Once you beat Wallace, the level cap will jump to **Lv. 58** (Steven’s Metagross). Groudon will be an incredibly powerful asset for the Elite Four and Steven.
 
-**What to Catch**
-To beat Tate & Liza, you need **Dark-types** (immune to Psychic) and Pokémon that can abuse **Surf** (which hits both opponents in a Double Battle).
+---
 
-**1. Carvanha / Sharpedo (The Glass Cannon MVP)**
-*   **Why:** It is Water/Dark. It is completely immune to their Psychic attacks, and its Water-typing resists Solrock's Flamethrower. Teach it **Surf** and it will deal massive damage to Claydol, Solrock, and Lunatone simultaneously. It also gets Crunch to deal with Xatu.
-*   **Where to get it:** You can fish with a Good Rod on Route 118 or 119 to get Carvanha, or wait until you get to Mossdeep City, grab the Super Rod, and fish right in the city to catch a high-level Sharpedo directly.
+**Part 2: What else do you need for Wallace?**
+Wallace's team in Pokémon Ruby is:
+*   **Luvdisc** (Lv. 40 - Water)
+*   **Sealeo** (Lv. 40 - Ice/Water)
+*   **Whiscash** (Lv. 42 - Water/Ground)
+*   **Crawdaunt** (Lv. 43 - Water/Dark)
+*   **Milotic** (Lv. 43 - Water)
 
-**2. Absol (The Physical Sweeper)**
-*   **Why:** Absol is a pure Dark-type, meaning it takes 0 damage from Psychic attacks. In Generation 3, Ghost-type moves are Physical, and Absol has a massive Physical Attack stat. Teach it **Shadow Ball** (TM30, found inside Mt. Pyre) and it will one-shot or two-shot almost everything in this gym.
-*   **Where to get it:** Route 120 (in the tall grass). It has a low encounter rate (around 8%), but it is entirely worth the hunt.
+Your current party is only 4 Pokémon. **You have 2 empty slots.** Since you are playing a Nuzlocke, you need to look at your PC and your remaining encounters to fill these slots.
 
-**3. Shuppet / Banette (The Ghost Hitter)**
-*   **Why:** If you don't want to hunt for Absol, Banette is an excellent alternative. It has incredibly high Physical Attack. Slap the **Shadow Ball** TM on it, and it will tear through Xatu, Lunatone, and Solrock.
-*   **Where to get it:** Mt. Pyre (you have to go here for the story anyway before facing the Gym).
+**1. Recommended Additions to your Team**
+*   **Tentacruel (Water/Poison):** Tentacool is incredibly easy to catch via Surf on almost any water route. Tentacruel has massive Special Defense, resists Water and Ice-type moves, and is immune to Milotic’s *Toxic*. It is the ultimate "pivot" Pokémon for this fight to safely absorb hits.
+*   **Chinchou/Lanturn (Water/Electric):** If you can catch one (by fishing with the Super Rod on Route 124/126), Lanturn is a cheat code for this gym. It resists Water and Ice, and hits back with Super-Effective Electric moves.
+*   **A "Sack" or Backup Grass-type:** If you have an Oddish/Gloom (from Safari Zone or Route 119), evolve it into Vileplume or Bellossom. Having a backup Grass-type is great security in case something happens to Breloom.
 
-**The Secret Weapon (Already in your PC!)**
-**Castform**
-You were given Castform at the Weather Institute. You should strongly consider bringing it into this fight for one reason: **Rain Dance**.
-Tate & Liza's ultimate strategy is to have Xatu or Solrock use Sunny Day, which allows Solrock to fire off SolarBeams with no charge turn to kill your Swampert. If you have Castform (or any fast Pokémon) use Rain Dance, the sun goes away. Solrock will now have to waste a turn charging SolarBeam, making it virtually useless, and Swampert's/Sharpedo's Surf attacks will get a massive 50% damage boost from the rain.
+**2. Strategy for your Current Party (Level Cap: 43)**
+First, **level up your team!** Bring Manectric, Breloom, and Swellow up to **Level 42 or 43**.
 
-**Recommended Strategy**
-Go into the battle with **Swampert** and **Sharpedo** (or Absol) as your leads.
-Turn 1, have Swampert use Surf (Surf doesn't hurt your own teammate in Gen 3!) and have your Dark-type focus entirely on taking down Claydol or Xatu. Keep Swampert away from Solrock unless you have changed the weather to Rain!
+*   **Manectric (The Sweeper):**
+    *   *Role:* Your primary weapon against Luvdisc, Sealeo, Crawdaunt, and Milotic.
+    *   *Tip:* Ensure it has **Thunderbolt** (obtained from Wattson after doing the New Mauville sidequest). Do *not* rely on Spark.
+    *   *Danger:* **Do not use Manectric against Whiscash.** Whiscash is Ground-type and immune to Electric. Also, Wallace's Milotic is incredibly bulky; if Manectric cannot OHKO it, Milotic can hit back hard with Surf or poison you with Toxic.
+*   **Breloom (The Whiscash Slayer):**
+    *   *Role:* To deal with Whiscash and Crawdaunt.
+    *   *Tip:* Gen 3 does *not* have the physical/special split yet. Grass is Special (Breloom’s weaker stat), but a Grass move (like **Mega Drain** or **Giga Drain** from TM19 on Route 123) will still easily 4x OHKO Whiscash because of Whiscash's double-weakness.
+    *   *Danger:* Watch out for Sealeo’s *Aurora Beam* and Milotic’s *Ice Beam*. They will do massive damage to Breloom. Do not keep Breloom in against them. Use **Mach Punch** or **Sky Uppercut** to quickly delete Crawdaunt.
+*   **Swampert (The Tank):**
+    *   *Role:* High-HP pivot. If Manectric or Breloom gets into trouble, Swampert can safely switch in to take a hit. It resists nothing here, but its sheer bulk makes it safe.
+*   **Swellow (The Bench Warmer):**
+    *   *Role:* Keep Swellow away from this fight. Sealeo and Milotic carry Ice-type moves that will easily OHKO Swellow. Only use it as a last-resort sacrifice if things go horribly wrong.
+
+**Summary Checklist for Wallace:**
+1. **Level up** Manectric, Breloom, and Swellow to Level 42.
+2. Teach Manectric **Thunderbolt** (if it doesn't have it).
+3. Teach Breloom a Grass-type TM (like **Giga Drain**) specifically for Whiscash.
+4. Catch and train a **Tentacruel** to Lv. 42 to act as your Special Defense wall against Milotic.
+5. Catch Groudon, but leave it in the PC until after the Gym Badge is yours.
 
 </details>
 
 <details>
 <summary>LockeSmith's full answer, with its sources</summary>
 
-Catch a Sharpedo or Shuppet to exploit Tate & Liza's type weaknesses, and level up Marshtomp to evolve into Swampert [1].
+You can catch Groudon to use later, but its Level 45 encounter violates Wallace's Level 43 cap, so you must box it for the Gym and rely on your party and new encounters [1][2].
 
 **Top picks**
-**Sharpedo (core)**
-* **Where:** Route 103, 118, or 122 [2][3]
-* **When:** Right now, using the Super Rod [2][3] (at Lv30-35) [2][3].
-* **Why it helps now:** Its Dark/Water typing grants it complete immunity to Tate & Liza's Psychic attacks [4]. With STAB Surf and Crunch, it can hit their entire team for super-effective damage [5]. *Note: In Gen III, Water and Dark are both special types, whereas Sharpedo has a massive 120 Attack and a lower 95 Sp. Atk.*
-* **Long run:** A potent glass cannon [4]. Its high offenses are very useful against Elite Four Phoebe's Ghost types [4].
-* **Backup:** **Spheal** (found walking in Shoal Cave B1F/B2F at Lv26-32 [6]). It evolves into Sealeo at Level 32 [7]. It has great bulk to survive hits, and Surf deals super-effective damage to Claydol, Solrock, and Lunatone [8]. In the long term, it evolves into Walrein at 44, offering S-tier value and acting as the ultimate counter to Elite Four Drake [8].
+**Magneton (from Magnemite) — *core* [3][4]**
+* **Where:** New Mauville (walk, Lv22-26, 49-50% encounter rate) [5].
+* **When:** Available immediately (requires Surf to access New Mauville) [3].
+* **Why it helps now:** Evolves into Magneton at level 30 [3][4]. Its massive Special Attack and Electric typing allow it to sweep through most of Wallace's Water-types [3][4]. Its Steel typing grants invaluable defensive resistances against Ice-type moves like Milotic's Ice Beam [3][4].
+* **Key Moves:** Thunderbolt [3].
+* **Long run:** Outstanding against Glacia (resists Ice) and useful against Steven's Skarmory, Cradily, and Armaldo, though it must avoid Ground-type attacks due to a 4x weakness [3][4].
+* **Backup:** **Lanturn** (from Chinchou, Route 124 or 126 Underwater in seaweed, Lv20-30, 30%) [6]. Its Volt Absorb ability and Water/Electric typing make it a perfect defensive wall against other Water-types, taking minimal damage while striking back with super-effective Electric moves [7][8]. It has an incredible matchup against Glacia's Water-types and Steven's Skarmory, though lower offensive stats mean it relies on matching up defensively [7][8].
 
-**Shuppet (for this fight)**
-* **Where:** Mt. Pyre 1F-3F [9] (walking at Lv22-29) [9].
-* **When:** Right now, at Mt. Pyre [9].
-* **Why it helps now:** It evolves into Banette at Level 37 [10]. Ghost-type moves are physical in Gen III, so Banette's massive 115 Attack allows physical Shadow Ball to completely shred the relatively fragile physical defenses of Tate & Liza's team [11].
-* **Long run:** Great offensive asset against Elite Four Phoebe, but its low Speed and defensive stats make it risky in later boss fights [11].
-* **Backup:** **Absol** (found walking on Route 120 at Lv25-27 [12]). It boasts a colossal 130 base Attack [13]. By teaching it Shadow Ball (TM30), it can bypass its Special Dark typing and crush the Mossdeep Gym leaders with physical Ghost damage [13]. It is a strong physical attacker, but relies on TM support since Dark-type moves run off its lower 75 Sp. Attack [13].
+**Vileplume (from Oddish) — *core* [9][10]**
+* **Where:** Safari Zone SE/SW (walk, Lv25-27, 40%) or Route 119 (walk, Lv24-27, 30%) [11].
+* **When:** Available immediately [9].
+* **Why it helps now:** Wallace's Whiscash is immune to Electric attacks and can threaten your Electric-types with Ground moves [9][2]. A Grass-type like Vileplume or Bellossom will hit Whiscash for 4x super-effective damage [9][10][12]. *Note: Vileplume needs a Leaf Stone; ensure you can acquire one before the battle.*
+* **Key Moves:** Giga Drain, Sleep Powder [9].
+* **Long run:** Extremely useful for countering heavy Ground- and Rock-types in Steven's champion team [9].
+* **Backup:** None.
 
 ---
 
 **Key Battles**
-**Gym 7: Tate & Liza**
-Tate & Liza use Claydol, Xatu, Lunatone, and Solrock (up to Level 42) [14][15]. Claydol, Lunatone, and Solrock all have the Levitate ability, making them completely immune to Ground-type attacks [16]. Every Pokémon on their team knows Psychic, which hits Breloom for 2x super-effective damage [14][15]. Solrock also carries Sunny Day and Solar Beam, threatening Marshtomp/Swampert with a 4x super-effective Grass-type attack [15].
+**Groudon (Cave of Origin)**
+The Cave of Origin encounter with Groudon is a mandatory story event [1]. You do not have to catch it; defeating it or fleeing will also clear the event and unlock Sootopolis Gym [1][2]. If you do catch it, it is encountered at Level 45, which exceeds Wallace's Level 43 cap, meaning you must keep it in the PC for the Gym battle [1][2].
 
-Your Marshtomp is currently Level 33, while Tate & Liza's team reaches Level 42 [15]. Marshtomp evolves into Swampert at Level 36 [1], gaining crucial stats to survive, so make sure to level it up before tackling this gym.
+**Gym 8 Leader: Wallace**
+Wallace leads with Luvdisc (Lv40) and has Whiscash (Lv42), Sealeo (Lv40), Seaking (Lv42), and Milotic (Lv43) [13][14][15][16][17].
+* **Whiscash** is immune to Electric and carries Ground moves [14][18]. Your Breloom provides a great answer, learning Sky Uppercut at Level 36 [19], while a Grass-type like Vileplume can hit its 4x Grass weakness [9][18].
+* **Sealeo** (Aurora Beam) and **Milotic** (Ice Beam) can hit your Grass and Flying types (Breloom, Swellow) for super-effective damage [15][17][18].
+* **Manectric** is perfectly positioned to sweep much of Wallace's team, learning Bite at Level 39 [20]. It learns Thunder at Level 45, but this will be unavailable due to the Level 43 cap [21][2].
 
 ---
 
 **Assumptions**
-* You have access to the Super Rod.
-* You still have the TM for Shadow Ball (TM30) if you choose to use Shuppet/Banette or Absol.
+* You are allowing the use of legendary Pokémon as long as they adhere to your level caps [22].
+* You have not already exhausted your encounters in New Mauville or the Safari Zone [22].
 
 **To sharpen this**
-* Have you already used TM30 (Shadow Ball)?
-* Are you planning to complete the optional Lilycove City rival battle to unlock the Department Store TMs?
+* What are the current movesets of your Swampert, Breloom, Swellow, and Manectric?
+* Do you already have a Leaf Stone or Sun Stone to evolve a Gloom?
 
 **Not covered**
-* Any specific items or party composition beyond the recommended captures.
+* Whether your specific Nuzlocke ruleset bans legendary Pokémon altogether, regardless of level caps [22].
+
+**Rules I followed**
+- Nuzlocke: first encounter per named location only; gifts, statics and trades are free (checked by the Verifier)
+- level caps: stay at or below the next boss's highest level (checked by the Verifier)
 
 **Sources**
-1. PokeAPI: Marshtomp evolves into Swampert (`pokeapi:pokemon_evolution#135`)
-2. PokeAPI: Sharpedo at Route 103 (super-rod) (`pokeapi:encounters#29611`)
-3. PokeAPI: Carvanha at Route 118 (super-rod) (`pokeapi:encounters#29835`)
-4. PokeAPI: Sharpedo (species data) (`pokeapi:pokemon_species#319`)
-5. PokeAPI: Sharpedo learns Crunch (level-up) (`pokeapi:pokemon_moves#319/242/level-up/22`)
-6. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
-7. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
-8. PokeAPI: Walrein (species data) (`pokeapi:pokemon_species#365`)
-9. PokeAPI: Shuppet at Mt. Pyre (walk) (`pokeapi:encounters#29953`)
-10. PokeAPI: Shuppet evolves into Banette (`pokeapi:pokemon_evolution#180`)
-11. PokeAPI: Banette (species data) (`pokeapi:pokemon_species#354`)
-12. PokeAPI: Absol at Route 120 (walk) (`pokeapi:encounters#30560`)
-13. PokeAPI: Absol (species data) (`pokeapi:pokemon_species#359`)
-14. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/1) (`decomp:trainer_parties.h#sParty_TateAndLiza1/1`)
-15. pokeemerald src/data/trainer_parties.h (sParty_TateAndLiza1/4) (`decomp:trainer_parties.h#sParty_TateAndLiza1/4`)
-16. database query a5bbcba1f9 (`sql:a5bbcba1f9`)
+1. Story progression (data/progression_rs.yaml): Cave of Origin: Groudon (Lv45) (`progression:legendary_cave_of_origin`)
+2. Story progression (data/progression_rs.yaml): Sootopolis Gym: Wallace (`progression:gym8_wallace`)
+3. PokeAPI: Magnemite (species data) (`pokeapi:pokemon_species#81`)
+4. PokeAPI: Magneton (species data) (`pokeapi:pokemon_species#82`)
+5. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#27243`)
+6. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#27832`)
+7. PokeAPI: Chinchou (species data) (`pokeapi:pokemon_species#170`)
+8. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
+9. PokeAPI: Oddish (species data) (`pokeapi:pokemon_species#43`)
+10. PokeAPI: Vileplume (species data) (`pokeapi:pokemon_species#45`)
+11. PokeAPI: Oddish at Safari Zone (walk) (`pokeapi:encounters#28074`)
+12. PokeAPI: Bellossom (species data) (`pokeapi:pokemon_species#182`)
+13. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/1) (`decomp:trainer_parties.h#gTrainerParty_Wallace/1`)
+14. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/2) (`decomp:trainer_parties.h#gTrainerParty_Wallace/2`)
+15. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/3) (`decomp:trainer_parties.h#gTrainerParty_Wallace/3`)
+16. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/4) (`decomp:trainer_parties.h#gTrainerParty_Wallace/4`)
+17. pokeruby src/data/trainer_parties.h (gTrainerParty_Wallace/5) (`decomp:trainer_parties.h#gTrainerParty_Wallace/5`)
+18. Gen 3 type chart (pokeruby data/type_effectiveness.inc) (`rules:gen3_type_chart`)
+19. PokeAPI: Breloom learns Sky Uppercut (level-up) (`pokeapi:pokemon_moves#286/327/level-up/36`)
+20. PokeAPI: Manectric learns Bite (level-up) (`pokeapi:pokemon_moves#310/44/level-up/39`)
+21. PokeAPI: Manectric learns Thunder (level-up) (`pokeapi:pokemon_moves#310/87/level-up/45`)
+22. LockeSmith's Ruby rules (agent/brief.py, checked in docs/audit/engine.txt) (`rules:game`)
 
 </details>
 
 ### 2. Nuzlocke into Juan
 
-> **Run:** 7 badges; party Swampert 42, Breloom 40, Swellow 40, Manectric 39; **Nuzlocke, dupes clause, level caps**, with 23 areas already used.
+> **Run:** Emerald, Mudkip, rival May, 7 badges; party Swampert 42, Breloom 40, Swellow 40, Manectric 39; **Nuzlocke, dupes clause, level caps**, with 23 areas already used.
 > **Question:** *Nuzlocke with the dupes clause and level caps. Juan is next; what should I catch?*
 
 | | |
 |---|---|
-| **Expected** (`trainer_mons` for Juan's team and so the level cap, `type_efficacy`, `encounters` via `get_catchable` with the used areas removed) | Juan: Luvdisc 41, Whiscash 41, Sealeo 43, Crawdaunt 43, **Kingdra 46** (Water Pulse, Double Team, Ice Beam, Rest; Chesto Berry). That makes the **level cap 46**. Grass hits 4 of 5 super-effectively, Electric 3. Still catchable in unused areas: Magnemite/Voltorb (New Mauville, 50%), Chinchou (Route 124 seaweed, 30%), Oddish (Route 123), Lileep (fossil gift). |
-| **Baseline** ([full](docs/baseline/nuzlocke-juan.md)), 54 s, $0.06 | Reasonable picks (Magneton, Walrein, Lanturn, Starmie), all from areas not yet used, and Kingdra's moves and TM34 Shock Wave are right. But **three claims are wrong**: Magneton learns Lock-On at **Lv35**, not 33; it doesn't learn **Swift** by level-up (its Lv44 move is Tri Attack); and the tip to hold a **Cheri Berry** against Water Pulse's confusion names the wrong berry (Cheri cures paralysis). The first two are in LockeSmith's data; berry effects aren't. |
-| **LockeSmith** ([full](docs/samples/nuzlocke-juan.md)), 71 s, $0.19 | **Spheal → Walrein** (Shoal Cave, 50%) and **Staryu → Starmie** (Lilycove, Super Rod, 15%; needs a Water Stone), with **Chinchou → Lanturn** (Route 124/126 seaweed, 30%) as the backup. Each place was checked against the 23 used areas, the dupes clause and the level cap of 46. It warns that Kingdra's Ice Beam threatens Breloom and Swellow and Whiscash's Earthquake threatens Manectric, and points to the Ice Beam and Thunderbolt TMs at the Mauville Game Corner. A "Rules I followed" section lists what the Verifier checked. One omission: the Lilycove Department Store TMs it also mentions need the Lilycove rival battle first. |
+| **Expected** (`data/emerald.duckdb`: `trainer_mons` for Juan's team and so the level cap, `type_efficacy`, `encounters` via `get_catchable` with the used areas removed) | Juan: Luvdisc 41, Whiscash 41, Sealeo 43, Crawdaunt 43, **Kingdra 46** (Water Pulse, Double Team, Ice Beam, Rest; Chesto Berry). That makes the **level cap 46**. Grass hits 4 of 5 super-effectively, Electric 3. Still catchable in unused areas: Magnemite/Voltorb (New Mauville, 50%), Chinchou (Route 124 seaweed, 30%), Oddish (Route 123), Lileep (fossil gift). |
+| **Baseline** ([full](docs/baseline/nuzlocke-juan.md)) | Sensible picks (Lanturn, Magneton, Walrein) from unused areas, but it **gets Juan's team wrong** and plans the fight around it: it gives Sealeo **Blizzard** (Juan's Sealeo has Aurora Beam) and Crawdaunt **Swords Dance** (it has Taunt and Leer). It puts Chinchou on **Route 127** (only Routes 124 and 126 have them), and it says to surf for Spheal in Shoal Cave, calling it "a very common encounter"; surfing finds Spheal 10% of the time, at high tide only, while walking finds them 50%. No sources. |
+| **LockeSmith** ([full](docs/samples/nuzlocke-juan.md)) | **Spheal → Walrein** (Shoal Cave, walking, 50%) and **Chinchou → Lanturn** (Route 124 seaweed, 30%, once Dive is usable), with backups **Staryu → Starmie** (Lilycove, Super Rod, 15%; flags the Water Stone) and **Magnemite** (New Mauville). Each place was checked against the 23 used areas, the dupes clause and the level cap of 46, and a "Rules I followed" section lists what the Verifier checked. The battle notes give Kingdra's real stall set (Double Team, Ice Beam, Rest, Chesto Berry) and Whiscash's Earthquake against Electric types. 17 cited sources plus a coverage chart. |
 
 <details>
-<summary>Baseline's full answer (Gemini 3.1 Pro, no tools, no system prompt)</summary>
+<summary>Baseline's full answer (Gemini 3.5 Flash, no tools, no system prompt)</summary>
 
-With 7 badges down, your level cap for Juan is **Level 46** (his ace is Kingdra).
+You are in a great position, but Juan’s gym is notoriously dangerous—not because his team is overwhelming, but because of his final Pokémon: **Kingdra**.
 
-Looking at your current team, **Manectric** and **Breloom** match up incredibly well against 4 of Juan's 5 Pokémon. Breloom will absolutely destroy Whiscash (which has a 4x weakness to Grass and no Ice moves), and Manectric can sweep Luvdisc, Sealeo, and Crawdaunt with Thunderbolt.
+Juan’s **Kingdra (Lv. 46)** runs a highly annoying stall set: **Double Team, Rest (holding a Chesto Berry), Water Pulse, and Ice Beam**. If it gets a few Double Teams off, it can easily sweep your entire team through evasion.
 
-However, Juan’s ace—**Kingdra**—is a notorious run-killer. It has Water Pulse, Ice Beam, Rest (with a Chesto Berry), and Double Team. Because it is his final Pokémon, you cannot use Roar or Whirlwind to phase away its Double Team boosts.
-
-Looking at your list of used areas, you have left some of the best locations in the game untouched. Here is exactly what you should go catch to counter Kingdra and build your team for the Elite Four:
-
-**1. The Ultimate Kingdra Counter: Magneton**
-**Location:** New Mauville (Surf from Route 110)
-**Encounter:** Magnemite / Voltorb (If you get Voltorb, Electrode is still great, but Magneton is the prize).
-*   **Why it's perfect:** Magneton is Electric/Steel. Steel resists Kingdra’s Ice Beam, and Electric takes neutral damage from Water Pulse. More importantly, Magneton learns **Lock-On** (Lv 33) and **Swift** (Lv 44) natively.
-*   **The Strategy:** You can either use Lock-On followed by Thunderbolt to guarantee a hit through 6 Double Teams, or teach it **Shock Wave** (TM34 from Wattson), which is a "never-miss" Electric move. Magneton completely walls Kingdra and slowly whittles it down without missing.
-
-**2. The Unkillable Tank: Spheal (Walrein)**
-**Location:** Shoal Cave (Route 125, north of Mossdeep)
-**Encounter:** Spheal / Sealeo (or Snorunt, but Spheal is most common)
-*   **Why it's perfect:** If you evolve Spheal into Walrein (Lv 44), you get a massive Water/Ice tank with the ability Thick Fat. It resists Water Pulse and takes 1/4 damage from Ice Beam.
-*   **The Strategy:** Walrein is your ultimate safe switch. It can soak up Kingdra's hits indefinitely, heal up, and use Body Slam to fish for Paralysis, effectively neutralizing Kingdra's speed and Double Team evasion advantage. (Walrein is also basically mandatory to easily beat Drake in the Elite Four).
-
-**3. The Perfect Pivot: Chinchou (Lanturn)**
-**Location:** Underwater (Dive on Route 124 or 126)
-**Encounter:** Chinchou / Clamperl / Relicanth
-*   **Why it's perfect:** Lanturn (evolves at Lv 27) is Water/Electric. It resists both of Kingdra's attacking moves (Water and Ice).
-*   **The Strategy:** Like Magneton, you can teach it Shock Wave (TM34) to bypass Double Team. It has a massive HP pool and can comfortably sit in front of Kingdra all day while hitting it with STAB Electric moves.
-
-**4. The Fast Sweeper: Staryu (Starmie)**
-**Location:** Lilycove City (Fish with the Super Rod)
-**Encounter:** Staryu (15% chance, repels + level manipulation can help depending on dupes)
-*   **Why it's perfect:** Starmie is blazing fast and has fantastic Special Attack. It resists Water and Ice.
-*   **The Strategy:** You can teach it Thunderbolt (Game Corner TM), Ice Beam (Abandoned Ship TM), Recover, and either Swift or Shock Wave. It can outspeed and out-damage almost anything Juan throws at you.
+Since your level cap for this fight is **46**, you have plenty of room to train. Here are the best encounters you can grab right now to secure a deathless victory, followed by a strategy for the fight.
 
 ---
 
-**How to route the Gym Fight:**
-1. **Lead with Manectric:** OHKO his **Luvdisc** with Thunderbolt.
-2. **Switch to Breloom on Whiscash:** Whiscash will likely try to set up Rain Dance or Amnesia. Breloom is faster and will OHKO it with Giga Drain (TM19 from Route 123) or chunk it massively with Sky Uppercut/Mach Punch.
-3. **Bring Manectric back out:** Thunderbolt will OHKO or 2HKO **Sealeo** and **Crawdaunt**. (If Manectric gets low, Swampert and Breloom can help clean these two up).
-4. **The Kingdra Finale:** Switch into your new **Magneton** or **Lanturn**. Spam **Shock Wave** (TM34). Because Shock Wave never misses, Double Team is completely useless. Let Kingdra use Rest to consume its Chesto Berry, then keep spamming Shock Wave until it goes down.
+**Best Encounters to Grab Right Now**
+**1. The Best Choice: Chinchou / Lanturn (Route 124, 126, or 127 - Underwater)**
+* **How to get it:** Use **Dive** in the seaweed of Route 124, 126, or 127. If you use the Dupes Clause to ignore Tentacool/Clamperl, you have an incredibly high chance of finding Chinchou.
+* **Why it’s amazing:** Lanturn is a Water/Electric type with a massive HP pool. It **resists both Water and Ice**, meaning Juan's Kingdra and Sealeo can barely scratch it. It can comfortably chip away at Kingdra and easily dispatch Luvdisc, Sealeo, and Crawdaunt with Thunderbolt. *Bonus: It is also the ultimate counter to the Champion, Wallace.*
 
-**Pro Nuzlocke Tip:** Give your Kingdra counter a **Cheri Berry** to hold. Kingdra's Water Pulse has a 20% chance to confuse, which is the only way it can reliably break your strategy if it gets lucky. Removing that RNG makes this fight a guaranteed win.
+**2. The Guaranteed Choice: Magnemite / Magneton (New Mauville)**
+* **How to get it:** Surf from Route 110 to the entrance of New Mauville. Inside, you have a 100% encounter rate for the Magnemite or Voltorb lines.
+* **Why it’s amazing:** Magneton (Electric/Steel) is a fantastic pivot. Steel-type **resists Ice Beam**, meaning Sealeo and Kingdra cannot hit it hard. Magneton’s massive Special Attack stat makes short work of Juan’s Water-types.
+
+**3. The Future-Proof Choice: Spheal / Walrein (Shoal Cave - North of Mossdeep)**
+* **How to get it:** Surf inside Shoal Cave. Spheal is a very common encounter.
+* **Why it’s amazing:** While not the absolute best counter to Juan (it’s Water/Ice), Walrein is incredibly bulky, has the *Thick Fat* ability (halving Ice/Fire damage), and is an absolute **must-have** for the Elite Four, especially against Drake's Dragon-types later.
+
+*Note on PC Box:* If you happened to catch a **Nincada** on Route 116 earlier and evolved it into **Shedinja**, check its moves. Kingdra's only attacking moves are Water Pulse (Water) and Ice Beam (Ice). **Shedinja is completely immune to both**. If you have Shedinja, you can send it out against Kingdra and slowly chip it to death with absolute safety.
+
+---
+
+**Strategic Strategy for Juan (Level Cap: 46)**
+Bring your team up to **Level 45-46**. Your current party actually has the perfect tools to dismantle Juan if you play smart.
+
+**1. The Lead: Luvdisc (Lv. 41)**
+* **The Threat:** Attract, Sweet Kiss (Confusion stall).
+* **The Counter:** Lead with **Manectric** (or Magneton/Lanturn if you caught one). Thunderbolt or Spark should easily 1-shot it before it can confuse you.
+
+**2. Whiscash (Lv. 41)**
+* **The Threat:** Amnesia and Earthquake. Immune to Electric.
+* **The Counter:** Switch immediately to **Breloom**. Whiscash is 4x weak to Grass. A single **Giga Drain** or Bullet Seed will instantly delete it.
+
+**3. Sealeo (Lv. 43) and Crawdaunt (Lv. 43)**
+* **The Threat:** Sealeo has Blizzard/Body Slam; Crawdaunt has Crabhammer/Swords Dance.
+* **The Counter:** Use **Manectric** (or your new Electric encounter). Do not use Breloom against Sealeo, as Blizzard will do massive damage. Manectric outspeeds both and should comfortably 1-shot or 2-shot them with Electric moves.
+
+**4. The Boss: Kingdra (Lv. 46)**
+* **The Threat:** Double Team evasion spam.
+* **The Strategy:** Evasion bypass is your secret weapon here.
+    * **Swellow** naturally learns **Aerial Ace** at Level 38 (or via TM). **Aerial Ace cannot miss**, completely bypassing Kingdra's Double Team.
+    * **Manectric** can be taught **Shock Wave** (TM34 from Wattson). **Shock Wave also cannot miss**.
+    * **How to execute:** If you have **Lanturn**, you can slow-poison Kingdra with Toxic (TM06 from Fiery Path) and stall it out because Lanturn resists all of Kingdra's attacks. Otherwise, use Manectric to hit it hard, and if it starts spamming Double Team, pivot to Swellow or Manectric to spam **Aerial Ace / Shock Wave** until it goes down.
+
+Good luck! Secure that Chinchou or Magnemite, get your team to Level 45, and the Rain Badge is yours.
 
 </details>
 
 <details>
 <summary>LockeSmith's full answer, with its sources</summary>
 
-Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rounding out your team's coverage [1][2].
+Target Spheal in Shoal Cave and Chinchou on Route 124 underwater to prepare for Juan's Level 46 cap [1].
 
 **Top picks**
-**Spheal (Walrein) — Core [1][3]**
-* **Where:** Shoal Cave (B1F, B2F, or High-Tide), walking, Levels 26-32 (50% encounter rate) [1][4].
-* **When:** Available right now, before facing the Mossdeep Space Center or Juan [1].
-* **Why it helps now:** Juan's Kingdra is a notorious run-killer with Double Team, Rest, and Ice Beam [5]. Walrein's massive bulk and Thick Fat ability let it easily tank Ice Beam and Water Pulse, allowing it to sit in against Kingdra and hit back with Ice-type attacks [5].
-* **Long run:** Walrein is one of the best Elite Four Pokémon in Hoenn [3]. Its Ice-type STAB is critical for defeating Drake's Dragon-types, and its durability makes it excellent against Wallace [3].
-* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
+**Spheal (Tank / Ice Attacker) — **Core** [2]**
+* **Where:** Shoal Cave, Walking (Lv26-32, 50% rate, guaranteed if you have Zubat/Golbat) [3][4][5]
+* **When:** Available immediately, but evolve before Lv46 [6]
+* **Why:** With Thick Fat, Walrein minimizes Ice-type damage and has the bulk to take on Juan's stalling team safely [2][6].
+* **Long run:** Essential for defeating Drake of the Elite Four with powerful Ice-type moves [6].
+* **Backup:** Staryu (Lilycove City via Super Rod, 15% rate) [7]. Starmie is incredibly fast with deep coverage (Thunderbolt, Ice Beam, Surf) to sweep [8]. *Note: Starmie requires a Water Stone; make sure you can obtain one before facing Juan.*
 
-**Staryu (Starmie) — Core [2][9]**
-* **Where:** Lilycove City, Super Rod, Levels 25-30 (15% encounter rate) [2].
-* **When:** Available right now in Lilycove City [2].
-* **Why it helps now:** Starmie is a premier fast attacker [9]. With access to Thunderbolt and Ice Beam via TMs, it can effortlessly sweep the rest of Juan's team (Luvdisc, Sealeo, Crawdaunt) before you have to face Kingdra [5][10].
-* **Long run:** Starmie's unmatched coverage (Surf, Thunderbolt, Ice Beam, Psychic) and high Speed make it a top-tier sweeper for the entire Elite Four [9].
-* **Backup:** Chinchou (Lanturn) [6][7] (Route 124 or 126 Underwater, seaweed, 30% encounter rate [8]).
-
-*Note: Starmie requires a Water Stone to evolve [9]. Make sure you have one available before challenging Juan.*
+**Chinchou (Electric/Water Pivot) — **Core** [9]**
+* **Where:** Route 124 (underwater), Seaweed (Lv20-30, 30% rate) [10]
+* **When:** Available as soon as Dive is usable (after Space Center) [11]
+* **Why:** Lanturn's typing resists Water and Ice, and it hits Juan's team super-effectively with STAB Electric moves [9][6].
+* **Long run:** Volt Absorb and excellent HP make Lanturn an incredible tank and pivot against Wallace and Glacia [9][12].
+* **Backup:** Magnemite (New Mauville, ~49% rate) [13]. Magneton offers high Special Attack to clear Water-types (though it must dodge Whiscash's Earthquake) and key Steel-type resistances for the Elite Four [14][15].
 
 ---
 
 **Key Battles**
 **Gym 8: Juan**
-* **Watch out for:** Juan's Kingdra (Lv46) has Double Team, Rest (holding a Chesto Berry), Water Pulse, and Ice Beam [5]. It threatens Breloom and Swellow with super-effective Ice-type damage [11][5].
-* **Ground Caution:** Be careful with Manectric, as Juan's Whiscash knows Earthquake [12].
-
----
-
-**Key Steps**
-1. **Check your Level Cap:** Juan's highest-level Pokémon is his Kingdra at Level 46 [5]. Ensure your team stays at or below this level limit [13].
-2. **Equip Key TMs:** Purchase TM13 Ice Beam and TM24 Thunderbolt from the Mauville Game Corner for your new catches, or pick up TM25 Thunder and TM14 Blizzard from the Lilycove Department Store [14][15][10][16].
+* Juan's team is capped at Level 46 (Kingdra) [16].
+* Whiscash knows Earthquake, which threatens Electric-type counters [17].
+* Kingdra stalls with Double Team, Ice Beam, Rest, and a Chesto Berry, requiring high bulk or burst damage to overcome safely [16].
 
 ---
 
 **Assumptions**
-* You have the Super Rod needed to fish for Staryu.
-* You have access to a Water Stone to evolve Staryu.
+* You have not caught Zubat or Golbat yet, but encountering them triggers the dupes clause for a guaranteed Spheal encounter.
 
 **To sharpen this**
-* Do you already have a Water Stone for Staryu, or need to know where to find one?
+* Do you already have a Zubat or Golbat registered in your Pokédex?
+* Do you have the Storage Key for the Abandoned Ship to access TM13 Ice Beam?
+
+**Not covered**
+* Other potential encounter areas requiring HMs not yet unlocked.
 
 **Rules I followed**
 - Nuzlocke: first encounter per named location only, dupes clause; gifts, statics and trades are free (checked by the Verifier)
@@ -331,162 +365,163 @@ Spheal and Staryu are excellent additions to handle Juan and the Elite Four, rou
 - level caps: stay at or below the next boss's highest level (checked by the Verifier)
 
 **Sources**
-1. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
-2. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
-3. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
-4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70808`)
-5. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
-6. PokeAPI: Chinchou evolves into Lanturn (`pokeapi:pokemon_evolution#95`)
-7. PokeAPI: Lanturn (species data) (`pokeapi:pokemon_species#171`)
-8. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
-9. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
-10. pokeemerald data/maps/MauvilleCity_GameCorner (TM13) (`decomp:data/maps/MauvilleCity_GameCorner#TM13`)
-11. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
-12. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)
-13. database query ef2ed14180 (`sql:ef2ed14180`)
-14. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM25) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM25`)
-15. pokeemerald data/maps/LilycoveCity_DepartmentStore_4F (TM14) (`decomp:data/maps/LilycoveCity_DepartmentStore_4F#TM14`)
-16. pokeemerald data/maps/MauvilleCity_GameCorner (TM24) (`decomp:data/maps/MauvilleCity_GameCorner#TM24`)
+1. LockeSmith's Emerald rules (agent/brief.py) (`rules:game`)
+2. PokeAPI: Spheal (species data) (`pokeapi:pokemon_species#363`)
+3. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#30883`)
+4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70746`)
+5. PokeAPI: Zubat at Shoal Cave (walk) (`pokeapi:encounters#70741`)
+6. database query a490601260 (`sql:a490601260`)
+7. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
+8. PokeAPI: Staryu (species data) (`pokeapi:pokemon_species#120`)
+9. PokeAPI: Chinchou (species data) (`pokeapi:pokemon_species#170`)
+10. PokeAPI: Chinchou at Route 124 (seaweed) (`pokeapi:encounters#29872`)
+11. Story progression (data/progression.yaml): Mossdeep Space Center: Maxie & Tabitha (multi battle with Steven) (`progression:space_center`)
+12. database query b86cf59b31 (`sql:b86cf59b31`)
+13. PokeAPI: Magnemite at New Mauville (walk) (`pokeapi:encounters#30487`)
+14. PokeAPI: Magnemite (species data) (`pokeapi:pokemon_species#81`)
+15. database query 86f8f978ec (`sql:86f8f978ec`)
+16. pokeemerald src/data/trainer_parties.h (sParty_Juan1/5) (`decomp:trainer_parties.h#sParty_Juan1/5`)
+17. pokeemerald src/data/trainer_parties.h (sParty_Juan1/2) (`decomp:trainer_parties.h#sParty_Juan1/2`)
 
 </details>
 
 ### 3. Randomized gym
 
-> **Run:** as in sample 1, plus the uploaded **sample randomizer log** ([static/samples/fire-tate-liza.log](static/samples/fire-tate-liza.log)), in which Tate & Liza use Fire types.
+> **Run:** Emerald, Mudkip, rival May, 6 badges; party Marshtomp 33, Breloom 30, Swellow 31, Manectric 30; plus the uploaded **sample randomizer log** ([static/samples/fire-tate-liza.log](static/samples/fire-tate-liza.log)), in which Tate & Liza use Fire types.
 > **Question:** *What should I catch to get through Tate & Liza?*
 
 | | |
 |---|---|
 | **Expected** (the log, read into a session view of `trainer_mons`; `type_efficacy`; `encounters` via `get_catchable`) | Camerupt 41, Torkoal 41, Magcargo 42 and Houndoom 42 (Sitrus Berries on the last two). Water and Ground hit all four super-effectively. Wild Pokémon are vanilla in this log: Carvanha/Sharpedo, Barboach (Super Rod: Routes 111, 114, 120), Spheal and others. |
-| **Baseline** ([full](docs/baseline/randomizer-tate-liza.md)), 52 s, $0.05 | **Good here, because the sample log is short enough to paste into the prompt.** A "double Surf" with Swampert plus Starmie, Tentacruel or Gyarados/Pelipper, with the right type math (Camerupt and Magcargo are 4× weak to Water). **Two claims the data contradicts:** TM26 Earthquake is in Seafloor Cavern, which needs Dive and so opens only after this gym, and wild Tentacruel live only at the Abandoned Ship, not "almost any ocean route". A real UPR log covers all 855 trainers and every wild table; LockeSmith's full-size test log for Emerald is 6,000 lines before movesets and stats, far too much to paste usefully into a chat. |
-| **LockeSmith** ([full](docs/samples/randomizer-tate-liza.md)), 82 s, $0.20 | It reads the team from the log (cited as "Your randomizer log: Leader Tate&Liza's team"), with the level-up moves UPR gives randomized trainers (Camerupt's Earthquake and Rock Slide), and recommends **Spheal** (Shoal Cave, 50%) and **Sharpedo** (Super Rod, Routes 103/118, 40%), with Shuppet as Sharpedo's backup. The Verifier rewrote Sharpedo's "where" line from the encounter data and flagged that Surf is special for Sharpedo. **Two weak spots:** Spheal's backup, Aron, is caught at Lv9–12 and is 4× weak to the Earthquake the answer itself warns about, and it says Swampert learns Muddy Water at Lv37 (that's Marshtomp's level; Swampert's is 39). The Verifier checks that picks can be caught and their moves learned in time; it doesn't judge whether a backup suits the fight, or check learn levels in advice about the player's own party. |
+| **Baseline** ([full](docs/baseline/randomizer-tate-liza.md)) | Reads the log's team right, since the whole sample log fits in its prompt, and goes for Water moves and a double Surf. But **its catch advice is wrong in four places**. It says Spheal takes **1/4** damage from Fire; Ice cancels Water's resistance, so it's 1/2 even with Thick Fat. It says Tentacruel can be caught surfing Routes 124–126; wild Tentacruel are only at the Abandoned Ship. It puts Staryu on Route 124 (only Lilycove has them), and says Gyarados can be fished "in any body of water"; wild Gyarados are only in Sootopolis, which opens after this gym. No sources. |
+| **LockeSmith** ([full](docs/samples/randomizer-tate-liza.md)) | Reads the team from the log (cited as "Your randomizer log: Leader Tate&Liza's team"), with the level-up moves UPR gives randomized trainers (Camerupt's Earthquake and Rock Slide). Picks **Staryu → Starmie** (Lilycove, Super Rod, 15%; flags the Water Stone) with **Spheal** (Shoal Cave, 50%) as the backup, and **Carvanha → Sharpedo** (Super Rod, Route 119 100% or Route 118 60%), noting that Surf and Crunch are special in Gen III against Sharpedo's higher Attack. 11 cited sources plus a coverage chart. A real UPR log lists every trainer and wild table (LockeSmith's full-size Emerald test log is over 6,000 lines), and LockeSmith reads any of it the same way. |
 
 <details>
-<summary>Baseline's full answer (Gemini 3.1 Pro, no tools, no system prompt)</summary>
+<summary>Baseline's full answer (Gemini 3.5 Flash, no tools, no system prompt)</summary>
 
-This is a huge stroke of luck for you! By randomizing Tate and Liza to Fire-types, you've completely bypassed the notorious difficulty of their vanilla Psychic-type gym. Since the rest of your game's wild encounters are vanilla, you have access to some incredibly powerful tools to sweep them.
+This is an incredibly favorable matchup for you! Tate & Liza being randomized to **Fire-types** is the best-case scenario for a player who picked Mudkip, but your current party is heavily underleveled (your highest is Lv. 33, while their team is Lv. 41-42).
 
-However, you have one major problem to address first: **Your levels.** Tate and Liza's team is Level 41–42, and your highest is 33. You will need to grind a bit, but with the right catches, you won't need to match their levels perfectly.
+In Generation 3 double battles, **Surf hits both opponents but does NOT hit your partner**. This means running two Water-types side-by-side and spamming Surf is the ultimate strategy to easily sweep their entire team, as every single one of their Pokémon is weak (or 4x weak) to Water.
 
-Here is exactly what you should catch and the strategy you should use to wash them away.
+Here is exactly what you should catch, prepare, and do to easily win this gym badge.
 
-**The Strategy: "Gen 3 Surf Mechanics"**
-In Generation 3 (Ruby/Sapphire/Emerald), the move **Surf** in a Double Battle is incredibly broken because **it hits both opponents, but DOES NOT hit your ally.** (This was changed in Gen 4).
+---
 
-Because Tate and Liza are using a full Fire-type team in a Double Battle format, **Double-Surf spam** is all you need. Furthermore, Camerupt and Magcargo are **4x weak to Water**, meaning they will be instantly deleted by almost any Surf attack.
+**Step 1: Evolve your Marshtomp**
+Before catching anything else, **level Marshtomp up to Level 36 so it evolves into Swampert**.
+* Swampert gets a massive stat boost, making it incredibly bulky.
+* Teach it **Surf (HM03)**.
+* **Camerupt** and **Magcargo** both take **4x damage** from Water, meaning Swampert's Surf will likely one-shot them instantly.
 
-**Priority #1: Evolve Marshtomp**
-Before doing anything else, get your Marshtomp to **Level 36** so it evolves into **Swampert**. Swampert’s Water/Ground typing is virtually invincible in this gym. Give it **Surf** (HM03) and **Earthquake** (TM26, found deep in the Seafloor Cavern, or just use Mud Shot/Dig).
+---
 
-**Priority #2: Catch a Surf Partner**
-You want a second Water-type to put right next to Swampert. Since everything else in your ROM is vanilla, you can easily grab one of these around Lilycove City or Mossdeep City:
+**Step 2: What to Catch (Choose 1 or 2)**
+Since you are already in the Mossdeep City area, you have access to some of the best Water-type Pokémon in the game. Here are the best encounters you can grab right now:
 
-**1. Staryu / Starmie (The Best Option)**
-*   **Why:** Starmie is blazing fast and hits like a truck. Houndoom is their fastest Pokémon, and Starmie will naturally outspeed it and hit it with a super-effective Surf.
-*   **Where to get it:** Use the Super Rod in the water at Lilycove City.
-*   **How to evolve:** Use a Water Stone (trade a Blue Shard to the Treasure Hunter on Route 124). Give it Surf and Mystic Water.
+**1. Spheal / Sealeo (Highly Recommended)**
+* **Where to catch:** Shoal Cave (just north of Mossdeep City).
+* **Why:** You can catch them around Lv. 26–32. Spheal's ability **Thick Fat** halves Fire-type damage. Combined with its Water typing, **it takes only 1/4 damage from Fire-type attacks**. It is incredibly bulky, resists everything Tate & Liza will throw at it, and can spam Surf alongside Swampert.
 
-**2. Tentacruel (The Tanky Option)**
-*   **Why:** Tentacruel has massive Special Defense and naturally resists Fire-type moves. It's also quite fast. It can comfortably sit next to Swampert and spam Surf all day without taking much damage from Flamethrowers.
-*   **Where to get it:** You can encounter wild Tentacruel (around Level 25-30) while surfing on almost any ocean route (Route 124, 125, etc.), or just catch a Tentacool and evolve it at Level 30.
+**2. Tentacool / Tentacruel**
+* **Where to catch:** Surf on Route 124, 125, or 126 (right outside Mossdeep). You can encounter Tentacruel directly in the wild, or catch a high-level Tentacool.
+* **Why:** Tentacruel has a massive **Base 120 Special Defense**. Because Fire is a Special type in Gen 3, Tentacruel will take almost no damage from their attacks. It is also very fast and can easily outspeed Houndoom to hit it with Surf.
 
-**3. Magikarp / Gyarados OR Wingull / Pelipper (The Earthquake Option)**
-*   **Why:** While Gen 3 Surf doesn't hit your ally, **Earthquake DOES hit your ally.** If you want Swampert to be able to spam Earthquake freely to deal with Torkoal and Houndoom, its partner needs to be a Flying-type or have the Levitate ability. Gyarados and Pelipper are both Water/Flying. Gyarados also provides Intimidate, which lowers Camerupt's Earthquake and Torkoal's Body Slam damage.
-*   **Where to get them:** Literally everywhere there is water.
+**3. Staryu / Starmie**
+* **Where to catch:** Fish with a Super Rod in Lilycove City or Route 124.
+* **Why:** If you want raw power, Starmie is unmatched. It is incredibly fast and has high Special Attack.
+* *Note:* You can evolve it immediately into Starmie using a Water Stone. (If you don't have one, search the underwater trenches near Mossdeep for a Blue Shard and trade it to the Treasure Hunter on Route 124).
 
-**How the Battle Will Go**
-1.  **Bench Breloom:** Breloom is Grass/Fighting and will get instantly KO'd by anything on their team. Leave it in the back.
-2.  **Lead Swampert + Your New Water Catch (Starmie/Tentacruel/Gyarados).**
-3.  **Turn 1:** Have both of your Pokémon use **Surf**.
-4.  Because Tate and Liza will lead with Camerupt and Torkoal (or Magcargo), the double-Surf will hit both of them. Camerupt will instantly faint to the 4x weakness. Torkoal will take massive damage from two consecutive Surfs.
-5.  **Turn 2+:** Just keep pressing Surf. Magcargo will instantly die upon switching in (4x weakness), and Houndoom's Special Defense isn't high enough to survive Double-Surfs.
+**4. Gyarados**
+* **Where to catch:** Use a Good/Super Rod in any body of water to catch Magikarp/Gyarados.
+* **Why:** Gyarados resists Fire and has great physical bulk. Furthermore, its **Intimidate** ability will lower the Attack of both opposing Pokémon when it enters the field, neutralizing physical threats like Camerupt's Rock Slide or Earthquake.
 
-Even if you go into this fight slightly underleveled (around Level 38), the type matchups and the double-target mechanics of Surf will make this the easiest badge of your run!
+---
+
+**Step 3: Gym Battle Strategy**
+1. **Bench Breloom:** Do not bring Breloom to this fight. As a Grass-type, it will easily get one-shot by any of their Fire attacks.
+2. **Lead with Swampert and your new Water-type (e.g., Sealeo or Tentacruel).**
+3. **Turn 1:** Have both of your Pokémon use **Surf**.
+   * This will trigger two double-target Surfs in one turn.
+   * **Magcargo** (4x weak) and **Camerupt** (4x weak) will melt instantly.
+   * **Torkoal** has incredibly high Physical Defense, but terrible Special Defense—Surf will easily bypass its armor.
+   * **Houndoom** is fast and hits hard, but is very frail. A double Surf will wipe it out before it can do serious damage.
+
+By utilizing the ocean around Mossdeep to grab a second Water-type and getting your Marshtomp to level 36, you will turn what is normally one of the hardest Gym fights in Emerald into an absolute cakewalk!
 
 </details>
 
 <details>
 <summary>LockeSmith's full answer, with its sources</summary>
 
-Tate & Liza's randomized team is entirely Fire-type, making bulky Water-types like Spheal and Sharpedo ideal catches to pair with your Marshtomp's evolutions [1].
+Since this randomized run gave Tate & Liza a pure Fire-type team, your best bet is leveling up Marshtomp and catching another fast Water-type to drown them [1].
 
 **Top picks**
-**Spheal (core)**
-* **Where to catch:** Shoal Cave (B1F, B2F, or high-tide) via walking (50% encounter rate, Levels 26-32) [2].
-* **When to catch:** Immediately available after acquiring Surf to reach Shoal Cave north of Mossdeep [3].
-* **Why it helps now:** Tate & Liza's randomized team consists of Camerupt, Torkoal, Magcargo, and Houndoom [1]. Spheal's Water typing allows it to exploit their heavy Fire-type composition, especially using Surf which hits both opponents in a Double Battle [4][1][3].
-* **Long run:** Outstanding long-term value [4]. It evolves into Sealeo (and eventually Walrein), has massive bulk, and hits 26 remaining opponents super-effectively, making it incredibly strong against Elite Four Drake's Dragon types [4][5].
-* **Backup:** Aron (found in Granite Cave B1F or B2F via walking, 40% encounter rate, Levels 9-12) [6][7]. It acts as a premier physical wall against Normal and Flying moves and evolves into Lairon and then Aggron, yielding a monumental 180 Base Defense [7][8].
+**Staryu (Starmie) — Core [2]**
+* **Where:** Lilycove City (Super Rod, 15%, levels 25-30) [3]
+* **When to catch:** Before Tate & Liza
+* **Why it helps now:** With base 115 Speed and 100 Special Attack as Starmie, it can easily outspeed and wash away Tate & Liza's Fire-type team (Camerupt, Torkoal, Magcargo, and Houndoom) using Surf [1].
+* **Long run:** One of the best Water-types in the game [3]. It gets incredibly diverse TM coverage (Thunderbolt, Ice Beam, Psychic, Surf) making it a top-tier asset for the Elite Four [3].
+* **Backup:** Spheal (Shoal Cave, Walk, 50%, levels 26-32) [4]. Its Water/Ice typing and high bulk give you a more durable option to take hits while dealing super-effective Water damage [4]. Walrein's exceptional bulk and Ice typing make it a premier counter to Elite Four Drake's Dragon-types later on [5].
+* *Note:* Starmie needs a Water Stone to evolve. Make sure you can obtain one before challenging Tate & Liza.
 
-**Sharpedo (core)**
-* **Where to catch:** Route 103 or Route 118 by fishing with the Super Rod (Lv30-35, 40% encounter rate) [9][10].
-* **When to catch:** Immediately available once you have the Super Rod [9][10].
-* **Why it helps now:** Its strong offensive stats allow it to quickly sweep Tate & Liza's Fire-type team before they can retaliate [11][1]. *(Note: Surf is a Special move in Gen III, so it won't use Sharpedo's massive 120 Physical Attack, but its 95 Special Attack is still very serviceable)*.
-* **Long run:** Hits 15 remaining opponents super-effectively and is excellent against Elite Four Phoebe, but its low defensive stats make it a glass cannon [11].
-* **Backup:** Shuppet (found on Mt. Pyre 1F-3F, 100% encounter rate, Levels 22-29) [12][13]. It evolves into Banette, deals immense physical Ghost-type STAB damage, and is extremely useful for defeating Elite Four Phoebe [13][14].
+**Carvanha (Sharpedo) — For this fight [6]**
+* **Where:** Route 119 (Super Rod, 100%, levels 20-45) or Route 118 (Super Rod, 60%, levels 20-45) [7]
+* **When to catch:** Before Tate & Liza
+* **Why it helps now:** Evolves immediately at level 30 into Sharpedo, giving you an aggressive Water-type attacker that can deal massive damage to the Fire-type gym [6][8].
+* **Long run:** Outstanding late-game offensive profile, but its low defenses make it a glass cannon that requires careful positioning [8].
+* **Backup:** None listed.
+* *Note:* In Generation III, Surf (Water) and Crunch (Dark) are both classified as Special attacks. While Sharpedo has a massive Attack stat of 120, its Special Attack is still a decent 95 [9].
 
 ---
 
 **Key Battles**
-**Gym Leader: Tate & Liza**
-Tate & Liza have a randomized, Fire-heavy team of Camerupt (Lv41), Torkoal (Lv41), Magcargo (Lv42), and Houndoom (Lv42) [1]. Camerupt carries Earthquake and Rock Slide, which threaten Manectric and Swellow [1]. Use Water-type moves like Surf to deal heavy damage to both opponents simultaneously [15][3].
-
----
-
-**Next Steps**
-1. **Level up your party:** Your party is currently heavily underleveled [1]. Marshtomp is Level 33, while Tate & Liza's team is Level 41-42; you will need to level up significantly to survive [1].
-2. **Evolve Marshtomp and upgrade moves:** Marshtomp evolves into Swampert at level 36 [16]. Teach it Surf (HM03) and Muddy Water (learned at level 37) to exploit the Fire-type weaknesses of the Gym Leaders' Pokémon [17][3].
+**Gym 7: Mossdeep Gym (Tate & Liza)**
+* **The Team:** Tate & Liza's randomized team consists entirely of Fire-types: Camerupt, Torkoal, Magcargo, and Houndoom [1].
+* **Strategy:** Magcargo is 4x weak to Water and Ground, while the others are 2x weak to both types [10]. Beware of Camerupt's Earthquake and Rock Slide, which threaten Manectric, Swellow, and Breloom [1].
+* **Preparation:** Level up your team. Your highest level is 33, while Tate & Liza's Pokémon peak at level 42 [11]. Evolving Marshtomp into Swampert (at level 36) is highly recommended so it can tank hits and use its Ground typing [11].
 
 ---
 
 **Assumptions**
-* Your randomized seed left wild encounters and TM availability normal [18].
-* You are willing to spend time grinding levels to bridge the 9-level gap before fighting Tate & Liza [1].
+* You have access to a Super Rod [3].
+* You are willing to grind levels to close the 9-level gap before challenging the gym [11].
 
 **To sharpen this**
-* Are you willing to replace Marshtomp/Swampert or run multiple Water-types, as Spheal/Sharpedo would add type overlap to your party [4][11]?
-* Do you prefer a highly defensive pivot or a fast, offensive threat for your tactical playstyle [4][11]?
+* Do you have a Water Stone available to evolve Staryu [2]?
+* Do you need advice on the best grinding spots before taking on the gym [11]?
 
 **Not covered**
-* We don't know the exact movesets of your party, so we can't suggest exactly which moves to replace.
+* Whether you have the TMs for Thunderbolt, Ice Beam, or Psychic available for Starmie [3].
 
 **Sources**
 1. Your randomizer log: Leader Tate&Liza's team (`log:trainers#271`)
-2. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
-3. pokeemerald data/maps/PetalburgCity_WallysHouse (HM03) (`decomp:data/maps/PetalburgCity_WallysHouse#HM03`)
-4. PokeAPI: Spheal (species data) (`pokeapi:pokemon_species#363`)
-5. PokeAPI: Walrein (species data) (`pokeapi:pokemon_species#365`)
-6. PokeAPI: Aron at Granite Cave (walk) (`pokeapi:encounters#29913`)
-7. PokeAPI: Aron (species data) (`pokeapi:pokemon_species#304`)
-8. PokeAPI: Aggron (species data) (`pokeapi:pokemon_species#306`)
-9. PokeAPI: Sharpedo at Route 103 (super-rod) (`pokeapi:encounters#29611`)
-10. PokeAPI: Sharpedo at Route 118 (super-rod) (`pokeapi:encounters#29834`)
-11. PokeAPI: Sharpedo (species data) (`pokeapi:pokemon_species#319`)
-12. PokeAPI: Shuppet at Mt. Pyre (walk) (`pokeapi:encounters#29953`)
-13. PokeAPI: Shuppet (species data) (`pokeapi:pokemon_species#353`)
-14. PokeAPI: Banette (species data) (`pokeapi:pokemon_species#354`)
-15. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
-16. PokeAPI: Marshtomp evolves into Swampert (`pokeapi:pokemon_evolution#135`)
-17. PokeAPI: Marshtomp learns Muddy Water (level-up) (`pokeapi:pokemon_moves#259/330/level-up/37`)
-18. LockeSmith's Emerald rules (agent/brief.py) (`rules:game`)
+2. PokeAPI: Staryu evolves into Starmie (`pokeapi:pokemon_evolution#70`)
+3. PokeAPI: Staryu at Lilycove City (super-rod) (`pokeapi:encounters#30913`)
+4. PokeAPI: Spheal at Shoal Cave (walk) (`pokeapi:encounters#70736`)
+5. PokeAPI: Sealeo evolves into Walrein (`pokeapi:pokemon_evolution#185`)
+6. PokeAPI: Carvanha evolves into Sharpedo (`pokeapi:pokemon_evolution#166`)
+7. PokeAPI: Carvanha at Route 119 (super-rod) (`pokeapi:encounters#30515`)
+8. database query 1224539e18 (`sql:1224539e18`)
+9. PokeAPI: Sharpedo learns Crunch (level-up) (`pokeapi:pokemon_moves#319/242/level-up/22`)
+10. Gen 3 type chart (pokeemerald gTypeEffectiveness) (`rules:gen3_type_chart`)
+11. Story progression (data/progression.yaml): Mossdeep Gym: Tate & Liza (`progression:gym7_tate_liza`)
 
 </details>
 
-**What the comparison shows.** Gemini 3.1 Pro knows Emerald's well-known fights well, so the baseline is a strong opponent. LockeSmith adds:
-- picks checked against the data and cited (the baseline's Nuzlocke and randomizer answers had four claims the data contradicts; LockeSmith's picks and places were all right, though its randomizer answer has the two weak spots above)
-- challenge rules applied by code, not trust
-- randomized games at real-log scale
-- a whole-run view (the coverage chart and "long run" notes)
+**What the comparison shows.** Flash knows these games in outline: it names sensible Pokémon and gets the famous mechanics right. It goes wrong in the specifics, and the specifics are what a player acts on. LockeSmith:
+- **answers from the right game.** Each game has its own database, so a Ruby question gets Ruby's Wallace, not a blend with Emerald's Juan.
+- **takes the details from data, and cites them.** Places, methods and rates come from the encounter tables, and opponents' moves from the decomps' trainer data. Across these three questions the baseline put Chinchou on a fishing rod and on a route without any, put Staryu, Tentacruel and Gyarados where they can't be caught, and gave Juan's and Wallace's Pokémon moves they don't have.
+- **applies challenge rules in code.** Used areas, the dupes clause, level caps, allowed and banned types, no legendaries and wild-only runs are checked for every pick and backup, not left to the model. In sample 1 the Verifier dropped a backup that would have needed a level over the cap.
+- **checks timing.** A pick, its evolution and its moves must all be obtainable before the battle, and an evolution stone is flagged.
+- **reads your randomized game.** Every tool answers from the uploaded log, so the picks and battle notes describe your game, not the vanilla one.
+- **sees the whole run.** The coverage chart and "long run" notes look at every major battle left, not just the next one.
 
-It costs about 3–5× as much ($0.17–0.20 vs $0.03–0.06 per question) and takes 71–82 s against 34–54 s. These are the runs of Nov 16, with the code as submitted.
+**How these answers got here.** Without checks, the Gemini models inside LockeSmith make the same kinds of mistakes as the baseline. Early runs gave a Good Rod rate as the Super Rod's, called a 2× weakness 4×, said Lanturn "double-resists" Water, and placed Voltorb where only Electrode lives. This week's runs gave Juan's and Wallace's Sealeo an Ice Beam it doesn't have. Each mistake became a code check that now runs on every answer:
+- `correct_places` rewrites a wrong "where" line from the encounter data
+- `TYPE_CLAIM_WRONG` catches matchup claims the Gen III type chart contradicts
+- `OPPONENT_MOVE_WRONG` catches a move a battle note gives an opponent that isn't in its moveset
 
-**How these answers got here.** Earlier runs of the same samples turned up errors in LockeSmith's own answers:
-- a Good Rod rate given as the Super Rod's
-- a "4× weak" that was 2×
-- Lanturn "double-resisting" Water
-- a Voltorb location that only has Electrode
-
-Each became a new code check: `correct_places` rewrites wrong "where" lines from the encounter data, and `TYPE_CLAIM_WRONG` catches matchup claims the type chart contradicts. Details are in [docs/decisions.md](docs/decisions.md) D11–D12 and D14.
+Details are in [docs/decisions.md](docs/decisions.md) D11–D12, D14 and D20.
 
 ## What it can't answer
 
@@ -499,14 +534,7 @@ It says so instead of guessing:
 
 ## Tracing and cost
 
-Each answer's trace panel shows the model calls, tokens and cost for that question, from `agent/pricing.py`: Vertex AI list prices read from Google's pricing page on 2026-11-01. Per sample question:
-
-| | LockeSmith | Baseline (Gemini 3.1 Pro, no tools) |
-|---|---|---|
-| Time | 71–82 s | 34–54 s |
-| Model calls | 14–16 (Clarifier, Lead ×2, 3 researchers ×2–5, Writer) | 1 |
-| Tokens | 55k–73k | 3k–6k |
-| Cost | $0.17–0.20 | $0.03–0.06 |
+Each answer's trace panel shows the model calls, tokens and cost for that question, from `agent/pricing.py`: Vertex AI list prices read from Google's pricing page on 2026-11-01. Each of the three sample questions took 71–84 s and 14–27 model calls (the Clarifier, the Lead, three or four researchers taking several turns each, and the Writer), 55k–112k tokens, and $0.15–0.25.
 
 With LangFuse keys set (see [docs/deploy.md](docs/deploy.md)), every `/chat` turn is also a LangFuse trace (`agent/observability.py`, through OpenInference's OpenAI Agents SDK instrumentation; nothing is sent to OpenAI). Each trace is grouped by session and tagged `vanilla`/`randomized`, `nuzlocke` or `custom-rules`:
 
@@ -546,7 +574,7 @@ Every generation carries its model, token usage and cost. The prices are registe
 uv sync
 gcloud auth application-default login   # Gemini on Vertex AI (project "lockesmith", location "global")
 uv run uvicorn app:app --reload         # http://127.0.0.1:8000
-uv run pytest                           # 533 tests, no model calls (5 wait for a real randomizer log; 8 need build/fetch_sources.py run first)
+uv run pytest                           # 537 tests, no model calls (5 wait for a real randomizer log; 8 need build/fetch_sources.py run first)
 ```
 
 Scripts:

@@ -183,6 +183,28 @@ def test_battle_notes_and_steps_are_checked_for_matchups(con):
         "Prepare: says Electric does 2x to Kingdra, but Electric does 1x to Water/Dragon in Gen III"]
 
 
+def test_a_battle_note_giving_an_opponent_a_move_it_lacks_is_flagged(con):
+    """Live Emerald run: "His Sealeo carries Ice Beam and Kingdra carries Ice Beam" (Juan's Sealeo has
+    Aurora Beam). Notes that name the right moves, or a party member's move, must pass."""
+    ctx = ctx_for(con)
+
+    def flags(note):
+        draft = LeadDraft(intent="catch", headline="h", recommendations=[], assumptions=[], follow_up_questions=[], unresolved=[],
+                          battle_notes=[BattleNote(battle_id="gym8_juan", note=note, source_ids=CITED)], steps=[])
+        vs = [v for v in verify(ctx, draft) if v.code == "OPPONENT_MOVE_WRONG"]
+        covered.update(v.code for v in vs)
+        return [f"{v.species}: {v.detail}" for v in vs]
+
+    sealeo = "gym8_juan: says Sealeo knows Ice Beam, but its moves in this battle are Aurora Beam, Body Slam, Encore, Water Pulse"
+    assert flags((
+        "His Sealeo carries Ice Beam and Kingdra carries Ice Beam, which threaten your Claydol and Ninjask.")) == [sealeo]
+    assert flags((
+        "Keep Breloom away from Sealeo and Kingdra, who both carry deadly Ice Beam.")) == [sealeo]
+    assert flags((
+        "Kingdra's Ice Beam threatens Breloom. Sealeo's Aurora Beam hits Swellow. Whiscash knows Earthquake, and "
+        "Crawdaunt uses Crabhammer. Breloom's Mach Punch hits Sealeo hard. Sealeo doesn't know Ice Beam.")) == []
+
+
 def test_an_attack_offered_against_a_pokemon_it_cant_touch_is_flagged(con):
     """Live FireRed answer: "It gives you a physical answer to Agatha's Poison-type Gengar and Haunter"
     about Dig (every Gengar and Haunter has Levitate). And "Earthquake does 2x damage to Gengar" passed,

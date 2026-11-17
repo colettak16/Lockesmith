@@ -1,6 +1,6 @@
 # Baseline: sapphire-wallace
 
-vertex_ai/gemini-3.1-pro-preview, no tools, no system prompt. 29.0 s, 78 input / 2712 output tokens, about $0.0327.
+vertex_ai/gemini-3.5-flash, no tools, no system prompt. 15.7 s, 78 input / 2608 output tokens, about $0.0236.
 
 ## Prompt
 
@@ -12,36 +12,42 @@ What should I catch to beat Wallace?
 
 ## Answer
 
-You are actually in a fantastic position. Because you chose Treecko and caught an Electrike (Manectric), **your current team is already perfectly built to destroy Wallace.** 
+You actually already have a fantastic starting point to beat Wallace! With **Sceptile, Breloom, and Manectric**, you have three Pokémon with major type advantages against Water. 
 
-Wallace is a Water-type Gym Leader, and his highest-level Pokémon is a Level 43 Milotic. Between Sceptile, Manectric, and Breloom, you have the elemental advantage over his entire team.
+However, Wallace has a few tricks up his sleeve that can counter your current team. Specifically:
+1. **Ice-type moves:** His Sealeo and his ace, Milotic, both carry Ice-type moves (Aurora Beam and Ice Beam) which will easily one-shot your Sceptile and Breloom.
+2. **Whiscash:** It is Water/Ground, meaning it is completely immune to Manectric’s Electric attacks.
+3. **Milotic's Bulk:** Milotic is incredibly tanky, recovers health, and hits hard.
 
-Instead of catching a Pokémon specifically to beat Wallace, you should use your last two party slots to catch Pokémon that will **safely absorb Ice attacks from Wallace** and **help you beat the Elite Four**, which is coming up right after this Gym.
+To patch up these weaknesses, here are the best Pokémon you can catch right now to easily defeat Wallace:
 
-Here is what you should catch, and how to use your current team to win:
+---
 
-### What to Catch (Fill your last 2 slots)
+### 1. Lanturn (The Perfect Counter)
+* **Type:** Water / Electric
+* **Why:** Lanturn is the ultimate counter to Wallace’s Milotic. Because of its Water typing, it **resists Ice Beam and Surf**. Because of its Electric typing, it can spam STAB (Same Type Attack Bonus) Thunderbolt or Spark to chip away at Wallace’s team safely.
+* **Where to catch:** Use **Dive** in the deep water patches around Sootopolis City (Route 126) to encounter **Chinchou** in the seaweed. Evolve it into Lanturn at Level 27.
 
-**1. Spheal (Evolves into Sealeo -> Walrein)**
-*   **Where to find:** Shoal Cave (North of Mossdeep City). 
-*   **Why for Wallace:** Wallace's Sealeo and Milotic carry Ice-type moves that can easily knock out Sceptile and Breloom. Because Walrein is Water/Ice, it resists both Water and Ice moves. You can use it as a "safe switch" to heal your other Pokémon if they get in trouble.
-*   **Why for the Elite Four:** You absolutely need a bulky Ice-type to defeat Drake (the Dragon-type Elite Four member). Walrein with Ice Beam and Surf is one of the best Pokémon in the game for this.
+### 2. Ludicolo (Sapphire Exclusive!)
+* **Type:** Water / Grass
+* **Why:** Since you are playing *Sapphire*, you have access to the Lotad line. Water/Grass is an amazing typing for this fight. The Water typing cancels out Grass's weakness to Ice, meaning **Ludicolo takes neutral damage from Milotic’s Ice Beam**, while resisting Water attacks. It can drain Wallace's health with Giga Drain.
+* **Where to catch:** Catch a **Lombre** on Route 114 and use a Water Stone (found in the Abandoned Ship or traded for a Blue Shard) to evolve it into Ludicolo.
 
-**2. Staryu (Evolves into Starmie) OR Sharpedo**
-*   **Where to find Staryu:** Fish with the Super Rod in Lilycove City. (Requires a Water Stone to evolve).
-*   **Where to find Sharpedo:** Fish with the Super Rod on almost any ocean route.
-*   **Why:** You need a Pokémon that can use the HMs **Dive** and **Waterfall** to navigate the ocean and get to Wallace's Gym in Sootopolis City. While Pelipper has Surf, it cannot learn Dive or Waterfall. Starmie is an incredibly fast special attacker that can learn Thunderbolt, Ice Beam, Surf, and Psychic. Sharpedo is a great Dark-type that will help you against the Ghost-type Elite Four member later.
+### 3. Walrein (The Tank)
+* **Type:** Ice / Water
+* **Why:** Walrein has the ability **Thick Fat**, which halves the damage of Ice-type moves. It has massive HP and Special Defense, making it the perfect "sponge" to absorb Milotic’s Ice Beams and Surfs while you heal up your other Pokémon.
+* **Where to catch:** Go to **Shoal Cave** (north of Mossdeep City) and catch a **Spheal**. It evolves into Sealeo at level 32, and Walrein at level 44. 
 
-### How to use your current team against Wallace
+---
 
-If you level your current team up just a bit (aim for Level 42-44 across the board), here is exactly how your current team beats Wallace:
+### How to execute the battle with your team:
 
-*   **Against Luvdisc (Lv 40) & Seaking (Lv 42):** Use **Manectric**. Thunderbolt or Spark will easily one-shot both of them. 
-*   **Against Whiscash (Lv 42):** Use **Sceptile**. Whiscash is Water/Ground, meaning it is immune to Manectric's Electric moves, but takes **4x damage from Grass**. Sceptile's *Leaf Blade* will easily one-shot it. Do not use Manectric here!
-*   **Against Sealeo (Lv 40):** Use **Manectric** or **Breloom**. Sealeo has Aurora Beam (Ice), which will hurt Sceptile and Breloom. Manectric is the safest bet here, but if Breloom knows *Sky Uppercut*, it can smash Sealeo with super-effective Fighting damage.
-*   **Against Milotic (Lv 43):** This is Wallace's ace. It is very tanky, has *Recover* to heal itself, and uses *Ice Beam*. Lead with **Manectric** to hit it with Thunderbolt. If Manectric faints, bring in **Sceptile** to finish it off with Leaf Blade. Sceptile is faster than Milotic, so you should be able to hit it before it hits you with Ice Beam.
+If you add **Lanturn** or **Ludicolo** to your team, here is your winning strategy:
 
-**Checklist before fighting Wallace:**
-1. Make sure **Sceptile** knows *Leaf Blade* (it learns it at Lv 29).
-2. Make sure **Manectric** knows *Thunderbolt*. (If it only knows Spark, you can get the Thunderbolt TM from the Mauville Game Corner, or from Wattson after completing the New Mauville sidequest). 
-3. Make sure **Breloom** knows *Sky Uppercut* (learned at Lv 36) or *Mach Punch*.
+1. **vs. Luvdisc:** Lead with **Manectric**. One Spark or Thunderbolt will knock it out instantly.
+2. **vs. Whiscash:** **Do not use Manectric.** Switch to **Sceptile** or **Breloom**. Whiscash is 4x weak to Grass, so one Leaf Blade or Mega Drain will instantly OHKO it.
+3. **vs. Sealeo:** Use **Breloom**. Breloom's Mach Punch or Sky Uppercut will hit its Ice typing for super-effective physical damage before Sealeo can hit you with an Ice move.
+4. **vs. Seaking:** Use **Manectric**. Easy electrocution. (Watch out for Horn Drill, which is a 1-hit KO move if it hits).
+5. **vs. Milotic:** **Do not use Sceptile or Breloom** (they will die to Ice Beam). Send out your new **Lanturn** or **Ludicolo** to tank the Ice Beams and slowly wear Milotic down with Electric/Grass attacks. If you don't want to catch a new Pokémon, you must use a high-level **Manectric** and pray you outspeed and OHKO it before it uses Ice Beam.
+
+*Note: Your levels are a bit low. Wallace’s ace is Level 43. I highly recommend leveling your party (especially Manectric and Sceptile) to at least **Level 43–45** before entering the Gym!*

@@ -148,3 +148,12 @@ def test_hideout_electrode_needs_the_slateport_scene_until_the_hideout(con, game
     assert hideout and hideout[0]["only_after_story_events"][0].startswith("slateport_submarine_theft")
     later = encounters.catchable(ctx_for(con, game, starter="mudkip", badges=ALL_BADGES[:6]), "gym7_tate_liza", species="electrode")
     assert "only_after_story_events" not in [p for p in later["species"][0]["places"] if p["method"] == "static"][0]
+
+
+def test_a_wrong_move_for_wallaces_team_is_flagged(con, game):
+    """Live Ruby run: "keep Breloom away from Sealeo and Milotic, who both carry deadly Ice Beam"."""
+    from agent.verifier import opponent_move_errors
+    ctx = ctx_for(con, game, starter="mudkip", badges=["stone", "knuckle", "dynamo", "heat", "balance", "feather", "mind"])
+    assert opponent_move_errors(ctx, "Keep Breloom away from Sealeo and Milotic, who both carry deadly Ice Beam.", "gym8_wallace") == [
+        "says Sealeo knows Ice Beam, but its moves in this battle are Aurora Beam, Body Slam, Encore, Water Pulse"]
+    assert opponent_move_errors(ctx, "Milotic's Ice Beam and Seaking's Horn Drill are the threats.", "gym8_wallace") == []
